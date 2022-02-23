@@ -1,12 +1,12 @@
 package ch.epfl.sdp.mobile
 
-import org.junit.Assert.*
+import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class ExampleUnitTest {
 
   @Test
   fun addition_isCorrect() {
-    assertEquals(4, 2 + 2)
+    assertThat<Int>(2 + 2).isEqualTo(4)
   }
 }

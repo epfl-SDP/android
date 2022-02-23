@@ -4,8 +4,6 @@ plugins {
   id("jacoco")
 }
 
-val jacocoVersion = "0.8.8-SNAPSHOT"
-
 android {
   compileSdk = 31
 
@@ -32,34 +30,39 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
-  composeOptions { kotlinCompilerExtensionVersion = "1.1.0" }
+  composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
   buildFeatures { compose = true }
   kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
-  testCoverage { jacocoVersion = this@Build_gradle.jacocoVersion }
+  testCoverage { jacocoVersion = libs.versions.jacoco.get() }
 }
 
 dependencies {
-  implementation("androidx.core:core-ktx:1.7.0")
-  implementation("androidx.appcompat:appcompat:1.4.1")
-  implementation("com.google.android.material:material:1.5.0")
-  testImplementation("junit:junit:4.13.2")
-  androidTestImplementation("androidx.test.ext:junit:1.1.3")
-  androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 
-  androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.1.0")
-  debugImplementation("androidx.compose.ui:ui-test-manifest:1.1.0")
+  // Testing.
+  testImplementation(libs.androidx.test.core)
+  testImplementation(libs.junit4)
+  testImplementation(libs.truth)
+  androidTestImplementation(libs.androidx.test.junit)
+  androidTestImplementation(libs.androidx.test.truth)
+  androidTestImplementation(libs.androidx.test.espresso)
+  androidTestImplementation(libs.compose.ui.test.junit4)
+  debugImplementation(libs.compose.ui.test.manifest)
+  debugImplementation(libs.compose.ui.tooling.tooling)
 
-  implementation("androidx.activity:activity-compose:1.4.0")
-  implementation("androidx.compose.material:material:1.1.0")
+  // Kotlin and coroutines.
+  implementation(libs.bundles.coroutines.android)
+
+  // Jetpack Compose
+  implementation(libs.bundles.compose.android)
 }
 
-jacoco { toolVersion = jacocoVersion }
+jacoco { toolVersion = libs.versions.jacoco.get() }
 
 configurations.forEach { config ->
   config.resolutionStrategy {
-    eachDependency { if (requested.group == "org.jacoco") useVersion(jacocoVersion) }
+    eachDependency { if (requested.group == "org.jacoco") useVersion(libs.versions.jacoco.get()) }
   }
 }
 
