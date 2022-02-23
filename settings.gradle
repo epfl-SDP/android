@@ -1,0 +1,26 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        google()
+        maven {
+            name "githubJacoco"
+            url "https://maven.pkg.github.com/epfl-SDP/jacoco-compose"
+            credentials(PasswordCredentials)
+        }
+    }
+}
+
+rootProject.name = "SDP"
+
+include ":mobile"
