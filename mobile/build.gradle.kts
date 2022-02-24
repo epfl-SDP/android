@@ -1,5 +1,6 @@
 plugins {
   id("com.android.application")
+  id("com.ncorti.ktfmt.gradle")
   id("org.jetbrains.kotlin.android")
   id("jacoco")
 }
