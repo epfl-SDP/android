@@ -8,6 +8,7 @@ check_android_task:
     # Secrets
     GITHUB_USERNAME: ENCRYPTED[!5ddd4ecee2227269ff560d6ce26215913f9754243998b12f20b3b05159bcc24437b84b1c20b37fa6d01104654c43c8f4!]
     GITHUB_TOKEN: ENCRYPTED[!b59c57ebdfbe387579b505c3eda03ceafb19b63d956ace5f92cc96cdb920b306a161bb6327dfc7174df2823d99917aab!]
+    CC_REPORTER_ID: ENCRYPTED[!05ea6f074a05caf1372148aa23d1a738111a0e2729b0ee10a426371e065209dc6d811b58bea1b4e43be227be989d957d!]
   container:
     image: reactivecircus/android-emulator-$API_LEVEL:latest
     kvm: true
@@ -29,5 +30,13 @@ check_android_task:
     adb shell settings put global window_animation_scale 0.0
     adb shell settings put global transition_animation_scale 0.0
     adb shell settings put global animator_duration_scale 0.0
+  prepare_codeclimate_script: |
+    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    chmod +x ./cc-test-reporter
+    ./cc-test-reporter before-build
   check_script:
     ./gradlew check connectedCheck
+  report_codeclimate_script: |
+    export JACOCO_SOURCE_PATH=mobile/src/main/java/
+    ./cc-test-reporter format-coverage ./mobile/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
+    ./cc-test-reporter upload-coverage
