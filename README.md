@@ -2,13 +2,13 @@
 
 ## Team
 
-| Name                 |
+| Name                 | Email |
 |----------------------|
 | Lars Barmettler      |
 | Matthieu Burguburu   |
 | Chau Ying Kot        |
 | Fouad Mahmoud        |
-| Alexandre Piveteau   |
+| Alexandre Piveteau   | alexandre.piveteau@epfl.ch |
 | Mohamed Badr Taddist |
 
 ## Setup
