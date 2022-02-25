@@ -34,4 +34,17 @@ class PasswordTextFieldTest {
     rule.onNodeWithContentDescription(string("Toggle password visibility")).performClick()
     rule.onNodeWithText("Password").assertExists()
   }
+
+  @Test
+  fun default_togglingTwice_isHidden() {
+    rule.setContent {
+      val (text, setText) = remember { mutableStateOf("") }
+      PasswordTextField(text, setText, Modifier.testTag("input"))
+    }
+    rule.onNodeWithTag("input").performTextInput("Password")
+    repeat(2) {
+      rule.onNodeWithContentDescription(string("Toggle password visibility")).performClick()
+    }
+    rule.onNodeWithText("Password").assertDoesNotExist()
+  }
 }
