@@ -9,7 +9,7 @@
 | Chau Ying Kot        |
 | Fouad Mahmoud        |
 | Alexandre Piveteau   | alexandre.piveteau@epfl.ch |
-| Mohamed Badr Taddist |
+| Mohamed Badr Taddist | mohamed.taddist@epfl.ch |
 
 ## Setup
 
