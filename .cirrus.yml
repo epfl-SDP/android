@@ -4,6 +4,10 @@ check_android_task:
     API_LEVEL: 30
     TARGET: google_apis
     ARCH: x86
+
+    # Secrets
+    GITHUB_USERNAME: ENCRYPTED[!5ddd4ecee2227269ff560d6ce26215913f9754243998b12f20b3b05159bcc24437b84b1c20b37fa6d01104654c43c8f4!]
+    GITHUB_TOKEN: ENCRYPTED[!b59c57ebdfbe387579b505c3eda03ceafb19b63d956ace5f92cc96cdb920b306a161bb6327dfc7174df2823d99917aab!]
   container:
     image: reactivecircus/android-emulator-$API_LEVEL:latest
     kvm: true
@@ -13,6 +17,8 @@ check_android_task:
     echo no | avdmanager create avd --force --name test --abi "$TARGET/$ARCH" --package "system-images;android-$API_LEVEL;$TARGET;$ARCH"
   start_emulator_background_script:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back none
+  prepare_environment_script: |
+    sh .cirrus/populate_properties.sh
   build_script: |
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
