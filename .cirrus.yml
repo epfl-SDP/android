@@ -40,3 +40,10 @@ check_android_task:
     export JACOCO_SOURCE_PATH=mobile/src/main/java/
     ./cc-test-reporter format-coverage ./mobile/build/reports/coverage/androidTest/debug/report.xml --input-type jacoco
     ./cc-test-reporter upload-coverage
+  lint_script:
+    ./gradlew lintDebug
+  always:
+    android-lint_artifacts:
+      path: ./mobile/build/reports/lint-results-debug.xml
+      type: text/xml
+      format: android-lint
