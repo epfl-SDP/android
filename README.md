@@ -1,5 +1,8 @@
 # SDP
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/e804775d6b20006a3778/maintainability)](https://codeclimate.com/github/epfl-SDP/android/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e804775d6b20006a3778/test_coverage)](https://codeclimate.com/github/epfl-SDP/android/test_coverage)
+
 ## Team
 
 | Name                 | Email |
