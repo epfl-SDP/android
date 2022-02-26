@@ -6,7 +6,7 @@
 ## Team
 
 | Name                 | Email |
-|----------------------|
+|----------------------|-------|
 | Lars Barmettler      |
 | Matthieu Burguburu   |
 | Chau Ying Kot        |
