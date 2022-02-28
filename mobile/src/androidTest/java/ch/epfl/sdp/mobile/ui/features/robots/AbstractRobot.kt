@@ -9,6 +9,8 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
  * building with the underlying [ComposeTestRule], an [AbstractRobot] implementation offers some
  * high-level primitives that provide easy access to the underlying nodes.
  *
+ * The Robot pattern is heavily inspired by [https://jakewharton.com/testing-robots/].
+ *
  * @param rule the [ComposeTestRule] that backs this [AbstractRobot].
  * @param strings the [LocalizedStrings] of the application.
  */

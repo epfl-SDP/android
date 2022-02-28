@@ -30,6 +30,8 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
+  testOptions { packagingOptions { jniLibs { useLegacyPackaging = true } } }
+
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
   buildFeatures { compose = true }
@@ -44,6 +46,9 @@ dependencies {
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.junit4)
   testImplementation(libs.truth)
+  testImplementation(libs.mockk.mockk)
+  testImplementation(libs.mockk.agent.jvm)
+  androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.test.truth)
   androidTestImplementation(libs.androidx.test.espresso)

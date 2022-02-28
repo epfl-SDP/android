@@ -32,7 +32,7 @@ class PasswordTextFieldTest {
           PasswordTextField(text, setText, Modifier.testTag("input"))
         }
     rule.onNodeWithTag("input").performTextInput("Password")
-    rule.onNodeWithContentDescription(strings.passwordToggleVisibility).performClick()
+    rule.onNodeWithContentDescription(strings.authenticatePasswordToggleVisibility).performClick()
     rule.onNodeWithText("Password").assertExists()
   }
 
@@ -44,7 +44,9 @@ class PasswordTextFieldTest {
           PasswordTextField(text, setText, Modifier.testTag("input"))
         }
     rule.onNodeWithTag("input").performTextInput("Password")
-    repeat(2) { rule.onNodeWithContentDescription(strings.passwordToggleVisibility).performClick() }
+    repeat(2) {
+      rule.onNodeWithContentDescription(strings.authenticatePasswordToggleVisibility).performClick()
+    }
     rule.onNodeWithText("Password").assertDoesNotExist()
   }
 }

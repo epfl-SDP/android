@@ -150,7 +150,7 @@ private fun VisibilityToggle(
     IconButton(onClick = onClick) {
       Icon(
           if (showPassword) Icons.Branded.PasswordHide else Icons.Branded.PasswordShow,
-          LocalLocalizedStrings.current.passwordToggleVisibility,
+          LocalLocalizedStrings.current.authenticatePasswordToggleVisibility,
       )
     }
   }
