@@ -24,6 +24,6 @@ your `~/.gradle/gradle.properties` file to access the Maven package.
 
 ```properties
 githubJacocoUsername=YourGitHubUsername
-# Requires at least the read_packages scope.
+# Requires at least the read:packages scope.
 githubJacocoPassword=YourGitHubPersonalAccessToken
 ```
