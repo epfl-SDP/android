@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import ch.epfl.sdp.mobile.ui.branding.Branded
 import ch.epfl.sdp.mobile.ui.branding.PasswordHide
 import ch.epfl.sdp.mobile.ui.branding.PasswordShow
-import ch.epfl.sdp.mobile.ui.i18n.string
+import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.material.theme.sharedYAxisEnterTransition
 import ch.epfl.sdp.mobile.ui.material.theme.sharedYAxisExitTransition
 
@@ -150,7 +150,7 @@ private fun VisibilityToggle(
     IconButton(onClick = onClick) {
       Icon(
           if (showPassword) Icons.Branded.PasswordHide else Icons.Branded.PasswordShow,
-          string("Toggle password visibility"),
+          LocalLocalizedStrings.current.passwordToggleVisibility,
       )
     }
   }
