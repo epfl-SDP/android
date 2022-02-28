@@ -8,7 +8,7 @@
 | Name                 | Email |
 |----------------------|-------|
 | Lars Barmettler      |
-| Matthieu Burguburu   |
+| Matthieu Burguburu   | matthieu.burguburu@epfl.ch |
 | Chau Ying Kot        |
 | Fouad Mahmoud        |
 | Alexandre Piveteau   | alexandre.piveteau@epfl.ch |
