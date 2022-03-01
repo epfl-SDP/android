@@ -8,12 +8,6 @@ import kotlinx.coroutines.flow.Flow
  */
 interface AuthenticationApi {
 
-  /** A class which represents a type-safe [Email] and its [text]. */
-  @JvmInline value class Email(val text: String)
-
-  /** A class which represents a type-safe password and its [text]. */
-  @JvmInline value class Password(val text: String)
-
   /**
    * An interface which represents the current authentication status of the user of the
    * [AuthenticationApi].
@@ -29,8 +23,8 @@ interface AuthenticationApi {
     /** Indicates that a [User] is currently authenticated. */
     interface Authenticated : User {
 
-      /** The [Email] of the currently logged in user. */
-      val email: Email
+      /** The email of the currently logged in user. */
+      val email: String
 
       /** Signs this user out of the [AuthenticationApi]. */
       suspend fun signOut()
@@ -55,22 +49,22 @@ interface AuthenticationApi {
   /**
    * Attempts to sign in with the provided email and password.
    *
-   * @param email the [Email] to use for authentication.
-   * @param password the [Password] to use for authentication.
+   * @param email the email to use for authentication.
+   * @param password the password to use for authentication.
    */
   suspend fun signInWithEmail(
-      email: Email,
-      password: Password,
+      email: String,
+      password: String,
   ): AuthenticationResult
 
   /**
    * Attempts to sign up and create an account with the provided email and password.
    *
-   * @param email the [Email] to use for authentication.
-   * @param password the [Password] to use for authentication.
+   * @param email the email to use for authentication.
+   * @param password the password to use for authentication.
    */
   suspend fun signUpWithEmail(
-      email: Email,
-      password: Password,
+      email: String,
+      password: String,
   ): AuthenticationResult
 }

@@ -15,4 +15,5 @@ interface LocalizedStrings {
   val authenticatePerformRegister: String
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
+  val authenticateErrorFailure: String
 }

@@ -43,6 +43,7 @@ android {
 dependencies {
 
   // Testing.
+  testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.junit4)
   testImplementation(libs.truth)
