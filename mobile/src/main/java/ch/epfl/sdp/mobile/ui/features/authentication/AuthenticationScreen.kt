@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.features.authentication
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.ExperimentalTransitionApi
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.Column
@@ -22,10 +21,6 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
  * @param state the [AuthenticationScreenState], which maintains the composable contents.
  * @param modifier the [Modifier] for this composable.
  */
-@OptIn(
-    ExperimentalAnimationApi::class,
-    ExperimentalTransitionApi::class,
-)
 @Composable
 fun AuthenticationScreen(
     state: AuthenticationScreenState,
@@ -64,7 +59,6 @@ fun AuthenticationScreen(
   }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun AuthenticateButton(
     transition: Transition<Mode>,
@@ -88,7 +82,6 @@ private fun AuthenticateButton(
   }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun ToggleButton(
     transition: Transition<Mode>,

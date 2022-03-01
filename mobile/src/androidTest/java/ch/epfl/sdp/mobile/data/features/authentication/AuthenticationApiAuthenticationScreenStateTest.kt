@@ -54,7 +54,6 @@ class AuthenticationApiAuthenticationScreenStateTest {
     assertThat(state.mode).isEqualTo(LogIn)
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun successfulAuthentication_setsLoadingToFalse() = runTest {
     val (api, strings, _) = mockkAll()
@@ -64,7 +63,6 @@ class AuthenticationApiAuthenticationScreenStateTest {
     assertThat(state.loading).isFalse()
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun pendingAuthentication_keepsLoadingToTrue() =
       try {
@@ -80,7 +78,6 @@ class AuthenticationApiAuthenticationScreenStateTest {
         // Success.
       }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun failingApi_hasErrorMessage() = runTest {
     val api = mockk<AuthenticationApi>()
@@ -92,7 +89,6 @@ class AuthenticationApiAuthenticationScreenStateTest {
     assertThat(state.error).isEqualTo(strings.authenticateErrorFailure)
   }
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun signInMode_usesSignInApi() = runTest {
     val api = mockk<AuthenticationApi>(relaxed = true)

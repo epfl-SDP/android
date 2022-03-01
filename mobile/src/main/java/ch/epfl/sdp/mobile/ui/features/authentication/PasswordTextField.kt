@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.features.authentication
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.with
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -133,7 +132,6 @@ fun PasswordTextField(
  * @param onClick the callback called whenever the icon is pressed.
  * @param modifier the [Modifier] for this composable.
  */
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun VisibilityToggle(
     hidden: Boolean,
