@@ -10,7 +10,7 @@
 | Lars Barmettler      |
 | Matthieu Burguburu   | matthieu.burguburu@epfl.ch |
 | Chau Ying Kot        | chau.kot@epfl.ch |
-| Fouad Mahmoud        |
+| Fouad Mahmoud        | fouad.mahmoud@epfl.ch |
 | Alexandre Piveteau   | alexandre.piveteau@epfl.ch |
 | Mohamed Badr Taddist | mohamed.taddist@epfl.ch |
 

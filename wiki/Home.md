@@ -15,7 +15,7 @@ You can find here information about the organization and the workflow of this re
 | Lars Barmettler      | |
 | Matthieu Burguburu   | |
 | Chau Ying Kot        | CYK |
-| Fouad Mahmoud        | |
+| Fouad Mahmoud        | FM |
 | Alexandre Piveteau   | AP |
 | Mohamed Badr Taddist | BT |
 
