@@ -41,9 +41,9 @@ In addition to the stand-up, we have a sprint review with our TAs Friday at 11:1
 # Scrum master rotation order
 
 A different Scrum master is chosen for each sprint, in the following cyclic order starting from Sprint 1:
-- Alexandre Piveteau
-- Mohamed Badr Taddist
-- Chau Ying Kot
-- Lars Barmettler
-- Matthieu Burguburu
-- Fouad Mahmoud
+1. Alexandre Piveteau
+2. Mohamed Badr Taddist
+3. Chau Ying Kot
+4. Lars Barmettler
+5. Matthieu Burguburu
+6. Fouad Mahmoud
