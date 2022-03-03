@@ -38,4 +38,12 @@ Each week, we have 2 stand-up meetings :
 
 In addition to the stand-up, we have a sprint review with our TAs Friday at 11:15. At the end of this meeting, the Scrum Team will plan the content of the next sprint backlog.
 
+# Scrum master rotation order
 
+A different Scrum master is chosen for each sprint, in the following cyclic order starting from Sprint 1:
+- Alexandre Piveteau
+- Mohamed Badr Taddist
+- Chau Ying Kot
+- Lars Barmettler
+- Matthieu Burguburu
+- Fouad Mahmoud
