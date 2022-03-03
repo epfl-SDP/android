@@ -13,7 +13,7 @@ You can find here information about the organization and the workflow of this re
 | Name                 | Initial |
 |----------------------|---------|
 | Lars Barmettler      | |
-| Matthieu Burguburu   | |
+| Matthieu Burguburu   | MB |
 | Chau Ying Kot        | CYK |
 | Fouad Mahmoud        | FM |
 | Alexandre Piveteau   | AP |
