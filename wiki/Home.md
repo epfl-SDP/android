@@ -13,7 +13,7 @@ You can find here information about the organization and the workflow of this re
 | Name                 | Initial |
 |----------------------|---------|
 | Lars Barmettler      | |
-| Matthieu Burguburu   | |
+| Matthieu Burguburu   | MB |
 | Chau Ying Kot        | CYK |
 | Fouad Mahmoud        | FM |
 | Alexandre Piveteau   | AP |
@@ -38,4 +38,12 @@ Each week, we have 2 stand-up meetings :
 
 In addition to the stand-up, we have a sprint review with our TAs Friday at 11:15. At the end of this meeting, the Scrum Team will plan the content of the next sprint backlog.
 
+# Scrum master rotation order
 
+A different Scrum master is chosen for each sprint, in the following cyclic order starting from Sprint 1:
+1. Alexandre Piveteau
+2. Mohamed Badr Taddist
+3. Chau Ying Kot
+4. Lars Barmettler
+5. Matthieu Burguburu
+6. Fouad Mahmoud
