@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id("com.android.application")
+  id("com.ncorti.ktfmt.gradle")
   id("org.jetbrains.kotlin.android")
   id("jacoco")
 }
