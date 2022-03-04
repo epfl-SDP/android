@@ -4,6 +4,8 @@ import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Success
+import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User
+import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User.NotAuthenticated
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -19,12 +21,10 @@ import kotlinx.coroutines.tasks.await
  */
 class FirebaseAuthenticationApi(private val auth: FirebaseAuth) : AuthenticationApi {
 
-  override val currentUser: Flow<AuthenticationApi.User> =
+  override val currentUser: Flow<User> =
       auth.currentUserFlow()
-          .map { user ->
-            user?.let { FirebaseUserAdapter(it, auth) } ?: AuthenticationApi.User.NotAuthenticated
-          }
-          .onStart { emit(AuthenticationApi.User.Loading) }
+          .map { user -> user?.toAuthenticationUser(auth) ?: NotAuthenticated }
+          .onStart { emit(User.Loading) }
 
   /**
    * Runs the [block] and maps the resulting [AuthResult] to an [AuthenticationResult].
@@ -57,6 +57,16 @@ class FirebaseAuthenticationApi(private val auth: FirebaseAuth) : Authentication
 }
 
 /**
+ * Maps a [FirebaseUser] to to an [AuthenticationApi.User].
+ *
+ * @receiver the [FirebaseUser] which should be converted.
+ * @param auth the [FirebaseAuth] instance which is used to build the user.
+ */
+private fun FirebaseUser.toAuthenticationUser(
+    auth: FirebaseAuth,
+): User = FirebaseUserAdapter(this, auth)
+
+/**
  * Returns a [Flow] of the current [FirebaseUser].
  *
  * @receiver the [FirebaseAuth] from which the current user is retrieved.
@@ -78,7 +88,7 @@ private fun FirebaseAuth.currentUserFlow(): Flow<FirebaseUser?> =
 private class FirebaseUserAdapter(
     user: FirebaseUser,
     private val auth: FirebaseAuth,
-) : AuthenticationApi.User.Authenticated {
+) : User.Authenticated {
   override val email = user.email ?: ""
   override suspend fun signOut() {
     auth.signOut()
