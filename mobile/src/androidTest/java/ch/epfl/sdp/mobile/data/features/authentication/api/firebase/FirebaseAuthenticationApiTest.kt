@@ -82,7 +82,7 @@ class FirebaseAuthenticationApiTest {
   }
 
   @Test
-  fun signUp_withWithoutAuthResult_returnsFailure() = runTest {
+  fun signUp_withoutAuthResult_returnsFailure() = runTest {
     val auth = mockk<FirebaseAuth>()
 
     every { auth.createUserWithEmailAndPassword(any(), any()) } returns Tasks.forResult(null)
