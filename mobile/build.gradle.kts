@@ -5,6 +5,7 @@ plugins {
   id("com.ncorti.ktfmt.gradle")
   id("org.jetbrains.kotlin.android")
   id("jacoco")
+  id("com.google.gms.google-services")
 }
 
 android {
@@ -67,6 +68,11 @@ dependencies {
   androidTestImplementation(libs.compose.ui.test.junit4)
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling.tooling)
+
+  // Firebase
+  implementation (platform (libs.firebase.bom))
+  implementation("com.google.firebase:firebase-auth-ktx")
+  implementation("com.google.firebase:firebase-firestore-ktx")
 
   // Kotlin and coroutines.
   implementation(libs.bundles.coroutines.android)
