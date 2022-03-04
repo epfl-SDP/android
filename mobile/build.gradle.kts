@@ -70,7 +70,7 @@ dependencies {
   debugImplementation(libs.compose.ui.tooling.tooling)
 
   // Firebase
-  implementation (platform (libs.firebase.bom))
+  implementation(platform(libs.firebase.bom))
   implementation("com.google.firebase:firebase-auth-ktx")
   implementation("com.google.firebase:firebase-firestore-ktx")
 
