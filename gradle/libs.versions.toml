@@ -3,6 +3,7 @@
 compose = "1.1.1"
 coroutines = "1.6.0"
 jacoco = "0.8.8-SNAPSHOT" # Custom JaCoCo release with Jetpack Compose support.
+mockk = "1.12.3"
 
 [libraries]
 
@@ -30,8 +31,13 @@ compose-material-icons-extended = { module = "androidx.compose.material:material
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
 junit4 = "junit:junit:4.13.2"
+
+mockk-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
 
 truth = "com.google.truth:truth:1.1.3"
 

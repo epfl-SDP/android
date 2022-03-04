@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   id("com.android.application")
   id("com.ncorti.ktfmt.gradle")
@@ -31,6 +33,8 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
+  testOptions { packagingOptions { jniLibs { useLegacyPackaging = true } } }
+
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
   buildFeatures { compose = true }
@@ -39,12 +43,24 @@ android {
   testCoverage { jacocoVersion = libs.versions.jacoco.get() }
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+  kotlinOptions.freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+  kotlinOptions.freeCompilerArgs += "-opt-in=androidx.compose.animation.ExperimentalAnimationApi"
+  kotlinOptions.freeCompilerArgs +=
+      "-opt-in=androidx.compose.animation.core.ExperimentalTransitionApi"
+}
+
 dependencies {
 
   // Testing.
+  testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.junit4)
   testImplementation(libs.truth)
+  testImplementation(libs.mockk.mockk)
+  testImplementation(libs.mockk.agent.jvm)
+  androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.test.truth)
   androidTestImplementation(libs.androidx.test.espresso)
