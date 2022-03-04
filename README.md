@@ -23,3 +23,9 @@ githubJacocoUsername=YourGitHubUsername
 # Requires at least the read:packages scope.
 githubJacocoPassword=YourGitHubPersonalAccessToken
 ```
+
+As this project uses Google Firebase, you will also need to provide your own `google-services.json`.
+
+This file can be generated from the Firebase Console (Pawnies Project -> Project Settings -> Your apps -> SDK setup and configuration -> google-services.json).
+
+It must be placed at `./mobile/google-services.json`
