@@ -1,5 +1,6 @@
 # Secrets which should not be shared with other applications.
 secrets.properties
+google-services.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/android,kotlin,androidstudio,fastlane
 # Edit at https://www.toptal.com/developers/gitignore?templates=android,kotlin,androidstudio,fastlane

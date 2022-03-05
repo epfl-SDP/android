@@ -33,6 +33,8 @@ coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", ve
 coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 
+firebase-bom = "com.google.firebase:firebase-bom:29.1.0"
+
 junit4 = "junit:junit:4.13.2"
 
 mockk-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
