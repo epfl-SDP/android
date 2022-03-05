@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.map
 class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
 
   /** The [MutableStateFlow] backing the currently connected user. */
-  private val user = MutableStateFlow<UserImpl?>(null)
+  private val user = MutableStateFlow<AuthenticatedUser?>(null)
 
   /**
    * An implementation of an [User.Authenticated] user.
    *
    * @param email the email [String] for the user.
    */
-  private inner class UserImpl(override val email: String) : User.Authenticated {
+  inner class AuthenticatedUser(override val email: String) : User.Authenticated {
 
     override suspend fun signOut() {
       user.value = null
@@ -34,7 +34,7 @@ class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
       email: String,
       password: String
   ): AuthenticationApi.AuthenticationResult {
-    user.value = UserImpl(email)
+    user.value = AuthenticatedUser(email)
     return Success
   }
 
@@ -42,7 +42,7 @@ class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
       email: String,
       password: String
   ): AuthenticationApi.AuthenticationResult {
-    user.value = UserImpl(email)
+    user.value = AuthenticatedUser(email)
     return Success
   }
 }

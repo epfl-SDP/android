@@ -52,11 +52,10 @@ fun StatefulHome(
 }
 
 /** Maps a [NavBackStackEntry] to the appropriate [HomeSection]. */
-private fun NavBackStackEntry.toSection(): HomeSection? =
+private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
-      SocialRoute -> HomeSection.Social
       SettingsRoute -> HomeSection.Settings
-      else -> null
+      else -> HomeSection.Social
     }
 
 /** Maps a [HomeSection] to the appropriate route. */
