@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.outlined.Settings
 
 /** Returns the [PawniesIcons] from which Pawnies icons are queried. */
 val Icons.Branded: PawniesIcons
