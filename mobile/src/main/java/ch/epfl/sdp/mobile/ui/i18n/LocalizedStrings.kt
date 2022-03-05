@@ -16,4 +16,7 @@ interface LocalizedStrings {
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
+
+  val SocialFollowingTitle : String
+  val SocialPerformPlay : String
 }
