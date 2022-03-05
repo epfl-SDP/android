@@ -39,7 +39,7 @@ private sealed interface UserState {
    *
    * @param user the [User] information.
    */
-  data class Authenticated(val user: User) : UserState
+  data class Authenticated(val user: User.Authenticated) : UserState
 }
 
 /** Returns the current [UserState] in the composition. */

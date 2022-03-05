@@ -30,7 +30,7 @@ private const val SettingsRoute = "settings"
  */
 @Composable
 fun StatefulHome(
-    user: AuthenticationApi.User,
+    user: AuthenticationApi.User.Authenticated,
     modifier: Modifier = Modifier,
     controller: NavHostController = rememberNavController(),
 ) {

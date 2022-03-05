@@ -11,7 +11,7 @@ import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 @Suppress("Unused")
 @Composable
 fun StatefulFollowingScreen(
-    user: AuthenticationApi.User,
+    user: AuthenticationApi.User.Authenticated,
     modifier: Modifier = Modifier,
 ) {
   Box(modifier, Alignment.Center) { Text("Social") }
