@@ -1,8 +1,11 @@
 package ch.epfl.sdp.mobile.ui.branding
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.Settings
 
 /** Returns the [PawniesIcons] from which Pawnies icons are queried. */
 val Icons.Branded: PawniesIcons
@@ -18,3 +21,11 @@ val PawniesIcons.PasswordShow
 /** An icon to hide a password. */
 val PawniesIcons.PasswordHide
   get() = Icons.Default.VisibilityOff
+
+/** An icon for the social section. */
+val PawniesIcons.SectionSocial
+  get() = Icons.Default.People
+
+/** An icon for the settings section. */
+val PawniesIcons.SectionSettings
+  get() = Icons.Default.Settings
