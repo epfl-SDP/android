@@ -5,7 +5,7 @@ import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 
-class ApiTest {
+class ApiCompositionLocalsTest {
 
   @get:Rule val rule = createComposeRule()
 
