@@ -6,7 +6,6 @@ import ch.epfl.sdp.mobile.backend.store.Store
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 
 /**
@@ -34,7 +33,7 @@ interface DocumentBuilder {
    */
   fun document(
       path: String,
-      values: Flow<Any?> = emptyFlow(),
+      values: Flow<Any?> = flowOf(null),
       content: CollectionBuilder.() -> Unit = {},
   )
 }
