@@ -10,4 +10,7 @@ object English : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Log in with email"
   override val authenticateSwitchToRegister = "Register with email"
   override val authenticateErrorFailure = "Something went wrong when authenticating"
+
+  override val sectionSocial = "Players"
+  override val sectionSettings = "Settings"
 }
