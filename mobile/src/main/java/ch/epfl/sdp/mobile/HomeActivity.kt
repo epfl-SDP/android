@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreen
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.ProvideLocalizedStrings
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 /** The root activity for the application, which is started when the user presses the app icon. */
@@ -19,7 +20,7 @@ class HomeActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val api = FirebaseAuthenticationApi(Firebase.auth)
+    val api = FirebaseAuthenticationApi(Firebase.auth, Firebase.firestore)
 
     setContent {
       ProvideLocalizedStrings {
