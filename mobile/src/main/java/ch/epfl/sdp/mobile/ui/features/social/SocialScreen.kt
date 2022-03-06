@@ -73,7 +73,9 @@ fun FriendCard(person: Person, modifier: Modifier = Modifier) {
             .size(40.dp)
             .clip(CircleShape)
             .background(bgColor)
-        )
+        ) {
+          Text(person.emoji, modifier = Modifier.align(Alignment.Center))
+        }
         Row(
           modifier = Modifier.fillMaxWidth(),
           horizontalArrangement = Arrangement.SpaceBetween,
