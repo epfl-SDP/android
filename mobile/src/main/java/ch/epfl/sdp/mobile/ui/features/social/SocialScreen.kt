@@ -41,7 +41,7 @@ fun SocialScreen(
       style = MaterialTheme.typography.h4,
       modifier = Modifier.padding(16.dp)
     )
-    LazyColumn(modifier) {
+    LazyColumn(modifier.testTag("friendList")) {
       items(friendList) { friend ->
         FriendCard(person = friend)
       }
@@ -64,12 +64,12 @@ fun FriendCard(person: Person, modifier: Modifier = Modifier) {
         .padding(16.dp)
     ) {
       Row(
-        Modifier
-          .fillMaxWidth(),
+        Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
       ) {
         Box(
           modifier = Modifier
+            .testTag("ProfileBg")
             .size(40.dp)
             .clip(CircleShape)
             .background(bgColor)
@@ -99,24 +99,4 @@ fun FriendCard(person: Person, modifier: Modifier = Modifier) {
       }
     }
   }
-}
-
-@Preview
-@Composable
-fun previewSocialScreen() {
-  val p = object : Person {
-    override val backgroundColor: ProfileColor
-      get() = ProfileColor.Pink
-    override val name: String
-      get() = "Toto"
-    override val emoji: String
-      get() = TODO("Not yet implemented")
-  }
-
-  val state = object : FollowingState {
-    override val players: List<Person>
-      get() = List(10) { p }
-  }
-
-  SocialScreen(state = state)
 }
