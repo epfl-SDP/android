@@ -14,11 +14,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.features.ProfileColor
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 
+/**
+ * This screen display all register user of the app
+ *
+ * @param state the [FollowingState], manage the composable contents
+ * @param modifier the [Modifier] for the composable
+ */
 @Composable
 fun SocialScreen(
   state: FollowingState,
