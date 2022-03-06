@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 
 /**
  * A fake implementation of [AuthenticationApi] which is backed by an internal state flow, and whose
- * calls too [signInWithEmail] and [signUpWithEmail] will always succeed.
+ * calls to [signInWithEmail] and [signUpWithEmail] will always succeed.
  */
 class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
 
