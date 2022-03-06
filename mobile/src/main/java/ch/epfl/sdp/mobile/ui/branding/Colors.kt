@@ -11,6 +11,8 @@ val PawniesLightColors =
         secondary = PawniesColors.Orange500,
         surface = PawniesColors.Beige050,
         onSurface = PawniesColors.Green800,
+        background = PawniesColors.Beige050,
+        onBackground = PawniesColors.Green800,
     )
 
 object PawniesColors {

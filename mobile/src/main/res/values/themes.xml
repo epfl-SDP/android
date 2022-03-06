@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.V21.Theme.SuperDopeProject" parent="android:Theme.Material.Light.NoActionBar">
-
+        <item name="android:windowBackground">#FFFBE6</item>
     </style>
 
     <style name="Theme.SuperDopeProject" parent="Base.V21.Theme.SuperDopeProject" />
