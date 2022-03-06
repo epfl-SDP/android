@@ -7,6 +7,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.toObjects
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthenticatedUser(
@@ -60,7 +63,21 @@ class FirebaseAuthenticatedUser(
     auth.signOut()
   }
 
+  override val following: Flow<List<AuthenticationApi.Profile>> =
+      firestore.collection("users").asFlow().map { it.toObjects<FirebaseProfileDocument>() }.map {
+        it.map(FirebaseProfileDocument::toProfile)
+      }
+
   override fun toString(): String {
     return super.toString() + " username : $name"
+  }
+}
+
+// TODO : Combine method to re-use some bits of FirebaseAuthenticatedUser
+private fun FirebaseProfileDocument.toProfile(): AuthenticationApi.Profile {
+  return object : AuthenticationApi.Profile {
+    override val emoji: String = this@toProfile.emoji ?: "😎"
+    override val name: String = this@toProfile.name ?: ""
+    override val backgroundColor: ProfileColor = ProfileColor.Pink
   }
 }

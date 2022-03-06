@@ -21,7 +21,7 @@ interface AuthenticationApi {
     object NotAuthenticated : User
 
     /** Indicates that a [User] is currently authenticated. */
-    interface Authenticated : User {
+    interface Authenticated : User, Profile {
 
       interface UpdateScope {
         var emoji: String?
@@ -29,20 +29,22 @@ interface AuthenticationApi {
         var name: String?
       }
 
-      val emoji: String
-
-      val backgroundColor: ProfileColor
-
-      val name: String
-
       /** The email of the currently logged in user. */
       val email: String
+
+      val following: Flow<List<Profile>>
 
       suspend fun update(block: UpdateScope.() -> Unit): Boolean
 
       /** Signs this user out of the [AuthenticationApi]. */
       suspend fun signOut()
     }
+  }
+
+  interface Profile {
+    val emoji: String
+    val name: String
+    val backgroundColor: ProfileColor
   }
 
   /** A [Flow] of the current [User]. */
