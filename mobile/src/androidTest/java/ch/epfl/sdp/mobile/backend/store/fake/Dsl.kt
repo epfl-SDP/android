@@ -38,6 +38,20 @@ interface DocumentBuilder {
   )
 }
 
+/**
+ * Adds a new document at the given path. If the document already exists, its value will be replaced
+ * with the new values.
+ *
+ * @param path the name of the document, unique within the collection.
+ * @param value the value which will be emitted when reading this document.
+ * @param content the [CollectionBuilder] when building some inner collections.
+ */
+fun DocumentBuilder.document(
+    path: String,
+    value: Any?,
+    content: CollectionBuilder.() -> Unit = {},
+) = document(path, flowOf(value), content)
+
 /** An interface which defines how a set of collection is built. */
 interface CollectionBuilder {
 
