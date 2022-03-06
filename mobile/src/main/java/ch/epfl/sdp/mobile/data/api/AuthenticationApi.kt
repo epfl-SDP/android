@@ -23,8 +23,22 @@ interface AuthenticationApi {
     /** Indicates that a [User] is currently authenticated. */
     interface Authenticated : User {
 
+      interface UpdateScope {
+        var emoji: String?
+        var backgroundColor: ProfileColor?
+        var name: String?
+      }
+
+      val emoji: String
+
+      val backgroundColor: ProfileColor
+
+      val name: String
+
       /** The email of the currently logged in user. */
       val email: String
+
+      suspend fun update(block: UpdateScope.() -> Unit): Boolean
 
       /** Signs this user out of the [AuthenticationApi]. */
       suspend fun signOut()

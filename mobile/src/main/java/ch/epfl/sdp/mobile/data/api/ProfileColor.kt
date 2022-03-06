@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.features
+package ch.epfl.sdp.mobile.data.api
 
 import androidx.compose.ui.graphics.Color
 

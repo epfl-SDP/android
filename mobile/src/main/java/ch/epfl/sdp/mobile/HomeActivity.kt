@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
 import ch.epfl.sdp.mobile.ui.features.Navigation
 import ch.epfl.sdp.mobile.ui.i18n.ProvideLocalizedStrings
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 /** The root activity for the application, which is started when the user presses the app icon. */
@@ -18,7 +19,7 @@ class HomeActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val authentication = FirebaseAuthenticationApi(Firebase.auth)
+    val api = FirebaseAuthenticationApi(Firebase.auth, Firebase.firestore)
 
     RectangleShape
 
