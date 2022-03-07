@@ -40,6 +40,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
   }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FriendCard(person: Person, modifier: Modifier = Modifier) {
   /**
@@ -56,35 +57,29 @@ fun FriendCard(person: Person, modifier: Modifier = Modifier) {
     return Color.Black
   }
 
-  Card(modifier, backgroundColor = MaterialTheme.colors.background) {
-    Column(Modifier.fillMaxWidth().padding(16.dp)) {
-      Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+  ListItem(
+      modifier = modifier,
+      text = {
+        Text(
+            person.name,
+            modifier = Modifier.padding(8.dp),
+            color = MaterialTheme.colors.secondary,
+            style = MaterialTheme.typography.subtitle1)
+      },
+      icon = {
         Box(
             modifier =
-                Modifier.testTag("ProfileBg")
-                    .size(40.dp)
+                Modifier.size(40.dp)
                     .clip(CircleShape)
-                    .background(getBackgroundRGB(person.backgroundColor))) {
-          Text(person.emoji, modifier = Modifier.align(Alignment.Center))
+                    .background(getBackgroundRGB(person.backgroundColor)),
+        ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
+      },
+      trailing = {
+        OutlinedButton(
+            onClick = { /*TODO*/},
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colors.secondaryVariant)) {
+          Text(text = LocalLocalizedStrings.current.socialPerformPlay)
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-          Text(
-              person.name,
-              modifier = Modifier.padding(8.dp),
-              color = MaterialTheme.colors.secondary,
-              style = MaterialTheme.typography.subtitle1)
-
-          OutlinedButton(
-              onClick = { /*TODO*/},
-              shape = RoundedCornerShape(24.dp),
-              border = BorderStroke(1.dp, MaterialTheme.colors.secondaryVariant)) {
-            Text(text = LocalLocalizedStrings.current.socialPerformPlay)
-          }
-        }
-      }
-    }
-  }
+      })
 }
