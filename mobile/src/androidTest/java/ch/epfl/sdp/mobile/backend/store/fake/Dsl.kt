@@ -4,6 +4,7 @@ package ch.epfl.sdp.mobile.backend.store.fake
 
 import ch.epfl.sdp.mobile.backend.store.*
 import kotlin.reflect.KClass
+import kotlin.reflect.full.instanceParameter
 import kotlinx.coroutines.flow.*
 
 /**
@@ -80,6 +81,47 @@ fun DocumentBuilder.document(
     value: Any?,
     content: CollectionBuilder.() -> Unit = {},
 ) = document(path, NonUpdatableDocument(value), content)
+
+private class DataClassDocument(
+    private val factory: () -> Any,
+) : Document<Any?> {
+  override val empty: Any? = null
+  override fun Any?.update(fields: Map<String, Any?>): Any {
+
+    // Create the document if it's missing.
+    var from: Any = this ?: factory()
+
+    // Get an instance of the copy() method on data classes.
+    val copyMethod = from::class.members.first { it.name == "copy" }
+
+    // For each field, call the copy method to update the argument.
+    for ((field, value) in fields) {
+      val param = copyMethod.parameters.first { it.name == field }
+      val instance = requireNotNull(copyMethod.instanceParameter)
+
+      // Call the method on the current from instance, with the updated param.
+      from = requireNotNull(copyMethod.callBy(mapOf(instance to from, param to value)))
+    }
+    return from
+  }
+}
+
+/**
+ * Adds a new document, backed by a data class, at the given path. If the document already exists,
+ * its value will be replaced with the new values.
+ *
+ * This document will support updates, but won't check the types of the updated values, so you
+ * should make sure that it matches the expected types.
+ *
+ * @param path the name of the document, unique within the collection.
+ * @param factory a factory function to create a new, empty data class of the given type.
+ * @param content the [CollectionBuilder] when building some inner collections.
+ */
+fun <T : Any> DocumentBuilder.dataclassDocument(
+    path: String,
+    factory: () -> T,
+    content: CollectionBuilder.() -> Unit = {},
+) = document(path, DataClassDocument(factory), content)
 
 /** An interface which defines how a set of collection is built. */
 interface CollectionBuilder {
