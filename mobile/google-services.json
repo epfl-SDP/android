@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "122827079177",
+    "project_id": "pawnies-app",
+    "storage_bucket": "pawnies-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122827079177:android:41ce56ae5aa92537d482d8",
+        "android_client_info": {
+          "package_name": "ch.epfl.sdp.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "122827079177-anv1pa4b8et34oeg8nm1n4m9onuv55np.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAO_NwbCAyeqMBMqxNz3esJALIpGEDnai0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "122827079177-anv1pa4b8et34oeg8nm1n4m9onuv55np.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
