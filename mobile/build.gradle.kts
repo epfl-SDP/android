@@ -1,8 +1,11 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   id("com.android.application")
   id("com.ncorti.ktfmt.gradle")
   id("org.jetbrains.kotlin.android")
   id("jacoco")
+  id("com.google.gms.google-services")
 }
 
 android {
@@ -31,6 +34,8 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
+  testOptions { packagingOptions { jniLibs { useLegacyPackaging = true } } }
+
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
   buildFeatures { compose = true }
@@ -39,18 +44,36 @@ android {
   testCoverage { jacocoVersion = libs.versions.jacoco.get() }
 }
 
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+  kotlinOptions.freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+  kotlinOptions.freeCompilerArgs += "-opt-in=androidx.compose.animation.ExperimentalAnimationApi"
+  kotlinOptions.freeCompilerArgs +=
+      "-opt-in=androidx.compose.animation.core.ExperimentalTransitionApi"
+}
+
 dependencies {
 
   // Testing.
+  testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
   testImplementation(libs.junit4)
   testImplementation(libs.truth)
+  testImplementation(libs.mockk.mockk)
+  testImplementation(libs.mockk.agent.jvm)
+  androidTestImplementation(libs.junit4)
+  androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.test.truth)
   androidTestImplementation(libs.androidx.test.espresso)
   androidTestImplementation(libs.compose.ui.test.junit4)
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling.tooling)
+
+  // Firebase
+  implementation(platform(libs.firebase.bom))
+  implementation("com.google.firebase:firebase-auth-ktx")
+  implementation("com.google.firebase:firebase-firestore-ktx")
 
   // Kotlin and coroutines.
   implementation(libs.bundles.coroutines.android)
