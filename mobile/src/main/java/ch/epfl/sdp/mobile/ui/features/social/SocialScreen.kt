@@ -32,7 +32,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
   val friendList = remember { state.players }
   Column {
     Text(
-        text = strings.SocialFollowingTitle,
+        text = strings.socialFollowingTitle,
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(16.dp))
@@ -83,7 +83,7 @@ fun FriendCard(person: Person, modifier: Modifier = Modifier) {
               onClick = { /*TODO*/},
               shape = RoundedCornerShape(24.dp),
               border = BorderStroke(1.dp, MaterialTheme.colors.secondaryVariant)) {
-            Text(text = LocalLocalizedStrings.current.SocialPerformPlay)
+            Text(text = LocalLocalizedStrings.current.socialPerformPlay)
           }
         }
       }

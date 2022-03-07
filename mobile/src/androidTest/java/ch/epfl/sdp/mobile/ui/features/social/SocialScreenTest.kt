@@ -34,7 +34,7 @@ class SocialScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings { SocialScreen(state = SnapshotSocialScreenState()) }
 
-    rule.onNodeWithText(strings.SocialFollowingTitle).assertExists()
+    rule.onNodeWithText(strings.socialFollowingTitle).assertExists()
   }
 
   @Test
