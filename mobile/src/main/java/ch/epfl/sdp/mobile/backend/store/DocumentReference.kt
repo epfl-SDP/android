@@ -25,6 +25,25 @@ interface DocumentReference {
    * @return the [Flow] of the document values.
    */
   fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?>
+
+  /** Deletes the given document. Does nothing if the document was previously missing. */
+  suspend fun delete()
+
+  /**
+   * Sets the given document with the [scope].
+   *
+   * @param scope the [DocumentEditScope] in which editing operations are taking place. Existing
+   * fields will be discarded, and the document will be created if it wasn't present previously.
+   */
+  suspend fun set(scope: DocumentEditScope.() -> Unit)
+
+  /**
+   * Updates the given document within the [scope].
+   *
+   * @param scope the [DocumentEditScope] in which editing operations are taking place. Existing
+   * fields will be preserved, and the document will be created if it wasn't present previously.
+   */
+  suspend fun update(scope: DocumentEditScope.() -> Unit)
 }
 
 /**

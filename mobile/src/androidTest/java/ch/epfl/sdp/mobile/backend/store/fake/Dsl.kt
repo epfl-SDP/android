@@ -1,12 +1,10 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package ch.epfl.sdp.mobile.backend.store.fake
 
-import ch.epfl.sdp.mobile.backend.store.CollectionReference
-import ch.epfl.sdp.mobile.backend.store.DocumentReference
-import ch.epfl.sdp.mobile.backend.store.Store
+import ch.epfl.sdp.mobile.backend.store.*
 import kotlin.reflect.KClass
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.*
 
 /**
  * Builds a [Store] using the provided [CollectionBuilder]
@@ -28,19 +26,50 @@ interface DocumentBuilder {
    * replaced with the new values.
    *
    * @param path the name of the document, unique within the collection.
-   * @param values the [Flow] of values which will be emitted when reading this document.
+   * @param document the [Document] which models the data stored.
    * @param content the [CollectionBuilder] when building some inner collections.
    */
-  fun document(
+  fun <T> document(
       path: String,
-      values: Flow<Any?> = flowOf(null),
+      document: Document<T>,
       content: CollectionBuilder.() -> Unit = {},
   )
 }
 
 /**
+ * An interface representing a [Document] that can be stored in the hierarchy of collections.
+ * Documents are created in an empty state, and can be incrementally updated using their [update]
+ * function.
+ *
+ * @param T the type of the representation of the document.
+ */
+interface Document<T> {
+
+  /** Creates an empty document representation. */
+  val empty: T
+
+  /**
+   * Updates the given document representation with the given [fields]. Once updated, a new
+   * representation must be returned, otherwise the document changes won't be observable.
+   *
+   * @param fields the fields which have been updated in the document.
+   *
+   * @return the new document, with the updated fields.
+   */
+  fun T.update(fields: Map<String, Any?>): T
+}
+
+private class NonUpdatableDocument(value: Any?) : Document<Any?> {
+  override val empty: Any? = value
+  override fun Any?.update(fields: Map<String, Any?>): Any? = this
+}
+
+/**
  * Adds a new document at the given path. If the document already exists, its value will be replaced
  * with the new values.
+ *
+ * This document will not support updates using the [DocumentReference.update] or
+ * [DocumentReference.set] methods.
  *
  * @param path the name of the document, unique within the collection.
  * @param value the value which will be emitted when reading this document.
@@ -50,7 +79,7 @@ fun DocumentBuilder.document(
     path: String,
     value: Any?,
     content: CollectionBuilder.() -> Unit = {},
-) = document(path, flowOf(value), content)
+) = document(path, NonUpdatableDocument(value), content)
 
 /** An interface which defines how a set of collection is built. */
 interface CollectionBuilder {
@@ -74,47 +103,72 @@ private class StoreImpl : Store {
 
   val root = DocumentReferenceImpl()
 
-  override fun collection(path: String): CollectionReference = root.collection(path)
+  override fun collection(path: String): CollectionReference {
+    return root.collection(path)
+  }
 }
 
 private class CollectionReferenceImpl : CollectionReference, DocumentBuilder {
 
   val documents = mutableMapOf<String, DocumentReferenceImpl>()
 
-  override fun document(
-      path: String,
-      values: Flow<Any?>,
-      content: CollectionBuilder.() -> Unit,
-  ) {
-    val document = documents.getOrPut(path) { DocumentReferenceImpl() }
-    document.values = values
-    document.apply(content)
-  }
-
   override fun document(path: String): DocumentReference {
     return documents.getOrPut(path) { DocumentReferenceImpl() }
   }
 
-  @Suppress("UNCHECKED_CAST")
   override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<List<T?>> {
-    val flows = documents.values.map { it.values }
-    return combine(flows) { it.toList() } as Flow<List<T?>>
+    val flows = documents.values.map { it.current }
+    return combine(flows) { it.filterNotNull() } as Flow<List<T?>>
+  }
+
+  override fun <T> document(
+      path: String,
+      document: Document<T>,
+      content: CollectionBuilder.() -> Unit
+  ) {
+    val doc = documents.getOrPut(path) { DocumentReferenceImpl() }
+    doc.current.value = document.empty
+    doc.policy = document as Document<Any?>
+    doc.apply(content)
+  }
+}
+
+private class RecordingDocumentEditScope : DocumentEditScope {
+  val mutations = mutableMapOf<String, Any?>()
+  override fun set(field: String, value: Any?) {
+    mutations[field] = value
   }
 }
 
 private class DocumentReferenceImpl : DocumentReference, CollectionBuilder {
 
-  var values: Flow<Any?> = flowOf(null) // By default, no document is present.
+  val current = MutableStateFlow<Any?>(null)
+  var policy: Document<Any?> = NonUpdatableDocument(null)
   val collections = mutableMapOf<String, CollectionReferenceImpl>()
 
-  override fun collection(
-      path: String,
-      content: DocumentBuilder.() -> Unit,
-  ): Unit = collections.getOrPut(path) { CollectionReferenceImpl() }.let(content)
+  override fun collection(path: String): CollectionReference {
+    return collections.getOrPut(path) { CollectionReferenceImpl() }
+  }
 
-  override fun collection(path: String): CollectionReference =
-      collections.getOrPut(path) { CollectionReferenceImpl() }
+  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?> {
+    return current.asStateFlow() as Flow<T?>
+  }
 
-  @Suppress("UNCHECKED_CAST")
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?> = values as Flow<T?>
+  override suspend fun delete() {
+    current.value = null
+  }
+
+  override suspend fun set(scope: DocumentEditScope.() -> Unit) {
+    val recorder = RecordingDocumentEditScope().apply(scope)
+    current.value = with(policy) { policy.empty.update(recorder.mutations) }
+  }
+
+  override suspend fun update(scope: DocumentEditScope.() -> Unit) {
+    val recorder = RecordingDocumentEditScope().apply(scope)
+    current.value = with(policy) { current.value.update(recorder.mutations) }
+  }
+
+  override fun collection(path: String, content: DocumentBuilder.() -> Unit) {
+    return collections.getOrPut(path) { CollectionReferenceImpl() }.let(content)
+  }
 }
