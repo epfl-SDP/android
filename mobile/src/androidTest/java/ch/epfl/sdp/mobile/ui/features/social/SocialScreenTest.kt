@@ -66,21 +66,6 @@ class SocialScreenTest {
   }
 
   @Test
-  fun card_displayCorrectBackgroundColor() {
-
-    val p =
-        object : Person {
-          override val backgroundColor: ProfileColor = ProfileColor.Pink
-          override val name: String = "Toto"
-          override val emoji: String = ":3"
-        }
-
-    rule.setContent { FriendCard(person = p) }
-
-    // TODO
-  }
-
-  @Test
   fun list_displayAllUser() {
 
     val state = SnapshotSocialScreenState()
