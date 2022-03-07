@@ -13,4 +13,7 @@ object English : LocalizedStrings {
 
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Play"
+
+  override val sectionSocial = "Players"
+  override val sectionSettings = "Settings"
 }
