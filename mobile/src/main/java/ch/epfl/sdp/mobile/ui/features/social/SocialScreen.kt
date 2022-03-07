@@ -44,18 +44,29 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
 
 @Composable
 fun FriendCard(person: Person, modifier: Modifier = Modifier) {
-  val bgColor =
-      when (person.backgroundColor) {
-        ProfileColor.Pink -> Color.Magenta
-        else -> Color.Black
-      }
+  /**
+   * This function transforme the user profile color into a [Color] that can be used in a composable
+   *
+   * TODO : Need to define how to stock the color in the class [Person]
+   *
+   * @param color the profile image background defined by the user
+   */
+  fun getBackgroundRGB(color: ProfileColor): Color {
+    if (color == ProfileColor.Pink) {
+      return Color.Magenta
+    }
+    return Color.Black
+  }
 
   Card(modifier, backgroundColor = MaterialTheme.colors.background) {
     Column(Modifier.fillMaxWidth().padding(16.dp)) {
       Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier =
-                Modifier.testTag("ProfileBg").size(40.dp).clip(CircleShape).background(bgColor)) {
+                Modifier.testTag("ProfileBg")
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(getBackgroundRGB(person.backgroundColor))) {
           Text(person.emoji, modifier = Modifier.align(Alignment.Center))
         }
         Row(
