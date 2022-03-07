@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.backend.store.firestore
 
 import ch.epfl.sdp.mobile.backend.store.asFlow
+import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth
 import com.google.firebase.firestore.*
 import io.mockk.every
@@ -69,5 +70,40 @@ class FirestoreDocumentReferenceTest {
         }
 
     Truth.assertThat(caught).isEqualTo(exception)
+  }
+
+  @Test
+  fun delete_callsApi() = runTest {
+    val document = mockk<DocumentReference>()
+    val reference = FirestoreDocumentReference(document)
+
+    every { document.delete() } returns Tasks.forResult(null)
+
+    reference.delete()
+
+    verify { document.delete() }
+  }
+
+  @Test
+  fun update_callsApiWithRightArguments() = runTest {
+    val doc = mockk<DocumentReference>()
+    val reference = FirestoreDocumentReference(doc)
+
+    every { doc.set(any(), SetOptions.merge()) } returns Tasks.forResult(null)
+
+    reference.update { this["key"] = "value" }
+
+    verify { doc.set(any(), SetOptions.merge()) }
+  }
+  @Test
+  fun set_callsApiWithRightArguments() = runTest {
+    val doc = mockk<DocumentReference>()
+    val reference = FirestoreDocumentReference(doc)
+
+    every { doc.set(mapOf("key" to "value")) } returns Tasks.forResult(null)
+
+    reference.set { this["key"] = "value" }
+
+    verify { doc.set(mapOf("key" to "value")) }
   }
 }
