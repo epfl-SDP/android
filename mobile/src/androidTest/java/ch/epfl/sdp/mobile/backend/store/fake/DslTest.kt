@@ -84,8 +84,7 @@ class DslTest {
 
     val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
 
-    assertThat(data).isNotNull()
-    assertThat(requireNotNull(data).subtitle).isNull()
+    assertThat(data).isEqualTo(SampleDocument(title = "Hello", subtitle = null))
   }
 
   @Test
