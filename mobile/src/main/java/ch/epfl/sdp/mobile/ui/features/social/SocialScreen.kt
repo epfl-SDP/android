@@ -28,13 +28,13 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
 
   val strings = LocalLocalizedStrings.current
-  Column {
+  Column(modifier) {
     Text(
         text = strings.socialFollowingTitle,
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(16.dp))
-    LazyColumn(modifier.testTag("friendList")) {
+    LazyColumn(Modifier.testTag("friendList")) {
       items(state.players) { friend -> FriendCard(person = friend) }
     }
   }
