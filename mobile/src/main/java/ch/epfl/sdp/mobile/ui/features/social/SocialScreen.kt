@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,7 +28,6 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
 
   val strings = LocalLocalizedStrings.current
-  val friendList = remember { state.players }
   Column {
     Text(
         text = strings.socialFollowingTitle,
@@ -37,7 +35,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(16.dp))
     LazyColumn(modifier.testTag("friendList")) {
-      items(friendList) { friend -> FriendCard(person = friend) }
+      items(state.players) { friend -> FriendCard(person = friend) }
     }
   }
 }
