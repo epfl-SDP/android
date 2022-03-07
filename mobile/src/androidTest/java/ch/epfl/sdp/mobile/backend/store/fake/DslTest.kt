@@ -70,4 +70,37 @@ class DslTest {
     val doc = store.collection("users").document("doc").asFlow<SampleDocument>().first()
     assertThat(doc).isEqualTo(SampleDocument(title = "Hello", subtitle = "World"))
   }
+
+  @Test
+  fun dataclassDocument_supportsSet() = runTest {
+    val store = buildFakeStore {
+      collection("users") { dataclassDocument("doc", ::SampleDocument) }
+    }
+    store.collection("users").document("doc").update {
+      this["title"] = "Hello"
+      this["subtitle"] = "World"
+    }
+    store.collection("users").document("doc").set { this["title"] = "Hello" }
+
+    val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
+
+    assertThat(data).isNotNull()
+    assertThat(requireNotNull(data).subtitle).isNull()
+  }
+
+  @Test
+  fun dataclassDocument_supportsUpdate() = runTest {
+    val store = buildFakeStore {
+      collection("users") { dataclassDocument("doc", ::SampleDocument) }
+    }
+    store.collection("users").document("doc").update {
+      this["title"] = "Hello"
+      this["subtitle"] = "World"
+    }
+    store.collection("users").document("doc").update { this["title"] = "Hello2" }
+
+    val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
+
+    assertThat(data).isEqualTo(SampleDocument(title = "Hello2", subtitle = "World"))
+  }
 }
