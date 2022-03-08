@@ -30,4 +30,9 @@ object English : LocalizedStrings {
   override val profilePastGames: String = "Past Games"
   override val profilePuzzle: String = "Puzzles"
   override val profileSettings: String = "Settings"
+  
+  /** Social Strings  **/
+  override val sectionSocial = "Players"
+  override val sectionSettings = "Settings"
+
 }
