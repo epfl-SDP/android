@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.features.ProfileColor
@@ -39,7 +41,8 @@ val state =
 @Composable
 fun preview() {
   //  SettingsButton(state::onSettingsClick)
-  ProfileHeader(state = state)
+  // ProfileHeader(state = state)
+  GamesInfo(numPastGames = 42, numPuzzles = 10)
 }
 
 @Composable fun ProfileScreen(state: ProfileState, modifier: Modifier = Modifier) {}
@@ -92,6 +95,39 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Icon(Icons.Default.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileSettings)
+  }
+}
+
+@Composable
+fun infoComponent(text: String, num: Int, modifier: Modifier = Modifier) {
+  // Past games component
+  Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Center,
+      modifier = modifier) {
+    Text(text = text, modifier = modifier)
+    Text(
+        text = "$num",
+        style = TextStyle(textDecoration = TextDecoration.Underline),
+        modifier = modifier)
+  }
+}
+
+@Composable
+fun GamesInfo(numPastGames: Int, numPuzzles: Int, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
+  Row(
+      horizontalArrangement = Arrangement.Center,
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = modifier) {
+    infoComponent(
+        text = strings.profilePastGames,
+        num = numPastGames,
+        modifier = modifier.padding(horizontal = 32.dp))
+    infoComponent(
+        text = strings.profilePuzzle,
+        num = numPuzzles,
+        modifier = modifier.padding(horizontal = 32.dp))
   }
 }
 
