@@ -8,49 +8,48 @@ import org.junit.Test
 
 class DslTest {
 
+  data class User(val name: String? = null)
+
+  private val alexandre = User("Alexandre")
+  private val chau = User("Chau")
+  private val matthieu = User("Matthieu")
+
   @Test
   fun missingDocument_isEmpty() = runTest {
     val store = emptyStore()
-    val value = store.collection("collection").document("document").asFlow<Any>().first()
-    assertThat(value).isNull()
-  }
-
-  @Test
-  fun nullDocument_isNull() = runTest {
-    val store = buildStore { collection("users") { document("alexandre", null) } }
-    val value = store.collection("users").document("alexandre").asFlow<Any>().first()
+    val value = store.collection("collection").document("document").asFlow<User>().first()
     assertThat(value).isNull()
   }
 
   @Test
   fun nonNullDocument_isNotNull() = runTest {
-    val store = buildStore { collection("users") { document("alexandre", "doc") } }
-    val value = store.collection("users").document("alexandre").asFlow<String>().first()
-    assertThat(value).isEqualTo("doc")
+    val store = buildStore { collection("users") { document("id", alexandre) } }
+    val value = store.collection("users").document("id").asFlow<User>().first()
+    assertThat(value).isEqualTo(alexandre)
   }
 
   @Test
   fun multipleDocuments_areAllPresent() = runTest {
     val store = buildStore {
       collection("users") {
-        document("alexandre", "alex")
-        document("chau", "chau")
-        document("matthieu", "matt")
+        document("alexandre", alexandre)
+        document("chau", chau)
+        document("matthieu", matthieu)
       }
     }
-    val people = store.collection("users").asFlow<String>().first().toSet()
-    assertThat(people).containsExactly("alex", "chau", "matt")
+    val people = store.collection("users").asFlow<User>().first().toSet()
+    assertThat(people).containsExactly(alexandre, chau, matthieu)
   }
 
   @Test
   fun collection_canBeBuiltInSteps() = runTest {
     val store = buildStore {
-      collection("users") { document("alexandre", "alex") }
-      collection("users") { document("chau", "chau") }
-      collection("users") { document("matthieu", "matt") }
+      collection("users") { document("alexandre", alexandre) }
+      collection("users") { document("chau", chau) }
+      collection("users") { document("matthieu", matthieu) }
     }
-    val people = store.collection("users").asFlow<String>().first().toSet()
-    assertThat(people).containsExactly("alex", "chau", "matt")
+    val people = store.collection("users").asFlow<User>().first().toSet()
+    assertThat(people).containsExactly(alexandre, chau, matthieu)
   }
 
   data class SampleDocument(
@@ -59,8 +58,8 @@ class DslTest {
   )
 
   @Test
-  fun dataclassDocument_isUpdated() = runTest {
-    val store = buildStore { collection("users") { dataclassDocument("doc", ::SampleDocument) } }
+  fun document_isUpdated() = runTest {
+    val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
     store.collection("users").document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
@@ -70,8 +69,8 @@ class DslTest {
   }
 
   @Test
-  fun dataclassDocument_supportsSet() = runTest {
-    val store = buildStore { collection("users") { dataclassDocument("doc", ::SampleDocument) } }
+  fun document_supportsSet() = runTest {
+    val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
     store.collection("users").document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
@@ -84,8 +83,8 @@ class DslTest {
   }
 
   @Test
-  fun dataclassDocument_supportsUpdate() = runTest {
-    val store = buildStore { collection("users") { dataclassDocument("doc", ::SampleDocument) } }
+  fun document_supportsPartialUpdate() = runTest {
+    val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
     store.collection("users").document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
@@ -97,21 +96,16 @@ class DslTest {
     assertThat(data).isEqualTo(SampleDocument(title = "Hello2", subtitle = "World"))
   }
 
-  data class User(
-      val name: String? = null,
-      val age: Int? = null,
-  )
-
   @Test
   fun limit_works() = runTest {
     val store = buildStore {
       collection("users") {
-        document("alexandre", "alex")
-        document("matthieu", "matt")
-        document("chau", "chau")
+        document("alexandre", alexandre)
+        document("chau", chau)
+        document("matthieu", matthieu)
       }
     }
-    val users = store.collection("users").limit(2).asFlow<String>().first()
+    val users = store.collection("users").limit(2).asFlow<User>().first()
     assertThat(users).hasSize(2)
   }
 }
