@@ -5,14 +5,14 @@ You can find here information about the organization and the workflow of this re
 # Workflow
 
 ## Naming convention
-- All branches must follow this structure : `type\initial\branch_name`
+- All branches must follow this structure : `type/initial/branch_name`
    - The `type` can be : `feature`, `fix`
    - Each contributor has an initial, you can find this information at the end of this section
    - The `branch_name` must be meaningful and be separated by an underscore
 
 | Name                 | Initial |
 |----------------------|---------|
-| Lars Barmettler      | |
+| Lars Barmettler      | LB |
 | Matthieu Burguburu   | MB |
 | Chau Ying Kot        | CYK |
 | Fouad Mahmoud        | FM |
