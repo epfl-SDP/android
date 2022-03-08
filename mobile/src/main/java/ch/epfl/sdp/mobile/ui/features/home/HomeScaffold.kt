@@ -77,7 +77,7 @@ private fun BottomNavigation(
           onClick = { onSectionChange(it) },
           icon = { Icon(it.icon, null) },
           label = { Text(it.title(LocalLocalizedStrings.current)) },
-          alwaysShowLabel = true,
+          alwaysShowLabel = false,
       )
     }
   }

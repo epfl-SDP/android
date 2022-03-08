@@ -37,6 +37,8 @@ firebase-bom = "com.google.firebase:firebase-bom:29.1.0"
 
 junit4 = "junit:junit:4.13.2"
 
+kotlin-reflect = "org.jetbrains.kotlin:kotlin-reflect:1.6.10"
+
 mockk-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
