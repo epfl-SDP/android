@@ -3,16 +3,20 @@ package ch.epfl.sdp.mobile.ui.features.authentication
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreenState.Mode
 import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreenState.Mode.*
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
+import org.intellij.lang.annotations.JdkConstants
 
 /**
  * The screen which displays the fields which should be used to authenticate in the app, by creating
@@ -24,20 +28,25 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 @Composable
 fun AuthenticationScreen(
     state: AuthenticationScreenState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
   val transition = updateTransition(state.mode, "Authentication state")
   val strings = LocalLocalizedStrings.current
-  Column(modifier) {
+  Column(modifier = Modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center
+  ) {
     TextField(
-        value = state.email,
-        onValueChange = { state.email = it },
-        label = { Text(strings.authenticateEmailHint) },
+            value = state.email,
+            onValueChange = { state.email = it },
+            label = { Text(strings.authenticateEmailHint) },
+            modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp).padding(1.dp),
     )
     PasswordTextField(
         value = state.password,
         onValueChange = { state.password = it },
         label = { Text(strings.authenticatePasswordHint) },
+        modifier = Modifier.padding(24.dp),
     )
     val errorText = state.error ?: ""
     AnimatedVisibility(visible = errorText.isNotBlank()) {
