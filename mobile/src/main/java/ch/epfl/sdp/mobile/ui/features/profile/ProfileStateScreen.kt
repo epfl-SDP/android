@@ -1,11 +1,13 @@
 package ch.epfl.sdp.mobile.ui.features.profile
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -13,14 +15,14 @@ import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
 import ch.epfl.sdp.mobile.ui.features.ProfileColor
 import ch.epfl.sdp.mobile.ui.features.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.features.social.MatchResult
@@ -47,25 +49,40 @@ fun preview() {
   //  SettingsButton(state::onSettingsClick)
   // ProfileHeader(state = state)
   //  GamesInfo(numPastGames = 42, numPuzzles = 10)
-  ProfileScreen(state = state)
+  PawniesTheme { Scaffold { ProfileScreen(state = state) } }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ProfileScreen(state: ProfileState, modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    state: ProfileState,
+    modifier: Modifier = Modifier,
+) {
   val strings = LocalLocalizedStrings.current
+  val tabBarState = rememberProfileTabBarState(state.numberOfGames, state.numberOfPuzzles)
+  val lazyColumnState = rememberLazyListState()
+  val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
+  val elevation by animateDpAsState(targetElevation)
   LazyColumn(
+      state = lazyColumnState,
       verticalArrangement = Arrangement.Top,
       horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier) {
-    item { ProfileHeader(state) }
+      modifier = modifier,
+  ) {
+    item { ProfileHeader(state, Modifier.padding(vertical = 16.dp)) }
     stickyHeader {
-      GamesInfo(numPastGames = state.numberOfGames, numPuzzles = state.numberOfPuzzles)
+      ProfileTabBar(
+          state = tabBarState,
+          numPastGames = state.numberOfGames,
+          numPuzzles = state.numberOfPuzzles,
+          modifier = Modifier.fillMaxWidth(),
+          elevation = elevation,
+      )
     }
     items(state.matches) { match ->
       val title = strings.profileMatchTitle(match.adv)
       val subtitle = strings.profileMatchInfo(match.matchResult, match.cause, match.numberOfMoves)
-      Match(title, subtitle, modifier = modifier)
+      Match(title, subtitle)
     }
   }
 }
@@ -75,15 +92,14 @@ fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
   Column(
       modifier = modifier,
       horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
-    Spacer(Modifier.height(16.dp))
     ProfilePicture(state)
-    Spacer(Modifier.height(16.dp))
-    Text(state.name, style = MaterialTheme.typography.h5)
-    Text(state.email, style = MaterialTheme.typography.subtitle2)
-    Spacer(Modifier.height(16.dp))
+    Column {
+      Text(state.name, style = MaterialTheme.typography.h5)
+      Text(state.email, style = MaterialTheme.typography.subtitle2)
+    }
     SettingsButton(onClick = state::onSettingsClick)
-    Spacer(Modifier.height(16.dp))
   }
 }
 
@@ -111,9 +127,12 @@ fun ProfilePicture(
 }
 
 @Composable
-fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun SettingsButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
   val strings = LocalLocalizedStrings.current
-  Button(
+  OutlinedButton(
       onClick = onClick,
       shape = CircleShape,
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
@@ -124,50 +143,17 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
   }
 }
 
-@Composable
-fun infoComponent(text: String, num: Int, modifier: Modifier = Modifier) {
-  // Past games component
-  Column(
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Center,
-      modifier = modifier) {
-    Text(text = text, modifier = modifier)
-    Text(
-        text = "$num",
-        style = TextStyle(textDecoration = TextDecoration.Underline),
-        modifier = modifier)
-  }
-}
-
-@Composable
-fun GamesInfo(numPastGames: Int, numPuzzles: Int, modifier: Modifier = Modifier) {
-  val strings = LocalLocalizedStrings.current
-  Row(
-      horizontalArrangement = Arrangement.Center,
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = modifier) {
-    infoComponent(
-        text = strings.profilePastGames,
-        num = numPastGames,
-        modifier = modifier.padding(horizontal = 32.dp))
-    infoComponent(
-        text = strings.profilePuzzle,
-        num = numPuzzles,
-        modifier = modifier.padding(horizontal = 32.dp))
-  }
-}
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Match(
     title: String,
     subtitle: String,
-    icon: ImageVector? = null,
+    icon: ImageVector,
     modifier: Modifier = Modifier,
 ) {
   ListItem(
       modifier = modifier,
-      icon = { Icon(Icons.Default.CheckBox, "Match icon") },
+      icon = { Icon(icon, "Match icon") },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },
   )

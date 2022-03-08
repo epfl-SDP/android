@@ -12,11 +12,7 @@ object English : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Log in with email"
   override val authenticateSwitchToRegister = "Register with email"
   override val authenticateErrorFailure = "Something went wrong when authenticating"
-
-  /** Profile Strings **/
-  override val profileMatchTitle: (String) -> String = {
-    opponent: String -> "Against $opponent"
-  }
+  override val profileMatchTitle = { opponent: String -> "Against $opponent" }
 
   override val profileMatchInfo: (MatchResult, MatchResult.Reason, Int) -> String =
       { matchResult: MatchResult, reason: MatchResult.Reason, nMoves: Int ->
@@ -30,9 +26,8 @@ object English : LocalizedStrings {
   override val profilePastGames: String = "Past Games"
   override val profilePuzzle: String = "Puzzles"
   override val profileSettings: String = "Settings"
-  
-  /** Social Strings  **/
+
+  /** Social Strings */
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
-
 }
