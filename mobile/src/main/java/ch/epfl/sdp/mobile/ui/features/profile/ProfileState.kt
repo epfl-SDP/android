@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.features.profile
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.features.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.features.social.Person
 
 /** The view-model of the profile of the currently logged-in user. */
@@ -9,4 +10,19 @@ interface ProfileState : Person {
 
   /** The email address of the currently connected user. */
   val email: String
+
+  /** Number of past games */
+  val numberOfGames: Int
+
+  /** Number of puzzles */
+  val numberOfPuzzles: Int
+
+  /** List of chess matches */
+  val matches: List<ChessMatch>
+
+  /** On settings button clicked*/
+  fun onSettingsClick()
+
+  /** On edit button clicked*/
+  fun onEditClick()
 }
