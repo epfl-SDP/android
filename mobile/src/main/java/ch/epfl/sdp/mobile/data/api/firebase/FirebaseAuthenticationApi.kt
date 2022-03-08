@@ -92,7 +92,6 @@ private fun Pair<FirebaseUser, FirebaseProfileDocument?>.toAuthenticationUser(
     FirebaseAuthenticatedUser(
         auth = auth,
         firestore = firestore,
-        user = first,
         document = second,
     )
 

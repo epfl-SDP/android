@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.graphics.RectangleShape
+import ch.epfl.sdp.mobile.data.api.firebase.FirebaseAuthenticatedUser
 import ch.epfl.sdp.mobile.data.api.firebase.FirebaseAuthenticationApi
 import ch.epfl.sdp.mobile.ui.ProvideApis
 import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
@@ -19,7 +20,7 @@ class HomeActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val api = FirebaseAuthenticationApi(Firebase.auth, Firebase.firestore)
+    val authentication = FirebaseAuthenticationApi(Firebase.auth, Firebase.firestore)
 
     setContent {
       PawniesTheme {

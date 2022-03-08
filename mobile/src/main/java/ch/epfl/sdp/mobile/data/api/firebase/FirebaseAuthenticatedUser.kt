@@ -15,9 +15,10 @@ import kotlinx.coroutines.tasks.await
 class FirebaseAuthenticatedUser(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val user: FirebaseUser,
     document: FirebaseProfileDocument?,
 ) : AuthenticationApi.User.Authenticated {
+
+  val user = auth.currentUser
 
   override val emoji: String = document?.emoji ?: "😎"
 
@@ -30,7 +31,7 @@ class FirebaseAuthenticatedUser(
 
   override val name: String = document?.name ?: ""
 
-  override val email: String = user.email ?: ""
+  override val email: String = user?.email ?: ""
 
   private data class UpdateScopeImpl(
       override var emoji: String? = null,
@@ -52,7 +53,7 @@ class FirebaseAuthenticatedUser(
       updated["name"] = scope.name
     }
     return try {
-      firestore.collection("users").document(user.uid).set(updated, SetOptions.merge()).await()
+      user?.uid?.let { firestore.collection("users").document(it).set(updated, SetOptions.merge()).await() }
       true
     } catch (exception: Throwable) {
       false
