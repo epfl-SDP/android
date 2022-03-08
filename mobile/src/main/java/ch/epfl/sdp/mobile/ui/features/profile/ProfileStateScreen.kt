@@ -1,12 +1,15 @@
 package ch.epfl.sdp.mobile.ui.features.profile
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -29,7 +32,8 @@ val state =
       override val numberOfGames: Int = 10
       override val numberOfPuzzles: Int = 10
       override val matches: List<ChessMatch> =
-          listOf(ChessMatch("Konor", MatchResult.WIN, MatchResult.Reason.CHECKMATE, 27))
+          List(20) { ChessMatch("Konor($it)", MatchResult.WIN, MatchResult.Reason.CHECKMATE, 27) }
+
       override fun onSettingsClick() {}
       override fun onEditClick() {}
       override val backgroundColor: ProfileColor = ProfileColor.Pink
@@ -42,10 +46,29 @@ val state =
 fun preview() {
   //  SettingsButton(state::onSettingsClick)
   // ProfileHeader(state = state)
-  GamesInfo(numPastGames = 42, numPuzzles = 10)
+  //  GamesInfo(numPastGames = 42, numPuzzles = 10)
+  ProfileScreen(state = state)
 }
 
-@Composable fun ProfileScreen(state: ProfileState, modifier: Modifier = Modifier) {}
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ProfileScreen(state: ProfileState, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
+  LazyColumn(
+      verticalArrangement = Arrangement.Top,
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = modifier) {
+    item { ProfileHeader(state) }
+    stickyHeader {
+      GamesInfo(numPastGames = state.numberOfGames, numPuzzles = state.numberOfPuzzles)
+    }
+    items(state.matches) { match ->
+      val title = strings.profileMatchTitle(match.adv)
+      val subtitle = strings.profileMatchInfo(match.matchResult, match.cause, match.numberOfMoves)
+      Match(title, subtitle, modifier = modifier)
+    }
+  }
+}
 
 @Composable
 fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
@@ -53,10 +76,13 @@ fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
       modifier = modifier,
       horizontalAlignment = Alignment.CenterHorizontally,
   ) {
+    Spacer(Modifier.height(16.dp))
     ProfilePicture(state)
     Spacer(Modifier.height(16.dp))
     Text(state.name, style = MaterialTheme.typography.h5)
     Text(state.email, style = MaterialTheme.typography.subtitle2)
+    Spacer(Modifier.height(16.dp))
+    SettingsButton(onClick = state::onSettingsClick)
     Spacer(Modifier.height(16.dp))
   }
 }
@@ -136,12 +162,12 @@ fun GamesInfo(numPastGames: Int, numPuzzles: Int, modifier: Modifier = Modifier)
 fun Match(
     title: String,
     subtitle: String,
-    icon: ImageVector,
+    icon: ImageVector? = null,
     modifier: Modifier = Modifier,
 ) {
   ListItem(
       modifier = modifier,
-      icon = { Image(icon, "Match icon") },
+      icon = { Icon(Icons.Default.CheckBox, "Match icon") },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },
   )
