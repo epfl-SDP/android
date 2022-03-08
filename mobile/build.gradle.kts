@@ -61,11 +61,13 @@ dependencies {
   testImplementation(libs.truth)
   testImplementation(libs.mockk.mockk)
   testImplementation(libs.mockk.agent.jvm)
+  androidTestImplementation(libs.junit4)
   androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.test.truth)
   androidTestImplementation(libs.androidx.test.espresso)
   androidTestImplementation(libs.compose.ui.test.junit4)
+  androidTestImplementation(libs.kotlin.reflect)
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling.tooling)
 

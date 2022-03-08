@@ -3,6 +3,8 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/e804775d6b20006a3778/maintainability)](https://codeclimate.com/github/epfl-SDP/android/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e804775d6b20006a3778/test_coverage)](https://codeclimate.com/github/epfl-SDP/android/test_coverage)
 
+🎨 [Figma mockups](https://www.figma.com/file/JGLgtpIJcPW7z4YKD4nLeH/Android) 🎨
+
 ## Team
 
 | Name                 | Email |
@@ -23,3 +25,9 @@ githubJacocoUsername=YourGitHubUsername
 # Requires at least the read:packages scope.
 githubJacocoPassword=YourGitHubPersonalAccessToken
 ```
+
+As this project uses Google Firebase, you will also need to provide your own `google-services.json`.
+
+This file can be generated from the Firebase Console (Pawnies Project -> Project Settings -> Your apps -> SDK setup and configuration -> google-services.json).
+
+It must be placed at `./mobile/google-services.json`
