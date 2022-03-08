@@ -36,9 +36,9 @@ You can find here information about the organization and the workflow of this re
 
 Make sure to have gradle tasks in the gradle tab inside Android studio.
 
-![ExepectedGradle](image/ExpectedGradle.png)
+![ExpectedGradle](image/ExpectedGradle.png)
 
-If you tab isn't like the one on the screen shot, go to `File->Settings...->Experimental`,
+If your tab isn't like the one on the screen shot, go to `File->Settings...->Experimental`,
 inside `Gradle` section, uncheck `Do not build Gradle task list during Gradle sync`. Don't forget to rebuild gradle project!
 
 ![GradleSettings](image/GradleSettings.png)
