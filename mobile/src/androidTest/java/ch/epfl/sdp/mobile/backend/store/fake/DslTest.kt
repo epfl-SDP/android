@@ -10,28 +10,28 @@ class DslTest {
 
   @Test
   fun missingDocument_isEmpty() = runTest {
-    val store = buildFakeStore {}
+    val store = emptyStore()
     val value = store.collection("collection").document("document").asFlow<Any>().first()
     assertThat(value).isNull()
   }
 
   @Test
   fun nullDocument_isNull() = runTest {
-    val store = buildFakeStore { collection("users") { document("alexandre", null) } }
+    val store = buildStore { collection("users") { document("alexandre", null) } }
     val value = store.collection("users").document("alexandre").asFlow<Any>().first()
     assertThat(value).isNull()
   }
 
   @Test
   fun nonNullDocument_isNotNull() = runTest {
-    val store = buildFakeStore { collection("users") { document("alexandre", "doc") } }
+    val store = buildStore { collection("users") { document("alexandre", "doc") } }
     val value = store.collection("users").document("alexandre").asFlow<String>().first()
     assertThat(value).isEqualTo("doc")
   }
 
   @Test
   fun multipleDocuments_areAllPresent() = runTest {
-    val store = buildFakeStore {
+    val store = buildStore {
       collection("users") {
         document("alexandre", "alex")
         document("chau", "chau")
@@ -44,7 +44,7 @@ class DslTest {
 
   @Test
   fun collection_canBeBuiltInSteps() = runTest {
-    val store = buildFakeStore {
+    val store = buildStore {
       collection("users") { document("alexandre", "alex") }
       collection("users") { document("chau", "chau") }
       collection("users") { document("matthieu", "matt") }
@@ -60,9 +60,7 @@ class DslTest {
 
   @Test
   fun dataclassDocument_isUpdated() = runTest {
-    val store = buildFakeStore {
-      collection("users") { dataclassDocument("doc", ::SampleDocument) }
-    }
+    val store = buildStore { collection("users") { dataclassDocument("doc", ::SampleDocument) } }
     store.collection("users").document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
@@ -73,9 +71,7 @@ class DslTest {
 
   @Test
   fun dataclassDocument_supportsSet() = runTest {
-    val store = buildFakeStore {
-      collection("users") { dataclassDocument("doc", ::SampleDocument) }
-    }
+    val store = buildStore { collection("users") { dataclassDocument("doc", ::SampleDocument) } }
     store.collection("users").document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
@@ -89,9 +85,7 @@ class DslTest {
 
   @Test
   fun dataclassDocument_supportsUpdate() = runTest {
-    val store = buildFakeStore {
-      collection("users") { dataclassDocument("doc", ::SampleDocument) }
-    }
+    val store = buildStore { collection("users") { dataclassDocument("doc", ::SampleDocument) } }
     store.collection("users").document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
@@ -101,5 +95,23 @@ class DslTest {
     val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
 
     assertThat(data).isEqualTo(SampleDocument(title = "Hello2", subtitle = "World"))
+  }
+
+  data class User(
+      val name: String? = null,
+      val age: Int? = null,
+  )
+
+  @Test
+  fun limit_works() = runTest {
+    val store = buildStore {
+      collection("users") {
+        document("alexandre", "alex")
+        document("matthieu", "matt")
+        document("chau", "chau")
+      }
+    }
+    val users = store.collection("users").limit(2).asFlow<String>().first()
+    assertThat(users).hasSize(2)
   }
 }

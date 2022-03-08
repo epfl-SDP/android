@@ -3,9 +3,12 @@
 package ch.epfl.sdp.mobile.backend.store.fake
 
 import ch.epfl.sdp.mobile.backend.store.*
-import kotlin.reflect.KClass
-import kotlin.reflect.full.instanceParameter
-import kotlinx.coroutines.flow.*
+import ch.epfl.sdp.mobile.backend.store.fake.impl.FakeStore
+import ch.epfl.sdp.mobile.backend.store.fake.impl.documents.DataClassUpdatePolicy
+import ch.epfl.sdp.mobile.backend.store.fake.impl.documents.NoUpdatePolicy
+
+/** Builds and returns a [Store] with no data. */
+fun emptyStore(): Store = FakeStore()
 
 /**
  * Builds a [Store] using the provided [CollectionBuilder]
@@ -13,11 +16,9 @@ import kotlinx.coroutines.flow.*
  * @param content the builder for the store.
  * @return the newly built fake store.
  */
-fun buildFakeStore(content: CollectionBuilder.() -> Unit): Store {
-  val impl = StoreImpl()
-  impl.root.apply(content)
-  return impl
-}
+fun buildStore(
+    content: CollectionBuilder.() -> Unit,
+): Store = FakeStore().apply(content)
 
 /** An interface which defines how a collection of documents is built. */
 interface DocumentBuilder {
@@ -27,24 +28,24 @@ interface DocumentBuilder {
    * replaced with the new values.
    *
    * @param path the name of the document, unique within the collection.
-   * @param document the [Document] which models the data stored.
+   * @param updatePolicy the [UpdatePolicy] which models the data stored.
    * @param content the [CollectionBuilder] when building some inner collections.
    */
   fun <T> document(
       path: String,
-      document: Document<T>,
+      updatePolicy: UpdatePolicy<T>,
       content: CollectionBuilder.() -> Unit = {},
   )
 }
 
 /**
- * An interface representing a [Document] that can be stored in the hierarchy of collections.
- * Documents are created in an empty state, and can be incrementally updated using their [update]
- * function.
+ * An interface representing an [UpdatePolicy] that can be stored in the hierarchy of collections.
+ * Documents are created in an empty state, and can be incrementally updated using the [update]
+ * function of the policy.
  *
  * @param T the type of the representation of the document.
  */
-interface Document<T> {
+interface UpdatePolicy<T> {
 
   /** Creates an empty document representation. */
   val empty: T
@@ -58,11 +59,6 @@ interface Document<T> {
    * @return the new document, with the updated fields.
    */
   fun T.update(fields: Map<String, Any?>): T
-}
-
-private class NonUpdatableDocument(value: Any?) : Document<Any?> {
-  override val empty: Any? = value
-  override fun Any?.update(fields: Map<String, Any?>): Any? = this
 }
 
 /**
@@ -80,31 +76,7 @@ fun DocumentBuilder.document(
     path: String,
     value: Any?,
     content: CollectionBuilder.() -> Unit = {},
-) = document(path, NonUpdatableDocument(value), content)
-
-private class DataClassDocument(
-    private val factory: () -> Any,
-) : Document<Any?> {
-  override val empty: Any? = null
-  override fun Any?.update(fields: Map<String, Any?>): Any {
-
-    // Create the document if it's missing.
-    var from: Any = this ?: factory()
-
-    // Get an instance of the copy() method on data classes.
-    val copyMethod = from::class.members.first { it.name == "copy" }
-
-    // For each field, call the copy method to update the argument.
-    for ((field, value) in fields) {
-      val param = copyMethod.parameters.first { it.name == field }
-      val instance = requireNotNull(copyMethod.instanceParameter)
-
-      // Call the method on the current from instance, with the updated param.
-      from = requireNotNull(copyMethod.callBy(mapOf(instance to from, param to value)))
-    }
-    return from
-  }
-}
+) = document(path, NoUpdatePolicy(value), content)
 
 /**
  * Adds a new document, backed by a data class, at the given path. If the document already exists,
@@ -121,7 +93,7 @@ fun <T : Any> DocumentBuilder.dataclassDocument(
     path: String,
     factory: () -> T,
     content: CollectionBuilder.() -> Unit = {},
-) = document(path, DataClassDocument(factory), content)
+) = document(path, DataClassUpdatePolicy(factory), content)
 
 /** An interface which defines how a set of collection is built. */
 interface CollectionBuilder {
@@ -137,80 +109,4 @@ interface CollectionBuilder {
       path: String,
       content: DocumentBuilder.() -> Unit,
   )
-}
-
-// Implementation.
-
-private class StoreImpl : Store {
-
-  val root = DocumentReferenceImpl()
-
-  override fun collection(path: String): CollectionReference {
-    return root.collection(path)
-  }
-}
-
-private class CollectionReferenceImpl : CollectionReference, DocumentBuilder {
-
-  val documents = mutableMapOf<String, DocumentReferenceImpl>()
-
-  override fun document(path: String): DocumentReference {
-    return documents.getOrPut(path) { DocumentReferenceImpl() }
-  }
-
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<List<T?>> {
-    val flows = documents.values.map { it.current }
-    return combine(flows) { it.filterNotNull() } as Flow<List<T?>>
-  }
-
-  override fun <T> document(
-      path: String,
-      document: Document<T>,
-      content: CollectionBuilder.() -> Unit
-  ) {
-    val doc = documents.getOrPut(path) { DocumentReferenceImpl() }
-    doc.current.value = document.empty
-    doc.policy = document as Document<Any?>
-    doc.apply(content)
-  }
-}
-
-private class RecordingDocumentEditScope : DocumentEditScope {
-  val mutations = mutableMapOf<String, Any?>()
-  override fun set(field: String, value: Any?) {
-    mutations[field] = value
-  }
-}
-
-private class DocumentReferenceImpl : DocumentReference, CollectionBuilder {
-
-  val current = MutableStateFlow<Any?>(null)
-  var policy: Document<Any?> = NonUpdatableDocument(null)
-  val collections = mutableMapOf<String, CollectionReferenceImpl>()
-
-  override fun collection(path: String): CollectionReference {
-    return collections.getOrPut(path) { CollectionReferenceImpl() }
-  }
-
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?> {
-    return current.asStateFlow() as Flow<T?>
-  }
-
-  override suspend fun delete() {
-    current.value = null
-  }
-
-  override suspend fun set(scope: DocumentEditScope.() -> Unit) {
-    val recorder = RecordingDocumentEditScope().apply(scope)
-    current.value = with(policy) { policy.empty.update(recorder.mutations) }
-  }
-
-  override suspend fun update(scope: DocumentEditScope.() -> Unit) {
-    val recorder = RecordingDocumentEditScope().apply(scope)
-    current.value = with(policy) { current.value.update(recorder.mutations) }
-  }
-
-  override fun collection(path: String, content: DocumentBuilder.() -> Unit) {
-    return collections.getOrPut(path) { CollectionReferenceImpl() }.let(content)
-  }
 }
