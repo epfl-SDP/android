@@ -3,12 +3,11 @@ package ch.epfl.sdp.mobile
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.RectangleShape
 import ch.epfl.sdp.mobile.data.api.firebase.FirebaseAuthenticationApi
-import ch.epfl.sdp.mobile.data.features.authentication.AuthenticationApiAuthenticationScreenState
-import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreen
-import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.ProvideApis
+import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
+import ch.epfl.sdp.mobile.ui.features.Navigation
 import ch.epfl.sdp.mobile.ui.i18n.ProvideLocalizedStrings
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -23,14 +22,12 @@ class HomeActivity : ComponentActivity() {
     val api = FirebaseAuthenticationApi(Firebase.auth, Firebase.firestore)
 
     setContent {
-      ProvideLocalizedStrings {
-        val scope = rememberCoroutineScope()
-        val strings = LocalLocalizedStrings.current
-        val state =
-            remember(api, strings, scope) {
-              AuthenticationApiAuthenticationScreenState(api, strings, scope)
-            }
-        AuthenticationScreen(state)
+      PawniesTheme {
+        ProvideLocalizedStrings {
+          ProvideApis(
+              authentication = authentication,
+          ) { Navigation() }
+        }
       }
     }
   }
