@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.data.features.authentication.api.firebase
 import ch.epfl.sdp.mobile.backend.store.fake.buildStore
 import ch.epfl.sdp.mobile.backend.store.fake.document
 import ch.epfl.sdp.mobile.backend.store.fake.emptyStore
+import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Success
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User
@@ -160,7 +161,7 @@ class FirebaseAuthenticationApiTest {
   }
 
   @Test
-  fun authenticatedUserCanUpdateItsProfile() = runTest {
+  fun authenticatedUserCanUpdateItsProfileAndCanSeeUpdatedValues() = runTest {
     val auth = mockk<FirebaseAuth>()
     val user = mockk<FirebaseUser>()
     mockAuthCurrentUser(auth, user)
@@ -185,6 +186,123 @@ class FirebaseAuthenticationApiTest {
     assertThat(updatedUser.name).isEqualTo("MyNewName")
     assertThat(updatedUser.emoji).isEqualTo("🇺🇦")
     assertThat(updatedUser.backgroundColor).isEqualTo(ProfileColor.Pink)
+  }
+
+  @Test
+  fun authenticatedUserCanGetFollowing() = runTest {
+    val auth = mockk<FirebaseAuth>()
+    val user = mockk<FirebaseUser>()
+    mockAuthCurrentUser(auth, user)
+
+    data class TestProfile(
+        override val emoji: String,
+        override val name: String,
+        override val backgroundColor: ProfileColor,
+    ) : AuthenticationApi.Profile
+
+    fun TestProfile.toFirebaseProfileDocument(): FirebaseProfileDocument {
+      return FirebaseProfileDocument(
+          emoji = this.emoji,
+          name = this.name,
+          backgroundColor =
+              when (this.backgroundColor) {
+                ProfileColor.Pink -> "pink"
+                else -> "pink"
+              })
+    }
+
+    val matthieu =
+        TestProfile(
+            emoji = "👌",
+            name = "Matthieu",
+            backgroundColor = ProfileColor.Pink,
+        )
+    val alexandre =
+        TestProfile(
+            emoji = "⚒",
+            name = "Alexandre",
+            backgroundColor = ProfileColor.Pink,
+        )
+
+    val firestore = buildStore {
+      collection("users") {
+        document("uid1", matthieu.toFirebaseProfileDocument())
+        document("uid2", alexandre.toFirebaseProfileDocument())
+      }
+    }
+    val api = FirebaseAuthenticationApi(auth, firestore)
+
+    every { user.uid } returns "uid"
+    every { user.email } returns "email@email.com"
+
+    val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
+    val following = userAuthenticated.following.first()
+
+    assertThat(following.map { profile -> profile.name })
+        .containsExactly(matthieu.name, alexandre.name)
+  }
+
+  @Test
+  fun gettingProfileWithNullValuesAssignsDefaultValues() = runTest {
+    val auth = mockk<FirebaseAuth>()
+    val user = mockk<FirebaseUser>()
+    mockAuthCurrentUser(auth, user)
+
+    val firestore = buildStore {
+      collection("users") {
+        document("uid", FirebaseProfileDocument(
+          name = null,
+          emoji = null,
+          backgroundColor = null,
+        ))
+      }
+    }
+    val api = FirebaseAuthenticationApi(auth, firestore)
+
+    every { user.uid } returns "uid"
+    every { user.email } returns "email@email.com"
+
+    val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
+    val following = userAuthenticated.following.first()
+
+    val profile = following[0]
+    assertThat(profile.name).isEqualTo("")
+    assertThat(profile.emoji).isEqualTo("😎")
+    assertThat(profile.backgroundColor).isEqualTo(ProfileColor.Pink)
+  }
+
+  @Test
+  fun gettingFromAuthenticatedUserUpdateScopeThrowsError() = runTest {
+    val auth = mockk<FirebaseAuth>()
+    val user = mockk<FirebaseUser>()
+    mockAuthCurrentUser(auth, user)
+
+    val firestore = emptyStore()
+    val api = FirebaseAuthenticationApi(auth, firestore)
+
+    every { user.uid } returns "uid"
+    every { user.email } returns "email@email.com"
+
+    val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
+
+    val canGetName =
+        userAuthenticated.update {
+          this.name
+        }
+
+    val canGetEmoji =
+        userAuthenticated.update {
+          this.emoji
+        }
+
+    val canGetColor =
+        userAuthenticated.update {
+          this.backgroundColor
+        }
+
+    assertThat(canGetName).isEqualTo(false)
+    assertThat(canGetEmoji).isEqualTo(false)
+    assertThat(canGetColor).isEqualTo(false)
   }
 
   private fun mockAuthCurrentUser(
