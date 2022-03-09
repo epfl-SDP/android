@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.data.api.firebase
 
 import ch.epfl.sdp.mobile.backend.store.Store
 import ch.epfl.sdp.mobile.backend.store.asFlow
+import ch.epfl.sdp.mobile.backend.store.set
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
@@ -56,9 +57,14 @@ class FirebaseAuthenticationApi(
 
   override suspend fun signUpWithEmail(
       email: String,
+      name: String,
       password: String,
   ): AuthenticationResult = authenticate {
-    auth.createUserWithEmailAndPassword(email, password).await()
+    val result = auth.createUserWithEmailAndPassword(email, password).await()
+    result?.user?.uid?.let {
+      firestore.collection("users").document(it).set(FirebaseProfileDocument(name = name))
+    }
+    result
   }
 }
 

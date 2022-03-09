@@ -71,12 +71,13 @@ class FirebaseAuthenticationApiTest {
     val user = mockk<FirebaseUser>()
     val firestore = emptyStore()
 
+    every { user.uid } returns "uid"
     every { result.user } returns user
     every { auth.createUserWithEmailAndPassword(any(), any()) } returns Tasks.forResult(result)
 
     val api = FirebaseAuthenticationApi(auth, firestore)
 
-    assertThat(api.signUpWithEmail("email", "password")).isEqualTo(Success)
+    assertThat(api.signUpWithEmail("email", "name", "password")).isEqualTo(Success)
   }
 
   @Test
@@ -89,7 +90,7 @@ class FirebaseAuthenticationApiTest {
 
     val api = FirebaseAuthenticationApi(auth, firestore)
 
-    assertThat(api.signUpWithEmail("email", "password")).isEqualTo(Failure)
+    assertThat(api.signUpWithEmail("email", "name", "password")).isEqualTo(Failure)
   }
 
   @Test
@@ -101,7 +102,7 @@ class FirebaseAuthenticationApiTest {
 
     val api = FirebaseAuthenticationApi(auth, firestore)
 
-    assertThat(api.signUpWithEmail("email", "password")).isEqualTo(Failure)
+    assertThat(api.signUpWithEmail("email", "name", "password")).isEqualTo(Failure)
   }
 
   @Test
