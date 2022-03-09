@@ -16,6 +16,7 @@ class AuthenticationScreenTest {
     override var mode: AuthenticationScreenState.Mode by mutableStateOf(Register)
     override var loading: Boolean by mutableStateOf(false)
     override var email: String by mutableStateOf("")
+    override var name: String by mutableStateOf("")
     override var password: String by mutableStateOf("")
     override var error: String? by mutableStateOf(null)
     override fun onAuthenticate() {
@@ -59,11 +60,13 @@ class AuthenticationScreenTest {
     SignUpRobot(rule, strings)
         .apply {
           email("alexandre.piveteau@epfl.ch")
+          name("Alexandre Piveteau")
           password("Password")
         }
         .switchToLogIn()
         .switchToRegister {
           onNodeWithText("alexandre.piveteau@epfl.ch").assertExists()
+          onNodeWithText("Alexandre Piveteau").assertExists()
           onNodeWithText("Password").assertExists()
         }
   }
