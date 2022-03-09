@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.backend.store.firestore
 
 import ch.epfl.sdp.mobile.backend.store.asFlow
+import ch.epfl.sdp.mobile.backend.store.set
 import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth
 import com.google.firebase.firestore.*
@@ -105,5 +106,21 @@ class FirestoreDocumentReferenceTest {
     reference.set { this["key"] = "value" }
 
     verify { doc.set(mapOf("key" to "value")) }
+  }
+
+  data class TestDocument(
+      val name: String? = null,
+  )
+
+  @Test
+  fun setFromClass_callsApiWithRightArguments() = runTest {
+    val doc = mockk<DocumentReference>()
+    val reference = FirestoreDocumentReference(doc)
+    val sample = TestDocument("Hello")
+    every { doc.set(sample) } returns Tasks.forResult(null)
+
+    reference.set(sample)
+
+    verify { doc.set(sample) }
   }
 }

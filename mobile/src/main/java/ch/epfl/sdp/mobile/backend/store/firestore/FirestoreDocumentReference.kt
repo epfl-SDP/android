@@ -50,4 +50,8 @@ class FirestoreDocumentReference(
     val values = FirestoreDocumentEditScope().apply(scope).values
     reference.set(values).await()
   }
+
+  override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) {
+    reference.set(value).await()
+  }
 }
