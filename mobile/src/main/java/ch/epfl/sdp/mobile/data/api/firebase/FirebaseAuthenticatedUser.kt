@@ -1,20 +1,20 @@
 package ch.epfl.sdp.mobile.data.api.firebase
 
+import ch.epfl.sdp.mobile.backend.store.DocumentEditScope
+import ch.epfl.sdp.mobile.backend.store.Store
+import ch.epfl.sdp.mobile.backend.store.asFlow
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User.Authenticated.UpdateScope
 import ch.epfl.sdp.mobile.data.api.ProfileColor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthenticatedUser(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
+    private val firestore: Store,
     private val user: FirebaseUser,
     document: FirebaseProfileDocument?,
 ) : AuthenticationApi.User.Authenticated {
@@ -32,28 +32,31 @@ class FirebaseAuthenticatedUser(
 
   override val email: String = user.email ?: ""
 
-  private data class UpdateScopeImpl(
-      override var emoji: String? = null,
-      override var backgroundColor: ProfileColor? = null,
-      override var name: String? = null
-  ) : UpdateScope
+  private data class UpdateScopeAdapter(private val scope: DocumentEditScope) : UpdateScope {
+
+    override var emoji: String?
+      get() = error("Not supported.")
+      set(value) {
+          scope["emoji"] = value
+      }
+    override var backgroundColor: ProfileColor?
+      get() = error("Not supported.")
+      set(value) {
+          scope["backgroundColor"] = value
+      }
+    override var name: String?
+      get() = error("Not supported.")
+      set(value) {
+          scope["name"] = value
+      }
+  }
 
   override suspend fun update(block: UpdateScope.() -> Unit): Boolean {
-    val updated = mutableMapOf<String, Any?>()
-    val scope = UpdateScopeImpl()
-    block(scope)
-    if (scope.emoji != null) {
-      updated["emoji"] = scope.emoji
-    }
-    if (scope.backgroundColor != null) {
-      updated["backgroundColor"] = "pink" // TODO : Support other colors.
-    }
-    if (scope.name != null) {
-      updated["name"] = scope.name
-    }
     return try {
-      firestore.collection("users").document(user.uid).set(updated, SetOptions.merge()).await()
-      true
+        firestore.collection("users").document(user.uid).set {
+            UpdateScopeAdapter(this).also(block)
+        }
+        true
     } catch (exception: Throwable) {
       false
     }
@@ -64,8 +67,8 @@ class FirebaseAuthenticatedUser(
   }
 
   override val following: Flow<List<AuthenticationApi.Profile>> =
-      firestore.collection("users").asFlow().map { it.toObjects<FirebaseProfileDocument>() }.map {
-        it.map(FirebaseProfileDocument::toProfile)
+      firestore.collection("users").asFlow<FirebaseProfileDocument>().map {
+        it.mapNotNull { doc -> doc?.toProfile() }
       }
 
   override fun toString(): String {

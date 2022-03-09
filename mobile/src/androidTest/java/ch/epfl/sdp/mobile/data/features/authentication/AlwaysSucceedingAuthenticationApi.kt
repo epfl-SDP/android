@@ -3,8 +3,10 @@ package ch.epfl.sdp.mobile.data.features.authentication
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Success
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User
+import ch.epfl.sdp.mobile.data.api.ProfileColor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -22,10 +24,23 @@ class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
    * @param email the email [String] for the user.
    */
   inner class AuthenticatedUser(override val email: String) : User.Authenticated {
+    override val following: Flow<List<AuthenticationApi.Profile>>
+      get() = emptyFlow()
+
+    override suspend fun update(block: User.Authenticated.UpdateScope.() -> Unit): Boolean {
+      return true
+    }
 
     override suspend fun signOut() {
       user.value = null
     }
+
+    override val emoji: String
+      get() = "\uD83D\uDCA9"
+    override val name: String
+      get() = "Anne Onyme"
+    override val backgroundColor: ProfileColor
+      get() = ProfileColor.Pink
   }
 
   override val currentUser: Flow<User> = user.map { it ?: User.NotAuthenticated }

@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.data.features.authentication.api.firebase
 
+import ch.epfl.sdp.mobile.backend.store.fake.emptyStore
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Success
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User
@@ -10,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,7 +25,8 @@ class FirebaseAuthenticationApiTest {
   @Test
   fun currentUser_startsWithLoading() = runTest {
     val auth = mockk<FirebaseAuth>()
-    val api = FirebaseAuthenticationApi(auth)
+    val firestore = emptyStore()
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.currentUser.first()).isEqualTo(User.Loading)
   }
@@ -33,11 +36,12 @@ class FirebaseAuthenticationApiTest {
     val auth = mockk<FirebaseAuth>()
     val result = mockk<AuthResult>()
     val user = mockk<FirebaseUser>()
+    val firestore = emptyStore()
 
     every { result.user } returns user
     every { auth.signInWithEmailAndPassword(any(), any()) } returns Tasks.forResult(result)
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.signInWithEmail("email", "password")).isEqualTo(Success)
   }
@@ -46,11 +50,12 @@ class FirebaseAuthenticationApiTest {
   fun signIn_withEmptyAuthResult_returnsFailure() = runTest {
     val auth = mockk<FirebaseAuth>()
     val result = mockk<AuthResult>()
+    val firestore = emptyStore()
 
     every { result.user } returns null
     every { auth.signInWithEmailAndPassword(any(), any()) } returns Tasks.forResult(result)
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.signInWithEmail("email", "password")).isEqualTo(Failure)
   }
@@ -60,11 +65,12 @@ class FirebaseAuthenticationApiTest {
     val auth = mockk<FirebaseAuth>()
     val result = mockk<AuthResult>()
     val user = mockk<FirebaseUser>()
+    val firestore = emptyStore()
 
     every { result.user } returns user
     every { auth.createUserWithEmailAndPassword(any(), any()) } returns Tasks.forResult(result)
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.signUpWithEmail("email", "password")).isEqualTo(Success)
   }
@@ -72,11 +78,12 @@ class FirebaseAuthenticationApiTest {
   @Test
   fun signUp_withThrowingAuthResult_returnsFailure() = runTest {
     val auth = mockk<FirebaseAuth>()
+    val firestore = emptyStore()
 
     every { auth.createUserWithEmailAndPassword(any(), any()) } returns
         Tasks.forException(Exception())
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.signUpWithEmail("email", "password")).isEqualTo(Failure)
   }
@@ -84,10 +91,11 @@ class FirebaseAuthenticationApiTest {
   @Test
   fun signUp_withoutAuthResult_returnsFailure() = runTest {
     val auth = mockk<FirebaseAuth>()
+    val firestore = emptyStore()
 
     every { auth.createUserWithEmailAndPassword(any(), any()) } returns Tasks.forResult(null)
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.signUpWithEmail("email", "password")).isEqualTo(Failure)
   }
@@ -95,6 +103,7 @@ class FirebaseAuthenticationApiTest {
   @Test
   fun firstNonLoadingUser_isEmittedByListener() = runTest {
     val auth = mockk<FirebaseAuth>()
+    val firestore = emptyStore()
     val user = mockk<FirebaseUser>()
     val email = "alexandre.piveteau@epfl.ch"
 
@@ -107,7 +116,7 @@ class FirebaseAuthenticationApiTest {
         }
     every { auth.removeAuthStateListener(any()) } returns Unit
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.currentUser.filterIsInstance<Authenticated>().first().email).isEqualTo(email)
     verify {
@@ -119,6 +128,7 @@ class FirebaseAuthenticationApiTest {
   @Test
   fun firstNonLoadingUserWithoutEmail_isEmittedByListener() = runTest {
     val auth = mockk<FirebaseAuth>()
+    val firestore = emptyStore()
     val user = mockk<FirebaseUser>()
 
     every { user.email } returns null
@@ -130,7 +140,7 @@ class FirebaseAuthenticationApiTest {
         }
     every { auth.removeAuthStateListener(any()) } returns Unit
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     assertThat(api.currentUser.filterIsInstance<Authenticated>().first().email).isEqualTo("")
     verify {
@@ -142,6 +152,7 @@ class FirebaseAuthenticationApiTest {
   @Test
   fun firstNonLoadingUser_canSignOut() = runTest {
     val auth = mockk<FirebaseAuth>()
+    val firestore = emptyStore()
     val user = mockk<FirebaseUser>()
 
     every { user.email } returns null
@@ -154,7 +165,7 @@ class FirebaseAuthenticationApiTest {
     every { auth.removeAuthStateListener(any()) } returns Unit
     every { auth.signOut() } returns Unit
 
-    val api = FirebaseAuthenticationApi(auth)
+    val api = FirebaseAuthenticationApi(auth, firestore)
 
     api.currentUser.filterIsInstance<Authenticated>().first().signOut()
     verify { auth.signOut() }
