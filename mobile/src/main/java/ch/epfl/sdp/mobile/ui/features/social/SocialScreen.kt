@@ -14,7 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.ui.features.ProfileColor
+import ch.epfl.sdp.mobile.data.api.ProfileColor
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 
 /**
