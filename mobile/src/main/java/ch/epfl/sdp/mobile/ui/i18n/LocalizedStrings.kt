@@ -12,6 +12,7 @@ interface LocalizedStrings {
   val authenticateSubtitleRegister: String
   val authenticateSubtitleLogIn: String
   val authenticateEmailHint: String
+  val authenticateNameHint: String
   val authenticatePasswordHint: String
   val authenticatePasswordToggleVisibility: String
   val authenticatePerformLogIn: String

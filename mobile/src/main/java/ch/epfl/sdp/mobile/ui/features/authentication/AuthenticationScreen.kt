@@ -61,6 +61,14 @@ fun AuthenticationScreen(
             label = { Text(strings.authenticateEmailHint) },
             modifier = Modifier.fillMaxWidth(),
         )
+        if (state.mode == Register) {
+          TextField(
+              value = state.name,
+              onValueChange = { state.name = it },
+              label = { Text(strings.authenticateNameHint) },
+              modifier = Modifier.fillMaxWidth(),
+          )
+        }
         PasswordTextField(
             value = state.password,
             onValueChange = { state.password = it },

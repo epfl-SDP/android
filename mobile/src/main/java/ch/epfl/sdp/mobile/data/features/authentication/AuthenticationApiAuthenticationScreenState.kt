@@ -32,6 +32,7 @@ class AuthenticationApiAuthenticationScreenState(
   override var loading by mutableStateOf(false)
     private set
   override var email by mutableStateOf("")
+  override var name by mutableStateOf("")
   override var password by mutableStateOf("")
   override var error by mutableStateOf<String?>(null)
     private set
