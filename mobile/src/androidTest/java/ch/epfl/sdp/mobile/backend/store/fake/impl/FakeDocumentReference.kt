@@ -28,6 +28,10 @@ class FakeDocumentReference : DocumentReference, CollectionBuilder {
     record.update { FakeDocumentRecord().update(scope) }
   }
 
+  override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) {
+    record.update { FakeDocumentRecord.fromObject(value, valueClass) }
+  }
+
   override suspend fun update(scope: DocumentEditScope.() -> Unit) {
     record.update { (it ?: FakeDocumentRecord()).update(scope) }
   }
