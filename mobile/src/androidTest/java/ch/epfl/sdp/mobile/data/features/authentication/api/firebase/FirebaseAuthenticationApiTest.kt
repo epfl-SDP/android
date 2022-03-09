@@ -250,11 +250,13 @@ class FirebaseAuthenticationApiTest {
 
     val firestore = buildStore {
       collection("users") {
-        document("uid", FirebaseProfileDocument(
-          name = null,
-          emoji = null,
-          backgroundColor = null,
-        ))
+        document(
+            "uid",
+            FirebaseProfileDocument(
+                name = null,
+                emoji = null,
+                backgroundColor = null,
+            ))
       }
     }
     val api = FirebaseAuthenticationApi(auth, firestore)
@@ -285,20 +287,11 @@ class FirebaseAuthenticationApiTest {
 
     val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
 
-    val canGetName =
-        userAuthenticated.update {
-          this.name
-        }
+    val canGetName = userAuthenticated.update { this.name }
 
-    val canGetEmoji =
-        userAuthenticated.update {
-          this.emoji
-        }
+    val canGetEmoji = userAuthenticated.update { this.emoji }
 
-    val canGetColor =
-        userAuthenticated.update {
-          this.backgroundColor
-        }
+    val canGetColor = userAuthenticated.update { this.backgroundColor }
 
     assertThat(canGetName).isEqualTo(false)
     assertThat(canGetEmoji).isEqualTo(false)

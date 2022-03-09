@@ -78,6 +78,7 @@ private fun FirebaseProfileDocument.toProfile(): AuthenticationApi.Profile {
   return object : AuthenticationApi.Profile {
     override val emoji: String = this@toProfile.emoji ?: "😎"
     override val name: String = this@toProfile.name ?: ""
-    override val backgroundColor: ProfileColor = ProfileColor.Pink // TODO: Fix these proliferating colors
+    override val backgroundColor: ProfileColor =
+        ProfileColor.Pink // TODO: Fix these proliferating colors
   }
 }
