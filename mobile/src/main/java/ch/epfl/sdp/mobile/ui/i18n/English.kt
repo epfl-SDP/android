@@ -6,6 +6,7 @@ object English : LocalizedStrings {
   override val authenticateSubtitleRegister = "Join the Pawnies community.".uppercase()
   override val authenticateSubtitleLogIn = "Welcome back to Pawnies.".uppercase()
   override val authenticateEmailHint = "Your email"
+  override val authenticateNameHint = "Your full name"
   override val authenticatePasswordHint = "Password"
   override val authenticatePasswordToggleVisibility = "Toggle password visibility"
   override val authenticatePerformLogIn = "Log in with email".uppercase()
