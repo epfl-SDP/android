@@ -70,3 +70,15 @@ inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> = asFlow(T::cl
  * @param value hte value of the document which should be set. Existing fields will be discarded.
  */
 suspend inline fun <reified T : Any> DocumentReference.set(value: T): Unit = set(value, T::class)
+
+/**
+ * Sets the given document with the provided [values].
+ *
+ * @receiver the [DocumentReference] onto which the items will be set.
+ * @param values the [Map] of the values which will be set to the document.
+ */
+suspend fun DocumentReference.set(values: Map<String, Any?>) = set {
+  for ((key, value) in values) {
+    this[key] = value
+  }
+}
