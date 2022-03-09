@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.data.api.firebase
 
+import ch.epfl.sdp.mobile.backend.store.Store
+import ch.epfl.sdp.mobile.backend.store.asFlow
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
@@ -24,7 +26,7 @@ import kotlinx.coroutines.tasks.await
  */
 class FirebaseAuthenticationApi(
     private val auth: FirebaseAuth,
-    private val firestore: FirebaseFirestore,
+    private val firestore: Store,
 ) : AuthenticationApi {
 
   override val currentUser: Flow<User> =
@@ -70,13 +72,12 @@ class FirebaseAuthenticationApi(
 }
 
 private fun FirebaseUser.profileFlow(
-    firestore: FirebaseFirestore,
+    firestore: Store,
 ): Flow<Pair<FirebaseUser, FirebaseProfileDocument?>> =
     firestore
         .collection("users")
         .document(uid)
-        .asFlow()
-        .map { it.toObject<FirebaseProfileDocument>() }
+        .asFlow<FirebaseProfileDocument>()
         .map { this to it }
 
 /**
@@ -87,7 +88,7 @@ private fun FirebaseUser.profileFlow(
  */
 private fun Pair<FirebaseUser, FirebaseProfileDocument?>.toAuthenticationUser(
     auth: FirebaseAuth,
-    firestore: FirebaseFirestore,
+    firestore: Store,
 ): User =
     FirebaseAuthenticatedUser(
         auth = auth,
