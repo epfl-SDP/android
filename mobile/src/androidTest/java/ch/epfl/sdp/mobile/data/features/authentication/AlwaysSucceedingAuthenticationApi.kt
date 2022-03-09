@@ -36,7 +36,7 @@ class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
     }
 
     override val emoji: String
-      get() = "\uD83D\uDCA9"
+      get() = "🇺🇦"
     override val name: String
       get() = "Anne Onyme"
     override val backgroundColor: ProfileColor
