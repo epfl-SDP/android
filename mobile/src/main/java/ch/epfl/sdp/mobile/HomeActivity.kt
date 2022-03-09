@@ -3,8 +3,10 @@ package ch.epfl.sdp.mobile
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.graphics.RectangleShape
 import ch.epfl.sdp.mobile.data.api.firebase.FirebaseAuthenticationApi
 import ch.epfl.sdp.mobile.ui.ProvideApis
+import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
 import ch.epfl.sdp.mobile.ui.features.Navigation
 import ch.epfl.sdp.mobile.ui.i18n.ProvideLocalizedStrings
 import com.google.firebase.auth.ktx.auth
@@ -18,11 +20,15 @@ class HomeActivity : ComponentActivity() {
 
     val authentication = FirebaseAuthenticationApi(Firebase.auth)
 
+    RectangleShape
+
     setContent {
-      ProvideLocalizedStrings {
-        ProvideApis(
-            authentication = authentication,
-        ) { Navigation() }
+      PawniesTheme {
+        ProvideLocalizedStrings {
+          ProvideApis(
+              authentication = authentication,
+          ) { Navigation() }
+        }
       }
     }
   }
