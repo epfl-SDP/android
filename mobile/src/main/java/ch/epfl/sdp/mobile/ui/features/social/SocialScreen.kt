@@ -13,9 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
 import ch.epfl.sdp.mobile.ui.features.ProfileColor
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 
