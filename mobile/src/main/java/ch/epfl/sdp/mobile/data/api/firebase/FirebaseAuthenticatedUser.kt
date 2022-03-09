@@ -41,7 +41,11 @@ class FirebaseAuthenticatedUser(
     override var backgroundColor: ProfileColor?
       get() = error("Not supported.")
       set(value) {
-        scope["backgroundColor"] = value
+        scope["backgroundColor"] =
+            when (value) {
+              ProfileColor.Pink -> "pink"
+              else -> null
+            }
       }
     override var name: String?
       get() = error("Not supported.")
@@ -67,10 +71,6 @@ class FirebaseAuthenticatedUser(
       firestore.collection("users").asFlow<FirebaseProfileDocument>().map {
         it.mapNotNull { doc -> doc?.toProfile() }
       }
-
-  override fun toString(): String {
-    return super.toString() + " username : $name"
-  }
 }
 
 // TODO : Combine method to re-use some bits of FirebaseAuthenticatedUser

@@ -1,11 +1,15 @@
 package ch.epfl.sdp.mobile.data.features.authentication.api.firebase
 
+import ch.epfl.sdp.mobile.backend.store.fake.buildStore
+import ch.epfl.sdp.mobile.backend.store.fake.document
 import ch.epfl.sdp.mobile.backend.store.fake.emptyStore
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Success
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User.Authenticated
+import ch.epfl.sdp.mobile.data.api.ProfileColor
 import ch.epfl.sdp.mobile.data.api.firebase.FirebaseAuthenticationApi
+import ch.epfl.sdp.mobile.data.api.firebase.FirebaseProfileDocument
 import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.AuthResult
@@ -108,13 +112,7 @@ class FirebaseAuthenticationApiTest {
 
     every { user.email } returns email
     every { user.uid } returns "uid"
-    every { auth.addAuthStateListener(any()) } answers
-        { call ->
-          val listener = call.invocation.args[0] as FirebaseAuth.AuthStateListener
-          every { auth.currentUser } returns user
-          listener.onAuthStateChanged(auth)
-        }
-    every { auth.removeAuthStateListener(any()) } returns Unit
+    mockAuthCurrentUser(auth, user)
 
     val api = FirebaseAuthenticationApi(auth, firestore)
 
@@ -133,13 +131,7 @@ class FirebaseAuthenticationApiTest {
 
     every { user.email } returns null
     every { user.uid } returns "uid"
-    every { auth.addAuthStateListener(any()) } answers
-        { call ->
-          val listener = call.invocation.args[0] as FirebaseAuth.AuthStateListener
-          every { auth.currentUser } returns user
-          listener.onAuthStateChanged(auth)
-        }
-    every { auth.removeAuthStateListener(any()) } returns Unit
+    mockAuthCurrentUser(auth, user)
 
     val api = FirebaseAuthenticationApi(auth, firestore)
 
@@ -158,6 +150,47 @@ class FirebaseAuthenticationApiTest {
 
     every { user.email } returns null
     every { user.uid } returns "uid"
+    mockAuthCurrentUser(auth, user)
+    every { auth.signOut() } returns Unit
+
+    val api = FirebaseAuthenticationApi(auth, firestore)
+
+    api.currentUser.filterIsInstance<Authenticated>().first().signOut()
+    verify { auth.signOut() }
+  }
+
+  @Test
+  fun authenticatedUserCanUpdateItsProfile() = runTest {
+    val auth = mockk<FirebaseAuth>()
+    val user = mockk<FirebaseUser>()
+    mockAuthCurrentUser(auth, user)
+
+    val firestore = buildStore {
+      collection("users") { document("uid", FirebaseProfileDocument()) }
+    }
+    val api = FirebaseAuthenticationApi(auth, firestore)
+
+    every { user.uid } returns "uid"
+    every { user.email } returns "email@email.com"
+
+    val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
+
+    userAuthenticated.update {
+      emoji = "🇺🇦"
+      backgroundColor = ProfileColor.Pink
+      name = "MyNewName"
+    }
+
+    val updatedUser = api.currentUser.filterIsInstance<Authenticated>().first()
+    assertThat(updatedUser.name).isEqualTo("MyNewName")
+    assertThat(updatedUser.emoji).isEqualTo("🇺🇦")
+    assertThat(updatedUser.backgroundColor).isEqualTo(ProfileColor.Pink)
+  }
+
+  private fun mockAuthCurrentUser(
+      auth: FirebaseAuth,
+      user: FirebaseUser,
+  ) {
     every { auth.addAuthStateListener(any()) } answers
         { call ->
           val listener = call.invocation.args[0] as FirebaseAuth.AuthStateListener
@@ -165,11 +198,5 @@ class FirebaseAuthenticationApiTest {
           listener.onAuthStateChanged(auth)
         }
     every { auth.removeAuthStateListener(any()) } returns Unit
-    every { auth.signOut() } returns Unit
-
-    val api = FirebaseAuthenticationApi(auth, firestore)
-
-    api.currentUser.filterIsInstance<Authenticated>().first().signOut()
-    verify { auth.signOut() }
   }
 }
