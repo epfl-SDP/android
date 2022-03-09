@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.backend.store.fake
 
 import ch.epfl.sdp.mobile.backend.store.asFlow
+import ch.epfl.sdp.mobile.backend.store.set
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -80,6 +81,14 @@ class DslTest {
     val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
 
     assertThat(data).isEqualTo(SampleDocument(title = "Hello", subtitle = null))
+  }
+
+  @Test
+  fun document_supportsSetWithClass() = runTest {
+    val store = emptyStore()
+    store.collection("users").document("alexandre").set(alexandre)
+    val data = store.collection("users").document("alexandre").asFlow<User>().first()
+    assertThat(data).isEqualTo(alexandre)
   }
 
   @Test
