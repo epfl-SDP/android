@@ -11,9 +11,6 @@ import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User.NotAuthenticated
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
@@ -31,14 +28,8 @@ class FirebaseAuthenticationApi(
 
   override val currentUser: Flow<User> =
       auth.currentUserFlow()
-          .flatMapLatest {
-            println("MATTHIEU1 : $it")
-            it?.profileFlow(firestore) ?: flowOf(null)
-          }
-          .map { user ->
-            println("MATTHIEU2 : User $user")
-            user?.toAuthenticationUser(auth, firestore) ?: NotAuthenticated
-          }
+          .flatMapLatest { it?.profileFlow(firestore) ?: flowOf(null) }
+          .map { user -> user?.toAuthenticationUser(auth, firestore) ?: NotAuthenticated }
           .onStart { emit(User.Loading) }
 
   /**
@@ -74,11 +65,7 @@ class FirebaseAuthenticationApi(
 private fun FirebaseUser.profileFlow(
     firestore: Store,
 ): Flow<Pair<FirebaseUser, FirebaseProfileDocument?>> =
-    firestore
-        .collection("users")
-        .document(uid)
-        .asFlow<FirebaseProfileDocument>()
-        .map { this to it }
+    firestore.collection("users").document(uid).asFlow<FirebaseProfileDocument>().map { this to it }
 
 /**
  * Maps a [FirebaseUser] to to an [AuthenticationApi.User].

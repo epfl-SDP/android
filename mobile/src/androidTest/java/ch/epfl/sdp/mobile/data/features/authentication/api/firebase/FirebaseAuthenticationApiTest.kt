@@ -108,6 +108,7 @@ class FirebaseAuthenticationApiTest {
     val email = "alexandre.piveteau@epfl.ch"
 
     every { user.email } returns email
+    every { user.uid } returns "uid"
     every { auth.addAuthStateListener(any()) } answers
         { call ->
           val listener = call.invocation.args[0] as FirebaseAuth.AuthStateListener
@@ -132,6 +133,7 @@ class FirebaseAuthenticationApiTest {
     val user = mockk<FirebaseUser>()
 
     every { user.email } returns null
+    every { user.uid } returns "uid"
     every { auth.addAuthStateListener(any()) } answers
         { call ->
           val listener = call.invocation.args[0] as FirebaseAuth.AuthStateListener
@@ -156,6 +158,7 @@ class FirebaseAuthenticationApiTest {
     val user = mockk<FirebaseUser>()
 
     every { user.email } returns null
+    every { user.uid } returns "uid"
     every { auth.addAuthStateListener(any()) } answers
         { call ->
           val listener = call.invocation.args[0] as FirebaseAuth.AuthStateListener
