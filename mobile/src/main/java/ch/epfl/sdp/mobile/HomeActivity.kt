@@ -20,7 +20,8 @@ class HomeActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    val authentication = FirebaseAuthenticationApi(Firebase.auth, FirestoreStore(Firebase.firestore))
+    val authentication =
+        FirebaseAuthenticationApi(Firebase.auth, FirestoreStore(Firebase.firestore))
 
     RectangleShape
 

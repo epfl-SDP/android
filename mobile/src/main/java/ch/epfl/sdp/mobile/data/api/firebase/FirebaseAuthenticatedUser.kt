@@ -8,7 +8,6 @@ import ch.epfl.sdp.mobile.data.api.AuthenticationApi.User.Authenticated.UpdateSc
 import ch.epfl.sdp.mobile.data.api.ProfileColor
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -37,26 +36,24 @@ class FirebaseAuthenticatedUser(
     override var emoji: String?
       get() = error("Not supported.")
       set(value) {
-          scope["emoji"] = value
+        scope["emoji"] = value
       }
     override var backgroundColor: ProfileColor?
       get() = error("Not supported.")
       set(value) {
-          scope["backgroundColor"] = value
+        scope["backgroundColor"] = value
       }
     override var name: String?
       get() = error("Not supported.")
       set(value) {
-          scope["name"] = value
+        scope["name"] = value
       }
   }
 
   override suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
-        firestore.collection("users").document(user.uid).set {
-            UpdateScopeAdapter(this).also(block)
-        }
-        true
+      firestore.collection("users").document(user.uid).set { UpdateScopeAdapter(this).also(block) }
+      true
     } catch (exception: Throwable) {
       false
     }
