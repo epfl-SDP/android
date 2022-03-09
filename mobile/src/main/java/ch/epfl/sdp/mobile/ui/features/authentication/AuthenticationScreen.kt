@@ -45,35 +45,39 @@ fun AuthenticationScreen(
       ) {
         Image(painterResource(drawable.authentication_logo), null)
         Text(strings.authenticateTitle, style = MaterialTheme.typography.h4)
-        val subtitle =
-            when (state.mode) {
-              LogIn -> strings.authenticateSubtitleLogIn
-              Register -> strings.authenticateSubtitleRegister
-            }
-        Text(subtitle, style = MaterialTheme.typography.h6)
+        transition.AnimatedContent { target ->
+          val subtitle =
+              when (target) {
+                LogIn -> strings.authenticateSubtitleLogIn
+                Register -> strings.authenticateSubtitleRegister
+              }
+          Text(subtitle, style = MaterialTheme.typography.h6)
+        }
       }
-      Column(
-          verticalArrangement = Arrangement.spacedBy(16.dp),
-      ) {
+      Column {
         TextField(
             value = state.email,
             onValueChange = { state.email = it },
             label = { Text(strings.authenticateEmailHint) },
             modifier = Modifier.fillMaxWidth(),
         )
-        if (state.mode == Register) {
+        transition.AnimatedVisibility(
+            visible = { it == Register },
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+        ) {
           TextField(
               value = state.name,
               onValueChange = { state.name = it },
               label = { Text(strings.authenticateNameHint) },
-              modifier = Modifier.fillMaxWidth(),
+              modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
           )
         }
         PasswordTextField(
             value = state.password,
             onValueChange = { state.password = it },
             label = { Text(strings.authenticatePasswordHint) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         )
       }
       val errorText = state.error ?: ""
