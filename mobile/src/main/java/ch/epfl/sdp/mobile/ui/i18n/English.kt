@@ -11,6 +11,9 @@ object English : LocalizedStrings {
   override val authenticateSwitchToRegister = "Register with email"
   override val authenticateErrorFailure = "Something went wrong when authenticating"
 
+  override val socialFollowingTitle = "Following"
+  override val socialPerformPlay = "Play"
+
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
 }
