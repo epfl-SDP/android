@@ -29,7 +29,7 @@ class FirebaseAuthenticationApi(
   override val currentUser: Flow<User> =
       auth.currentUserFlow()
           .flatMapLatest { it?.profileFlow(firestore) ?: flowOf(null) }
-          .map { user -> user?.toAuthenticationUser(auth, firestore) ?: NotAuthenticated }
+          .map { user -> user?.toAuthenticatedUser(auth, firestore) ?: NotAuthenticated }
           .onStart { emit(User.Loading) }
 
   /**
@@ -73,7 +73,7 @@ private fun FirebaseUser.profileFlow(
  * @receiver the [FirebaseUser] which should be converted.
  * @param auth the [FirebaseAuth] instance which is used to build the user.
  */
-private fun Pair<FirebaseUser, FirebaseProfileDocument?>.toAuthenticationUser(
+private fun Pair<FirebaseUser, FirebaseProfileDocument?>.toAuthenticatedUser(
     auth: FirebaseAuth,
     firestore: Store,
 ): User =
