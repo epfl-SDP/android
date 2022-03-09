@@ -26,6 +26,9 @@ interface LocalizedStrings {
   val profileSettings: String
 
   /** Social Strings */
+  val socialFollowingTitle: String
+  val socialPerformPlay: String
+
   val sectionSocial: String
   val sectionSettings: String
 }
