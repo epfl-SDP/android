@@ -92,6 +92,14 @@ class DslTest {
   }
 
   @Test
+  fun document_setWithKeyValues() = runTest {
+    val store = emptyStore()
+    store.collection("users").document("alexandre").set(mapOf("name" to "Alexandre"))
+    val data = store.collection("users").document("alexandre").asFlow<User>().first()
+    assertThat(data).isEqualTo(alexandre)
+  }
+
+  @Test
   fun document_supportsPartialUpdate() = runTest {
     val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
     store.collection("users").document("doc").update {
