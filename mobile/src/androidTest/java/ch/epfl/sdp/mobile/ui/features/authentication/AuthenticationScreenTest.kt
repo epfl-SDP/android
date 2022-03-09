@@ -38,9 +38,10 @@ class AuthenticationScreenTest {
   fun toggle_switchesToLogIn() {
     val state = SnapshotAuthenticationScreenState()
     val strings = rule.setContentWithLocalizedStrings { AuthenticationScreen(state) }
+    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
     robot.switchToLogIn {
-      onRoot().performTouchInput { swipeDown() }
+      onRoot().performTouchInput { swipeUp() }
       onNodeWithLocalizedText { authenticatePerformRegister }.assertDoesNotExist()
     }
   }
@@ -58,6 +59,7 @@ class AuthenticationScreenTest {
   fun modeSwitchedTwice_preservesInput() {
     val state = SnapshotAuthenticationScreenState()
     val strings = rule.setContentWithLocalizedStrings { AuthenticationScreen(state) }
+    rule.onRoot().performTouchInput { swipeUp() }
     SignUpRobot(rule, strings)
         .apply {
           email("alexandre.piveteau@epfl.ch")
@@ -66,7 +68,7 @@ class AuthenticationScreenTest {
         }
         .switchToLogIn()
         .switchToRegister {
-          onRoot().performTouchInput { swipeDown() }
+          onRoot().performTouchInput { swipeUp() }
           onNodeWithText("alexandre.piveteau@epfl.ch").assertExists()
           onNodeWithText("Alexandre Piveteau").assertExists()
           onNodeWithText("Password").assertExists()
