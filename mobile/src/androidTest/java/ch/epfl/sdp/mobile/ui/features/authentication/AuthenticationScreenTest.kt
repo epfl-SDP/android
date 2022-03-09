@@ -3,8 +3,8 @@ package ch.epfl.sdp.mobile.ui.features.authentication
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreenState.Mode.*
 import ch.epfl.sdp.mobile.ui.i18n.setContentWithLocalizedStrings
 import org.junit.Rule
@@ -40,6 +40,7 @@ class AuthenticationScreenTest {
     val strings = rule.setContentWithLocalizedStrings { AuthenticationScreen(state) }
     val robot = SignUpRobot(rule, strings)
     robot.switchToLogIn {
+      onRoot().performTouchInput { swipeDown() }
       onNodeWithLocalizedText { authenticatePerformRegister }.assertDoesNotExist()
     }
   }
@@ -65,6 +66,7 @@ class AuthenticationScreenTest {
         }
         .switchToLogIn()
         .switchToRegister {
+          onRoot().performTouchInput { swipeDown() }
           onNodeWithText("alexandre.piveteau@epfl.ch").assertExists()
           onNodeWithText("Alexandre Piveteau").assertExists()
           onNodeWithText("Password").assertExists()

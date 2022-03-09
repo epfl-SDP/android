@@ -77,10 +77,12 @@ interface AuthenticationApi {
    * Attempts to sign up and create an account with the provided email and password.
    *
    * @param email the email to use for authentication.
+   * @param name the name to use for the user account.
    * @param password the password to use for authentication.
    */
   suspend fun signUpWithEmail(
       email: String,
+      name: String,
       password: String,
   ): AuthenticationResult
 }

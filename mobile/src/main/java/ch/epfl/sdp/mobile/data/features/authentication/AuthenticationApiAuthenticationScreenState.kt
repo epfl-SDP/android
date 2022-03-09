@@ -43,7 +43,7 @@ class AuthenticationApiAuthenticationScreenState(
         val result =
             when (mode) {
               LogIn -> api.signInWithEmail(email, password)
-              Register -> api.signUpWithEmail(email, password)
+              Register -> api.signUpWithEmail(email, name, password)
             }
         error =
             when (result) {
