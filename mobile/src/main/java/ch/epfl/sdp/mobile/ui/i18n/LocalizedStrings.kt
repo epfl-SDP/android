@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
 import androidx.compose.runtime.Stable
-import ch.epfl.sdp.mobile.ui.features.social.MatchResult
 
 /**
  * An interface which defines all the texts and content descriptions which are used in the Pawnies
@@ -18,15 +17,15 @@ interface LocalizedStrings {
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
 
-  /** Profile Strings **/
+  /** Profile Strings */
   val profileMatchTitle: (String) -> String
-  val profileMatchInfo: (MatchResult, MatchResult.Reason, Int) -> String
+  val profileMatchInfo: (String, String, Int) -> String
+  val profileTieInfo: (Int) -> String
   val profilePastGames: String
   val profilePuzzle: String
   val profileSettings: String
 
-  /** Social Strings **/
+  /** Social Strings */
   val sectionSocial: String
   val sectionSettings: String
-
 }
