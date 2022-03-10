@@ -6,7 +6,7 @@ import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.ProfileColor
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Rule
 import org.junit.Test
 
@@ -17,18 +17,17 @@ class StatefulFollowingScreenTest {
   fun defaultMode_displayCorrectFollowers() {
     val mockUser = mockk<AuthenticationApi.User.Authenticated>()
     every { mockUser.following } returns
-        flow {
-          emit(
-              listOf<AuthenticationApi.Profile>(
-                  object : AuthenticationApi.Profile {
-                    override val emoji: String
-                      get() = ":>"
-                    override val name: String
-                      get() = "Hans Peter"
-                    override val backgroundColor: ProfileColor
-                      get() = ProfileColor.Pink
-                  }))
-        }
+        flowOf(
+            listOf<AuthenticationApi.Profile>(
+                object : AuthenticationApi.Profile {
+                  override val emoji: String
+                    get() = ":>"
+                  override val name: String
+                    get() = "Hans Peter"
+                  override val backgroundColor: ProfileColor
+                    get() = ProfileColor.Pink
+                }))
+
     rule.setContent { StatefulFollowingScreen(mockUser) }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
