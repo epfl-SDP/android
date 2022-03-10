@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.ui.features.profile
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.ui.features.ProfileColor
+import ch.epfl.sdp.mobile.data.api.ProfileColor
 import ch.epfl.sdp.mobile.ui.features.social.*
 import ch.epfl.sdp.mobile.ui.features.social.MatchResult.Reason.*
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
