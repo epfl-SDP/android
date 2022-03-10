@@ -57,7 +57,7 @@ class AuthenticationApiAuthenticationScreenStateTest {
   @Test
   fun successfulAuthentication_setsLoadingToFalse() = runTest {
     val (api, strings, _) = mockkAll()
-    coEvery { api.signUpWithEmail(any(), any()) } returns Success
+    coEvery { api.signUpWithEmail(any(), any(), any()) } returns Success
     val state = AuthApiAuthenticationScreenState(api, strings, this)
     state.onAuthenticate()
     assertThat(state.loading).isFalse()
@@ -83,7 +83,7 @@ class AuthenticationApiAuthenticationScreenStateTest {
     val api = mockk<AuthenticationApi>()
     val strings = English
     val state = AuthApiAuthenticationScreenState(api, strings, this)
-    coEvery { api.signUpWithEmail(any(), any()) } returns Failure
+    coEvery { api.signUpWithEmail(any(), any(), any()) } returns Failure
     state.onAuthenticate()
     yield()
     assertThat(state.error).isEqualTo(strings.authenticateErrorFailure)

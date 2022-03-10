@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.ui.features.social
 
-import ch.epfl.sdp.mobile.ui.features.ProfileColor
+import ch.epfl.sdp.mobile.data.api.ProfileColor
 
 /** An interface representing a list of people you're following. */
 interface Person {

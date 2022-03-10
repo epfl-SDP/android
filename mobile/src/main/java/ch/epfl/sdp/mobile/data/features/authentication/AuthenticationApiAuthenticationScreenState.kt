@@ -32,6 +32,7 @@ class AuthenticationApiAuthenticationScreenState(
   override var loading by mutableStateOf(false)
     private set
   override var email by mutableStateOf("")
+  override var name by mutableStateOf("")
   override var password by mutableStateOf("")
   override var error by mutableStateOf<String?>(null)
     private set
@@ -42,7 +43,7 @@ class AuthenticationApiAuthenticationScreenState(
         val result =
             when (mode) {
               LogIn -> api.signInWithEmail(email, password)
-              Register -> api.signUpWithEmail(email, password)
+              Register -> api.signUpWithEmail(email, name, password)
             }
         error =
             when (result) {

@@ -29,6 +29,9 @@ interface AuthenticationScreenState {
   /** The value of the text in the email field. */
   var email: String
 
+  /** The value of the text in the name field. */
+  var name: String
+
   /** The value of the text in the password field. */
   var password: String
 
