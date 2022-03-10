@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -22,7 +21,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.ui.branding.PawniesIcons
 import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
+import ch.epfl.sdp.mobile.ui.branding.SectionSocial
 import ch.epfl.sdp.mobile.ui.features.ProfileColor
 import ch.epfl.sdp.mobile.ui.features.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.features.social.MatchResult
@@ -32,7 +33,7 @@ val state =
     object : ProfileState {
       override val email: String = "badrtaddist1@gmail.com"
       override val numberOfGames: Int = 10
-      override val numberOfPuzzles: Int = 10
+      override val numberOfPuzzles: Int = 21
       override val matches: List<ChessMatch> =
           List(20) { ChessMatch("Konor($it)", MatchResult.WIN, MatchResult.Reason.CHECKMATE, 27) }
 
@@ -45,13 +46,11 @@ val state =
 
 @Preview
 @Composable
-fun preview() {
-  //  SettingsButton(state::onSettingsClick)
-  // ProfileHeader(state = state)
-  //  GamesInfo(numPastGames = 42, numPuzzles = 10)
+fun Preview() {
   PawniesTheme { Scaffold { ProfileScreen(state = state) } }
 }
 
+/** Main component of the ProfileScreen that groups ProfileHeader and list of Matches */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
@@ -73,8 +72,6 @@ fun ProfileScreen(
     stickyHeader {
       ProfileTabBar(
           state = tabBarState,
-          numPastGames = state.numberOfGames,
-          numPuzzles = state.numberOfPuzzles,
           modifier = Modifier.fillMaxWidth(),
           elevation = elevation,
       )
@@ -82,11 +79,15 @@ fun ProfileScreen(
     items(state.matches) { match ->
       val title = strings.profileMatchTitle(match.adv)
       val subtitle = strings.profileMatchInfo(match.matchResult, match.cause, match.numberOfMoves)
-      Match(title, subtitle)
+      Match(title, subtitle, PawniesIcons.SectionSocial)
     }
   }
 }
 
+/**
+ * Composes the profile header given the profile [state]. Displays also the ProfilePicture,
+ * SettingsButton, name and email of th user profile
+ */
 @Composable
 fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
   Column(
@@ -103,6 +104,7 @@ fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
   }
 }
 
+/** Composes the profile picture given its [state] */
 @Composable
 fun ProfilePicture(
     state: ProfileState,
@@ -126,6 +128,7 @@ fun ProfilePicture(
   }
 }
 
+/** Composes the settings button */
 @Composable
 fun SettingsButton(
     onClick: () -> Unit,
@@ -143,6 +146,7 @@ fun SettingsButton(
   }
 }
 
+/** Composes a Match log using a [title], [subtitle] and an [icon] */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Match(

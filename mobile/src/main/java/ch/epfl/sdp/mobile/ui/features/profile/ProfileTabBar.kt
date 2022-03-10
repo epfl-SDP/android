@@ -19,7 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.ui.features.profile.ProfileTabBarState.Tab.*
+import ch.epfl.sdp.mobile.ui.features.profile.ProfileTabBarState.Tab.PastGames
+import ch.epfl.sdp.mobile.ui.features.profile.ProfileTabBarState.Tab.Puzzles
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 
 /**
@@ -38,6 +39,13 @@ private fun Modifier.borderBottom(
   drawLine(color, start, end, width.toPx(), StrokeCap.Round)
 }
 
+/**
+ * Composes the profile tabs [PastGames and Puzzles]
+ * @param text text of the tab
+ * @param num counter
+ * @param onClick callback when the tab is clicked
+ * @param selected indicates if the tab is currently selected
+ */
 @Composable
 fun ProfileTabItem(
     text: String,
@@ -62,19 +70,24 @@ fun ProfileTabItem(
   }
 }
 
+/** Interface of the ProfileTabBar state */
 interface ProfileTabBarState {
 
+  /*Enumerate types of Tabs */
   enum class Tab {
     PastGames,
     Puzzles,
   }
 
+  /* Currently selected Tab*/
   var currentTab: Tab
 
+  /* Hold past games and puzzles counts*/
   val pastGamesCount: Int
   val puzzlesCount: Int
 }
 
+/** Implementation of the ProfileTabBarState */
 private class ProfileTabBarStateImpl(
     pastGamesCount: State<Int>,
     puzzlesCount: State<Int>,
@@ -84,6 +97,7 @@ private class ProfileTabBarStateImpl(
   override var currentTab by mutableStateOf(PastGames)
 }
 
+/** Function used to remember the state of the ProfileTabBar */
 @Composable
 fun rememberProfileTabBarState(
     pastGamesCount: Int,
@@ -94,11 +108,13 @@ fun rememberProfileTabBarState(
   return remember { ProfileTabBarStateImpl(pastGamesCountState, puzzlesCountState) }
 }
 
+/**
+ * Composes ProfileTab
+ * @param state state of the profile tab
+ */
 @Composable
 fun ProfileTabBar(
     state: ProfileTabBarState,
-    numPastGames: Int,
-    numPuzzles: Int,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.background,
     elevation: Dp = 0.dp,
@@ -116,13 +132,13 @@ fun ProfileTabBar(
     ) {
       ProfileTabItem(
           text = strings.profilePastGames,
-          num = numPastGames,
+          num = state.pastGamesCount,
           onClick = { state.currentTab = PastGames },
           selected = state.currentTab == PastGames,
       )
       ProfileTabItem(
           text = strings.profilePuzzle,
-          num = numPuzzles,
+          num = state.puzzlesCount,
           onClick = { state.currentTab = Puzzles },
           selected = state.currentTab == Puzzles,
       )
