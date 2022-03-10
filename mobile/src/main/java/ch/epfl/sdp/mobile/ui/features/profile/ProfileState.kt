@@ -12,17 +12,17 @@ interface ProfileState : Person {
   val email: String
 
   /** Number of past games */
-  val numberOfGames: Int
+  val pastGamesCount: Int
 
   /** Number of puzzles */
-  val numberOfPuzzles: Int
+  val puzzlesCount: Int
 
   /** List of chess matches */
   val matches: List<ChessMatch>
 
-  /** On settings button clicked*/
+  /** On settings button clicked */
   fun onSettingsClick()
 
-  /** On edit button clicked*/
+  /** On edit button clicked */
   fun onEditClick()
 }

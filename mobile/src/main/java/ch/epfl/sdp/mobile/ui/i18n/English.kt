@@ -1,7 +1,5 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
-import ch.epfl.sdp.mobile.ui.features.social.MatchResult
-
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
   override val authenticateEmailHint = "Your email"
@@ -14,14 +12,10 @@ object English : LocalizedStrings {
   override val authenticateErrorFailure = "Something went wrong when authenticating"
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
 
-  override val profileMatchInfo: (MatchResult, MatchResult.Reason, Int) -> String =
-      { matchResult: MatchResult, reason: MatchResult.Reason, nMoves: Int ->
-        when (matchResult) {
-          MatchResult.TIE -> "Tie after $nMoves"
-          MatchResult.LOSS -> "Won by $reason after $nMoves"
-          MatchResult.WIN -> "Lost by $reason after $nMoves"
-        }
-      }
+  override val profileMatchInfo = { matchResult: String, reason: String, nMoves: Int ->
+    "$matchResult by $reason after $nMoves"
+  }
+  override val profileTieInfo = { nMoves: Int -> "Tie after $nMoves" }
 
   override val profilePastGames: String = "Past Games"
   override val profilePuzzle: String = "Puzzles"

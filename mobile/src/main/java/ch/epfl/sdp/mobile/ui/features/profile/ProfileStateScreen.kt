@@ -19,36 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.branding.PawniesIcons
-import ch.epfl.sdp.mobile.ui.branding.PawniesTheme
 import ch.epfl.sdp.mobile.ui.branding.SectionSocial
-import ch.epfl.sdp.mobile.ui.features.ProfileColor
-import ch.epfl.sdp.mobile.ui.features.social.ChessMatch
+import ch.epfl.sdp.mobile.ui.features.social.Loss
 import ch.epfl.sdp.mobile.ui.features.social.MatchResult
+import ch.epfl.sdp.mobile.ui.features.social.Tie
+import ch.epfl.sdp.mobile.ui.features.social.Win
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
-
-val state =
-    object : ProfileState {
-      override val email: String = "badrtaddist1@gmail.com"
-      override val numberOfGames: Int = 10
-      override val numberOfPuzzles: Int = 21
-      override val matches: List<ChessMatch> =
-          List(20) { ChessMatch("Konor($it)", MatchResult.WIN, MatchResult.Reason.CHECKMATE, 27) }
-
-      override fun onSettingsClick() {}
-      override fun onEditClick() {}
-      override val backgroundColor: ProfileColor = ProfileColor.Pink
-      override val name: String = "Badr Taddist"
-      override val emoji: String = "😊"
-    }
-
-@Preview
-@Composable
-fun Preview() {
-  PawniesTheme { Scaffold { ProfileScreen(state = state) } }
-}
 
 /** Main component of the ProfileScreen that groups ProfileHeader and list of Matches */
 @OptIn(ExperimentalFoundationApi::class)
@@ -58,7 +36,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
-  val tabBarState = rememberProfileTabBarState(state.numberOfGames, state.numberOfPuzzles)
+  val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.puzzlesCount)
   val lazyColumnState = rememberLazyListState()
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
@@ -77,10 +55,22 @@ fun ProfileScreen(
       )
     }
     items(state.matches) { match ->
-      val title = strings.profileMatchTitle(match.adv)
-      val subtitle = strings.profileMatchInfo(match.matchResult, match.cause, match.numberOfMoves)
+      val title = strings.profileMatchTitle(match.adversary)
+      val subtitle = ""
       Match(title, subtitle, PawniesIcons.SectionSocial)
     }
+  }
+}
+
+@Composable
+fun chooseSubtitle(matchResult: MatchResult, nMoves: Int): String {
+  val strings = LocalLocalizedStrings.current
+  return when (matchResult) {
+    is Win ->
+        strings.profileMatchInfo(matchResult.toString(), matchResult.reason.toString(), nMoves)
+    is Loss ->
+        strings.profileMatchInfo(matchResult.toString(), matchResult.reason.toString(), nMoves)
+    is Tie -> strings.profileTieInfo(nMoves)
   }
 }
 
