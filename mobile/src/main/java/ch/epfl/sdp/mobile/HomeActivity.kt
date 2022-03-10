@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.ui.graphics.RectangleShape
 import ch.epfl.sdp.mobile.backend.store.firestore.FirestoreStore
 import ch.epfl.sdp.mobile.data.api.firebase.FirebaseAuthenticationApi
 import ch.epfl.sdp.mobile.ui.ProvideApis
@@ -22,8 +21,6 @@ class HomeActivity : ComponentActivity() {
 
     val authentication =
         FirebaseAuthenticationApi(Firebase.auth, FirestoreStore(Firebase.firestore))
-
-    RectangleShape
 
     setContent {
       PawniesTheme {
