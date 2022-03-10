@@ -74,7 +74,7 @@ private fun FirebaseUser.profileFlow(
     firestore.collection("users").document(uid).asFlow<FirebaseProfileDocument>().map { this to it }
 
 /**
- * Maps a [FirebaseUser] to to an [AuthenticationApi.User].
+ * Maps a [FirebaseUser] to an [AuthenticationApi.User].
  *
  * @receiver the [FirebaseUser] which should be converted.
  * @param auth the [FirebaseAuth] instance which is used to build the user.
