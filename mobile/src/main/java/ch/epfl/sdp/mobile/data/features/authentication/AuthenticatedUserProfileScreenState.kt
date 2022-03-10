@@ -5,7 +5,7 @@ import ch.epfl.sdp.mobile.data.api.ProfileColor
 import ch.epfl.sdp.mobile.ui.features.profile.ProfileState
 import ch.epfl.sdp.mobile.ui.features.social.ChessMatch
 
-class AutenticatedUserProfileScreenState(
+class AuthenticatedUserProfileScreenState(
     private val user: AuthenticationApi.User.Authenticated,
 ) : ProfileState {
   override val email = user.email
