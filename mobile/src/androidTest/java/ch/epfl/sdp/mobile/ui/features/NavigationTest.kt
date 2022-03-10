@@ -40,7 +40,7 @@ class NavigationTest {
   fun authenticated_displaysHome() = runTest {
     val api = AlwaysSucceedingAuthenticationApi()
     val strings = rule.setContentWithLocalizedStrings { ProvideApis(api) { Navigation() } }
-    api.signUpWithEmail("email", "password")
+    api.signUpWithEmail("email", "name", "password")
 
     // Do we see the bottom navigation ?
     rule.onNodeWithText(strings.sectionSocial).assertExists()

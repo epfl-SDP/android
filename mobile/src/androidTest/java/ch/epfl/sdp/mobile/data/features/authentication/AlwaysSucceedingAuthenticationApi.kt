@@ -55,6 +55,7 @@ class AlwaysSucceedingAuthenticationApi : AuthenticationApi {
 
   override suspend fun signUpWithEmail(
       email: String,
+      name: String,
       password: String
   ): AuthenticationApi.AuthenticationResult {
     user.value = AuthenticatedUser(email)
