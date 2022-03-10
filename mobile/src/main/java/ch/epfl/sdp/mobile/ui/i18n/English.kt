@@ -18,8 +18,8 @@ object English : LocalizedStrings {
   override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
   override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
 
-  override val profilePastGames = "Past Games"
-  override val profilePuzzle = "Puzzles"
+  override val profilePastGames = "Past Games".uppercase()
+  override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
 
   override val sectionSocial = "Players"
