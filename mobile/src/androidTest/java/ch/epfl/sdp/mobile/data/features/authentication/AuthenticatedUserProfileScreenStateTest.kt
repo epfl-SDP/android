@@ -13,6 +13,8 @@ class AuthenticatedUserProfileScreenStateTest {
   fun correctBehaviour_takesTheUsernameCorrectly() = runTest {
     val mockUser = mockk<AuthenticationApi.User.Authenticated>()
     every { mockUser.name } returns "test"
+    every { mockUser.email } returns "test"
+    every { mockUser.emoji } returns "test"
 
     val state = AuthenticatedUserProfileScreenState(mockUser)
     assertThat(state.name).isEqualTo("test")
