@@ -32,7 +32,6 @@ interface LocalizedStrings {
   val profilePuzzle: String
   val profileSettings: String
 
-  /** Social Strings */
   val socialFollowingTitle: String
   val socialPerformPlay: String
 

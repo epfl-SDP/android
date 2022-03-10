@@ -14,9 +14,9 @@ object English : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Log in".uppercase()
   override val authenticateSwitchToRegister = "Sign up".uppercase()
   override val authenticateErrorFailure = "Something went wrong when authenticating"
+  override val authenticateOr = "or"
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
-  override val authenticateOr = "or"
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
   override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
   override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
