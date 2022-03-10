@@ -18,10 +18,10 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
 
   val profileMatchTitle: (String) -> String
-  val profileCheckmate: String
-  val profileForfeit: String
-  val profileWinInfo: (String, Int) -> String
-  val profileLossInfo: (String, Int) -> String
+  val profileWonByCheckmate: (Int) -> String
+  val profileWonByForfeit: (Int) -> String
+  val profileLostByCheckmate: (Int) -> String
+  val profileLostByForfeit: (Int) -> String
   val profileTieInfo: (Int) -> String
   val profilePastGames: String
   val profilePuzzle: String

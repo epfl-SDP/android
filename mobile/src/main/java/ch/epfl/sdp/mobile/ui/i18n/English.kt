@@ -12,11 +12,11 @@ object English : LocalizedStrings {
 
   override val authenticateErrorFailure = "Something went wrong when authenticating"
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
-  override val profileCheckmate = "checkmate"
-  override val profileForfeit = "forfeit"
-  override val profileWinInfo = { reason: String, nMoves: Int -> "Won by $reason after $nMoves" }
-  override val profileLossInfo = { reason: String, nMoves: Int -> "Loss by $reason after $nMoves" }
-  override val profileTieInfo = { nMoves: Int -> "Tie after $nMoves" }
+  override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
+  override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
+  override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
+  override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
+  override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
 
   override val profilePastGames = "Past Games"
   override val profilePuzzle = "Puzzles"

@@ -22,8 +22,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.branding.PawniesIcons
 import ch.epfl.sdp.mobile.ui.branding.SectionSocial
+import ch.epfl.sdp.mobile.ui.features.social.Loss
 import ch.epfl.sdp.mobile.ui.features.social.MatchResult
+import ch.epfl.sdp.mobile.ui.features.social.Tie
+import ch.epfl.sdp.mobile.ui.features.social.Win
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
@@ -57,22 +61,37 @@ fun ProfileScreen(
     }
     items(state.matches) { match ->
       val title = strings.profileMatchTitle(match.adversary)
-      val subtitle = chooseSubtitle(match.matchResult, match.numberOfMoves)
+      val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
       Match(title, subtitle, PawniesIcons.SectionSocial)
     }
   }
 }
 
-@Composable
 /**
  * Chooses a subtitle given a [MatchResult] and number of moves [nMoves] of the match
  * @param matchResult result of the match
  * @param nMoves number of moves
  */
-private fun chooseSubtitle(matchResult: MatchResult, nMoves: Int): String {
-  val strings = LocalLocalizedStrings.current
-  // TODO: Implement
-  return ""
+private fun chooseSubtitle(
+    strings: LocalizedStrings,
+    matchResult: MatchResult,
+    nMoves: Int
+): String {
+  val text =
+      when (matchResult) {
+        Tie -> strings.profileTieInfo
+        is Loss ->
+            when (matchResult.reason) {
+              MatchResult.Reason.CHECKMATE -> strings.profileLostByCheckmate
+              MatchResult.Reason.FORFEIT -> strings.profileLostByForfeit
+            }
+        is Win ->
+            when (matchResult.reason) {
+              MatchResult.Reason.CHECKMATE -> strings.profileWonByCheckmate
+              MatchResult.Reason.FORFEIT -> strings.profileWonByForfeit
+            }
+      }
+  return text(nMoves)
 }
 
 /**
