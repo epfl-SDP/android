@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.features.home
 
-import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.data.features.authentication.AlwaysSucceedingAuthenticationApi
