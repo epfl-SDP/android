@@ -3,13 +3,18 @@ package ch.epfl.sdp.mobile.ui.features.authentication
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.R.*
 import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreenState.Mode
 import ch.epfl.sdp.mobile.ui.features.authentication.AuthenticationScreenState.Mode.*
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
@@ -28,34 +33,79 @@ fun AuthenticationScreen(
 ) {
   val transition = updateTransition(state.mode, "Authentication state")
   val strings = LocalLocalizedStrings.current
-  Column(modifier) {
-    TextField(
-        value = state.email,
-        onValueChange = { state.email = it },
-        label = { Text(strings.authenticateEmailHint) },
-    )
-    PasswordTextField(
-        value = state.password,
-        onValueChange = { state.password = it },
-        label = { Text(strings.authenticatePasswordHint) },
-    )
-    val errorText = state.error ?: ""
-    AnimatedVisibility(visible = errorText.isNotBlank()) {
-      Text(
-          text = errorText,
-          color = MaterialTheme.colors.error,
-          style = MaterialTheme.typography.caption,
-      )
+  Scaffold(modifier) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.verticalScroll(rememberScrollState()).padding(32.dp),
+    ) {
+      Column(
+          verticalArrangement = Arrangement.spacedBy(24.dp),
+          horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        Image(painterResource(drawable.authentication_logo), null)
+        Text(strings.authenticateTitle, style = MaterialTheme.typography.h4)
+        transition.AnimatedContent { target ->
+          val subtitle =
+              when (target) {
+                LogIn -> strings.authenticateSubtitleLogIn
+                Register -> strings.authenticateSubtitleRegister
+              }
+          Text(subtitle, style = MaterialTheme.typography.h6)
+        }
+      }
+      Column {
+        TextField(
+            value = state.email,
+            onValueChange = { state.email = it },
+            label = { Text(strings.authenticateEmailHint) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        transition.AnimatedVisibility(
+            visible = { it == Register },
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+        ) {
+          TextField(
+              value = state.name,
+              onValueChange = { state.name = it },
+              label = { Text(strings.authenticateNameHint) },
+              modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+          )
+        }
+        PasswordTextField(
+            value = state.password,
+            onValueChange = { state.password = it },
+            label = { Text(strings.authenticatePasswordHint) },
+            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        )
+      }
+      val errorText = state.error ?: ""
+      AnimatedVisibility(visible = errorText.isNotBlank()) {
+        Text(
+            text = errorText,
+            color = MaterialTheme.colors.error,
+            style = MaterialTheme.typography.caption,
+        )
+      }
+      Column(
+          verticalArrangement = Arrangement.spacedBy(8.dp),
+          horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        AuthenticateButton(
+            transition = transition,
+            loading = state.loading,
+            onClick = state::onAuthenticate,
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+        )
+        Text(strings.authenticateOr, style = MaterialTheme.typography.subtitle1)
+        ToggleButton(
+            transition = transition,
+            onClick = state::toggleMode,
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+        )
+      }
     }
-    AuthenticateButton(
-        transition = transition,
-        loading = state.loading,
-        onClick = state::onAuthenticate,
-    )
-    ToggleButton(
-        transition = transition,
-        onClick = state::toggleMode,
-    )
   }
 }
 
@@ -70,6 +120,7 @@ private fun AuthenticateButton(
       loading = loading,
       onClick = onClick,
       modifier = modifier,
+      shape = RoundedCornerShape(8.dp),
   ) {
     transition.AnimatedContent(transitionSpec = { fadeIn() with fadeOut() }) { mode ->
       val text =
@@ -88,7 +139,11 @@ private fun ToggleButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  OutlinedButton(onClick = onClick, modifier = modifier) {
+  OutlinedButton(
+      onClick = onClick,
+      modifier = modifier,
+      shape = RoundedCornerShape(8.dp),
+  ) {
     transition.AnimatedContent(transitionSpec = { fadeIn() with fadeOut() }) { mode ->
       val text =
           when (mode) {

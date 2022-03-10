@@ -38,6 +38,15 @@ interface DocumentReference {
   suspend fun set(scope: DocumentEditScope.() -> Unit)
 
   /**
+   * Sets the given document with the provided [value].
+   *
+   * @param T the type of the document.
+   * @param value the value of the document which should be set. Existing fields will be discarded.
+   * @param valueClass the [KClass] of the item that is set.
+   */
+  suspend fun <T : Any> set(value: T, valueClass: KClass<T>)
+
+  /**
    * Updates the given document within the [scope].
    *
    * @param scope the [DocumentEditScope] in which editing operations are taking place. Existing
@@ -53,3 +62,23 @@ interface DocumentReference {
  * @return the [Flow] of the document values.
  */
 inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> = asFlow(T::class)
+
+/**
+ * Sets the given document with the provided [value].
+ *
+ * @param T the type of the document.
+ * @param value hte value of the document which should be set. Existing fields will be discarded.
+ */
+suspend inline fun <reified T : Any> DocumentReference.set(value: T): Unit = set(value, T::class)
+
+/**
+ * Sets the given document with the provided [values].
+ *
+ * @receiver the [DocumentReference] onto which the items will be set.
+ * @param values the [Map] of the values which will be set to the document.
+ */
+suspend fun DocumentReference.set(values: Map<String, Any?>) = set {
+  for ((key, value) in values) {
+    this[key] = value
+  }
+}

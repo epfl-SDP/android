@@ -1,5 +1,8 @@
 package ch.epfl.sdp.mobile.data.api.firebase
 
+import ch.epfl.sdp.mobile.backend.store.Store
+import ch.epfl.sdp.mobile.backend.store.asFlow
+import ch.epfl.sdp.mobile.backend.store.set
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult
 import ch.epfl.sdp.mobile.data.api.AuthenticationApi.AuthenticationResult.Failure
@@ -19,11 +22,15 @@ import kotlinx.coroutines.tasks.await
  *
  * @param auth the [FirebaseAuth] instance which will be used to handle authentication.
  */
-class FirebaseAuthenticationApi(private val auth: FirebaseAuth) : AuthenticationApi {
+class FirebaseAuthenticationApi(
+    private val auth: FirebaseAuth,
+    private val firestore: Store,
+) : AuthenticationApi {
 
   override val currentUser: Flow<User> =
       auth.currentUserFlow()
-          .map { user -> user?.toAuthenticationUser(auth) ?: NotAuthenticated }
+          .flatMapLatest { it?.profileFlow(firestore) ?: flowOf(null) }
+          .map { user -> user?.toAuthenticatedUser(auth, firestore) ?: NotAuthenticated }
           .onStart { emit(User.Loading) }
 
   /**
@@ -50,11 +57,21 @@ class FirebaseAuthenticationApi(private val auth: FirebaseAuth) : Authentication
 
   override suspend fun signUpWithEmail(
       email: String,
+      name: String,
       password: String,
   ): AuthenticationResult = authenticate {
-    auth.createUserWithEmailAndPassword(email, password).await()
+    val result = auth.createUserWithEmailAndPassword(email, password).await()
+    result?.user?.uid?.let {
+      firestore.collection("users").document(it).set(FirebaseProfileDocument(name = name))
+    }
+    result
   }
 }
+
+private fun FirebaseUser.profileFlow(
+    firestore: Store,
+): Flow<Pair<FirebaseUser, FirebaseProfileDocument?>> =
+    firestore.collection("users").document(uid).asFlow<FirebaseProfileDocument>().map { this to it }
 
 /**
  * Maps a [FirebaseUser] to to an [AuthenticationApi.User].
@@ -62,9 +79,16 @@ class FirebaseAuthenticationApi(private val auth: FirebaseAuth) : Authentication
  * @receiver the [FirebaseUser] which should be converted.
  * @param auth the [FirebaseAuth] instance which is used to build the user.
  */
-private fun FirebaseUser.toAuthenticationUser(
+private fun Pair<FirebaseUser, FirebaseProfileDocument?>.toAuthenticatedUser(
     auth: FirebaseAuth,
-): User = FirebaseUserAdapter(this, auth)
+    firestore: Store,
+): User =
+    FirebaseAuthenticatedUser(
+        auth = auth,
+        firestore = firestore,
+        user = first,
+        document = second,
+    )
 
 /**
  * Returns a [Flow] of the current [FirebaseUser].
@@ -78,19 +102,3 @@ private fun FirebaseAuth.currentUserFlow(): Flow<FirebaseUser?> =
           awaitClose { removeAuthStateListener(listener) }
         }
         .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-
-/**
- * An implementation of [AuthenticationApi.User.Authenticated] which wraps a [FirebaseUser].
- *
- * @param user the [FirebaseUser] which is wrapped.
- * @param auth the underlying [FirebaseAuth].
- */
-private class FirebaseUserAdapter(
-    user: FirebaseUser,
-    private val auth: FirebaseAuth,
-) : User.Authenticated {
-  override val email = user.email ?: ""
-  override suspend fun signOut() {
-    auth.signOut()
-  }
-}

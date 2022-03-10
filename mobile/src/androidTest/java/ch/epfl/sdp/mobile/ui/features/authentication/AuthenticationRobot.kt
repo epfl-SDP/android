@@ -93,6 +93,15 @@ class SignUpRobot(
   }
 
   /**
+   * Sets the name text field.
+   *
+   * @param name the [String] to set to the name field.
+   */
+  fun name(name: String) {
+    onNodeWithLocalizedText { authenticateNameHint }.performTextInput(name)
+  }
+
+  /**
    * Switches to the log-in screen.
    *
    * @param block the block to run with the [SignInRobot].

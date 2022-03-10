@@ -8,7 +8,11 @@ import androidx.compose.runtime.Stable
  */
 @Stable
 interface LocalizedStrings {
+  val authenticateTitle: String
+  val authenticateSubtitleRegister: String
+  val authenticateSubtitleLogIn: String
   val authenticateEmailHint: String
+  val authenticateNameHint: String
   val authenticatePasswordHint: String
   val authenticatePasswordToggleVisibility: String
   val authenticatePerformLogIn: String
@@ -16,6 +20,10 @@ interface LocalizedStrings {
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
+  val authenticateOr: String
+
+  val socialFollowingTitle: String
+  val socialPerformPlay: String
 
   val profileMatchTitle: (String) -> String
   val profileWonByCheckmate: (Int) -> String
