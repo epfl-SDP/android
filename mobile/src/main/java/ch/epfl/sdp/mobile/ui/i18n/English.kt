@@ -14,17 +14,22 @@ object English : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Log in".uppercase()
   override val authenticateSwitchToRegister = "Sign up".uppercase()
   override val authenticateErrorFailure = "Something went wrong when authenticating"
-  override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val authenticateOr = "or"
 
-  override val profileMatchInfo = { matchResult: String, reason: String, nMoves: Int ->
-    "$matchResult by $reason after $nMoves"
-  }
-  override val profileTieInfo = { nMoves: Int -> "Tie after $nMoves" }
+  override val profileMatchTitle = { opponent: String -> "Against $opponent" }
+  override val authenticateOr = "or"
+  override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
+  override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
+  override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
+  override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
+  override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
 
-  override val profilePastGames: String = "Past Games"
-  override val profilePuzzle: String = "Puzzles"
-  override val profileSettings: String = "Settings"
+  override val profilePastGames = "Past Games".uppercase()
+  override val profilePuzzle = "Puzzles".uppercase()
+  override val profileSettings = "Settings"
+
+  override val socialFollowingTitle = "Following"
+  override val socialPerformPlay = "Play"
 
   /** Social Strings */
   override val socialFollowingTitle = "Following"

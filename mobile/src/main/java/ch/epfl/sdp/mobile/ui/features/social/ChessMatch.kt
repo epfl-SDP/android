@@ -2,19 +2,15 @@ package ch.epfl.sdp.mobile.ui.features.social
 
 class ChessMatch(val adversary: String, val matchResult: MatchResult, val numberOfMoves: Int)
 
-sealed class MatchResult() {
-  enum class Reason(val reason: String) {
-    CHECKMATE("checkmate"),
-    FORFEIT("forfeit")
+sealed interface MatchResult {
+  enum class Reason {
+    CHECKMATE,
+    FORFEIT
   }
 }
 
-class Win(val reason: Reason) : MatchResult() {
-  override fun toString(): String = "Won"
-}
+data class Win(val reason: MatchResult.Reason) : MatchResult
 
-class Loss(val reason: Reason) : MatchResult() {
-  override fun toString(): String = "Lost"
-}
+data class Loss(val reason: MatchResult.Reason) : MatchResult
 
-class Tie : MatchResult()
+object Tie : MatchResult

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -59,9 +60,13 @@ fun ProfileTabItem(
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center,
-      modifier = modifier.clickable { onClick() }.padding(horizontal = 32.dp, vertical = 8.dp),
+      modifier =
+          modifier
+              .selectable(selected, onClick = onClick)
+              .clickable { onClick() }
+              .padding(horizontal = 32.dp, vertical = 8.dp),
   ) {
-    Text(text = text.uppercase(), style = MaterialTheme.typography.overline)
+    Text(text = text, style = MaterialTheme.typography.overline)
     Text(
         text = "$num",
         style = MaterialTheme.typography.h5,
@@ -70,19 +75,20 @@ fun ProfileTabItem(
   }
 }
 
-/** Interface of the ProfileTabBar state */
+/**
+ * Interface of the ProfileTabBar state
+ * @class Tab Enumerate types of Tabs
+ * @property currentTab Currently selected Tab
+ * @property pastGamesCount past games count
+ * @property puzzlesCount puzzles count
+ */
 interface ProfileTabBarState {
 
-  /*Enumerate types of Tabs */
   enum class Tab {
     PastGames,
     Puzzles,
   }
-
-  /* Currently selected Tab*/
   var currentTab: Tab
-
-  /* Hold past games and puzzles counts*/
   val pastGamesCount: Int
   val puzzlesCount: Int
 }
@@ -109,8 +115,11 @@ fun rememberProfileTabBarState(
 }
 
 /**
- * Composes ProfileTab
+ * Composes a ProfileTabBar from puzzles and past games tab items
  * @param state state of the profile tab
+ * @param modifier the [Modifier] for this composable.
+ * @param backgroundColor of the tab bar
+ * @param elevation elevation dp of the tab bar
  */
 @Composable
 fun ProfileTabBar(

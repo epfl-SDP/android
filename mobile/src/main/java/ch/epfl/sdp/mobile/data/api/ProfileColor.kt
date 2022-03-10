@@ -7,13 +7,13 @@ import androidx.compose.ui.graphics.Color
  * picture.
  */
 enum class ProfileColor {
-  Pink, Blue;
+  Pink,
+  Blue;
 
   fun getColorForProfile(): Color {
-      return when(this){
-        Pink -> Color.Magenta
-        Blue -> Color.Blue
-      }
+    return when (this) {
+      Pink -> Color.Magenta
+      Blue -> Color.Blue
+    }
   }
-
 }
