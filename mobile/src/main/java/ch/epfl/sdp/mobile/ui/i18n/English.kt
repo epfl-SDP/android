@@ -9,7 +9,6 @@ object English : LocalizedStrings {
   override val authenticateNameHint = "Your full name"
   override val authenticatePasswordHint = "Password"
   override val authenticatePasswordToggleVisibility = "Toggle password visibility"
-
   override val authenticatePerformLogIn = "Log in with email".uppercase()
   override val authenticatePerformRegister = "Sign up with email".uppercase()
   override val authenticateSwitchToLogIn = "Log in".uppercase()
