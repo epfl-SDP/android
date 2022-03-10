@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.features.home
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.ui.features.robots.AbstractRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -65,14 +64,4 @@ class FollowingSectionRobot(
 class SettingsSectionRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
-) : HomeRobot(rule, strings) {
-
-  /**
-   * Clicks on the sign-out action.
-   *
-   * TODO : This should be removed or adapted when the content of the section changes.
-   */
-  fun performSignOut() {
-    onNodeWithText("Sign out").performClick()
-  }
-}
+) : HomeRobot(rule, strings)

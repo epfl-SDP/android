@@ -25,6 +25,16 @@ interface LocalizedStrings {
   val socialFollowingTitle: String
   val socialPerformPlay: String
 
+  val profileMatchTitle: (String) -> String
+  val profileWonByCheckmate: (Int) -> String
+  val profileWonByForfeit: (Int) -> String
+  val profileLostByCheckmate: (Int) -> String
+  val profileLostByForfeit: (Int) -> String
+  val profileTieInfo: (Int) -> String
+  val profilePastGames: String
+  val profilePuzzle: String
+  val profileSettings: String
+
   val sectionSocial: String
   val sectionSettings: String
 }

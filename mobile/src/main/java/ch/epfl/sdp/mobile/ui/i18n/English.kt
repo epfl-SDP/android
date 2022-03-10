@@ -9,12 +9,24 @@ object English : LocalizedStrings {
   override val authenticateNameHint = "Your full name"
   override val authenticatePasswordHint = "Password"
   override val authenticatePasswordToggleVisibility = "Toggle password visibility"
+
   override val authenticatePerformLogIn = "Log in with email".uppercase()
   override val authenticatePerformRegister = "Sign up with email".uppercase()
   override val authenticateSwitchToLogIn = "Log in".uppercase()
   override val authenticateSwitchToRegister = "Sign up".uppercase()
   override val authenticateErrorFailure = "Something went wrong when authenticating"
   override val authenticateOr = "or"
+
+  override val profileMatchTitle = { opponent: String -> "Against $opponent" }
+  override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
+  override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
+  override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
+  override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
+  override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
+
+  override val profilePastGames = "Past Games".uppercase()
+  override val profilePuzzle = "Puzzles".uppercase()
+  override val profileSettings = "Settings"
 
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Play"
