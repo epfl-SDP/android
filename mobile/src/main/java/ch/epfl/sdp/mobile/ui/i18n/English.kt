@@ -14,7 +14,6 @@ object English : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Log in".uppercase()
   override val authenticateSwitchToRegister = "Sign up".uppercase()
   override val authenticateErrorFailure = "Something went wrong when authenticating"
-  override val authenticateOr = "or"
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val authenticateOr = "or"
@@ -28,10 +27,6 @@ object English : LocalizedStrings {
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
 
-  override val socialFollowingTitle = "Following"
-  override val socialPerformPlay = "Play"
-
-  /** Social Strings */
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Play"
 

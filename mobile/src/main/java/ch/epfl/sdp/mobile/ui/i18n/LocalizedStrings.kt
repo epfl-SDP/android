@@ -22,9 +22,6 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
   val authenticateOr: String
 
-  val socialFollowingTitle: String
-  val socialPerformPlay: String
-
   val profileMatchTitle: (String) -> String
   val profileWonByCheckmate: (Int) -> String
   val profileWonByForfeit: (Int) -> String
