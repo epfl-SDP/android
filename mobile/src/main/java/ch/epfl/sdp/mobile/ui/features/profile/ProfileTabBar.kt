@@ -70,19 +70,20 @@ fun ProfileTabItem(
   }
 }
 
-/** Interface of the ProfileTabBar state */
+/**
+ * Interface of the ProfileTabBar state
+ * @class Tab Enumerate types of Tabs
+ * @property currentTab Currently selected Tab
+ * @property pastGamesCount past games count
+ * @property puzzlesCount puzzles count
+ */
 interface ProfileTabBarState {
 
-  /*Enumerate types of Tabs */
   enum class Tab {
     PastGames,
     Puzzles,
   }
-
-  /* Currently selected Tab*/
   var currentTab: Tab
-
-  /* Hold past games and puzzles counts*/
   val pastGamesCount: Int
   val puzzlesCount: Int
 }
@@ -109,8 +110,11 @@ fun rememberProfileTabBarState(
 }
 
 /**
- * Composes ProfileTab
+ * Composes a ProfileTabBar from puzzles and past games tab items
  * @param state state of the profile tab
+ * @param modifier the [Modifier] for this composable.
+ * @param backgroundColor of the tab bar
+ * @param elevation elevation dp of the tab bar
  */
 @Composable
 fun ProfileTabBar(

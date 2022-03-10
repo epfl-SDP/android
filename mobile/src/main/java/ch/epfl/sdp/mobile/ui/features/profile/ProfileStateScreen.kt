@@ -22,13 +22,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.branding.PawniesIcons
 import ch.epfl.sdp.mobile.ui.branding.SectionSocial
-import ch.epfl.sdp.mobile.ui.features.social.Loss
 import ch.epfl.sdp.mobile.ui.features.social.MatchResult
-import ch.epfl.sdp.mobile.ui.features.social.Tie
-import ch.epfl.sdp.mobile.ui.features.social.Win
 import ch.epfl.sdp.mobile.ui.i18n.LocalLocalizedStrings
 
-/** Main component of the ProfileScreen that groups ProfileHeader and list of Matches */
+/**
+ * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
+ * @param state state of the ProfileScreen
+ * @param modifier the [Modifier] for this composable.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
@@ -63,20 +64,22 @@ fun ProfileScreen(
 }
 
 @Composable
-fun chooseSubtitle(matchResult: MatchResult, nMoves: Int): String {
+/**
+ * Chooses a subtitle given a [MatchResult] and number of moves [nMoves] of the match
+ * @param matchResult result of the match
+ * @param nMoves number of moves
+ */
+private fun chooseSubtitle(matchResult: MatchResult, nMoves: Int): String {
   val strings = LocalLocalizedStrings.current
-  return when (matchResult) {
-    is Win ->
-        strings.profileMatchInfo(matchResult.toString(), matchResult.reason.toString(), nMoves)
-    is Loss ->
-        strings.profileMatchInfo(matchResult.toString(), matchResult.reason.toString(), nMoves)
-    is Tie -> strings.profileTieInfo(nMoves)
-  }
+  // TODO: Implement
+  return ""
 }
 
 /**
  * Composes the profile header given the profile [state]. Displays also the ProfilePicture,
  * SettingsButton, name and email of th user profile
+ * @param state state of profile screen
+ * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
@@ -94,7 +97,11 @@ fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
   }
 }
 
-/** Composes the profile picture given its [state] */
+/**
+ * Composes the profile picture given its [state]
+ * @param state state of profile screen
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun ProfilePicture(
     state: ProfileState,
@@ -118,7 +125,11 @@ fun ProfilePicture(
   }
 }
 
-/** Composes the settings button */
+/**
+ * Composes the settings button
+ * @param onClick call back method for settings button
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun SettingsButton(
     onClick: () -> Unit,
@@ -136,7 +147,13 @@ fun SettingsButton(
   }
 }
 
-/** Composes a Match log using a [title], [subtitle] and an [icon] */
+/**
+ * Composes a Match log using a match [title], [subtitle] and an [icon]
+ * @param title match title
+ * @param subtitle match subtitle info
+ * @param icon match icon
+ * @param modifier the [Modifier] for this composable.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Match(
@@ -147,7 +164,7 @@ fun Match(
 ) {
   ListItem(
       modifier = modifier,
-      icon = { Icon(icon, "Match icon") },
+      icon = { Icon(icon, null) },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },
   )

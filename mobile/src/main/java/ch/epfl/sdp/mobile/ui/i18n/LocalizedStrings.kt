@@ -17,15 +17,16 @@ interface LocalizedStrings {
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
 
-  /** Profile Strings */
   val profileMatchTitle: (String) -> String
-  val profileMatchInfo: (String, String, Int) -> String
+  val profileCheckmate: String
+  val profileForfeit: String
+  val profileWinInfo: (String, Int) -> String
+  val profileLossInfo: (String, Int) -> String
   val profileTieInfo: (Int) -> String
   val profilePastGames: String
   val profilePuzzle: String
   val profileSettings: String
 
-  /** Social Strings */
   val sectionSocial: String
   val sectionSettings: String
 }
