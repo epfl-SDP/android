@@ -19,16 +19,9 @@ class StatefulFollowingScreenTest {
     @get:Rule
     val rule = createComposeRule()
 
-    @Test
-    fun defaultMode_noFollowing() {
-        val mockUser = mockk<AuthenticationApi.User.Authenticated>()
-        every { mockUser.following } returns emptyFlow()
-        rule.setContent { StatefulFollowingScreen(mockUser) }
-        rule.onNodeWithTag("following").assertDoesNotExist()
-    }
 
     @Test
-    fun defaultMode_multipleFollowing() {
+    fun defaultMode_displayCorrectFollowers() {
         val mockUser = mockk<AuthenticationApi.User.Authenticated>()
         every { mockUser.following } returns flow {
             emit(listOf<AuthenticationApi.Profile>(
@@ -44,6 +37,6 @@ class StatefulFollowingScreenTest {
             )
         }
         rule.setContent { StatefulFollowingScreen(mockUser) }
-        rule.onNodeWithTag("following").assertExists()
+        rule.onNodeWithText("Hans Peter").assertExists()
     }
 }
