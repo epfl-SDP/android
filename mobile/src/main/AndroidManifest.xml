@@ -11,13 +11,13 @@
         android:theme="@style/Theme.Pawnies">
 
         <activity
-            android:name=".HomeActivity"
+            android:name="ch.epfl.sdp.mobile.state.HomeActivity"
             android:windowSoftInputMode="adjustResize" />
 
         <activity-alias
             android:name=".Home.Launcher"
             android:exported="true"
-            android:targetActivity=".HomeActivity">
+            android:targetActivity="ch.epfl.sdp.mobile.state.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
