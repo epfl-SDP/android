@@ -2,8 +2,9 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.application.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import io.mockk.every
 import io.mockk.mockk
@@ -16,11 +17,11 @@ class StatefulFollowingScreenTest {
 
   @Test
   fun defaultMode_displayCorrectFollowers() {
-    val mockUser = mockk<AuthenticationFacade.User.Authenticated>()
+    val mockUser = mockk<AuthenticatedUser>()
     every { mockUser.following } returns
         flowOf(
-            listOf<AuthenticationFacade.Profile>(
-                object : AuthenticationFacade.Profile {
+            listOf<Profile>(
+                object : Profile {
                   override val emoji: String
                     get() = ":>"
                   override val name: String

@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import ch.epfl.sdp.mobile.application.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 
 /** A global composition local which provides access to an instance of [AuthenticationFacade]. */
 val LocalAuthenticationFacade = compositionLocalOf<AuthenticationFacade> { error("Missing API.") }

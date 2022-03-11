@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ch.epfl.sdp.mobile.application.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
 
@@ -30,7 +30,7 @@ private const val SettingsRoute = "settings"
  */
 @Composable
 fun StatefulHome(
-    user: AuthenticationFacade.User.Authenticated,
+    user: AuthenticatedUser,
     modifier: Modifier = Modifier,
     controller: NavHostController = rememberNavController(),
 ) {

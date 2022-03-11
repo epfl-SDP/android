@@ -10,6 +10,7 @@ enum class ProfileColor {
   Pink,
   Blue;
 
+  // TODO : This belongs to a separate package.
   fun getColorForProfile(): Color {
     return when (this) {
       Pink -> Color.Magenta
