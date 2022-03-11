@@ -7,7 +7,7 @@ import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
-import ch.epfl.sdp.mobile.ui.profile.ProfileState
+import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Loss
 import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.*
@@ -20,7 +20,7 @@ class ProfileScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestProfileState(override val matches: List<ChessMatch>) : ProfileState {
+  open class TestProfileScreenState(override val matches: List<ChessMatch>) : ProfileScreenState {
     override val email = "example@epfl.ch"
     override val pastGamesCount = 10
     override val puzzlesCount = 20
@@ -31,31 +31,31 @@ class ProfileScreenTest {
     override val emoji = "🎁"
   }
 
-  object FakeProfileState :
-      TestProfileState(
+  object FakeProfileScreenState :
+      TestProfileScreenState(
           List(20) { ChessMatch("Konor($it)", Win(CHECKMATE), 27) },
       )
 
   @Test
   fun profile_isDisplayed() {
-    rule.setContent { ProfileScreen(FakeProfileState) }
+    rule.setContent { ProfileScreen(FakeProfileScreenState) }
 
-    rule.onNodeWithText(FakeProfileState.email).assertExists()
-    rule.onNodeWithText(FakeProfileState.name).assertExists()
-    rule.onNodeWithText(FakeProfileState.emoji).assertExists()
+    rule.onNodeWithText(FakeProfileScreenState.email).assertExists()
+    rule.onNodeWithText(FakeProfileScreenState.name).assertExists()
+    rule.onNodeWithText(FakeProfileScreenState.emoji).assertExists()
   }
 
   @Test
   fun counts_areDisplayed() {
-    rule.setContent { ProfileScreen(FakeProfileState) }
+    rule.setContent { ProfileScreen(FakeProfileScreenState) }
 
-    rule.onNodeWithText(FakeProfileState.pastGamesCount.toString()).assertExists()
-    rule.onNodeWithText(FakeProfileState.puzzlesCount.toString()).assertExists()
+    rule.onNodeWithText(FakeProfileScreenState.pastGamesCount.toString()).assertExists()
+    rule.onNodeWithText(FakeProfileScreenState.puzzlesCount.toString()).assertExists()
   }
 
   @Test
   fun scroll_makesMatchesVisible() {
-    rule.setContentWithLocalizedStrings { ProfileScreen(FakeProfileState) }
+    rule.setContentWithLocalizedStrings { ProfileScreen(FakeProfileScreenState) }
 
     rule.onRoot().performTouchInput { swipeUp() }
     rule.onAllNodesWithText("Konor", substring = true)
@@ -67,7 +67,7 @@ class ProfileScreenTest {
       match: ChessMatch,
       expected: LocalizedStrings.() -> String,
   ) {
-    val state = TestProfileState(List(20) { match })
+    val state = TestProfileScreenState(List(20) { match })
     val strings = rule.setContentWithLocalizedStrings { ProfileScreen(state) }
 
     rule.onRoot().performTouchInput { swipeUp() }
