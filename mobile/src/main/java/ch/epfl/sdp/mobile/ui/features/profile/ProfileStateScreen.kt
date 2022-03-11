@@ -136,9 +136,9 @@ fun ProfilePicture(
         onClick = state::onEditClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
+                .shadow(2.dp, CircleShape)
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
-                .shadow(2.dp, CircleShape)
                 .size(40.dp),
     ) { Icon(Icons.Default.Edit, "Edit profile icon") }
   }
