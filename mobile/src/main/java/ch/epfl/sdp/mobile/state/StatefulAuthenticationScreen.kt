@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 fun StatefulAuthenticationScreen(
     modifier: Modifier = Modifier,
 ) {
-  val authentication = LocalAuthenticationApi.current
+  val authentication = LocalAuthenticationFacade.current
   val strings = LocalLocalizedStrings.current
   val scope = rememberCoroutineScope()
   val state =
