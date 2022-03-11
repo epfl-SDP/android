@@ -16,7 +16,7 @@ class AuthenticatedUser(
     private val firestore: Store,
     private val user: User,
     document: ProfileDocument?,
-) : ch.epfl.sdp.mobile.application.authentication.AuthenticationUser, Profile by document.toProfile() {
+) : AuthenticationUser, Profile by document.toProfile() {
 
   override val emoji: String = document?.emoji ?: "😎"
 
