@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.*
  */
 class AuthenticationFacade(private val auth: Auth, private val store: Store) {
 
-    val currentUser: Flow<AuthenticationUser>
+  val currentUser: Flow<AuthenticationUser>
     get() =
         auth.currentUser.flatMapLatest { it.profileFlow(store) }.map {
           it?.toAuthenticatedUser(auth, store) ?: NotAuthenticatedUser

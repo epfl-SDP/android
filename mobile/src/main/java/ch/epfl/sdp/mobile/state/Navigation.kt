@@ -50,8 +50,8 @@ private fun rememberUserState(): State<UserState> {
 }
 
 /**
- * Maps the given [AuthenticationUser] to the appropriate [UserState], which will be used at the root of
- * navigation.
+ * Maps the given [AuthenticationUser] to the appropriate [UserState], which will be used at the
+ * root of navigation.
  *
  * @receiver the [AuthenticationUser] which is mapped.
  */
