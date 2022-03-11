@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.test.application
 import ch.epfl.sdp.mobile.application.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.AuthenticationFacade.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.application.AuthenticationFacade.AuthenticationResult.Success
-import ch.epfl.sdp.mobile.application.AuthenticationFacade.User
 import ch.epfl.sdp.mobile.application.AuthenticationFacade.User.Authenticated
 import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.application.firebase.FirebaseAuthenticationFacade
@@ -169,9 +168,9 @@ class FirebaseAuthenticationFacadeTest {
     val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
 
     userAuthenticated.update {
-      emoji = "🇺🇦"
-      backgroundColor = ProfileColor.Pink
-      name = "MyNewName"
+      emoji("🇺🇦")
+      backgroundColor(ProfileColor.Pink)
+      name("MyNewName")
     }
 
     val updatedUser = api.currentUser.filterIsInstance<Authenticated>().first()
@@ -263,31 +262,6 @@ class FirebaseAuthenticationFacadeTest {
     assertThat(profile.name).isEqualTo("")
     assertThat(profile.emoji).isEqualTo("😎")
     assertThat(profile.backgroundColor).isEqualTo(ProfileColor.Pink)
-  }
-
-  @Test
-  fun gettingFromAuthenticatedUserUpdateScopeThrowsError() = runTest {
-    val auth = mockk<FirebaseAuth>()
-    val user = mockk<FirebaseUser>()
-    mockAuthCurrentUser(auth, user)
-
-    val firestore = emptyStore()
-    val api = FirebaseAuthenticationFacade(auth, firestore)
-
-    every { user.uid } returns "uid"
-    every { user.email } returns "email@email.com"
-
-    val userAuthenticated = api.currentUser.filterIsInstance<Authenticated>().first()
-
-    val canGetName = userAuthenticated.update { this.name }
-
-    val canGetEmoji = userAuthenticated.update { this.emoji }
-
-    val canGetColor = userAuthenticated.update { this.backgroundColor }
-
-    assertThat(canGetName).isEqualTo(false)
-    assertThat(canGetEmoji).isEqualTo(false)
-    assertThat(canGetColor).isEqualTo(false)
   }
 
   private fun mockAuthCurrentUser(

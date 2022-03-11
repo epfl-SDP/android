@@ -21,9 +21,9 @@ interface AuthenticationFacade {
     interface Authenticated : User, Profile {
 
       interface UpdateScope {
-        var emoji: String?
-        var backgroundColor: ProfileColor?
-        var name: String?
+        fun emoji(emoji: String)
+        fun backgroundColor(color: ProfileColor?)
+        fun name(name: String)
       }
 
       /** The email of the currently logged in user. */

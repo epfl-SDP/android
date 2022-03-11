@@ -33,25 +33,21 @@ class FirebaseAuthenticatedUser(
 
   private data class UpdateScopeAdapter(private val scope: DocumentEditScope) : UpdateScope {
 
-    override var emoji: String?
-      get() = error("Not supported.")
-      set(value) {
-        scope["emoji"] = value
-      }
-    override var backgroundColor: ProfileColor?
-      get() = error("Not supported.")
-      set(value) {
-        scope["backgroundColor"] =
-            when (value) {
-              ProfileColor.Pink -> "pink"
-              else -> null
-            }
-      }
-    override var name: String?
-      get() = error("Not supported.")
-      set(value) {
-        scope["name"] = value
-      }
+    override fun emoji(emoji: String) {
+      scope["emoji"] = emoji
+    }
+
+    override fun backgroundColor(color: ProfileColor?) {
+      scope["backgroundColor"] =
+          when (color) {
+            ProfileColor.Pink -> "pink"
+            else -> null
+          }
+    }
+
+    override fun name(name: String) {
+      scope["name"] = name
+    }
   }
 
   override suspend fun update(block: UpdateScope.() -> Unit): Boolean {
