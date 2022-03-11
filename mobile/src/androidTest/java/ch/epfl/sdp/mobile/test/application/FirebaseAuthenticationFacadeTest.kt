@@ -27,15 +27,6 @@ import org.junit.Test
 class FirebaseAuthenticationFacadeTest {
 
   @Test
-  fun currentUser_startsWithLoading() = runTest {
-    val auth = mockk<FirebaseAuth>()
-    val firestore = emptyStore()
-    val api = FirebaseAuthenticationFacade(auth, firestore)
-
-    assertThat(api.currentUser.first()).isEqualTo(User.Loading)
-  }
-
-  @Test
   fun signIn_withSuccessfulAuthResult_returnsSuccess() = runTest {
     val auth = mockk<FirebaseAuth>()
     val result = mockk<AuthResult>()

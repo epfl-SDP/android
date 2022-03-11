@@ -28,10 +28,10 @@ class FirebaseAuthenticationFacade(
 ) : AuthenticationFacade {
 
   override val currentUser: Flow<User> =
-      auth.currentUserFlow()
-          .flatMapLatest { it?.profileFlow(firestore) ?: flowOf(null) }
-          .map { user -> user?.toAuthenticatedUser(auth, firestore) ?: NotAuthenticated }
-          .onStart { emit(User.Loading) }
+      auth.currentUserFlow().flatMapLatest { it?.profileFlow(firestore) ?: flowOf(null) }.map { user
+        ->
+        user?.toAuthenticatedUser(auth, firestore) ?: NotAuthenticated
+      }
 
   /**
    * Runs the [block] and maps the resulting [AuthResult] to an [AuthenticationResult].

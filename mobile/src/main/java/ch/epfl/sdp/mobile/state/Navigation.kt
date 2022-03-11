@@ -55,7 +55,6 @@ private fun rememberUserState(): State<UserState> {
  */
 private fun User.toUserState(): UserState =
     when (this) {
-      User.Loading -> UserState.Loading
       User.NotAuthenticated -> UserState.NotAuthenticated
       is User.Authenticated -> UserState.Authenticated(this)
     }

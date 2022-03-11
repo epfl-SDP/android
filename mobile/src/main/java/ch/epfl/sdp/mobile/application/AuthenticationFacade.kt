@@ -14,9 +14,6 @@ interface AuthenticationFacade {
    */
   sealed interface User {
 
-    /** Indicates that a [User] may or may not be present, but it's not clear yet. */
-    object Loading : User
-
     /** Indicates that no [User] is currently authenticated. */
     object NotAuthenticated : User
 
