@@ -27,7 +27,7 @@ class StatefulFollowingScreenTest {
                   override val name: String
                     get() = "Hans Peter"
                   override val backgroundColor: ProfileColor
-                    get() = ProfileColor.Pink
+                    get() = ProfileColor.Default
                 }))
 
     rule.setContent { StatefulFollowingScreen(mockUser) }

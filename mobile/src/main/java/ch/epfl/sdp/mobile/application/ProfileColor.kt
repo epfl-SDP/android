@@ -1,20 +1,20 @@
 package ch.epfl.sdp.mobile.application
 
-import androidx.compose.ui.graphics.Color
-
 /**
- * An enumeration representing the different colors which can be used as the background of a profile
- * picture.
+ * A class representing the different colors that the profile picture background might take. It may
+ * contain arbitrary [String], but some default values are provided in [ProfileColor.Companion].
+ *
+ * @constructor creates a new [ProfileColor].
+ * @param hex the string representation of the color.
  */
-enum class ProfileColor {
-  Pink,
-  Blue;
+data class ProfileColor(val hex: String) {
 
-  // TODO : This belongs to a separate package.
-  fun getColorForProfile(): Color {
-    return when (this) {
-      Pink -> Color.Magenta
-      Blue -> Color.Blue
-    }
+  companion object {
+
+    /** A soft orange value. */
+    val Orange = ProfileColor("#FFF8A68D")
+
+    /** A default color. */
+    val Default = Orange
   }
 }

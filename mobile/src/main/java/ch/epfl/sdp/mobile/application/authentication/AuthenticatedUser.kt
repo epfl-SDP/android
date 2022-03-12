@@ -18,32 +18,11 @@ class AuthenticatedUser(
     document: ProfileDocument?,
 ) : AuthenticationUser, Profile by document.toProfile() {
 
-  override val emoji: String = document?.emoji ?: "😎"
-
-  override val backgroundColor: ProfileColor =
-      when (document?.backgroundColor) {
-        // TODO : Add more colors.
-        "pink" -> ProfileColor.Pink
-        else -> ProfileColor.Pink
-      }
-
-  override val name: String = document?.name ?: ""
-
   val email: String = user.email ?: ""
 
   class UpdateScope(private val scope: DocumentEditScope) {
-
     fun emoji(emoji: String): Unit = scope.set("emoji", emoji)
-
-    // TODO : De-uglify this.
-    fun backgroundColor(color: ProfileColor?) {
-      scope["backgroundColor"] =
-          when (color) {
-            ProfileColor.Pink -> "pink"
-            else -> null
-          }
-    }
-
+    fun backgroundColor(color: ProfileColor?) = scope.set("backgroundColor", color?.hex)
     fun name(name: String) = scope.set("name", name)
   }
 
@@ -72,6 +51,6 @@ private fun ProfileDocument?.toProfile(): Profile {
     override val emoji: String = this@toProfile?.emoji ?: "😎"
     override val name: String = this@toProfile?.name ?: ""
     override val backgroundColor: ProfileColor =
-        ProfileColor.Pink // TODO: Fix these proliferating colors
+        this@toProfile?.backgroundColor?.let(::ProfileColor) ?: ProfileColor.Default
   }
 }

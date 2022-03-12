@@ -102,14 +102,14 @@ class AuthenticationFacadeTest {
 
     userAuthenticated.update {
       emoji("🇺🇦")
-      backgroundColor(ProfileColor.Pink)
+      backgroundColor(ProfileColor.Orange)
       name("MyNewName")
     }
 
     val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     assertThat(updatedUser.name).isEqualTo("MyNewName")
     assertThat(updatedUser.emoji).isEqualTo("🇺🇦")
-    assertThat(updatedUser.backgroundColor).isEqualTo(ProfileColor.Pink)
+    assertThat(updatedUser.backgroundColor).isEqualTo(ProfileColor.Orange)
   }
 
   @Test
@@ -126,6 +126,6 @@ class AuthenticationFacadeTest {
     val profile = following[0]
     assertThat(profile.name).isEqualTo("")
     assertThat(profile.emoji).isEqualTo("😎")
-    assertThat(profile.backgroundColor).isEqualTo(ProfileColor.Pink)
+    assertThat(profile.backgroundColor).isEqualTo(ProfileColor.Default)
   }
 }

@@ -17,10 +17,10 @@ class SocialScreenTest {
   private class SnapshotSocialScreenState : FollowingState {
     override val players: List<Person> =
         listOf(
-            createPerson(ProfileColor.Pink, "Toto", ":)"),
-            createPerson(ProfileColor.Pink, "John", ":3"),
-            createPerson(ProfileColor.Pink, "Travis", ";)"),
-            createPerson(ProfileColor.Pink, "Cirrus", "TwT"))
+            createPerson(ProfileColor.Default, "Toto", ":)"),
+            createPerson(ProfileColor.Default, "John", ":3"),
+            createPerson(ProfileColor.Default, "Travis", ";)"),
+            createPerson(ProfileColor.Default, "Cirrus", "TwT"))
 
     companion object {
       fun createPerson(bgColor: ProfileColor, name: String, emoji: String): Person {
@@ -46,7 +46,7 @@ class SocialScreenTest {
 
     val p =
         object : Person {
-          override val backgroundColor: ProfileColor = ProfileColor.Pink
+          override val backgroundColor: ProfileColor = ProfileColor.Default
           override val name: String = "Toto"
           override val emoji: String = ":3"
         }
@@ -60,7 +60,7 @@ class SocialScreenTest {
 
     val p =
         object : Person {
-          override val backgroundColor: ProfileColor = ProfileColor.Pink
+          override val backgroundColor: ProfileColor = ProfileColor.Default
           override val name: String = "Toto"
           override val emoji: String = ":3"
         }

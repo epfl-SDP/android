@@ -11,11 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.state.toColor
 
 /**
  * This screen display all register user of the app
@@ -42,19 +41,6 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FriendCard(person: Person, modifier: Modifier = Modifier) {
-  /**
-   * This function transforme the user profile color into a [Color] that can be used in a composable
-   *
-   * TODO : Need to define how to stock the color in the class [Person]
-   *
-   * @param color the profile image background defined by the user
-   */
-  fun getBackgroundRGB(color: ProfileColor): Color {
-    if (color == ProfileColor.Pink) {
-      return Color.Magenta
-    }
-    return Color.Black
-  }
 
   ListItem(
       modifier = modifier.padding(vertical = 8.dp),
@@ -67,9 +53,7 @@ fun FriendCard(person: Person, modifier: Modifier = Modifier) {
       icon = {
         Box(
             modifier =
-                Modifier.size(40.dp)
-                    .clip(CircleShape)
-                    .background(getBackgroundRGB(person.backgroundColor)),
+                Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
         ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
       },
       trailing = {

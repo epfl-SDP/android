@@ -16,7 +16,7 @@ class AuthenticatedUserProfileScreenState(
   override val pastGamesCount = 0
   override val puzzlesCount = 0
   override val matches = emptyList<ChessMatch>()
-  override val backgroundColor = ProfileColor.Pink
+  override val backgroundColor = ProfileColor.Orange
   override val name = user.name
   override val emoji = user.emoji
 

@@ -26,7 +26,7 @@ class ProfileScreenTest {
     override val puzzlesCount = 20
     override fun onSettingsClick() = Unit
     override fun onEditClick() = Unit
-    override val backgroundColor = ProfileColor.Pink
+    override val backgroundColor = ProfileColor.Default
     override val name = "Example"
     override val emoji = "🎁"
   }
