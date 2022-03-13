@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.test.ui.social
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.social.*
 import org.junit.Rule
@@ -14,15 +14,15 @@ class SearchResultTest {
   private class SnapshotSearchState : SearchState {
     override val players: List<Person> =
         listOf(
-            createPerson(ProfileColor.Pink, "Toto", ":)"),
-            createPerson(ProfileColor.Pink, "John", ":3"),
-            createPerson(ProfileColor.Pink, "Travis", ";)"),
-            createPerson(ProfileColor.Pink, "Cirrus", "TwT"))
+            createPerson(Color.Default, "Toto", ":)"),
+            createPerson(Color.Default, "John", ":3"),
+            createPerson(Color.Default, "Travis", ";)"),
+            createPerson(Color.Default, "Cirrus", "TwT"))
 
     companion object {
-      fun createPerson(bgColor: ProfileColor, name: String, emoji: String): Person {
+      fun createPerson(bgColor: Color, name: String, emoji: String): Person {
         return object : Person {
-          override val backgroundColor: ProfileColor = bgColor
+          override val backgroundColor: Color = bgColor
           override val name: String = name
           override val emoji: String = emoji
         }
