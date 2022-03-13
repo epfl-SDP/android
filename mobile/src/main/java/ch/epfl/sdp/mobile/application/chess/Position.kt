@@ -25,11 +25,7 @@ data class Position(val x: Int, val y: Int) {
 
     /** Returns a [Sequence] with all the valid [Position] within a board. */
     fun all(): Sequence<Position> = sequence {
-      for (i in AxisBounds) {
-        for (j in AxisBounds) {
-          yield(Position(i, j))
-        }
-      }
+      AxisBounds.forEach { i -> AxisBounds.forEach { j -> yield(Position(i, j)) } }
     }
   }
 }
