@@ -1,6 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.game
-
-import ch.epfl.sdp.mobile.application.chess.Board
+package ch.epfl.sdp.mobile.application.chess
 
 /**
  * An interface representing the current [Game], which contains a [Board] of pieces and on which

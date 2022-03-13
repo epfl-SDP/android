@@ -1,8 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.game
-
-import ch.epfl.sdp.mobile.application.chess.Color
-import ch.epfl.sdp.mobile.application.chess.Delta
-import ch.epfl.sdp.mobile.application.chess.Position
+package ch.epfl.sdp.mobile.application.chess
 
 /**
  * An interface representing the next steps that could be performed on an existing [Game] instance.
