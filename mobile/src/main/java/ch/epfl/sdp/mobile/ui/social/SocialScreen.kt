@@ -29,9 +29,9 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
     LazyColumn(Modifier.testTag("friendList")) {
       items(state.players) { friend ->
-        SocialCard(
+        PersonCard(
             person = friend,
-            {
+            trailingAction = {
               OutlinedButton(
                   onClick = { /*TODO*/},
                   shape = RoundedCornerShape(24.dp),

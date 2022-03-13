@@ -7,8 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,16 +25,15 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
 fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
   LazyColumn(modifier) {
     items(state.players) { player ->
-      SocialCard(
+      PersonCard(
           person = player,
-          {
+          trailingAction = {
             OutlinedButton(
                 onClick = { /*TODO*/},
                 shape = RoundedCornerShape(24.dp),
             ) {
               Icon(
-                  PawniesIcons.Add,
-                  contentDescription = LocalLocalizedStrings.current.socialFollow)
+                  PawniesIcons.Add, contentDescription = LocalLocalizedStrings.current.socialFollow)
 
               Text(
                   modifier = Modifier.padding(horizontal = 8.dp),
