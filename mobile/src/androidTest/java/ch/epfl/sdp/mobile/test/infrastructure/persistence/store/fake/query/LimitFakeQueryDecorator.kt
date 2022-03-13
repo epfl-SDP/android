@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
-import kotlin.reflect.KClass
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -11,11 +10,11 @@ import kotlinx.coroutines.flow.map
  * @param query the query to decorate.
  * @param count the number of items to limit the query to.
  */
-class LimitQueryDecorator(
-    private val query: Query,
+class LimitFakeQueryDecorator(
+    private val query: FakeQuery,
     private val count: Long,
-) : AbstractQuery() {
+) : FakeQuery {
 
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<List<T?>> =
-      query.asFlow(valueClass).map { it.take(count.toInt()) }
+  override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> =
+      query.asQuerySnapshotFlow().map { it.copy(documents = it.documents.take(count.toInt())) }
 }

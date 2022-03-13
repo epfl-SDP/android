@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.SectionSocial
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -37,7 +38,7 @@ import ch.epfl.sdp.mobile.ui.social.Win
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    state: ProfileState,
+    state: ProfileScreenState,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -101,7 +102,7 @@ private fun chooseSubtitle(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
+fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
   Column(
       modifier = modifier,
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,12 +124,11 @@ fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
  */
 @Composable
 fun ProfilePicture(
-    state: ProfileState,
+    state: ProfileScreenState,
     modifier: Modifier = Modifier,
 ) {
   Box(
-      modifier =
-          modifier.size(118.dp).background(state.backgroundColor.getColorForProfile(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
       contentAlignment = Alignment.Center,
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
