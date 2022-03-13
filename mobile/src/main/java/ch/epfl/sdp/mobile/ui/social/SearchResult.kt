@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.Add
+import ch.epfl.sdp.mobile.ui.PawniesIcons
 
 /**
  * This composable display all the players that are in the [SearchState]. This composable also allow
@@ -33,7 +35,7 @@ fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
                 shape = RoundedCornerShape(24.dp),
             ) {
               Icon(
-                  Icons.Default.Add,
+                  PawniesIcons.Add,
                   contentDescription = LocalLocalizedStrings.current.socialFollow)
 
               Text(

@@ -1,10 +1,7 @@
 package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 
 /** Returns the [PawniesIcons] from which Pawnies icons are queried. */
 val Icons.Branded: PawniesIcons
@@ -28,3 +25,6 @@ val PawniesIcons.SectionSocial
 /** An icon for the settings section. */
 val PawniesIcons.SectionSettings
   get() = Icons.Default.Settings
+
+val PawniesIcons.Add
+  get() = Icons.Default.Add
