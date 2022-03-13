@@ -20,6 +20,15 @@ class FirestoreQuery(
 
   override fun limit(count: Long): Query = FirestoreQuery(reference.limit(count))
 
+  override fun whereEquals(field: String, value: Any?): Query =
+      FirestoreQuery(reference.whereEqualTo(field, value))
+
+  override fun whereNotEquals(field: String, value: Any?): Query =
+      FirestoreQuery(reference.whereNotEqualTo(field, value))
+
+  override fun whereArrayContains(field: String, value: Any): Query =
+      FirestoreQuery(reference.whereArrayContains(field, value))
+
   override fun asQuerySnapshotFlow(): Flow<QuerySnapshot> =
       callbackFlow<QuerySnapshot> {
             val registration =

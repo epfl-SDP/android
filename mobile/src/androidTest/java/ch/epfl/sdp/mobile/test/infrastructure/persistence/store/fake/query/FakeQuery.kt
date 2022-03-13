@@ -2,6 +2,8 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.WhereFakeQueryDecorator.Filter.where
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.WhereFakeQueryDecorator.Filter.whereArray
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -16,5 +18,15 @@ import kotlinx.coroutines.flow.Flow
  */
 interface FakeQuery : Query {
   override fun limit(count: Long): FakeQuery = LimitFakeQueryDecorator(this, count)
+
+  override fun whereEquals(field: String, value: Any?): FakeQuery =
+      WhereFakeQueryDecorator(this, where(field) { it == value })
+
+  override fun whereNotEquals(field: String, value: Any?): FakeQuery =
+      WhereFakeQueryDecorator(this, where(field) { it != value })
+
+  override fun whereArrayContains(field: String, value: Any): FakeQuery =
+      WhereFakeQueryDecorator(this, whereArray(field) { it.contains(value) })
+
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot>
 }

@@ -9,11 +9,14 @@ import org.junit.Test
 
 class DslTest {
 
-  data class User(val name: String? = null)
+  data class User(
+      val name: String? = null,
+      val friends: List<String>? = null,
+  )
 
   private val alexandre = User("Alexandre")
-  private val chau = User("Chau")
-  private val matthieu = User("Matthieu")
+  private val chau = User("Chau", listOf("Matthieu"))
+  private val matthieu = User("Matthieu", listOf("Chau"))
 
   @Test
   fun missingDocument_isEmpty() = runTest {
@@ -124,5 +127,46 @@ class DslTest {
     }
     val users = store.collection("users").limit(2).asFlow<User>().first()
     assertThat(users).hasSize(2)
+  }
+
+  @Test
+  fun whereEquals_works() = runTest {
+    val store = buildStore {
+      collection("users") {
+        document("alexandre", alexandre)
+        document("chau", chau)
+        document("matthieu", matthieu)
+      }
+    }
+    val users = store.collection("users").whereEquals("name", "Alexandre").asFlow<User>().first()
+    assertThat(users.single()).isEqualTo(alexandre)
+  }
+
+  @Test
+  fun whereNotEquals_works() = runTest {
+    val store = buildStore {
+      collection("users") {
+        document("alexandre", alexandre)
+        document("chau", chau)
+        document("matthieu", matthieu)
+      }
+    }
+    val users = store.collection("users").whereNotEquals("name", "Alexandre").asFlow<User>().first()
+    assertThat(users.size).isEqualTo(2)
+    assertThat(users.toSet()).containsExactly(chau, matthieu)
+  }
+
+  @Test
+  fun whereArrayContains_works() = runTest {
+    val store = buildStore {
+      collection("users") {
+        document("alexandre", alexandre)
+        document("chau", chau)
+        document("matthieu", matthieu)
+      }
+    }
+    val users =
+        store.collection("users").whereArrayContains("friends", "Matthieu").asFlow<User>().first()
+    assertThat(users.single()).isEqualTo(chau)
   }
 }
