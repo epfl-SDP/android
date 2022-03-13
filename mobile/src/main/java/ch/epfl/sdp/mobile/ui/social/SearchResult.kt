@@ -40,7 +40,7 @@ fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
 
               Text(
                   modifier = Modifier.padding(horizontal = 8.dp),
-                  text = LocalLocalizedStrings.current.socialFollow.uppercase(),
+                  text = LocalLocalizedStrings.current.socialFollow,
               )
             }
           })

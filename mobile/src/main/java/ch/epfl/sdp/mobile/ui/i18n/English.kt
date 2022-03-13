@@ -28,8 +28,8 @@ object English : LocalizedStrings {
   override val profileSettings = "Settings"
 
   override val socialFollowingTitle = "Following"
-  override val socialPerformPlay = "Play"
-  override val socialFollow = "Follow"
+  override val socialPerformPlay = "Play".uppercase()
+  override val socialFollow = "Follow".uppercase()
 
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"

@@ -38,7 +38,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
               ) {
                 Text(
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    text = LocalLocalizedStrings.current.socialPerformPlay.uppercase(),
+                    text = LocalLocalizedStrings.current.socialPerformPlay,
                 )
               }
             })
