@@ -27,7 +27,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
-    LazyColumn(Modifier.testTag("friendList")) {
+    LazyColumn(Modifier.testTag("friendList"), verticalArrangement = Arrangement.spacedBy(16.dp)) {
       items(state.players) { friend ->
         PersonCard(
             person = friend,
@@ -37,7 +37,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
                   shape = RoundedCornerShape(24.dp),
               ) {
                 Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
+                    modifier = Modifier.padding(start = 8.dp),
                     text = LocalLocalizedStrings.current.socialPerformPlay,
                 )
               }

@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.social
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,7 +24,7 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
  */
 @Composable
 fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
-  LazyColumn(modifier) {
+  LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(state.players) { player ->
       PersonCard(
           person = player,
@@ -36,7 +37,7 @@ fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
                   PawniesIcons.Add, contentDescription = LocalLocalizedStrings.current.socialFollow)
 
               Text(
-                  modifier = Modifier.padding(horizontal = 8.dp),
+                  modifier = Modifier.padding(start = 8.dp),
                   text = LocalLocalizedStrings.current.socialFollow,
               )
             }
