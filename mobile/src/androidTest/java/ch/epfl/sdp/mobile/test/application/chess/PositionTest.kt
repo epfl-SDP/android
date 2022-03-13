@@ -13,7 +13,7 @@ class PositionTest {
 
   @Test
   fun allPositions_areInBounds() {
-    val allInBounds = Position.all().fold(true) { inBounds, pos -> inBounds && pos.inBounds }
+    val allInBounds = Position.all().all(Position::inBounds)
     assertThat(allInBounds).isTrue()
   }
 

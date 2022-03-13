@@ -11,4 +11,12 @@ interface Board {
    * @return the [Piece] which was found.
    */
   operator fun get(position: Position): Piece?
+
+  /**
+   * Sets the given [Position] to the provided value.
+   *
+   * @param position the [Position] of the board at which the [Piece] is set.
+   * @param piece the [Piece] which is set at the given position.
+   */
+  fun set(position: Position, piece: Piece?): Board
 }

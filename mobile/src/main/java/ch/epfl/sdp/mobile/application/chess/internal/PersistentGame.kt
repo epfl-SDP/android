@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.application.chess.internal
 
-import ch.epfl.sdp.mobile.application.chess.Board
 import ch.epfl.sdp.mobile.application.chess.Color
 import ch.epfl.sdp.mobile.application.chess.Game
 import ch.epfl.sdp.mobile.application.chess.NextStep
@@ -13,13 +12,21 @@ import ch.epfl.sdp.mobile.application.chess.NextStep
  */
 data class PersistentGame(
     val nextPlayer: Color,
+    override val board: PersistentBoard,
 ) : Game {
 
-  override val board: Board
-    get() = EmptyBoard
-
   override val nextStep: NextStep
-    get() = NextStep.MovePiece(nextPlayer) { _, _ -> copy(nextPlayer = nextPlayer.other()) }
+    get() =
+        NextStep.MovePiece(nextPlayer) { from, delta ->
+          when (val to = from + delta) {
+            null -> this // Invalid move, which we can simply skip.
+            else ->
+                copy(
+                    nextPlayer = nextPlayer.other(),
+                    board = board.set(to, board[from]).set(from, null),
+                )
+          }
+        }
 }
 
 /** Returns the opposite [Color]. */
