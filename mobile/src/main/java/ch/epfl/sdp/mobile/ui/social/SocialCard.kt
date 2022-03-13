@@ -15,11 +15,10 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.ProfileColor
 
 /**
- * This card is used to display player information in the Social screen, The associate button is
- * different according to [mode] value
+ * This card is used to display player information in the Social screen
  *
  * @param person The [Person] contains the information that need to be displayed
- * @param mode [SocialMode] define how the button visual and actions
+ * @param trailingAction Define the trailing action in the card
  * @param modifier the [Modifier] for the composable
  */
 @OptIn(ExperimentalMaterialApi::class)

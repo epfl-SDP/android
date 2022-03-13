@@ -8,11 +8,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.PawniesTheme
 
 /**
  * This screen display all register user of the app
@@ -48,26 +45,4 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
       }
     }
   }
-}
-
-@Preview
-@Composable
-fun test() {
-  val p =
-      object : Person {
-        override val backgroundColor: ProfileColor
-          get() = ProfileColor.Pink
-        override val name: String
-          get() = "Toto"
-        override val emoji: String
-          get() = ";3"
-      }
-
-  val state =
-      object : FollowingState {
-        override val players: List<Person>
-          get() = List(10) { p }
-      }
-
-  PawniesTheme { SocialScreen(state = state) }
 }
