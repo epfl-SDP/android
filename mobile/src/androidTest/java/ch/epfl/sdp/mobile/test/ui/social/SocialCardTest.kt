@@ -3,6 +3,9 @@ package ch.epfl.sdp.mobile.test.ui.social
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.ui.i18n.English.socialFollow
+import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformPlay
 import ch.epfl.sdp.mobile.ui.social.FriendCard
 import ch.epfl.sdp.mobile.ui.social.Person
 import ch.epfl.sdp.mobile.ui.social.SocialMode
@@ -31,5 +34,23 @@ class SocialCardTest {
     rule.setContent { FriendCard(person = SnapshotFriendCard(), SocialMode.Play) }
 
     rule.onNodeWithText(":3").assertExists()
+  }
+
+  @Test
+  fun card_showPlayWhenPlayMode() {
+    rule.setContentWithLocalizedStrings {
+      FriendCard(person = SnapshotFriendCard(), SocialMode.Play)
+    }
+
+    rule.onNodeWithText(socialPerformPlay.uppercase()).assertExists()
+  }
+
+  @Test
+  fun card_showPlayWhenFollowMode() {
+    rule.setContentWithLocalizedStrings {
+      FriendCard(person = SnapshotFriendCard(), SocialMode.Follow)
+    }
+
+    rule.onNodeWithText(socialFollow.uppercase()).assertExists()
   }
 }
