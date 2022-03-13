@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.AbstractQuery
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.fromObject
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine

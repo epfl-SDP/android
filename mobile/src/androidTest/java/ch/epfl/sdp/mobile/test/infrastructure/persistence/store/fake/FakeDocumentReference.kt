@@ -5,6 +5,8 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.fromObject
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.toObject
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
