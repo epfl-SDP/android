@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.fromObject
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +20,8 @@ class FakeDocumentReference : DocumentReference, CollectionBuilder {
   override fun collection(path: String): CollectionReference =
       collections.getOrPut(path) { FakeCollectionReference() }
 
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?> =
-      record.map { it?.toObject(valueClass) }
+  override fun asDocumentSnapshotFlow(): Flow<FakeDocumentSnapshot?> =
+      record.map { FakeDocumentSnapshot(it) }
 
   override suspend fun delete() = record.update { null }
 
