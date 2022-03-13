@@ -22,7 +22,7 @@ class HomeActivity : ComponentActivity() {
     setContent {
       PawniesTheme {
         ProvideLocalizedStrings {
-          ProvideApis(
+          ProvideFacades(
               authentication = authentication,
           ) { Navigation() }
         }
