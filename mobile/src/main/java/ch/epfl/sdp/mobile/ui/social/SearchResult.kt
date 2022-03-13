@@ -1,9 +1,18 @@
 package ch.epfl.sdp.mobile.ui.social
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 
 /**
  * This composable display all the players that are in the [SearchState]. This composable also allow
@@ -15,6 +24,24 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
   LazyColumn(modifier) {
-    items(state.players) { player -> SocialCard(person = player, mode = SocialMode.Follow) }
+    items(state.players) { player ->
+      SocialCard(
+          person = player,
+          {
+            OutlinedButton(
+                onClick = { /*TODO*/},
+                shape = RoundedCornerShape(24.dp),
+            ) {
+              Icon(
+                  Icons.Default.Add,
+                  contentDescription = LocalLocalizedStrings.current.socialFollow)
+
+              Text(
+                  modifier = Modifier.padding(horizontal = 8.dp),
+                  text = LocalLocalizedStrings.current.socialFollow.uppercase(),
+              )
+            }
+          })
+    }
   }
 }

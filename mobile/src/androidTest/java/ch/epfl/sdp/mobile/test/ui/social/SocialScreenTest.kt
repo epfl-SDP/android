@@ -49,4 +49,14 @@ class SocialScreenTest {
 
     rule.onNodeWithTag("friendList").onChildren().assertCountEquals(4)
   }
+
+  @Test
+  fun card_hasPlayButton() {
+
+    val state = SnapshotSocialScreenState()
+
+    val strings = rule.setContentWithLocalizedStrings { SocialScreen(state = state) }
+
+    rule.onAllNodesWithText(strings.socialPerformPlay.uppercase()).onFirst().assertExists()
+  }
 }

@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,9 +13,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.ProfileColor
-import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.social.SocialMode.Follow
-import ch.epfl.sdp.mobile.ui.social.SocialMode.Play
 
 /**
  * This card is used to display player information in the Social screen, The associate button is
@@ -30,7 +24,11 @@ import ch.epfl.sdp.mobile.ui.social.SocialMode.Play
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SocialCard(person: Person, mode: SocialMode, modifier: Modifier = Modifier) {
+fun SocialCard(
+    person: Person,
+    trailingAction: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
   /**
    * This function transform the user profile color into a [Color] that can be used in a composable
    *
@@ -61,30 +59,6 @@ fun SocialCard(person: Person, mode: SocialMode, modifier: Modifier = Modifier) 
                     .background(getBackgroundRGB(person.backgroundColor)),
         ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
       },
-      trailing = {
-        val onClickAction = // TODO : Define the button action
-            when (mode) {
-              Play -> {}
-              Follow -> {}
-            }
-
-        val buttonString =
-            when (mode) {
-              Play -> LocalLocalizedStrings.current.socialPerformPlay.uppercase()
-              Follow -> LocalLocalizedStrings.current.socialFollow.uppercase()
-            }
-
-        OutlinedButton(
-            onClick = { onClickAction },
-            shape = RoundedCornerShape(24.dp),
-        ) {
-          if (mode == Follow) {
-            Icon(Icons.Default.Add, contentDescription = LocalLocalizedStrings.current.socialFollow)
-          }
-          Text(
-              modifier = Modifier.padding(horizontal = 8.dp),
-              text = buttonString,
-          )
-        }
-      })
+      trailing = { trailingAction() },
+  )
 }
