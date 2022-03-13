@@ -4,14 +4,14 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.AbstractQuery
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.FakeQuery
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.fromObject
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 
-class FakeCollectionReference : CollectionReference, DocumentBuilder, AbstractQuery() {
+class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery {
 
   private val documents = mutableMapOf<String, FakeDocumentReference>()
 
@@ -19,12 +19,9 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, AbstractQu
     return documents.getOrPut(path) { FakeDocumentReference() }
   }
 
-  // Casting is needed because combine(...) is inline <reified T>, and there is no KClass-based
-  // implementation of combine(...).
-  @Suppress("UNCHECKED_CAST")
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<List<T?>> {
-    val flows = documents.values.map { it.asFlow(valueClass) } as List<Flow<*>>
-    return combine(flows) { it.filterNotNull() } as Flow<List<T?>>
+  override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> {
+    val flows = documents.values.map { it.asDocumentSnapshotFlow() }
+    return combine(flows) { FakeQuerySnapshot(it.filterNotNull()) }
   }
 
   override fun <T : Any> document(
