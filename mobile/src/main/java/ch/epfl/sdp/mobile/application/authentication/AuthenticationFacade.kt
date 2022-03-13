@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.*
  */
 class AuthenticationFacade(private val auth: Auth, private val store: Store) {
 
+  /** A [Flow] of the current [AuthenticationUser]. */
   val currentUser: Flow<AuthenticationUser>
     get() =
         auth.currentUser.flatMapLatest { it.profileFlow(store) }.map {
@@ -38,11 +39,24 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
     }
   }
 
+  /**
+   * Attempts to sign in with the provided email and password.
+   *
+   * @param email the email to use for authentication.
+   * @param password the password to use for authentication.
+   */
   suspend fun signInWithEmail(
       email: String,
       password: String,
   ): AuthenticationResult = authenticate { auth.signInWithEmail(email, password) }
 
+  /**
+   * Attempts to sign up and create an account with the provided email and password.
+   *
+   * @param email the email to use for authentication.
+   * @param name the name to use for the user account.
+   * @param password the password to use for authentication.
+   */
   suspend fun signUpWithEmail(
       email: String,
       name: String,
