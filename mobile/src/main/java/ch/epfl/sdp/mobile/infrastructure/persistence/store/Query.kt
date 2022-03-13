@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store
 
-import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * An interface representing a query which is performed on the database. Queries return a list of
@@ -19,13 +19,11 @@ interface Query {
   fun limit(count: Long): Query
 
   /**
-   * Returns a [Flow] to all the values in the current query.
+   * Returns a [Flow] of all the snapshots for the current [Query].
    *
-   * @param valueClass the [KClass] of an item of the query.
-   * @param T the type of the document.
-   * @return the [Flow] of a [List] of the document values.
+   * @return the [Flow] of the [QuerySnapshot]s.
    */
-  fun <T : Any> asFlow(valueClass: KClass<T>): Flow<List<T?>>
+  fun asQuerySnapshotFlow(): Flow<QuerySnapshot>
 }
 
 /**
@@ -34,4 +32,5 @@ interface Query {
  * @param T the type of the document.
  * @return the [Flow] of a [List] of the document values.
  */
-inline fun <reified T : Any> Query.asFlow(): Flow<List<T?>> = asFlow(T::class)
+inline fun <reified T : Any> Query.asFlow(): Flow<List<T?>> =
+    asQuerySnapshotFlow().map { it.toObjects(T::class) }

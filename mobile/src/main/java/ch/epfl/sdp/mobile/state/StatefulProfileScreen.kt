@@ -6,12 +6,12 @@ import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
-import ch.epfl.sdp.mobile.ui.profile.ProfileState
+import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 class AuthenticatedUserProfileScreenState(
     private val user: AuthenticationFacade.User.Authenticated,
-) : ProfileState {
+) : ProfileScreenState {
   override val email = user.email
   override val pastGamesCount = 0
   override val puzzlesCount = 0
