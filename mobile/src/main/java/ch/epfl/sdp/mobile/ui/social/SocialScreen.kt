@@ -27,7 +27,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
     LazyColumn(Modifier.testTag("friendList")) {
-      items(state.players) { friend -> FriendCard(person = friend, SocialMode.Play) }
+      items(state.players) { friend -> SocialCard(person = friend, SocialMode.Play) }
     }
   }
 }

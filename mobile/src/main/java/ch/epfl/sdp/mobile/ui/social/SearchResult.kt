@@ -15,6 +15,6 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SearchResultList(state: SearchState, modifier: Modifier = Modifier) {
   LazyColumn(modifier) {
-    items(state.players) { player -> FriendCard(person = player, mode = SocialMode.Follow) }
+    items(state.players) { player -> SocialCard(person = player, mode = SocialMode.Follow) }
   }
 }

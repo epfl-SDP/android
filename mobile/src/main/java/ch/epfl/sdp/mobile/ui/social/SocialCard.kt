@@ -30,7 +30,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialMode.Play
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FriendCard(person: Person, mode: SocialMode, modifier: Modifier = Modifier) {
+fun SocialCard(person: Person, mode: SocialMode, modifier: Modifier = Modifier) {
   /**
    * This function transform the user profile color into a [Color] that can be used in a composable
    *

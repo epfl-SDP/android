@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.ui.social
 
-/** This enum is used by the composable [FriendCard] to define its behavior */
+/** This enum is used by the composable [SocialCard] to define its behavior */
 enum class SocialMode {
 
   /** start a game with the player */

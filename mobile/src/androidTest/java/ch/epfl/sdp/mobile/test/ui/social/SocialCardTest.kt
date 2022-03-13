@@ -6,8 +6,8 @@ import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.English.socialFollow
 import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformPlay
-import ch.epfl.sdp.mobile.ui.social.FriendCard
 import ch.epfl.sdp.mobile.ui.social.Person
+import ch.epfl.sdp.mobile.ui.social.SocialCard
 import ch.epfl.sdp.mobile.ui.social.SocialMode
 import org.junit.Rule
 import org.junit.Test
@@ -24,14 +24,14 @@ class SocialCardTest {
   @Test
   fun card_displayCorrectName() {
 
-    rule.setContent { FriendCard(person = SnapshotFriendCard(), SocialMode.Play) }
+    rule.setContent { SocialCard(person = SnapshotFriendCard(), SocialMode.Play) }
 
     rule.onNodeWithText("Toto").assertExists()
   }
 
   @Test
   fun card_displayCorrectEmoji() {
-    rule.setContent { FriendCard(person = SnapshotFriendCard(), SocialMode.Play) }
+    rule.setContent { SocialCard(person = SnapshotFriendCard(), SocialMode.Play) }
 
     rule.onNodeWithText(":3").assertExists()
   }
@@ -39,7 +39,7 @@ class SocialCardTest {
   @Test
   fun card_showPlayWhenPlayMode() {
     rule.setContentWithLocalizedStrings {
-      FriendCard(person = SnapshotFriendCard(), SocialMode.Play)
+      SocialCard(person = SnapshotFriendCard(), SocialMode.Play)
     }
 
     rule.onNodeWithText(socialPerformPlay.uppercase()).assertExists()
@@ -48,7 +48,7 @@ class SocialCardTest {
   @Test
   fun card_showPlayWhenFollowMode() {
     rule.setContentWithLocalizedStrings {
-      FriendCard(person = SnapshotFriendCard(), SocialMode.Follow)
+      SocialCard(person = SnapshotFriendCard(), SocialMode.Follow)
     }
 
     rule.onNodeWithText(socialFollow.uppercase()).assertExists()
