@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.SectionSocial
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -127,8 +128,7 @@ fun ProfilePicture(
     modifier: Modifier = Modifier,
 ) {
   Box(
-      modifier =
-          modifier.size(118.dp).background(state.backgroundColor.getColorForProfile(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
       contentAlignment = Alignment.Center,
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
