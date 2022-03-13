@@ -30,4 +30,13 @@ class GameTest {
     val step = game.nextStep as NextStep.MovePiece
     assertThat(step.turn).isEqualTo(Color.White)
   }
+
+  @Test
+  fun emptyGame_kingsAreCorrectlyPlaced() {
+    val game = emptyGame()
+    val black = game.board[Position(4, 0)]
+    val white = game.board[Position(4, 7)]
+    assertThat(black).isEqualTo(Piece(Color.Black, Rank.King))
+    assertThat(white).isEqualTo(Piece(Color.White, Rank.King))
+  }
 }
