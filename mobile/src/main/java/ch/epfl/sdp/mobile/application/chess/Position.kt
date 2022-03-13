@@ -11,7 +11,7 @@ package ch.epfl.sdp.mobile.application.chess
 data class Position(val x: Int, val y: Int) {
 
   /** Returns true iff the [x] and the [y] coordinates are both the board bounds. */
-  private val inBounds: Boolean = x in AxisBounds && y in AxisBounds
+  val inBounds: Boolean = x in AxisBounds && y in AxisBounds
 
   /** Adds a [Delta] to the [Position], and returns it only if the result is in bounds. */
   operator fun plus(delta: Delta): Position? {
