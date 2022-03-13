@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.application.chess
 
+import ch.epfl.sdp.mobile.application.chess.Delta
 import ch.epfl.sdp.mobile.application.chess.Position
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -32,5 +33,17 @@ class PositionTest {
   @Test
   fun tooFarBottom_position_notInBounds() {
     assertThat(Position(0, 8).inBounds).isFalse()
+  }
+
+  @Test
+  fun plusDeltaInBounds_returnsPosition() {
+    val end = Position(0, 0) + Delta(1, 2)
+    assertThat(end).isEqualTo(Position(1, 2))
+  }
+
+  @Test
+  fun plusDeltaOutOfBounds_returnsNull() {
+    val end = Position(0, 0) + Delta(-1, -2)
+    assertThat(end).isNull()
   }
 }

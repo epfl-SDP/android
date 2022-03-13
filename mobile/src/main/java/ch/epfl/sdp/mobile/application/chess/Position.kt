@@ -15,7 +15,7 @@ data class Position(val x: Int, val y: Int) {
 
   /** Adds a [Delta] to the [Position], and returns it only if the result is in bounds. */
   operator fun plus(delta: Delta): Position? {
-    return Position(x + delta.x, y + delta.y).takeIf { inBounds }
+    return Position(x + delta.x, y + delta.y).takeIf { it.inBounds }
   }
 
   companion object {
