@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.test.ui.profile
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
@@ -26,7 +26,7 @@ class ProfileScreenTest {
     override val puzzlesCount = 20
     override fun onSettingsClick() = Unit
     override fun onEditClick() = Unit
-    override val backgroundColor = ProfileColor.Default
+    override val backgroundColor = Color.Default
     override val name = "Example"
     override val emoji = "🎁"
   }

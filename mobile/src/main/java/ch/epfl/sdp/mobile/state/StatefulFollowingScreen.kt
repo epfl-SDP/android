@@ -7,7 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.social.FollowingState
 import ch.epfl.sdp.mobile.ui.social.Person
@@ -20,7 +20,7 @@ private class SnapshotFollowingState(
   private data class ProfileAdapter(
       private val profile: Profile,
   ) : Person {
-    override val backgroundColor: ProfileColor
+    override val backgroundColor: Color
       get() = profile.backgroundColor
     override val name: String
       get() = profile.name

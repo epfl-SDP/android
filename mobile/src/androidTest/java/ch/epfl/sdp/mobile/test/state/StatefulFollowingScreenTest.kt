@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.test.state
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import io.mockk.every
@@ -26,8 +26,8 @@ class StatefulFollowingScreenTest {
                     get() = ":>"
                   override val name: String
                     get() = "Hans Peter"
-                  override val backgroundColor: ProfileColor
-                    get() = ProfileColor.Default
+                  override val backgroundColor: Color
+                    get() = Color.Default
                 }))
 
     rule.setContent { StatefulFollowingScreen(mockUser) }

@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.test.application
 
-import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -102,14 +102,14 @@ class AuthenticationFacadeTest {
 
     userAuthenticated.update {
       emoji("🇺🇦")
-      backgroundColor(ProfileColor.Orange)
+      backgroundColor(Color.Orange)
       name("MyNewName")
     }
 
     val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     assertThat(updatedUser.name).isEqualTo("MyNewName")
     assertThat(updatedUser.emoji).isEqualTo("🇺🇦")
-    assertThat(updatedUser.backgroundColor).isEqualTo(ProfileColor.Orange)
+    assertThat(updatedUser.backgroundColor).isEqualTo(Color.Orange)
   }
 
   @Test
@@ -126,6 +126,6 @@ class AuthenticationFacadeTest {
     val profile = following[0]
     assertThat(profile.name).isEqualTo("")
     assertThat(profile.emoji).isEqualTo("😎")
-    assertThat(profile.backgroundColor).isEqualTo(ProfileColor.Default)
+    assertThat(profile.backgroundColor).isEqualTo(Color.Default)
   }
 }

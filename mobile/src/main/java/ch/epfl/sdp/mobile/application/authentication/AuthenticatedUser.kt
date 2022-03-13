@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.authentication
 
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.ProfileColor
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
@@ -22,7 +22,7 @@ class AuthenticatedUser(
 
   class UpdateScope(private val scope: DocumentEditScope) {
     fun emoji(emoji: String): Unit = scope.set("emoji", emoji)
-    fun backgroundColor(color: ProfileColor?) = scope.set("backgroundColor", color?.hex)
+    fun backgroundColor(color: Color?) = scope.set("backgroundColor", color?.hex)
     fun name(name: String) = scope.set("name", name)
   }
 
@@ -50,7 +50,7 @@ private fun ProfileDocument?.toProfile(): Profile {
   return object : Profile {
     override val emoji: String = this@toProfile?.emoji ?: "😎"
     override val name: String = this@toProfile?.name ?: ""
-    override val backgroundColor: ProfileColor =
-        this@toProfile?.backgroundColor?.let(::ProfileColor) ?: ProfileColor.Default
+    override val backgroundColor: Color =
+        this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
   }
 }
