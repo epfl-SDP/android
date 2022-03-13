@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.QuerySnapshot
 import com.google.firebase.firestore.Query as ActualQuery
-import kotlin.reflect.KClass
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -20,11 +20,11 @@ class FirestoreQuery(
 
   override fun limit(count: Long): Query = FirestoreQuery(reference.limit(count))
 
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<List<T?>> =
-      callbackFlow {
+  override fun asQuerySnapshotFlow(): Flow<QuerySnapshot> =
+      callbackFlow<QuerySnapshot> {
             val registration =
                 reference.addSnapshotListener { value, error ->
-                  value?.let { trySend(it.toObjects(valueClass.java)) }
+                  value?.let { trySend(FirestoreQuerySnapshot(it)) }
                   error?.let { close(it) }
                 }
             awaitClose { registration.remove() }

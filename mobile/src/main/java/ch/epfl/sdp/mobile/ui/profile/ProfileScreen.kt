@@ -38,7 +38,7 @@ import ch.epfl.sdp.mobile.ui.social.Win
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    state: ProfileState,
+    state: ProfileScreenState,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -102,7 +102,7 @@ private fun chooseSubtitle(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
+fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
   Column(
       modifier = modifier,
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,7 +124,7 @@ fun ProfileHeader(state: ProfileState, modifier: Modifier = Modifier) {
  */
 @Composable
 fun ProfilePicture(
-    state: ProfileState,
+    state: ProfileScreenState,
     modifier: Modifier = Modifier,
 ) {
   Box(
