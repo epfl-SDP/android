@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.state.LocalAuthenticationApi
+import ch.epfl.sdp.mobile.state.LocalAuthenticationFacade
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
@@ -13,7 +13,7 @@ class CompositionLocalsTest {
   @Test
   fun missingAuthenticationApi_throwsException() {
     assertThrows(IllegalStateException::class.java) {
-      rule.setContent { LocalAuthenticationApi.current }
+      rule.setContent { LocalAuthenticationFacade.current }
     }
   }
 }

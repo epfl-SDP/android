@@ -42,7 +42,7 @@ private sealed interface UserState {
 /** Returns the current [UserState] in the composition. */
 @Composable
 private fun rememberUserState(): State<UserState> {
-  val auth = LocalAuthenticationApi.current
+  val auth = LocalAuthenticationFacade.current
   return remember(auth) { auth.currentUser.map { it.toUserState() } }
       .collectAsState(UserState.Loading)
 }
