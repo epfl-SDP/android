@@ -43,7 +43,7 @@ class FirestoreDocumentReference(
   }
 
   override suspend fun update(scope: DocumentEditScope.() -> Unit) {
-    val values = FirestoreDocumentEditScope().apply(scope)
+    val values = FirestoreDocumentEditScope().apply(scope).values
     reference.set(values, SetOptions.merge()).await()
   }
 
