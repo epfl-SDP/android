@@ -6,8 +6,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 
@@ -51,5 +53,30 @@ fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
             })
       }
     }
+  }
+}
+
+/**
+ * This composable display the screen when the user is [Searching] mode but the input is empty
+ *
+ * @param modifier the [Modifier] for the composable
+ */
+@Composable
+fun EmptySearch(modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
+
+  val color = MaterialTheme.colors.primaryVariant.copy(0.4f)
+
+  Column(
+      modifier,
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+      horizontalAlignment = Alignment.CenterHorizontally) {
+    Icon(PawniesIcons.Search, "", modifier = Modifier.size(72.dp), tint = color)
+    Text(text = strings.socialSearchEmptyTitle, style = MaterialTheme.typography.h4, color = color)
+    Text(
+        text = strings.socialSearchEmptySubtitle,
+        style = MaterialTheme.typography.body1,
+        color = color,
+        textAlign = TextAlign.Center)
   }
 }

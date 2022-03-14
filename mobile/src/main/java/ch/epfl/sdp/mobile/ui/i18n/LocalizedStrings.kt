@@ -35,6 +35,8 @@ interface LocalizedStrings {
   val socialFollowingTitle: String
   val socialPerformPlay: String
   val socialFollow: String
+  val socialSearchEmptyTitle : String
+  val socialSearchEmptySubtitle : String
 
   val sectionSocial: String
   val sectionSettings: String
