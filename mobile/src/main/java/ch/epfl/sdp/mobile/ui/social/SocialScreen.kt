@@ -12,6 +12,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.Add
+import ch.epfl.sdp.mobile.ui.PawniesIcons
 
 /**
  * This screen display all register user of the app
@@ -78,5 +80,36 @@ fun EmptySearch(modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.body1,
         color = color,
         textAlign = TextAlign.Center)
+  }
+}
+
+/**
+ * This composable display all the players that are in the [SearchState]. This composable also allow
+ * user to follow another player
+ *
+ * @param players A list of [Person] that will be displayed
+ * @param modifier the [Modifier] for the composable
+ */
+@Composable
+fun SearchResultList(players: List<Person>, modifier: Modifier = Modifier) {
+  LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    items(players) { player ->
+      PersonCard(
+          person = player,
+          trailingAction = {
+            OutlinedButton(
+                onClick = { /*TODO*/},
+                shape = RoundedCornerShape(24.dp),
+            ) {
+              Icon(
+                  PawniesIcons.Add, contentDescription = LocalLocalizedStrings.current.socialFollow)
+
+              Text(
+                  modifier = Modifier.padding(start = 8.dp),
+                  text = LocalLocalizedStrings.current.socialFollow,
+              )
+            }
+          })
+    }
   }
 }
