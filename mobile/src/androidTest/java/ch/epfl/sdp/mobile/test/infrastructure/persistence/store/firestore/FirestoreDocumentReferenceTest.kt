@@ -91,11 +91,11 @@ class FirestoreDocumentReferenceTest {
     val doc = mockk<DocumentReference>()
     val reference = FirestoreDocumentReference(doc)
 
-    every { doc.set(any(), SetOptions.merge()) } returns Tasks.forResult(null)
+    every { doc.set(mapOf("key" to "value"), SetOptions.merge()) } returns Tasks.forResult(null)
 
     reference.update { this["key"] = "value" }
 
-    verify { doc.set(any(), SetOptions.merge()) }
+    verify { doc.set(mapOf("key" to "value"), SetOptions.merge()) }
   }
   @Test
   fun set_callsApiWithRightArguments() = runTest {
