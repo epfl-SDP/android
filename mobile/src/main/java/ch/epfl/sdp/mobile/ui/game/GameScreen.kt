@@ -41,10 +41,12 @@ fun MoveList(moves: List<Move>, modifier: Modifier = Modifier) {
               .border(
                   width = 8.dp,
                   color = MaterialTheme.colors.onPrimary,
-                  shape = RoundedCornerShape(8.dp)),
+                  shape = RoundedCornerShape(16.dp)),
   ) {
     items(moves) { move ->
-      val color = if (move.number % 2 == 1) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
+      val color =
+          if (move.number % 2 == 1) MaterialTheme.colors.primary
+          else MaterialTheme.colors.primaryVariant
       Text(
           text = move.number.toString() + ". " + move.name,
           color = color,

@@ -20,10 +20,7 @@ fun StatefulGameScreen(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
 ) {
-  val state =
-      remember(user) {
-        ChessGameScreenState(user, randomMoves(20))
-      }
+  val state = remember(user) { ChessGameScreenState(user, randomMoves(20)) }
   GameScreen(state, modifier)
 }
 
@@ -42,4 +39,3 @@ private fun randomMoves(number: Int): List<Move> {
     ChessMove(number = it, name = randomString)
   }
 }
-
