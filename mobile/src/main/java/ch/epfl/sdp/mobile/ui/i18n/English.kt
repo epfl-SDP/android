@@ -32,4 +32,5 @@ object English : LocalizedStrings {
 
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
+  override val sectionGame = "Game"
 }
