@@ -10,6 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
       modifier.padding(8.dp),
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally) {
-    TextField(
+    OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = state.input,
         onValueChange = {
@@ -55,7 +56,10 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         colors =
             TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.onPrimary.copy(0.15f),
-                textColor = MaterialTheme.colors.primaryVariant),
+                textColor = MaterialTheme.colors.primaryVariant,
+                focusedIndicatorColor = MaterialTheme.colors.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent),
     )
     transition.AnimatedContent { target ->
       when (target) {
@@ -127,8 +131,8 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 }
 
 /**
- * This composable display all the players that are in the [SocialScreenState]. This composable also allow
- * user to follow another player
+ * This composable display all the players that are in the [SocialScreenState]. This composable also
+ * allow user to follow another player
  *
  * @param players A list of [Person] that will be displayed
  * @param modifier the [Modifier] for the composable
