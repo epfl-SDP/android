@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.ui.game
 import androidx.compose.animation.core.Spring.StiffnessMediumLow
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
@@ -19,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -29,8 +32,8 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
+import kotlin.math.roundToInt
+import kotlinx.coroutines.flow.flowOf
 
 val firstState =
     mapOf(
@@ -52,14 +55,7 @@ val secondState =
         Position(4, 5) to Piece(id = 4, rank = Bishop, color = Black),
     )
 
-val state = flow {
-  while (true) {
-    emit(firstState)
-    delay(3000)
-    emit(secondState)
-    delay(3000)
-  }
-}
+val state = flowOf(firstState)
 
 @Stable
 interface ChessBoardState {
@@ -82,9 +78,21 @@ interface ChessBoardState {
   data class Piece(val id: Int, val rank: Rank, val color: Color)
 
   val pieces: Map<Position, Piece>
+
+  val dragEnabled: Boolean
+
+  fun onDropPiece(piece: Piece, position: Position)
 }
 
-class FakeChessBoardState(override val pieces: Map<Position, Piece>) : ChessBoardState
+class FakeChessBoardState(override val pieces: Map<Position, Piece>) : ChessBoardState {
+
+  override val dragEnabled: Boolean
+    get() = TODO("Not yet implemented")
+
+  override fun onDropPiece(piece: Piece, position: Position) {
+    TODO("Not yet implemented")
+  }
+}
 
 @Composable
 fun rememberChessBoardState(): ChessBoardState {
@@ -114,21 +122,37 @@ fun ChessBoard(
       key(piece) {
         val x by animateFloatAsState(position.x.toFloat(), spring(stiffness = StiffnessMediumLow))
         val y by animateFloatAsState(position.y.toFloat(), spring(stiffness = StiffnessMediumLow))
+        val offset = remember { mutableStateOf(Offset.Zero) }
         Piece(
-            piece = piece,
-            modifier =
-                Modifier.offset {
-                      IntOffset(
-                          (squareSizeDp * x).roundToPx(),
-                          (squareSizeDp * y).roundToPx(),
-                      )
-                    }
-                    .size(squareSizeDp),
+          piece = piece,
+          modifier =
+          Modifier
+            .offset {
+              IntOffset(
+                (squareSizeDp * x).roundToPx(),
+                (squareSizeDp * y).roundToPx(),
+              )
+            }
+            .offset { IntOffset(offset.value.x.roundToInt(), offset.value.y.roundToInt()) }
+            .draggablePiece(offset = offset, onDrop = { offset.value = Offset.Zero })
+            .size(squareSizeDp),
         )
       }
     }
   }
 }
+
+fun Modifier.draggablePiece(offset: MutableState<Offset>, onDrop: () -> Unit): Modifier =
+    pointerInput(Unit) {
+      detectDragGestures(
+          onDragStart = { offset.value = Offset.Zero },
+          onDrag = { change, dragAmount ->
+            change.consumeAllChanges()
+            offset.value += dragAmount
+          },
+          onDragEnd = onDrop,
+      )
+    }
 
 @Composable
 private fun pieceIcon(piece: Piece): Painter =
