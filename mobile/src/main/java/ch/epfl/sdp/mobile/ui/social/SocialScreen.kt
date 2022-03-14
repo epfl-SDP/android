@@ -20,6 +20,13 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 @Composable
 fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
 
+/**
+ * Display the list of followed player
+ * @param players A list of [Person] that need to be displayed
+ * @param modifier modifier the [Modifier] for the composable
+ */
+@Composable
+fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
@@ -28,7 +35,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
     LazyColumn(Modifier.testTag("friendList"), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-      items(state.players) { friend ->
+      items(players) { friend ->
         PersonCard(
             person = friend,
             trailingAction = {
@@ -37,8 +44,8 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
                   shape = RoundedCornerShape(24.dp),
               ) {
                 Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = LocalLocalizedStrings.current.socialPerformPlay,
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = strings.socialPerformPlay,
                 )
               }
             })
