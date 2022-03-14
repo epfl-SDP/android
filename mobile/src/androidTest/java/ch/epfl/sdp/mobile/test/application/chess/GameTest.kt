@@ -36,7 +36,17 @@ class GameTest {
     val game = emptyGame()
     val black = game.board[Position(4, 0)]
     val white = game.board[Position(4, 7)]
-    assertThat(black).isEqualTo(Piece(Color.Black, Rank.King))
-    assertThat(white).isEqualTo(Piece(Color.White, Rank.King))
+    assertThat(black?.color).isEqualTo(Color.Black)
+    assertThat(black?.rank).isEqualTo(Rank.King)
+    assertThat(white?.color).isEqualTo(Color.White)
+    assertThat(white?.rank).isEqualTo(Rank.King)
+  }
+
+  @Test
+  fun emptyGame_twoPawnsAreDifferent() {
+    val game = emptyGame()
+    val a = game.board[Position(0, 1)]
+    val b = game.board[Position(1, 1)]
+    assertThat(a).isNotEqualTo(b)
   }
 }
