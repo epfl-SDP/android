@@ -1,14 +1,14 @@
 package ch.epfl.sdp.mobile.ui.game
 
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.core.Spring.StiffnessMediumLow
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -16,24 +16,120 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 
-@Stable interface ChessBoardState {}
+val firstState =
+    mapOf(
+        Position(0, 1) to Piece(id = 1, rank = King, color = White),
+        Position(1, 2) to Piece(id = 2, rank = Queen, color = White),
+        Position(2, 3) to Piece(id = 3, rank = Rook, color = White),
+        Position(3, 4) to Piece(id = 4, rank = Bishop, color = Black),
+        Position(4, 5) to Piece(id = 5, rank = Knight, color = Black),
+        Position(5, 6) to Piece(id = 6, rank = Pawn, color = Black),
+    )
+
+val secondState =
+    mapOf(
+        Position(1, 3) to Piece(id = 3, rank = Rook, color = White),
+        Position(6, 6) to Piece(id = 6, rank = Pawn, color = Black),
+        Position(3, 2) to Piece(id = 2, rank = Queen, color = White),
+        Position(1, 5) to Piece(id = 1, rank = King, color = White),
+        Position(7, 2) to Piece(id = 5, rank = Knight, color = Black),
+        Position(4, 5) to Piece(id = 4, rank = Bishop, color = Black),
+    )
+
+val state = flow {
+  while (true) {
+    emit(firstState)
+    delay(3000)
+    emit(secondState)
+    delay(3000)
+  }
+}
+
+@Stable
+interface ChessBoardState {
+  enum class Rank {
+    King,
+    Queen,
+    Rook,
+    Bishop,
+    Knight,
+    Pawn,
+  }
+
+  data class Position(val x: Int, val y: Int)
+
+  enum class Color {
+    Black,
+    White,
+  }
+
+  data class Piece(val id: Int, val rank: Rank, val color: Color)
+
+  val pieces: Map<Position, Piece>
+}
+
+class FakeChessBoardState(override val pieces: Map<Position, Piece>) : ChessBoardState
 
 @Composable
-fun ChessBoard(modifier: Modifier = Modifier, cells: Int = 8) {
+fun rememberChessBoardState(): ChessBoardState {
+  val pieces by state.collectAsState(initial = emptyMap())
+  return FakeChessBoardState(pieces)
+}
+
+@Composable
+fun ChessBoard(
+    state: ChessBoardState = rememberChessBoardState(),
+    modifier: Modifier = Modifier,
+) {
   CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onPrimary) {
     BoxWithConstraints(
         modifier
             .padding(16.dp)
             .aspectRatio(1f)
             .checkerboard(
-                cells = cells,
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled))
-            .grid(cells = cells, color = MaterialTheme.colors.primary)) {}
+                cells = 8,
+                color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
+            )
+            .grid(cells = 8, color = MaterialTheme.colors.primary),
+    ) {
+      val minDimension = min(this.maxHeight, this.maxWidth)
+      val squareSizeDp = minDimension / 8
+
+      for ((position, piece) in state.pieces) {
+        key(piece) {
+          val x by animateFloatAsState(position.x.toFloat(), spring(stiffness = StiffnessMediumLow))
+          val y by animateFloatAsState(position.y.toFloat(), spring(stiffness = StiffnessMediumLow))
+          Piece(
+              Modifier.offset {
+                    IntOffset(
+                        (squareSizeDp * x).roundToPx(),
+                        (squareSizeDp * y).roundToPx(),
+                    )
+                  }
+                  .size(squareSizeDp))
+        }
+      }
+    }
   }
+}
+
+@Composable
+fun Piece(modifier: Modifier = Modifier) {
+  Box(modifier = modifier.background(Color.Red))
 }
 
 fun Modifier.checkerboard(
@@ -76,12 +172,14 @@ fun Modifier.grid(
           start = origin + Offset(i * squareSize, 0f),
           end = origin + Offset(i * squareSize, size.minDimension),
           strokeWidth = width.toPx(),
+          cap = StrokeCap.Round,
       )
       drawLine(
           color = lineColor,
           start = origin + Offset(0f, i * squareSize),
           end = origin + Offset(size.minDimension, i * squareSize),
           strokeWidth = width.toPx(),
+          cap = StrokeCap.Round,
       )
     }
   }
