@@ -11,40 +11,39 @@ import org.junit.Test
 class SearchResultTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotSearchState : SearchState {
-    override val players: List<Person> =
-        listOf(
-            createPerson(Color.Default, "Toto", ":)"),
-            createPerson(Color.Default, "John", ":3"),
-            createPerson(Color.Default, "Travis", ";)"),
-            createPerson(Color.Default, "Cirrus", "TwT"))
-
-    companion object {
-      fun createPerson(bgColor: Color, name: String, emoji: String): Person {
-        return object : Person {
-          override val backgroundColor: Color = bgColor
-          override val name: String = name
-          override val emoji: String = emoji
-        }
-      }
+  private fun createPerson(bgColor: Color, name: String, emoji: String): Person {
+    return object : Person {
+      override val backgroundColor: Color = bgColor
+      override val name: String = name
+      override val emoji: String = emoji
     }
   }
 
   @Test
   fun list_displayAllUserInState() {
 
-    val state = SnapshotSearchState()
+    val list =
+        listOf(
+            createPerson(Color.Default, "Toto", ":)"),
+            createPerson(Color.Default, "John", ":3"),
+            createPerson(Color.Default, "Travis", ";)"),
+            createPerson(Color.Default, "Cirrus", "TwT"))
 
-    rule.setContent { SearchResultList(state = state) }
+    rule.setContent { SearchResultList(list) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
 
   @Test
   fun card_hasFollowText() {
-    val state = SnapshotSearchState()
+    val list =
+        listOf(
+            createPerson(Color.Default, "Toto", ":)"),
+            createPerson(Color.Default, "John", ":3"),
+            createPerson(Color.Default, "Travis", ";)"),
+            createPerson(Color.Default, "Cirrus", "TwT"))
 
-    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state = state) }
+    val strings = rule.setContentWithLocalizedStrings { SearchResultList(list) }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
   }

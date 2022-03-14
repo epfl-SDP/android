@@ -28,3 +28,6 @@ val PawniesIcons.SectionSettings
 
 val PawniesIcons.Add
   get() = Icons.Default.Add
+
+val PawniesIcons.Search
+  get() = Icons.Default.Search

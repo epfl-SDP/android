@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.ui.social
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,15 +16,56 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesIcons
+import ch.epfl.sdp.mobile.ui.Search
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
 
 /**
  * This screen display all register user of the app
  *
- * @param state the [FollowingState], manage the composable contents
+ * @param state the [SocialScreenState], manage the composable contents
  * @param modifier the [Modifier] for the composable
  */
 @Composable
-fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
+fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
+
+  val strings = LocalLocalizedStrings.current
+
+  val transition = updateTransition(state.mode, "Social state")
+
+  Column(
+      modifier.padding(8.dp),
+      verticalArrangement = Arrangement.spacedBy(8.dp),
+      horizontalAlignment = Alignment.CenterHorizontally) {
+    TextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = state.input,
+        onValueChange = {
+          state.input = it
+          state.onValueChange()
+        },
+        placeholder = {
+          Text(
+              text = strings.socialSearchBarPlaceHolder,
+              modifier = Modifier,
+              textAlign = TextAlign.Center)
+        },
+        leadingIcon = { Icon(PawniesIcons.Search, contentDescription = "") },
+        singleLine = true,
+        shape = RoundedCornerShape(56.dp),
+        colors =
+            TextFieldDefaults.textFieldColors(
+                backgroundColor = MaterialTheme.colors.onPrimary.copy(0.15f),
+                textColor = MaterialTheme.colors.primaryVariant),
+    )
+    transition.AnimatedContent { target ->
+      when (target) {
+        Following -> FollowList(state.players)
+        Searching ->
+            if (state.input.isEmpty()) EmptySearch() else SearchResultList(players = state.players)
+      }
+    }
+  }
+}
 
 /**
  * Display the list of followed player
@@ -84,7 +127,7 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 }
 
 /**
- * This composable display all the players that are in the [SearchState]. This composable also allow
+ * This composable display all the players that are in the [SocialScreenState]. This composable also allow
  * user to follow another player
  *
  * @param players A list of [Person] that will be displayed
