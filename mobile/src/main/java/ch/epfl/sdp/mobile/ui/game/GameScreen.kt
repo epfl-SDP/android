@@ -24,9 +24,9 @@ fun GameScreen(
 ) {
   Column(modifier) {
     TitleText(text = "Chess game")
-    MoveList(state.moves, modifier)
+    MoveList(state.moves)
     Chessboard(size = 8)
-    TitleText(text = "Voice Recognition")
+    TitleText(text = "VR / Voice Recognition")
   }
 }
 
@@ -40,27 +40,28 @@ fun MoveList(moves: List<Move>, modifier: Modifier = Modifier) {
               .padding(16.dp)
               .border(
                   width = 8.dp,
-                  color = MaterialTheme.colors.secondary,
+                  color = MaterialTheme.colors.onPrimary,
                   shape = RoundedCornerShape(8.dp)),
   ) {
     items(moves) { move ->
+      val color = if (move.number % 2 == 1) MaterialTheme.colors.primary else MaterialTheme.colors.primaryVariant
       Text(
           text = move.number.toString() + ". " + move.name,
-          color = MaterialTheme.colors.primary,
-          style = MaterialTheme.typography.body1,
-          modifier = modifier.padding(horizontal = 8.dp, vertical = 8.dp))
+          color = color,
+          style = MaterialTheme.typography.subtitle1,
+          modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp))
     }
   }
 }
 
 @Composable
 fun Chessboard(modifier: Modifier = Modifier, size: Int = 8) {
-  BoxWithConstraints(modifier.fillMaxSize().aspectRatio(1f).padding(16.dp)) {
+  BoxWithConstraints(modifier.aspectRatio(1f).padding(16.dp)) {
     Column(modifier = Modifier.squareBorder(2.dp)) {
       for (i in 0 until size) {
-        Row(modifier = Modifier.weight(1f)) {
+        Row(modifier = Modifier.weight(1f).squareBorder(1.dp)) {
           for (j in 0 until size) {
-            Square((i + j) % 2 == 1, modifier = Modifier.weight(1f))
+            Square((i + j) % 2 == 1, modifier = Modifier.weight(1f).squareBorder(1.dp))
           }
         }
       }
@@ -73,7 +74,7 @@ fun Square(darkSquare: Boolean, modifier: Modifier = Modifier) {
   val color =
       if (darkSquare) MaterialTheme.colors.onPrimary.copy(alpha = 0.4f) else Color.Transparent
 
-  Canvas(modifier = modifier.fillMaxSize().squareBorder(1.dp)) { drawRect(color = color) }
+  Canvas(modifier = modifier.fillMaxSize()) { drawRect(color = color) }
 }
 
 fun Modifier.squareBorder(width: Dp): Modifier = composed {

@@ -22,7 +22,24 @@ fun StatefulGameScreen(
 ) {
   val state =
       remember(user) {
-        ChessGameScreenState(user, List(4) { (ChessMove(number = 1, name = "Nf3")) })
+        ChessGameScreenState(user, randomMoves(20))
       }
   GameScreen(state, modifier)
 }
+
+private fun randomMoves(number: Int): List<Move> {
+
+  val piecePool: List<String> = listOf("K", "Q", "N", "B", "R", "")
+  val columnPool: List<Char> = ('a'..'h').toList()
+  val rowPool: List<Char> = ('1'..'8').toList()
+
+  return (1 until number).map {
+    val piece = piecePool[kotlin.random.Random.nextInt(0, piecePool.size)]
+    val column = columnPool[kotlin.random.Random.nextInt(0, columnPool.size)]
+    val row = rowPool[kotlin.random.Random.nextInt(0, rowPool.size)]
+    val randomString = piece + column + row.toString()
+
+    ChessMove(number = it, name = randomString)
+  }
+}
+
