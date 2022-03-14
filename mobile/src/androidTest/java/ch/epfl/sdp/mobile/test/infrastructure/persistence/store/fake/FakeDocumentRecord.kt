@@ -21,7 +21,9 @@ data class FakeDocumentRecord(val fields: Map<String, Any?>) {
    */
   fun update(scope: DocumentEditScope.() -> Unit): FakeDocumentRecord {
     val recorded = RecordingDocumentEditScope().apply(scope)
-    return copy(fields = fields + recorded.mutations)
+    val mutations = recorded.mutations.map { (f, v) -> FakeFieldMutation.from(f, v) }
+    val updated = mutations.fold(fields) { acc, m -> acc + (m.field to m.mutate(acc[m.field])) }
+    return copy(fields = updated)
   }
 
   companion object
