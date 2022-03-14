@@ -3,9 +3,9 @@ package ch.epfl.sdp.mobile.ui.game
 import androidx.compose.animation.core.Spring.StiffnessMediumLow
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -17,11 +17,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
@@ -95,41 +97,69 @@ fun ChessBoard(
     state: ChessBoardState = rememberChessBoardState(),
     modifier: Modifier = Modifier,
 ) {
-  CompositionLocalProvider(LocalContentColor provides MaterialTheme.colors.onPrimary) {
-    BoxWithConstraints(
-        modifier
-            .padding(16.dp)
-            .aspectRatio(1f)
-            .checkerboard(
-                cells = 8,
-                color = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-            )
-            .grid(cells = 8, color = MaterialTheme.colors.primary),
-    ) {
-      val minDimension = min(this.maxHeight, this.maxWidth)
-      val squareSizeDp = minDimension / 8
+  BoxWithConstraints(
+      modifier
+          .padding(16.dp)
+          .aspectRatio(1f)
+          .checkerboard(
+              cells = 8,
+              color = MaterialTheme.colors.onPrimary.copy(alpha = ContentAlpha.disabled),
+          )
+          .grid(cells = 8, color = MaterialTheme.colors.primary),
+  ) {
+    val minDimension = min(this.maxHeight, this.maxWidth)
+    val squareSizeDp = minDimension / 8
 
-      for ((position, piece) in state.pieces) {
-        key(piece) {
-          val x by animateFloatAsState(position.x.toFloat(), spring(stiffness = StiffnessMediumLow))
-          val y by animateFloatAsState(position.y.toFloat(), spring(stiffness = StiffnessMediumLow))
-          Piece(
-              Modifier.offset {
-                    IntOffset(
-                        (squareSizeDp * x).roundToPx(),
-                        (squareSizeDp * y).roundToPx(),
-                    )
-                  }
-                  .size(squareSizeDp))
-        }
+    for ((position, piece) in state.pieces) {
+      key(piece) {
+        val x by animateFloatAsState(position.x.toFloat(), spring(stiffness = StiffnessMediumLow))
+        val y by animateFloatAsState(position.y.toFloat(), spring(stiffness = StiffnessMediumLow))
+        Piece(
+            piece = piece,
+            modifier =
+                Modifier.offset {
+                      IntOffset(
+                          (squareSizeDp * x).roundToPx(),
+                          (squareSizeDp * y).roundToPx(),
+                      )
+                    }
+                    .size(squareSizeDp),
+        )
       }
     }
   }
 }
 
 @Composable
-fun Piece(modifier: Modifier = Modifier) {
-  Box(modifier = modifier.background(Color.Red))
+private fun pieceIcon(piece: Piece): Painter =
+    when (piece.color) {
+      Black ->
+          when (piece.rank) {
+            King -> ChessIcons.BlackKing
+            Queen -> ChessIcons.BlackQueen
+            Rook -> ChessIcons.BlackRook
+            Bishop -> ChessIcons.BlackBishop
+            Knight -> ChessIcons.BlackKnight
+            Pawn -> ChessIcons.BlackPawn
+          }
+      White ->
+          when (piece.rank) {
+            King -> ChessIcons.WhiteKing
+            Queen -> ChessIcons.WhiteQueen
+            Rook -> ChessIcons.WhiteRook
+            Bishop -> ChessIcons.WhiteBishop
+            Knight -> ChessIcons.WhiteKnight
+            Pawn -> ChessIcons.WhitePawn
+          }
+    }
+
+@Composable
+fun Piece(piece: Piece, modifier: Modifier = Modifier) {
+  Icon(
+      painter = pieceIcon(piece),
+      contentDescription = null,
+      modifier = modifier,
+  )
 }
 
 fun Modifier.checkerboard(
