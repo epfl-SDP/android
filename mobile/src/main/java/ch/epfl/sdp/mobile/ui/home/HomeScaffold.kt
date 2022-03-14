@@ -29,7 +29,6 @@ enum class HomeSection(
   /** The section to manage our preferences. */
   Settings(PawniesIcons.SectionSettings, { sectionSettings }),
 
-
   /** The section which displays a chess game. */
   Game(PawniesIcons.SectionGame, { sectionGame }),
 }
