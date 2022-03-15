@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.ui.game
 
+import androidx.compose.animation.core.Spring.StiffnessHigh
 import androidx.compose.animation.core.Spring.StiffnessMediumLow
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -22,6 +24,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -87,10 +90,10 @@ interface ChessBoardState {
 class FakeChessBoardState(override val pieces: Map<Position, Piece>) : ChessBoardState {
 
   override val dragEnabled: Boolean
-    get() = TODO("Not yet implemented")
+    get() = true // TODO: Change me!
 
   override fun onDropPiece(piece: Piece, position: Position) {
-    TODO("Not yet implemented")
+    println("Hello, world! $position")
   }
 }
 
@@ -117,25 +120,42 @@ fun ChessBoard(
   ) {
     val minDimension = min(this.maxHeight, this.maxWidth)
     val squareSizeDp = minDimension / 8
+    val density = LocalDensity.current
 
     for ((position, piece) in state.pieces) {
       key(piece) {
-        val x by animateFloatAsState(position.x.toFloat(), spring(stiffness = StiffnessMediumLow))
-        val y by animateFloatAsState(position.y.toFloat(), spring(stiffness = StiffnessMediumLow))
+        val targetX = squareSizeDp * position.x
+        val targetY = squareSizeDp * position.y
+
+        val x by animateDpAsState(targetX, spring(stiffness = StiffnessMediumLow))
+        val y by animateDpAsState(targetY, spring(stiffness = StiffnessMediumLow))
+
         val offset = remember { mutableStateOf(Offset.Zero) }
+
+        val offsetX by animateFloatAsState(offset.value.x, spring(stiffness = StiffnessHigh))
+        val offsetY by animateFloatAsState(offset.value.y, spring(stiffness = StiffnessHigh))
+
         Piece(
-          piece = piece,
-          modifier =
-          Modifier
-            .offset {
-              IntOffset(
-                (squareSizeDp * x).roundToPx(),
-                (squareSizeDp * y).roundToPx(),
-              )
-            }
-            .offset { IntOffset(offset.value.x.roundToInt(), offset.value.y.roundToInt()) }
-            .draggablePiece(offset = offset, onDrop = { offset.value = Offset.Zero })
-            .size(squareSizeDp),
+            piece = piece,
+            modifier =
+                Modifier.offset { IntOffset(x.roundToPx(), y.roundToPx()) }
+                    .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                    .draggablePiece(
+                        offset = offset,
+                        onDrop = {
+                          val cellX = targetX + with(density) { offset.value.x.toDp() }
+                          val cellY = targetY + with(density) { offset.value.y.toDp() }
+
+                          state.onDropPiece(
+                              piece,
+                              Position(
+                                  (cellX / squareSizeDp).roundToInt().coerceIn(0, 7),
+                                  (cellY / squareSizeDp).roundToInt().coerceIn(0, 7),
+                              ),
+                          )
+                          offset.value = Offset.Zero
+                        })
+                    .size(squareSizeDp),
         )
       }
     }
