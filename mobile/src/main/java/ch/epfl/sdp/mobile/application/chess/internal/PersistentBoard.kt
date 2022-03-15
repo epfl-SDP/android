@@ -5,21 +5,25 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 
+/** Transforms the given [Int] to a [PersistentPieceIdentifier]. */
+private fun Int.toId(): PieceIdentifier = PersistentPieceIdentifier(this)
+
 /** Returns a row with all the pieces of the given color. */
 private fun piecesRow(color: Color) =
     persistentListOf(
-        Piece(color, Rank.Rook),
-        Piece(color, Rank.Knight),
-        Piece(color, Rank.Bishop),
-        Piece(color, Rank.Queen),
-        Piece(color, Rank.King),
-        Piece(color, Rank.Bishop),
-        Piece(color, Rank.Knight),
-        Piece(color, Rank.Rook),
+        Piece(color, Rank.Rook, 0.toId()),
+        Piece(color, Rank.Knight, 0.toId()),
+        Piece(color, Rank.Bishop, 0.toId()),
+        Piece(color, Rank.Queen, 0.toId()),
+        Piece(color, Rank.King, 0.toId()),
+        Piece(color, Rank.Bishop, 1.toId()),
+        Piece(color, Rank.Knight, 1.toId()),
+        Piece(color, Rank.Rook, 1.toId()),
     )
 
 /** Returns a row with only pawns of the given color. */
-private fun pawnsRow(color: Color) = List(8) { Piece(color, Rank.Pawn) }.toPersistentList()
+private fun pawnsRow(color: Color) =
+    List(8) { Piece(color, Rank.Pawn, it.toId()) }.toPersistentList()
 
 /** Returns a row with */
 private val EmptyRow = List(8) { null }.toPersistentList()
