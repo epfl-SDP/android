@@ -4,15 +4,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.FakeChessBoardState
+import ch.epfl.sdp.mobile.test.ui.contains
+import ch.epfl.sdp.mobile.test.ui.getBoundsInRoot
 import ch.epfl.sdp.mobile.ui.game.ChessBoard
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -39,13 +39,4 @@ class ChessBoardTest {
         }
     assertThat(inBounds).isTrue()
   }
-}
-
-private fun SemanticsNode.getBoundsInRoot(): DpRect =
-    with(root!!.density) {
-      boundsInRoot.let { DpRect(it.left.toDp(), it.top.toDp(), it.right.toDp(), it.bottom.toDp()) }
-    }
-
-private operator fun DpRect.contains(offset: DpOffset): Boolean {
-  return offset.x in left..right && offset.y in top..bottom
 }
