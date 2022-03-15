@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.ui.game
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
@@ -21,6 +23,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 @Composable
 fun <Identifier> ChessBoard(
@@ -39,10 +42,12 @@ fun <Identifier> ChessBoard(
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
     val cellPx = minDimension / 8
     val cellDp = with(LocalDensity.current) { cellPx.toDp() }
+    val scope = rememberCoroutineScope()
 
     for ((position, piece) in state.pieces) {
       key(piece) {
         val currentTarget by rememberUpdatedState(Offset(cellPx * position.x, cellPx * position.y))
+        val currentTargetAnimatable = remember { Animatable(currentTarget, Offset.VectorConverter) }
 
         val currentPosition by rememberUpdatedState(position)
         val draggingState = remember {
@@ -52,19 +57,28 @@ fun <Identifier> ChessBoard(
           )
         }
 
+        // When the current target is changed, we'll try to animate the currentTargetAnimatable
+        // towards its value. However, if we're currently dragging, we won't play the animatable.
+        LaunchedEffect(currentTarget, draggingState.isDragging) {
+          if (!draggingState.isDragging) {
+            currentTargetAnimatable.animateTo(currentTarget)
+          }
+        }
+
         Piece(
             piece = piece,
             modifier =
                 Modifier.offset {
-                      if (draggingState.isDragging)
-                          IntOffset(
-                              draggingState.offset.x.roundToInt(),
-                              draggingState.offset.y.roundToInt(),
-                          )
-                      else {
+                      if (draggingState.isDragging) {
                         IntOffset(
-                            currentTarget.x.roundToInt(),
-                            currentTarget.y.roundToInt(),
+                            draggingState.offset.x.roundToInt(),
+                            draggingState.offset.y.roundToInt(),
+                        )
+                      } else {
+                        val offset by currentTargetAnimatable.asState()
+                        IntOffset(
+                            offset.x.roundToInt(),
+                            offset.y.roundToInt(),
                         )
                       }
                     }
@@ -79,17 +93,23 @@ fun <Identifier> ChessBoard(
                             draggingState.offset += dragAmount
                           },
                           onDragEnd = {
-                            draggingState.isDragging = false
-                            val (x, y) = draggingState.offset / cellPx
-                            state.onDropPiece(
-                                piece = piece,
-                                startPosition = currentPosition,
-                                endPosition =
-                                    Position(
-                                        x.roundToInt().coerceIn(0, 7),
-                                        y.roundToInt().coerceIn(0, 7),
-                                    ),
-                            )
+                            scope.launch {
+                              // Set the current dragging state to false, so the LaunchedEffect is
+                              // triggered and the offset is animated to the right target position.
+                              draggingState.isDragging = false
+                              currentTargetAnimatable.snapTo(draggingState.offset)
+
+                              val (x, y) = draggingState.offset / cellPx
+                              state.onDropPiece(
+                                  piece = piece,
+                                  startPosition = currentPosition,
+                                  endPosition =
+                                      Position(
+                                          x.roundToInt().coerceIn(0, 7),
+                                          y.roundToInt().coerceIn(0, 7),
+                                      ),
+                              )
+                            }
                           },
                           onDragCancel = { draggingState.isDragging = false },
                       )
