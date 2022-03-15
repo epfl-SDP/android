@@ -159,6 +159,7 @@ fun ChessBoard(
                 Modifier.offset { IntOffset(x.roundToPx(), y.roundToPx()) }
                     .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                     .draggablePiece(
+                        key = position,
                         offset = offset,
                         onDrop = {
                           val cellX = targetX + with(density) { offset.value.x.toDp() }
@@ -182,8 +183,12 @@ fun ChessBoard(
   }
 }
 
-fun Modifier.draggablePiece(offset: MutableState<Offset>, onDrop: () -> Unit): Modifier =
-    pointerInput(Unit) {
+fun Modifier.draggablePiece(
+    key: Any?,
+    offset: MutableState<Offset>,
+    onDrop: () -> Unit,
+): Modifier =
+    pointerInput(key) {
       detectDragGestures(
           onDragStart = { offset.value = Offset.Zero },
           onDrag = { change, dragAmount ->
