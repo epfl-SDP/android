@@ -18,7 +18,7 @@ import ch.epfl.sdp.mobile.application.ProfileColor
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 
 /**
- * This screen display all register user of the app
+ * This screen displays all registered users of the app
  *
  * @param state the [FollowingState], manage the composable contents
  * @param modifier the [Modifier] for the composable
@@ -43,7 +43,7 @@ fun SocialScreen(state: FollowingState, modifier: Modifier = Modifier) {
 @Composable
 fun FriendCard(person: Person, modifier: Modifier = Modifier) {
   /**
-   * This function transforme the user profile color into a [Color] that can be used in a composable
+   * This function transforms the user profile color into a [Color] that can be used in a composable
    *
    * TODO : Need to define how to stock the color in the class [Person]
    *
