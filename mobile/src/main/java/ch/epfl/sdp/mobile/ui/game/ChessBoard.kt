@@ -40,39 +40,11 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
 
-@Stable
-interface ChessBoardState {
-  enum class Rank {
-    King,
-    Queen,
-    Rook,
-    Bishop,
-    Knight,
-    Pawn,
-  }
-
-  data class Position(val x: Int, val y: Int)
-
-  enum class Color {
-    Black,
-    White,
-  }
-
-  // TODO: PieceIdentifier should be this interface's own type
-  data class Piece(val id: PieceIdentifier, val rank: Rank, val color: Color)
-
-  val pieces: Map<Position, Piece>
-
-  val dragEnabled: Boolean
-
-  fun onDropPiece(piece: Piece, startPosition: Position, endPosition: Position)
-}
-
 fun GamePosition.toPosition(): Position {
   return Position(this.x, this.y)
 }
 
-fun GamePiece.toPiece(): Piece {
+fun GamePiece.toPiece(): Piece<PieceIdentifier> {
   val rank =
       when (this.rank) {
         Rank.King -> King
@@ -92,22 +64,21 @@ fun GamePiece.toPiece(): Piece {
   return Piece(id = this.id, rank = rank, color = color)
 }
 
-class FakeChessBoardState() : ChessBoardState {
+class FakeChessBoardState : ChessBoardState<PieceIdentifier> {
   private var game by mutableStateOf(emptyGame())
 
-  override val pieces: Map<Position, Piece>
+  override val pieces: Map<Position, Piece<PieceIdentifier>>
     get() =
         GamePosition.all()
             .map { game.board[it]?.let { p -> it to p } }
             .filterNotNull()
-            .toMap()
             .map { (a, b) -> a.toPosition() to b.toPiece() }
             .toMap()
 
   override val dragEnabled: Boolean
     get() = true // TODO: Change me!
 
-  override fun onDropPiece(piece: Piece, startPosition: Position, endPosition: Position) {
+  override fun onDropPiece(piece: Piece<PieceIdentifier>, startPosition: Position, endPosition: Position) {
     val step = game.nextStep as NextStep.MovePiece
     game =
         step.move(
@@ -117,13 +88,13 @@ class FakeChessBoardState() : ChessBoardState {
 }
 
 @Composable
-fun rememberChessBoardState(): ChessBoardState {
+fun rememberChessBoardState(): ChessBoardState<PieceIdentifier> {
   return remember { FakeChessBoardState() }
 }
 
 @Composable
-fun ChessBoard(
-    state: ChessBoardState = rememberChessBoardState(),
+fun <Identifier> ChessBoard(
+    state: ChessBoardState<Identifier>,
     modifier: Modifier = Modifier,
 ) {
   BoxWithConstraints(
@@ -200,7 +171,7 @@ fun Modifier.draggablePiece(
 }
 
 @Composable
-private fun pieceIcon(piece: Piece): Painter =
+private fun pieceIcon(piece: Piece<*>): Painter =
     when (piece.color) {
       Black ->
           when (piece.rank) {
@@ -223,7 +194,7 @@ private fun pieceIcon(piece: Piece): Painter =
     }
 
 @Composable
-fun Piece(piece: Piece, modifier: Modifier = Modifier) {
+fun Piece(piece: Piece<*>, modifier: Modifier = Modifier) {
   Icon(
       painter = pieceIcon(piece),
       contentDescription = null,
