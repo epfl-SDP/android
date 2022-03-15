@@ -1,10 +1,5 @@
 package ch.epfl.sdp.mobile.ui.game
 
-import androidx.compose.animation.core.Spring.StiffnessHigh
-import androidx.compose.animation.core.Spring.StiffnessMediumLow
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
@@ -12,7 +7,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumeAllChanges
@@ -42,68 +36,89 @@ fun <Identifier> ChessBoard(
           )
           .grid(cells = 8, color = MaterialTheme.colors.primary),
   ) {
-    val minDimension = min(this.maxHeight, this.maxWidth)
-    val squareSizeDp = minDimension / 8
-    val density = LocalDensity.current
+    val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
+    val cellPx = minDimension / 8
+    val cellDp = with(LocalDensity.current) { cellPx.toDp() }
 
     for ((position, piece) in state.pieces) {
       key(piece) {
-        val targetX = squareSizeDp * position.x
-        val targetY = squareSizeDp * position.y
+        val currentTarget by rememberUpdatedState(Offset(cellPx * position.x, cellPx * position.y))
 
-        val x by animateDpAsState(targetX, spring(stiffness = StiffnessMediumLow))
-        val y by animateDpAsState(targetY, spring(stiffness = StiffnessMediumLow))
-
-        val offset = remember { mutableStateOf(Offset.Zero) }
-
-        val offsetX by animateFloatAsState(offset.value.x, spring(stiffness = StiffnessHigh))
-        val offsetY by animateFloatAsState(offset.value.y, spring(stiffness = StiffnessHigh))
+        val currentPosition by rememberUpdatedState(position)
+        val draggingState = remember {
+          DraggingState(
+              mutableStateOf(false),
+              mutableStateOf(currentTarget),
+          )
+        }
 
         Piece(
             piece = piece,
             modifier =
-                Modifier.offset { IntOffset(x.roundToPx(), y.roundToPx()) }
-                    .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                    .draggablePiece(
-                        offset = offset,
-                        onDrop = {
-                          val cellX = targetX + with(density) { offset.value.x.toDp() }
-                          val cellY = targetY + with(density) { offset.value.y.toDp() }
-
-                          state.onDropPiece(
-                              piece = piece,
-                              startPosition = position,
-                              endPosition =
-                                  Position(
-                                      (cellX / squareSizeDp).roundToInt().coerceIn(0, 7),
-                                      (cellY / squareSizeDp).roundToInt().coerceIn(0, 7),
-                                  ),
+                Modifier.offset {
+                      if (draggingState.isDragging)
+                          IntOffset(
+                              draggingState.offset.x.roundToInt(),
+                              draggingState.offset.y.roundToInt(),
                           )
-                          offset.value = Offset.Zero
-                        },
-                    )
-                    .size(squareSizeDp),
+                      else {
+                        IntOffset(
+                            currentTarget.x.roundToInt(),
+                            currentTarget.y.roundToInt(),
+                        )
+                      }
+                    }
+                    .pointerInput(Unit) {
+                      detectDragGestures(
+                          onDragStart = {
+                            draggingState.offset = currentTarget
+                            draggingState.isDragging = true
+                          },
+                          onDrag = { change, dragAmount ->
+                            change.consumeAllChanges()
+                            draggingState.offset += dragAmount
+                          },
+                          onDragEnd = {
+                            draggingState.isDragging = false
+                            val (x, y) = draggingState.offset / cellPx
+                            state.onDropPiece(
+                                piece = piece,
+                                startPosition = currentPosition,
+                                endPosition =
+                                    Position(
+                                        x.roundToInt().coerceIn(0, 7),
+                                        y.roundToInt().coerceIn(0, 7),
+                                    ),
+                            )
+                          },
+                          onDragCancel = { draggingState.isDragging = false },
+                      )
+                    }
+                    .size(cellDp),
         )
       }
     }
   }
 }
 
-fun Modifier.draggablePiece(
+class DraggingState(
+    isDragging: MutableState<Boolean>,
     offset: MutableState<Offset>,
-    onDrop: () -> Unit,
-): Modifier = composed {
-  val currentOnDrop by rememberUpdatedState(onDrop)
-  pointerInput(Unit) {
-    detectDragGestures(
-        onDragStart = { offset.value = Offset.Zero },
-        onDrag = { change, dragAmount ->
-          change.consumeAllChanges()
-          offset.value += dragAmount
-        },
-        onDragEnd = { currentOnDrop() },
-    )
-  }
+) {
+  var isDragging: Boolean by isDragging
+  var offset: Offset by offset
+}
+
+@Composable
+private fun Piece(
+    piece: Piece<*>,
+    modifier: Modifier = Modifier,
+) {
+  Icon(
+      painter = pieceIcon(piece),
+      contentDescription = "${piece.color} ${piece.rank}",
+      modifier = modifier,
+  )
 }
 
 @Composable
@@ -128,15 +143,3 @@ private fun pieceIcon(piece: Piece<*>): Painter =
             Pawn -> ChessIcons.WhitePawn
           }
     }
-
-@Composable
-private fun Piece(
-    piece: Piece<*>,
-    modifier: Modifier = Modifier,
-) {
-  Icon(
-      painter = pieceIcon(piece),
-      contentDescription = "${piece.color} ${piece.rank}",
-      modifier = modifier,
-  )
-}
