@@ -41,6 +41,17 @@ interface Query {
   fun whereNotEquals(field: String, value: Any?): Query
 
   /**
+   * Filters the results by keeping only the documents which contain a string value prefixed with
+   * the given [prefix] for the given [field].
+   *
+   * @param field the field for which the difference is checked.
+   * @param prefix the prefix that the value should start with.
+   *
+   * @return the updated [Query].
+   */
+  fun startsWith(field: String, prefix: String): Query
+
+  /**
    * Filters the results by keeping only the documents which contain the given [value] in an array
    * in the given [field].
    *
