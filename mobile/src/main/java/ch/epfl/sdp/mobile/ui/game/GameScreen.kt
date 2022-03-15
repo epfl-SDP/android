@@ -19,7 +19,7 @@ fun <Identifier> GameScreen(
   Column(modifier) {
     TitleText(text = "Chess game")
     MoveList(state.moves)
-    ChessBoard(state)
+    ChessBoard(state, modifier = Modifier.padding(16.dp))
     TitleText(text = "VR / Voice Recognition")
   }
 }

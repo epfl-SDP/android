@@ -19,9 +19,7 @@ import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
-import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
@@ -37,7 +35,6 @@ fun <Identifier> ChessBoard(
 ) {
   BoxWithConstraints(
       modifier
-          .padding(16.dp)
           .aspectRatio(1f)
           .checkerboard(
               cells = 8,
@@ -83,7 +80,8 @@ fun <Identifier> ChessBoard(
                                   ),
                           )
                           offset.value = Offset.Zero
-                        })
+                        },
+                    )
                     .size(squareSizeDp),
         )
       }
@@ -132,10 +130,13 @@ private fun pieceIcon(piece: Piece<*>): Painter =
     }
 
 @Composable
-fun Piece(piece: Piece<*>, modifier: Modifier = Modifier) {
+private fun Piece(
+    piece: Piece<*>,
+    modifier: Modifier = Modifier,
+) {
   Icon(
       painter = pieceIcon(piece),
-      contentDescription = null,
+      contentDescription = "${piece.color} ${piece.rank}",
       modifier = modifier,
   )
 }
