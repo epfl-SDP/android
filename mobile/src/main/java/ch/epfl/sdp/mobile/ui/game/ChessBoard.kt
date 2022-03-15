@@ -9,23 +9,16 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -78,7 +71,11 @@ class FakeChessBoardState : ChessBoardState<PieceIdentifier> {
   override val dragEnabled: Boolean
     get() = true // TODO: Change me!
 
-  override fun onDropPiece(piece: Piece<PieceIdentifier>, startPosition: Position, endPosition: Position) {
+  override fun onDropPiece(
+      piece: Piece<PieceIdentifier>,
+      startPosition: Position,
+      endPosition: Position
+  ) {
     val step = game.nextStep as NextStep.MovePiece
     game =
         step.move(
@@ -200,57 +197,4 @@ fun Piece(piece: Piece<*>, modifier: Modifier = Modifier) {
       contentDescription = null,
       modifier = modifier,
   )
-}
-
-fun Modifier.checkerboard(
-    color: Color = Color.Unspecified,
-    cells: Int = 8,
-): Modifier = composed {
-  val squareColor = color.takeOrElse { LocalContentColor.current }
-  drawBehind {
-    val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
-    val squareSize = size.minDimension / cells
-
-    for (i in 0 until cells) {
-      for (j in 0 until cells) {
-        val squareOffset = origin + Offset(i * squareSize, j * squareSize)
-        if ((i + j) % 2 == 1) {
-          drawRect(
-              color = squareColor,
-              topLeft = squareOffset,
-              size = Size(squareSize, squareSize),
-          )
-        }
-      }
-    }
-  }
-}
-
-fun Modifier.grid(
-    color: Color = Color.Unspecified,
-    width: Dp = 2.dp,
-    cells: Int = 8,
-): Modifier = composed {
-  val lineColor = color.takeOrElse { LocalContentColor.current }
-  drawBehind {
-    val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
-    val squareSize = size.minDimension / cells
-
-    for (i in 0..cells) {
-      drawLine(
-          color = lineColor,
-          start = origin + Offset(i * squareSize, 0f),
-          end = origin + Offset(i * squareSize, size.minDimension),
-          strokeWidth = width.toPx(),
-          cap = StrokeCap.Round,
-      )
-      drawLine(
-          color = lineColor,
-          start = origin + Offset(0f, i * squareSize),
-          end = origin + Offset(size.minDimension, i * squareSize),
-          strokeWidth = width.toPx(),
-          cap = StrokeCap.Round,
-      )
-    }
-  }
 }
