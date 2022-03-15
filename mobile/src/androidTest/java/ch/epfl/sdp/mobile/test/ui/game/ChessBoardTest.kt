@@ -24,7 +24,7 @@ class ChessBoardTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun test() = runTest {
+  fun draggingPawnAroundIsSuccessful() = runTest {
     val state = FakeChessBoardState()
     rule.setContent { ChessBoard(state, Modifier.size(160.dp).testTag("board")) }
     rule.onNodeWithTag("board").performTouchInput {
