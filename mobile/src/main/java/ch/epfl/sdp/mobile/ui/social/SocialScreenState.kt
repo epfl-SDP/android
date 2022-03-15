@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.application.Profile
+import kotlinx.coroutines.flow.Flow
 
 /**
  * A state which indicates the content of an [SocialScreen] composable. It will keep track of the
@@ -21,11 +23,14 @@ interface SocialScreenState {
     Searching,
   }
 
+  val following: List<Person>
+
+  val searchResult: List<Person>
+
   /** The current [Mode] */
   var mode: Mode
 
   /** The [List] of players that need to be displayed */
-  var players: List<Person>
 
   /** The current user input in the search bar */
   var input: String

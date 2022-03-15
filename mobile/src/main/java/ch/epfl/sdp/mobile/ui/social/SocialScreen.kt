@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,12 +9,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.social.SearchResult
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesIcons
@@ -26,6 +30,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
  * @param state the [SocialScreenState], manage the composable contents
  * @param modifier the [Modifier] for the composable
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
 
@@ -63,9 +68,9 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
     )
     transition.AnimatedContent { target ->
       when (target) {
-        Following -> FollowList(state.players)
+        Following -> FollowList(state.following)
         Searching ->
-            if (state.input.isEmpty()) EmptySearch() else SearchResultList(players = state.players)
+            if (state.input.isEmpty()) EmptySearch() else SearchResultList(players = state.searchResult)
       }
     }
   }
