@@ -27,7 +27,7 @@ interface SocialScreenState {
   /** The [List] of players that need to be displayed */
   var players: List<Person>
 
-  /** The current user input in the searc bar */
+  /** The current user input in the search bar */
   var input: String
 
   /** A callback invoked when the user type in the search text field */
