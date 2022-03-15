@@ -14,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,8 +22,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.Piece as GamePiece
-import ch.epfl.sdp.mobile.application.chess.Position as GamePosition
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
@@ -32,62 +29,6 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
-
-fun GamePosition.toPosition(): Position {
-  return Position(this.x, this.y)
-}
-
-fun GamePiece.toPiece(): Piece<PieceIdentifier> {
-  val rank =
-      when (this.rank) {
-        Rank.King -> King
-        Rank.Queen -> Queen
-        Rank.Rook -> Rook
-        Rank.Bishop -> Bishop
-        Rank.Knight -> Knight
-        Rank.Pawn -> Pawn
-      }
-
-  val color =
-      when (this.color) {
-        ch.epfl.sdp.mobile.application.chess.Color.Black -> Black
-        ch.epfl.sdp.mobile.application.chess.Color.White -> White
-      }
-
-  return Piece(id = this.id, rank = rank, color = color)
-}
-
-class FakeChessBoardState : ChessBoardState<PieceIdentifier> {
-  private var game by mutableStateOf(emptyGame())
-
-  override val pieces: Map<Position, Piece<PieceIdentifier>>
-    get() =
-        GamePosition.all()
-            .map { game.board[it]?.let { p -> it to p } }
-            .filterNotNull()
-            .map { (a, b) -> a.toPosition() to b.toPiece() }
-            .toMap()
-
-  override val dragEnabled: Boolean
-    get() = true // TODO: Change me!
-
-  override fun onDropPiece(
-      piece: Piece<PieceIdentifier>,
-      startPosition: Position,
-      endPosition: Position
-  ) {
-    val step = game.nextStep as NextStep.MovePiece
-    game =
-        step.move(
-            GamePosition(startPosition.x, startPosition.y),
-            Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y))
-  }
-}
-
-@Composable
-fun rememberChessBoardState(): ChessBoardState<PieceIdentifier> {
-  return remember { FakeChessBoardState() }
-}
 
 @Composable
 fun <Identifier> ChessBoard(

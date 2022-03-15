@@ -12,14 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun GameScreen(
-    state: GameScreenState,
+fun <Identifier> GameScreen(
+    state: GameScreenState<Identifier>,
     modifier: Modifier = Modifier,
 ) {
   Column(modifier) {
     TitleText(text = "Chess game")
     MoveList(state.moves)
-    ChessBoard(rememberChessBoardState())
+    ChessBoard(state)
     TitleText(text = "VR / Voice Recognition")
   }
 }
