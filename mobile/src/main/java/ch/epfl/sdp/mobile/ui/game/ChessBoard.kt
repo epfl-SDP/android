@@ -29,6 +29,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.Piece as GamePiece
+import ch.epfl.sdp.mobile.application.chess.Position as GamePosition
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
@@ -36,29 +39,6 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
-import kotlinx.coroutines.flow.flowOf
-
-val firstState =
-    mapOf(
-        Position(0, 1) to Piece(id = 1, rank = King, color = White),
-        Position(1, 2) to Piece(id = 2, rank = Queen, color = White),
-        Position(2, 3) to Piece(id = 3, rank = Rook, color = White),
-        Position(3, 4) to Piece(id = 4, rank = Bishop, color = Black),
-        Position(4, 5) to Piece(id = 5, rank = Knight, color = Black),
-        Position(5, 6) to Piece(id = 6, rank = Pawn, color = Black),
-    )
-
-val secondState =
-    mapOf(
-        Position(1, 3) to Piece(id = 3, rank = Rook, color = White),
-        Position(6, 6) to Piece(id = 6, rank = Pawn, color = Black),
-        Position(3, 2) to Piece(id = 2, rank = Queen, color = White),
-        Position(1, 5) to Piece(id = 1, rank = King, color = White),
-        Position(7, 2) to Piece(id = 5, rank = Knight, color = Black),
-        Position(4, 5) to Piece(id = 4, rank = Bishop, color = Black),
-    )
-
-val state = flowOf(firstState)
 
 @Stable
 interface ChessBoardState {
@@ -78,29 +58,67 @@ interface ChessBoardState {
     White,
   }
 
-  data class Piece(val id: Int, val rank: Rank, val color: Color)
+  // TODO: PieceIdentifier should be this interface's own type
+  data class Piece(val id: PieceIdentifier, val rank: Rank, val color: Color)
 
   val pieces: Map<Position, Piece>
 
   val dragEnabled: Boolean
 
-  fun onDropPiece(piece: Piece, position: Position)
+  fun onDropPiece(piece: Piece, startPosition: Position, endPosition: Position)
 }
 
-class FakeChessBoardState(override val pieces: Map<Position, Piece>) : ChessBoardState {
+fun GamePosition.toPosition(): Position {
+  return Position(this.x, this.y)
+}
+
+fun GamePiece.toPiece(): Piece {
+  val rank =
+      when (this.rank) {
+        Rank.King -> King
+        Rank.Queen -> Queen
+        Rank.Rook -> Rook
+        Rank.Bishop -> Bishop
+        Rank.Knight -> Knight
+        Rank.Pawn -> Pawn
+      }
+
+  val color =
+      when (this.color) {
+        ch.epfl.sdp.mobile.application.chess.Color.Black -> Black
+        ch.epfl.sdp.mobile.application.chess.Color.White -> White
+      }
+
+  return Piece(id = this.id, rank = rank, color = color)
+}
+
+class FakeChessBoardState() : ChessBoardState {
+  private var game by mutableStateOf(emptyGame())
+
+  override val pieces: Map<Position, Piece>
+    get() =
+        GamePosition.all()
+            .map { game.board[it]?.let { p -> it to p } }
+            .filterNotNull()
+            .toMap()
+            .map { (a, b) -> a.toPosition() to b.toPiece() }
+            .toMap()
 
   override val dragEnabled: Boolean
     get() = true // TODO: Change me!
 
-  override fun onDropPiece(piece: Piece, position: Position) {
-    println("Hello, world! $position")
+  override fun onDropPiece(piece: Piece, startPosition: Position, endPosition: Position) {
+    val step = game.nextStep as NextStep.MovePiece
+    game =
+        step.move(
+            GamePosition(startPosition.x, startPosition.y),
+            Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y))
   }
 }
 
 @Composable
 fun rememberChessBoardState(): ChessBoardState {
-  val pieces by state.collectAsState(initial = emptyMap())
-  return FakeChessBoardState(pieces)
+  return remember { FakeChessBoardState() }
 }
 
 @Composable
@@ -147,11 +165,13 @@ fun ChessBoard(
                           val cellY = targetY + with(density) { offset.value.y.toDp() }
 
                           state.onDropPiece(
-                              piece,
-                              Position(
-                                  (cellX / squareSizeDp).roundToInt().coerceIn(0, 7),
-                                  (cellY / squareSizeDp).roundToInt().coerceIn(0, 7),
-                              ),
+                              piece = piece,
+                              startPosition = position,
+                              endPosition =
+                                  Position(
+                                      (cellX / squareSizeDp).roundToInt().coerceIn(0, 7),
+                                      (cellY / squareSizeDp).roundToInt().coerceIn(0, 7),
+                                  ),
                           )
                           offset.value = Offset.Zero
                         })
