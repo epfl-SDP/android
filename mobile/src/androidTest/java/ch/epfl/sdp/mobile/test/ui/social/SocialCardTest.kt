@@ -11,7 +11,7 @@ import org.junit.Test
 class SocialCardTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotFriendCard : Person {
+  private class FakeFriendCard : Person {
     override val backgroundColor: Color = Color.Default
     override val name: String = "Toto"
     override val emoji: String = ":3"
@@ -20,14 +20,14 @@ class SocialCardTest {
   @Test
   fun card_displayCorrectName() {
 
-    rule.setContent { PersonCard(person = SnapshotFriendCard()) }
+    rule.setContent { PersonCard(person = FakeFriendCard()) }
 
     rule.onNodeWithText("Toto").assertExists()
   }
 
   @Test
   fun card_displayCorrectEmoji() {
-    rule.setContent { PersonCard(person = SnapshotFriendCard()) }
+    rule.setContent { PersonCard(person = FakeFriendCard()) }
 
     rule.onNodeWithText(":3").assertExists()
   }
