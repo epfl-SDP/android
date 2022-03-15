@@ -25,6 +25,39 @@ class FirestoreQueryTest {
   }
 
   @Test
+  fun whereEquals_delegatesWhereEqualTo() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereEqualTo("field", null) } returns result
+    reference.whereEquals("field", null)
+    verify { query.whereEqualTo("field", null) }
+  }
+
+  @Test
+  fun whereNotEquals_delegatesWhereNotEqualTo() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereNotEqualTo("field", null) } returns result
+    reference.whereNotEquals("field", null)
+    verify { query.whereNotEqualTo("field", null) }
+  }
+
+  @Test
+  fun whereArrayContains_delegatesWhereArrayContains() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereArrayContains("field", "value") } returns result
+    reference.whereArrayContains("field", "value")
+    verify { query.whereArrayContains("field", "value") }
+  }
+
+  @Test
   fun asFlow_successfulListener() = runTest {
     val collection = mockk<Query>()
     val registration = mockk<ListenerRegistration>()

@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.store
 
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * An interface representing a document in the hierarchy. It may contain some nested collections,
@@ -18,13 +19,11 @@ interface DocumentReference {
   fun collection(path: String): CollectionReference
 
   /**
-   * Returns a [Flow] of the current value of the document.
+   * Returns a [Flow] of all the snapshots for the current [DocumentReference].
    *
-   * @param valueClass the [KClass] of the item.
-   * @param T the type of the document.
-   * @return the [Flow] of the document values.
+   * @return the [Flow] of [DocumentSnapshot].
    */
-  fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?>
+  fun asDocumentSnapshotFlow(): Flow<DocumentSnapshot?>
 
   /** Deletes the given document. Does nothing if the document was previously missing. */
   suspend fun delete()
@@ -61,7 +60,8 @@ interface DocumentReference {
  * @param T the type of the document.
  * @return the [Flow] of the document values.
  */
-inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> = asFlow(T::class)
+inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> =
+    asDocumentSnapshotFlow().map { it?.toObject(T::class) }
 
 /**
  * Sets the given document with the provided [value].

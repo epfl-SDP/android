@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentSnapshot
 import com.google.firebase.firestore.DocumentReference as ActualDocumentReference
 import com.google.firebase.firestore.SetOptions
 import kotlin.reflect.KClass
@@ -26,11 +27,11 @@ class FirestoreDocumentReference(
   override fun collection(path: String): CollectionReference =
       FirestoreCollectionReference(reference.collection(path))
 
-  override fun <T : Any> asFlow(valueClass: KClass<T>): Flow<T?> =
+  override fun asDocumentSnapshotFlow(): Flow<DocumentSnapshot?> =
       callbackFlow {
             val registration =
                 reference.addSnapshotListener { value, error ->
-                  value?.let { trySend(it.toObject(valueClass.java)) }
+                  value?.let { trySend(FirestoreDocumentSnapshot(it)) }
                   error?.let { close(it) }
                 }
             awaitClose { registration.remove() }
@@ -42,7 +43,7 @@ class FirestoreDocumentReference(
   }
 
   override suspend fun update(scope: DocumentEditScope.() -> Unit) {
-    val values = FirestoreDocumentEditScope().apply(scope)
+    val values = FirestoreDocumentEditScope().apply(scope).values
     reference.set(values, SetOptions.merge()).await()
   }
 

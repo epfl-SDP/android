@@ -76,6 +76,9 @@ dependencies {
   implementation("com.google.firebase:firebase-auth-ktx")
   implementation("com.google.firebase:firebase-firestore-ktx")
 
+  // Immutable collections.
+  implementation(libs.kotlinx.immutable.collections)
+
   // Kotlin and coroutines.
   implementation(libs.bundles.coroutines.android)
 

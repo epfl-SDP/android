@@ -4,7 +4,8 @@ import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreen
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 fun StatefulAuthenticationScreen(
     modifier: Modifier = Modifier,
 ) {
-  val authentication = LocalAuthenticationApi.current
+  val authentication = LocalAuthenticationFacade.current
   val strings = LocalLocalizedStrings.current
   val scope = rememberCoroutineScope()
   val state =
@@ -65,8 +66,8 @@ class AuthenticationApiAuthenticationScreenState(
             }
         error =
             when (result) {
-              AuthenticationFacade.AuthenticationResult.Success -> null
-              AuthenticationFacade.AuthenticationResult.Failure -> strings.authenticateErrorFailure
+              AuthenticationResult.Success -> null
+              AuthenticationResult.Failure -> strings.authenticateErrorFailure
             }
       }
     }
