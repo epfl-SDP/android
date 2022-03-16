@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.test.ui.game
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -28,9 +30,14 @@ class GameScreenTest {
           )
   }
 
+  @Composable
+  private fun rememberSnapshotGameScreenState(): SnapshotGameScreenState {
+    return remember { SnapshotGameScreenState() }
+  }
+
   @Test
   fun moveList_isDisplayed() {
-    rule.setContent { GameScreen(state = SnapshotGameScreenState()) }
+    rule.setContent { GameScreen(state = rememberSnapshotGameScreenState()) }
 
     rule.onNodeWithText("1. f3").assertExists()
     rule.onNodeWithText("2. e5").assertExists()
@@ -41,7 +48,9 @@ class GameScreenTest {
   @Test
   fun aWhitePawn_isDisplayed() {
     val strings =
-        rule.setContentWithLocalizedStrings { GameScreen(state = SnapshotGameScreenState()) }
+        rule.setContentWithLocalizedStrings {
+          GameScreen(state = rememberSnapshotGameScreenState())
+        }
 
     rule.onNodeWithContentDescription(
             strings.boardPieceContentDescription(strings.boardColorWhite, strings.boardPiecePawn),
