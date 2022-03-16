@@ -55,11 +55,11 @@ class SnapshotChessBoardState : GameScreenState<PieceIdentifier> {
 data class ChessMove(override val number: Int, override val name: String) : Move
 
 /** Maps a game engine [Position] to a [ChessBoardState.Position] */
-fun Position.toPosition(): ChessBoardState.Position {
+private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
 
-fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
+private fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
   val rank =
       when (this.rank) {
         Rank.King -> ChessBoardState.Rank.King
