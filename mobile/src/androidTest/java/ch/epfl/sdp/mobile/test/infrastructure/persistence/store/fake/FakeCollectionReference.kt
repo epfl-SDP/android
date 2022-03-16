@@ -2,13 +2,14 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
+import ch.epfl.sdp.mobile.test.combineOrEmpty
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.FakeQuery
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.fromObject
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery {
@@ -21,7 +22,7 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
 
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> {
     val flows = documents.values.map { it.asDocumentSnapshotFlow() }
-    return combine(flows) { FakeQuerySnapshot(it.filterNotNull()) }
+    return flows.combineOrEmpty().map { FakeQuerySnapshot(it.filterNotNull()) }
   }
 
   override fun <T : Any> document(
