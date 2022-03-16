@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import ch.epfl.sdp.mobile.R
-import androidx.compose.material.icons.filled.*
 
 /** Returns the [PawniesIcons] from which Pawnies icons are queried. */
 val Icons.Branded: PawniesIcons
