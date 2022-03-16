@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import ch.epfl.sdp.mobile.R
+import androidx.compose.material.icons.filled.*
 
 /** Returns the [PawniesIcons] from which Pawnies icons are queried. */
 val Icons.Branded: PawniesIcons
@@ -28,6 +29,12 @@ val PawniesIcons.SectionSocial
 /** An icon for the settings section. */
 val PawniesIcons.SectionSettings
   get() = Icons.Default.Settings
+
+val PawniesIcons.Add
+  get() = Icons.Default.Add
+
+val PawniesIcons.Search
+  get() = Icons.Default.Search
 
 /** An icon for the game section. */
 val PawniesIcons.SectionGame
