@@ -13,6 +13,13 @@ import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * A [Modifier] which draws a square checkerboard centered in this layout node. The top-left cell
+ * will be transparent.
+ *
+ * @param color the color with which the board will be drawn.
+ * @param cells the number of cells of the grid.
+ */
 fun Modifier.checkerboard(
     color: Color = Color.Unspecified,
     cells: Int = 8,
@@ -37,6 +44,13 @@ fun Modifier.checkerboard(
   }
 }
 
+/**
+ * A [Modifier] which draws a grid.
+ *
+ * @param color the color of the grid.
+ * @param width the width of the grid lines.
+ * @param cells the number of cells of the grid.
+ */
 fun Modifier.grid(
     color: Color = Color.Unspecified,
     width: Dp = 2.dp,

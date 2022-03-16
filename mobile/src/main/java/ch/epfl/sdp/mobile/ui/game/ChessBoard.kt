@@ -25,6 +25,14 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
+/**
+ * A composable which displays a chess board based on some given state. Each piece is disambiguated
+ * using its [Identifier], so pieces smoothly animate when the board changes.
+ *
+ * @param Identifier the type of the piece identifiers.
+ * @param state the [ChessBoardState] that is used by this composable.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun <Identifier> ChessBoard(
     state: ChessBoardState<Identifier>,
@@ -121,7 +129,8 @@ fun <Identifier> ChessBoard(
   }
 }
 
-class DraggingState(
+/** A holder for the drag state of an individual piece. */
+private class DraggingState(
     isDragging: MutableState<Boolean>,
     offset: MutableState<Offset>,
 ) {
@@ -129,6 +138,12 @@ class DraggingState(
   var offset: Offset by offset
 }
 
+/**
+ * Draws a single [Piece] of chess.
+ *
+ * @param piece the piece to be drawn.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 private fun Piece(
     piece: Piece<*>,
@@ -141,6 +156,7 @@ private fun Piece(
   )
 }
 
+/** Returns the [Painter] which should be used to draw the given [piece]. */
 @Composable
 private fun pieceIcon(piece: Piece<*>): Painter =
     when (piece.color) {
