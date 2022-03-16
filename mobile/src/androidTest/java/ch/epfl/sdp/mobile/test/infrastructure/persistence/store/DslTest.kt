@@ -3,10 +3,11 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.junit.Test
 
 class DslTest {
@@ -32,6 +33,17 @@ class DslTest {
     val store = emptyStore()
     val value = store.collection("col").asFlow<User>().first()
     assertThat(value).isEmpty()
+  }
+
+  @Test
+  fun collectingFlow_seesNewDocuments() = runTest {
+    val store = emptyStore()
+    launch {
+      val users = store.collection("col").asFlow<User>().filter { it.isNotEmpty() }.first()
+      assertThat(users).containsExactly(alexandre)
+    }
+    yield() // Ensure that the flow starts collecting before we add the document.
+    store.collection("col").document("a").set(alexandre)
   }
 
   @Test
