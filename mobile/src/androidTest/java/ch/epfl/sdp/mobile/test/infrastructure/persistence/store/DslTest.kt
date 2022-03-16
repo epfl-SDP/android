@@ -26,6 +26,13 @@ class DslTest {
   }
 
   @Test
+  fun missingDocument_isEmptyList() = runTest {
+    val store = emptyStore()
+    val value = store.collection("col").asFlow<User>().first()
+    assertThat(value).isEmpty()
+  }
+
+  @Test
   fun nonNullDocument_isNotNull() = runTest {
     val store = buildStore { collection("users") { document("id", alexandre) } }
     val value = store.collection("users").document("id").asFlow<User>().first()
