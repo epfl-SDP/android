@@ -113,6 +113,22 @@ class AuthenticationFacadeTest {
   }
 
   @Test
+  fun authenticatedUserPartialUpdate_preservesExistingFields() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+
+    facade.signUpWithEmail("email@email.com", "Alexandre", "password")
+
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    userAuthenticated.update { emoji("🇺🇦") }
+
+    val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    assertThat(updatedUser.name).isEqualTo("Alexandre")
+  }
+
+  @Test
   fun gettingProfileWithNullValuesAssignsDefaultValues() = runTest {
     val auth = buildAuth { user("email@example.org", "password") }
     val store = buildStore { collection("users") { document("uid", ProfileDocument()) } }
