@@ -7,9 +7,10 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 
 /** A global composition local which provides access to an instance of [AuthenticationFacade]. */
-val LocalAuthenticationFacade = compositionLocalOf<AuthenticationFacade> { error("Missing API.") }
+val LocalAuthenticationFacade =
+    compositionLocalOf<AuthenticationFacade> { error("Missing Authentication API.") }
 
-val LocalSocialFacade = compositionLocalOf<SocialFacade> { error("Missing API.") }
+val LocalSocialFacade = compositionLocalOf<SocialFacade> { error("Missing Social API.") }
 
 /**
  * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values

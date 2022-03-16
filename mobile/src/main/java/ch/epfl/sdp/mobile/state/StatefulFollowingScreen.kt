@@ -35,7 +35,7 @@ fun StatefulFollowingScreen(
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
 
   val socialFacade = LocalSocialFacade.current
-  val input = remember { mutableStateOf("") } // MutalStateOf or Snapshot flow
+  val input = remember { mutableStateOf("") }
   val searchResults =
       remember { snapshotFlow { input.value }.flatMapLatest { s -> socialFacade.search(s) } }
           .collectAsState(emptyList())

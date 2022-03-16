@@ -32,7 +32,10 @@ class NavigationTest {
   fun notAuthenticated_displaysAuthenticationScreen() = runTest {
     val facade = AuthenticationFacade(emptyAuth(), emptyStore())
     val socialFacade = SocialFacade(emptyAuth(), emptyStore())
-    val strings = rule.setContentWithLocalizedStrings { ProvideFacades(facade, socialFacade) { Navigation() } }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, socialFacade) { Navigation() }
+        }
 
     // Do we see the authentication screen actions ?
     rule.onNodeWithText(strings.authenticatePerformRegister).assertExists()
@@ -42,7 +45,10 @@ class NavigationTest {
   fun authenticated_displaysHome() = runTest {
     val facade = AuthenticationFacade(emptyAuth(), emptyStore())
     val socialFacade = SocialFacade(emptyAuth(), emptyStore())
-    val strings = rule.setContentWithLocalizedStrings { ProvideFacades(facade, socialFacade) { Navigation() } }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, socialFacade) { Navigation() }
+        }
     facade.signUpWithEmail("email", "name", "password")
 
     // Do we see the bottom navigation ?
