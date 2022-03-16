@@ -16,6 +16,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
@@ -148,32 +149,55 @@ private fun Piece(
     modifier: Modifier = Modifier,
 ) {
   Icon(
-      painter = pieceIcon(piece),
-      contentDescription = "${piece.color} ${piece.rank}",
+      painter = piece.icon,
+      contentDescription = piece.contentDescription,
       modifier = modifier,
   )
 }
 
-/** Returns the [Painter] which should be used to draw the given [piece]. */
-@Composable
-private fun pieceIcon(piece: Piece<*>): Painter =
-    when (piece.color) {
-      Black ->
-          when (piece.rank) {
-            King -> ChessIcons.BlackKing
-            Queen -> ChessIcons.BlackQueen
-            Rook -> ChessIcons.BlackRook
-            Bishop -> ChessIcons.BlackBishop
-            Knight -> ChessIcons.BlackKnight
-            Pawn -> ChessIcons.BlackPawn
-          }
-      White ->
-          when (piece.rank) {
-            King -> ChessIcons.WhiteKing
-            Queen -> ChessIcons.WhiteQueen
-            Rook -> ChessIcons.WhiteRook
-            Bishop -> ChessIcons.WhiteBishop
-            Knight -> ChessIcons.WhiteKnight
-            Pawn -> ChessIcons.WhitePawn
-          }
-    }
+/** Returns the [Painter] associated to the value of this [Piece]. */
+private val Piece<*>.icon: Painter
+  @Composable
+  get() =
+      when (color) {
+        Black ->
+            when (rank) {
+              King -> ChessIcons.BlackKing
+              Queen -> ChessIcons.BlackQueen
+              Rook -> ChessIcons.BlackRook
+              Bishop -> ChessIcons.BlackBishop
+              Knight -> ChessIcons.BlackKnight
+              Pawn -> ChessIcons.BlackPawn
+            }
+        White ->
+            when (rank) {
+              King -> ChessIcons.WhiteKing
+              Queen -> ChessIcons.WhiteQueen
+              Rook -> ChessIcons.WhiteRook
+              Bishop -> ChessIcons.WhiteBishop
+              Knight -> ChessIcons.WhiteKnight
+              Pawn -> ChessIcons.WhitePawn
+            }
+      }
+
+/** Returns the [String] content description associated to the value of this [Piece]. */
+private val Piece<*>.contentDescription: String
+  @Composable
+  get() {
+    val strings = LocalLocalizedStrings.current
+    val color =
+        when (color) {
+          Black -> strings.boardColorBlack
+          White -> strings.boardColorWhite
+        }
+    val rank =
+        when (rank) {
+          King -> strings.boardPieceKing
+          Queen -> strings.boardPieceQueen
+          Rook -> strings.boardPieceRook
+          Bishop -> strings.boardPieceBishop
+          Knight -> strings.boardPieceKnight
+          Pawn -> strings.boardPiecePawn
+        }
+    return strings.boardPieceContentDescription(color, rank)
+  }

@@ -12,6 +12,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.FakeChessBoardState
+import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.test.ui.contains
 import ch.epfl.sdp.mobile.test.ui.getBoundsInRoot
 import ch.epfl.sdp.mobile.ui.game.ChessBoard
@@ -32,7 +33,10 @@ class ChessBoardTest {
   @Test
   fun draggingPawnAroundIsSuccessful() = runTest {
     val state = FakeChessBoardState()
-    rule.setContent { ChessBoard(state, Modifier.size(160.dp).testTag("board")) }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
+        }
     rule.onNodeWithTag("board").performTouchInput {
       down(Offset(90.dp.toPx(), 130.dp.toPx()))
       moveBy(Offset(0.dp.toPx(), -40.dp.toPx()))
@@ -40,9 +44,12 @@ class ChessBoardTest {
     }
     rule.awaitIdle()
     val inBounds =
-        rule.onAllNodesWithContentDescription("White Pawn").fetchSemanticsNodes().any {
-          DpOffset(90.dp, 90.dp) in it.getBoundsInRoot()
-        }
+        rule.onAllNodesWithContentDescription(
+                strings.boardPieceContentDescription(
+                    strings.boardColorWhite, strings.boardPiecePawn),
+            )
+            .fetchSemanticsNodes()
+            .any { DpOffset(90.dp, 90.dp) in it.getBoundsInRoot() }
     assertThat(inBounds).isTrue()
   }
 
@@ -72,7 +79,10 @@ class ChessBoardTest {
   @Test
   fun draggingPawnAround_whileBoardIsSuccessful_dropsOnRightTarget() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    rule.setContent { ChessBoard(state, Modifier.size(160.dp).testTag("board")) }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
+        }
     rule.onNodeWithTag("board").performTouchInput {
       down(Offset(10.dp.toPx(), 10.dp.toPx()))
       moveBy(Offset(0.dp.toPx(), 20.dp.toPx()))
@@ -82,20 +92,33 @@ class ChessBoardTest {
       moveBy(Offset(0.dp.toPx(), 20.dp.toPx())) // Still drop at (0, 3)
       up()
     }
-    val bounds = rule.onNodeWithContentDescription("White Pawn").getBoundsInRoot()
+    val bounds =
+        rule.onNodeWithContentDescription(
+                strings.boardPieceContentDescription(
+                    strings.boardColorWhite, strings.boardPiecePawn),
+            )
+            .getBoundsInRoot()
     assertThat(DpOffset(10.dp, 50.dp) in bounds).isTrue()
   }
 
   @Test
   fun emptyDragGesture_doesNotMovePawn() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    rule.setContent { ChessBoard(state, Modifier.size(160.dp).testTag("board")) }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
+        }
     rule.onNodeWithTag("board").performTouchInput {
       down(Offset(10.dp.toPx(), 10.dp.toPx()))
       cancel() // Cancel the gesture, so we should not drop the pawn.
     }
     rule.awaitIdle()
-    val bounds = rule.onNodeWithContentDescription("White Pawn").getBoundsInRoot()
+    val bounds =
+        rule.onNodeWithContentDescription(
+                strings.boardPieceContentDescription(
+                    strings.boardColorWhite, strings.boardPiecePawn),
+            )
+            .getBoundsInRoot()
     assertThat(DpOffset(10.dp, 10.dp) in bounds).isTrue()
   }
 }
