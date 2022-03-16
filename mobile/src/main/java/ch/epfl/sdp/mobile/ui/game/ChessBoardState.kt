@@ -28,7 +28,5 @@ interface ChessBoardState<Identifier> {
 
   val pieces: Map<Position, Piece<Identifier>>
 
-  val dragEnabled: Boolean
-
   fun onDropPiece(piece: Piece<Identifier>, startPosition: Position, endPosition: Position)
 }

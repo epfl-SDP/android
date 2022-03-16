@@ -46,9 +46,6 @@ class FakeChessBoardState : GameScreenState<PieceIdentifier> {
             .map { (a, b) -> a.toPosition() to b.toPiece() }
             .toMap()
 
-  override val dragEnabled: Boolean
-    get() = true // TODO: Change me!
-
   override fun onDropPiece(
       piece: ChessBoardState.Piece<PieceIdentifier>,
       startPosition: ChessBoardState.Position,

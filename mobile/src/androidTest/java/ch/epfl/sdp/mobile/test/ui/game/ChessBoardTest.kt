@@ -61,8 +61,6 @@ class ChessBoardTest {
     override val pieces: Map<Position, Piece<Unit>>
       get() = mapOf(position to piece)
 
-    override val dragEnabled = true
-
     override fun onDropPiece(
         piece: Piece<Unit>,
         startPosition: Position,
