@@ -94,8 +94,6 @@ fun rememberGameScreenState(): GameScreenState<PieceIdentifier> {
  *
  * @param user the currently logged-in user.
  * @param modifier the [Modifier] for the composable
- *
- * @return
  */
 @Composable
 fun StatefulGameScreen(
