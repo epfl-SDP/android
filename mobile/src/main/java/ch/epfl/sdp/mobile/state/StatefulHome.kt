@@ -20,6 +20,9 @@ private const val SocialRoute = "social"
 /** The route associated to the settings tab. */
 private const val SettingsRoute = "settings"
 
+/** The route associated to the play tab. */
+private const val PlayRoute = "play"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -47,6 +50,7 @@ fun StatefulHome(
     ) {
       composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
+      composable(PlayRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
     }
   }
 }
@@ -55,6 +59,7 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
+      PlayRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
 
@@ -63,4 +68,5 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
+      HomeSection.Play -> PlayRoute
     }

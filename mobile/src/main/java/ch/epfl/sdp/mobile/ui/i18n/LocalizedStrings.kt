@@ -37,4 +37,7 @@ interface LocalizedStrings {
 
   val sectionSocial: String
   val sectionSettings: String
+  val sectionPlay: String
+
+  val newGame: String
 }
