@@ -62,8 +62,7 @@ interface ChessBoardState<Identifier> {
    * end position.
    *
    * @param piece the [Piece] that was moved.
-   * @param startPosition where the [Piece] originally was.
    * @param endPosition the place where the [Piece] was dropped.
    */
-  fun onDropPiece(piece: Piece<Identifier>, startPosition: Position, endPosition: Position)
+  fun onDropPiece(piece: Piece<Identifier>, endPosition: Position)
 }

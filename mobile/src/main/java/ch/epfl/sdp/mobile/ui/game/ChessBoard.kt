@@ -57,7 +57,6 @@ fun <Identifier> ChessBoard(
         val currentTarget by rememberUpdatedState(Offset(cellPx * position.x, cellPx * position.y))
         val currentTargetAnimatable = remember { Animatable(currentTarget, Offset.VectorConverter) }
 
-        val currentPosition by rememberUpdatedState(position)
         val draggingState = remember {
           DraggingState(
               mutableStateOf(false),
@@ -110,7 +109,6 @@ fun <Identifier> ChessBoard(
                               val (x, y) = draggingState.offset / cellPx
                               state.onDropPiece(
                                   piece = piece,
-                                  startPosition = currentPosition,
                                   endPosition =
                                       Position(
                                           x.roundToInt().coerceIn(0, 7),

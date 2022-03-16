@@ -63,7 +63,6 @@ class ChessBoardTest {
 
     override fun onDropPiece(
         piece: Piece<Unit>,
-        startPosition: Position,
         endPosition: Position,
     ) {
       position = endPosition

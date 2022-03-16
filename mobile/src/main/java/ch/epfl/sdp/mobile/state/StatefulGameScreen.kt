@@ -48,10 +48,11 @@ class FakeChessBoardState : GameScreenState<PieceIdentifier> {
 
   override fun onDropPiece(
       piece: ChessBoardState.Piece<PieceIdentifier>,
-      startPosition: ChessBoardState.Position,
       endPosition: ChessBoardState.Position
   ) {
+    val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     val step = game.nextStep as NextStep.MovePiece
+
     game =
         step.move(
             Position(startPosition.x, startPosition.y),
