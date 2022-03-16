@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.toList
 class SocialFacade(private val auth: Auth, private val store: Store) {
 
     fun search(text: String): Flow<List<Profile>> {
-        Log.i("info", "this has been called $text")
         return store.collection("users").whereEquals("name", text).asFlow<ProfileDocument>().map {
             it.mapNotNull { doc -> doc?.toProfile() }
         }
