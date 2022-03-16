@@ -11,7 +11,6 @@ val LocalAuthenticationFacade = compositionLocalOf<AuthenticationFacade> { error
 
 val LocalSocialFacade = compositionLocalOf<SocialFacade> { error("Missing API.") }
 
-
 /**
  * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values
  * available throughout the hierarchy.
@@ -27,6 +26,5 @@ fun ProvideFacades(
   CompositionLocalProvider(
       LocalAuthenticationFacade provides authentication,
       LocalSocialFacade provides social,
-
   ) { content() }
 }

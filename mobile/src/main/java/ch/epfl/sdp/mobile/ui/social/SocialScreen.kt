@@ -9,15 +9,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.social.SearchResult
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesIcons
@@ -71,7 +68,8 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
       when (target) {
         Following -> FollowList(state.following)
         Searching ->
-            if (state.input.isEmpty()) EmptySearch() else SearchResultList(players = state.searchResult)
+            if (state.input.isEmpty()) EmptySearch()
+            else SearchResultList(players = state.searchResult)
       }
     }
   }
