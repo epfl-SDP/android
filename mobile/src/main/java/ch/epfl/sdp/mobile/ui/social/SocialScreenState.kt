@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.social
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
 import ch.epfl.sdp.mobile.application.Profile
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +35,8 @@ interface SocialScreenState {
 
   /** The current user input in the search bar */
   var input: String
+
+  var searchFieldInteraction: MutableInteractionSource
 
   /** A callback invoked when the user type in the search text field */
   fun onValueChange()
