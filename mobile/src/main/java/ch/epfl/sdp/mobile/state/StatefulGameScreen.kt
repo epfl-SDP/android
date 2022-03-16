@@ -90,7 +90,7 @@ fun rememberGameScreenState(): GameScreenState<PieceIdentifier> {
 }
 
 /**
- *  The [StatefulGameScreen] to be used for the Navigation
+ * The [StatefulGameScreen] to be used for the Navigation
  *
  * @param user the currently logged-in user.
  * @param modifier the [Modifier] for the composable

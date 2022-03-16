@@ -26,9 +26,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
-/**
- * The width (and height) in number of cells of a ChessBoard
- */
+/** The width (and height) in number of cells of a ChessBoard */
 const val ChessBoardCells = 8
 
 /**
