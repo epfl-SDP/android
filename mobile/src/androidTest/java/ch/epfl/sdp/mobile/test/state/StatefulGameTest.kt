@@ -53,4 +53,12 @@ class StatefulGameTest {
 
     assertThat(pieceThatShouldNotExist).isNull()
   }
+
+  @Test
+  fun fixedMoveList_returnsExpectedMoves() {
+    val game = FakeChessBoardState()
+    val expected = listOf(1 to "f3", 2 to "e5", 3 to "g4", 4 to "Qh4#")
+
+    assertThat(game.moves.map { it.number to it.name }).containsExactlyElementsIn(expected)
+  }
 }

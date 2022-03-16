@@ -60,19 +60,13 @@ class FakeChessBoardState : GameScreenState<PieceIdentifier> {
         )
   }
 
-  private val piecePool: List<String> = listOf("K", "Q", "N", "B", "R", "")
-  private val columnPool: List<Char> = ('a'..'h').toList()
-  private val rowPool: List<Char> = ('1'..'8').toList()
-
   override val moves: List<Move> =
-      (1 until 20).map {
-        val piece = piecePool[kotlin.random.Random.nextInt(0, piecePool.size)]
-        val column = columnPool[kotlin.random.Random.nextInt(0, columnPool.size)]
-        val row = rowPool[kotlin.random.Random.nextInt(0, rowPool.size)]
-        val randomString = piece + column + row.toString()
-
-        ChessMove(number = it, name = randomString)
-      }
+      listOf(
+          ChessMove(1, "f3"),
+          ChessMove(2, "e5"),
+          ChessMove(3, "g4"),
+          ChessMove(4, "Qh4#"),
+      )
 }
 
 @Composable
