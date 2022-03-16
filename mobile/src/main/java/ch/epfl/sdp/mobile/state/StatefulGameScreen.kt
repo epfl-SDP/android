@@ -9,8 +9,14 @@ import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
 
+/**
+ * Represents a [ChessBoardState]'s Move
+ * @property number The move's number in the game's history
+ * @property name The move's name in chess notation
+ */
 data class ChessMove(override val number: Int, override val name: String) : Move
 
+/** Maps a game engine [Position] to a [ChessBoardState.Position] */
 fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
@@ -35,6 +41,10 @@ fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
   return ChessBoardState.Piece(id = this.id, rank = rank, color = color)
 }
 
+/**
+ * An implementation of [GameScreenState] that starts with default chess positions,
+ * can move pieces and has a static move list
+ */
 class FakeChessBoardState : GameScreenState<PieceIdentifier> {
   private var game by mutableStateOf(emptyGame())
 

@@ -10,7 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.ui.social.Person
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 
+/**
+ * This screen display an ongoing game of chest
+ *
+ * @param state the [GameScreenState] that manage the composable contents
+ * @param modifier the [Modifier] for the composable
+ */
 @Composable
 fun <Identifier> GameScreen(
     state: GameScreenState<Identifier>,
@@ -24,6 +32,11 @@ fun <Identifier> GameScreen(
   }
 }
 
+/**
+ * Display the list of moves that have been played
+ * @param moves A list of [Move] that need to be displayed
+ * @param modifier modifier the [Modifier] for the composable
+ */
 @Composable
 fun MoveList(moves: List<Move>, modifier: Modifier = Modifier) {
   LazyRow(
@@ -50,6 +63,11 @@ fun MoveList(moves: List<Move>, modifier: Modifier = Modifier) {
   }
 }
 
+/**
+ * A temporary text composable to give some life to the [GameScreen]
+ * @param text The [String] to be displayed
+ * @param modifier modifier the [Modifier] for the composable
+ */
 @Composable
 fun TitleText(text: String, modifier: Modifier = Modifier) {
   Text(
