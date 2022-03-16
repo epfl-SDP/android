@@ -10,42 +10,10 @@ import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
 
 /**
- * Represents a [ChessBoardState]'s Move
- * @property number The move's number in the game's history
- * @property name The move's name in chess notation
+ * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
+ * and has a static move list
  */
-data class ChessMove(override val number: Int, override val name: String) : Move
-
-/** Maps a game engine [Position] to a [ChessBoardState.Position] */
-fun Position.toPosition(): ChessBoardState.Position {
-  return ChessBoardState.Position(this.x, this.y)
-}
-
-fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
-  val rank =
-      when (this.rank) {
-        Rank.King -> ChessBoardState.Rank.King
-        Rank.Queen -> ChessBoardState.Rank.Queen
-        Rank.Rook -> ChessBoardState.Rank.Rook
-        Rank.Bishop -> ChessBoardState.Rank.Bishop
-        Rank.Knight -> ChessBoardState.Rank.Knight
-        Rank.Pawn -> ChessBoardState.Rank.Pawn
-      }
-
-  val color =
-      when (this.color) {
-        Color.Black -> ChessBoardState.Color.Black
-        Color.White -> ChessBoardState.Color.White
-      }
-
-  return ChessBoardState.Piece(id = this.id, rank = rank, color = color)
-}
-
-/**
- * An implementation of [GameScreenState] that starts with default chess positions,
- * can move pieces and has a static move list
- */
-class FakeChessBoardState : GameScreenState<PieceIdentifier> {
+class SnapshotChessBoardState : GameScreenState<PieceIdentifier> {
   private var game by mutableStateOf(emptyGame())
 
   override val pieces: Map<ChessBoardState.Position, ChessBoardState.Piece<PieceIdentifier>>
@@ -79,9 +47,41 @@ class FakeChessBoardState : GameScreenState<PieceIdentifier> {
       )
 }
 
+/**
+ * Represents a [ChessBoardState]'s Move
+ * @property number The move's number in the game's history
+ * @property name The move's name in chess notation
+ */
+data class ChessMove(override val number: Int, override val name: String) : Move
+
+/** Maps a game engine [Position] to a [ChessBoardState.Position] */
+fun Position.toPosition(): ChessBoardState.Position {
+  return ChessBoardState.Position(this.x, this.y)
+}
+
+fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
+  val rank =
+      when (this.rank) {
+        Rank.King -> ChessBoardState.Rank.King
+        Rank.Queen -> ChessBoardState.Rank.Queen
+        Rank.Rook -> ChessBoardState.Rank.Rook
+        Rank.Bishop -> ChessBoardState.Rank.Bishop
+        Rank.Knight -> ChessBoardState.Rank.Knight
+        Rank.Pawn -> ChessBoardState.Rank.Pawn
+      }
+
+  val color =
+      when (this.color) {
+        Color.Black -> ChessBoardState.Color.Black
+        Color.White -> ChessBoardState.Color.White
+      }
+
+  return ChessBoardState.Piece(id = this.id, rank = rank, color = color)
+}
+
 @Composable
 fun rememberGameScreenState(): GameScreenState<PieceIdentifier> {
-  return remember { FakeChessBoardState() }
+  return remember { SnapshotChessBoardState() }
 }
 
 @Composable

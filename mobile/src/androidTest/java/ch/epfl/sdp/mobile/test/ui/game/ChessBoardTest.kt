@@ -11,7 +11,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.FakeChessBoardState
+import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.test.ui.contains
 import ch.epfl.sdp.mobile.test.ui.getBoundsInRoot
@@ -32,7 +32,7 @@ class ChessBoardTest {
 
   @Test
   fun draggingPawnAroundIsSuccessful() = runTest {
-    val state = FakeChessBoardState()
+    val state = SnapshotChessBoardState()
     val strings =
         rule.setContentWithLocalizedStrings {
           ChessBoard(state, Modifier.size(160.dp).testTag("board"))

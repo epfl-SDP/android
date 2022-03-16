@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.ui.social.Person
-import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 
 /**
  * This screen display an ongoing game of chest
