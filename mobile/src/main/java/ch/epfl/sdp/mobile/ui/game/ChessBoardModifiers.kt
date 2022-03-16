@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
  */
 fun Modifier.checkerboard(
     color: Color = Color.Unspecified,
-    cells: Int = 8,
+    cells: Int = ChessBoardCells,
 ): Modifier = composed {
   val squareColor = color.takeOrElse { LocalContentColor.current }
   drawBehind {
@@ -54,7 +54,7 @@ fun Modifier.checkerboard(
 fun Modifier.grid(
     color: Color = Color.Unspecified,
     width: Dp = 2.dp,
-    cells: Int = 8,
+    cells: Int = ChessBoardCells,
 ): Modifier = composed {
   val lineColor = color.takeOrElse { LocalContentColor.current }
   drawBehind {

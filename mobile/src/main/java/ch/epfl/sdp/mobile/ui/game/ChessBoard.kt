@@ -27,6 +27,11 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
 /**
+ * The width (and height) in number of cells of a ChessBoard
+ */
+const val ChessBoardCells = 8
+
+/**
  * A composable which displays a chess board based on some given state. Each piece is disambiguated
  * using its [Identifier], so pieces smoothly animate when the board changes.
  *
@@ -43,13 +48,13 @@ fun <Identifier> ChessBoard(
       modifier
           .aspectRatio(1f)
           .checkerboard(
-              cells = 8,
+              cells = ChessBoardCells,
               color = MaterialTheme.colors.onPrimary.copy(alpha = ContentAlpha.disabled),
           )
-          .grid(cells = 8, color = MaterialTheme.colors.primary),
+          .grid(cells = ChessBoardCells, color = MaterialTheme.colors.primary),
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
-    val cellPx = minDimension / 8
+    val cellPx = minDimension / ChessBoardCells
     val cellDp = with(LocalDensity.current) { cellPx.toDp() }
     val scope = rememberCoroutineScope()
 
@@ -112,8 +117,8 @@ fun <Identifier> ChessBoard(
                                   piece = piece,
                                   endPosition =
                                       Position(
-                                          x.roundToInt().coerceIn(0, 7),
-                                          y.roundToInt().coerceIn(0, 7),
+                                          x.roundToInt().coerceIn(0, ChessBoardCells - 1),
+                                          y.roundToInt().coerceIn(0, ChessBoardCells - 1),
                                       ),
                               )
                             }
