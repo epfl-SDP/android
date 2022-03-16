@@ -58,6 +58,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         leadingIcon = { Icon(PawniesIcons.Search, contentDescription = "") },
         singleLine = true,
         shape = RoundedCornerShape(56.dp),
+        interactionSource = state.searchFieldInteraction,
         colors =
             TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.onPrimary.copy(0.15f),

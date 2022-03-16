@@ -4,6 +4,8 @@ import android.util.Log
 import android.util.Log.INFO
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -49,35 +51,31 @@ fun StatefulFollowingScreen(
     val socialFacade = LocalSocialFacade.current
     val input =  remember { mutableStateOf("")}  // MutalStateOf or Snapshot flow
     val searchResults = remember {
-        snapshotFlow { input }
-            .flatMapLatest { s -> socialFacade.search(s.value) }
+        snapshotFlow { input.value }
+            .flatMapLatest { s -> socialFacade.search(s) }
         }.collectAsState(emptyList())
         .value.map { ProfileAdapter(it)}
 
-    searchResults.forEach{ el -> Log.i("info", el.name)}
-    val mode = remember{mutableStateOf(Following)}
-
-
-    SocialScreen(SnapshotSocialScreenState(following, input, searchResults, mode), modifier.fillMaxSize())
+    val searchFieldInteraction = remember { MutableInteractionSource() }
+    val focused = searchFieldInteraction.collectIsFocusedAsState()
+    val mode = if(focused.value) Searching else Following
+    SocialScreen(SnapshotSocialScreenState(following, input, searchResults, mode, searchFieldInteraction), modifier.fillMaxSize())
 }
 
 private class SnapshotSocialScreenState(
     following: List<Person>,
     input: MutableState<String>,
     searchResult: List<Person>,
-    mode: MutableState<SocialScreenState.Mode>,
+    mode:SocialScreenState.Mode,
+    searchFieldInteraction: MutableInteractionSource
 ) : SocialScreenState {
     override var following =  following
     override var input by input
     override var searchResult = searchResult
-    override var mode by mode
+    override var mode = mode
+    override var searchFieldInteraction = searchFieldInteraction
 
 
     override fun onValueChange() {
-        if(mode == SocialScreenState.Mode.Searching) {
-            mode = SocialScreenState.Mode.Following
-        } else {
-            mode = SocialScreenState.Mode.Searching
-        }
     }
 }
