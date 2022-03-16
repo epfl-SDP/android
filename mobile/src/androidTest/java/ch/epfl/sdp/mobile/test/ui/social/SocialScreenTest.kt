@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.ui.social
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,14 +24,19 @@ class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
   private class SnapshotSocialScreenState : SocialScreenState {
+    override val searchResult: List<Person>
+      get() = TODO("Not yet implemented")
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
-    override var players: List<Person> =
+    override var following: List<Person> =
         listOf(
             createPerson(Color.Default, "Toto", ":)"),
             createPerson(Color.Default, "John", ":3"),
             createPerson(Color.Default, "Travis", ";)"),
             createPerson(Color.Default, "Cirrus", "TwT"))
     override var input: String by mutableStateOf("")
+    override var searchFieldInteraction: MutableInteractionSource
+      get() = TODO("Not yet implemented")
+      set(value) {}
 
     override fun onValueChange() {
       mode = Searching
@@ -112,7 +118,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.players) }
+    rule.setContent { SearchResultList(state.following) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -120,7 +126,7 @@ class SocialScreenTest {
   @Test
   fun searchList_hasFollowText() {
     val state = SnapshotSocialScreenState()
-    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state.players) }
+    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state.following) }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
   }
