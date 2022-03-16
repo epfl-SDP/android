@@ -23,6 +23,9 @@ private const val SettingsRoute = "settings"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
+/** The route associated to new game button */
+const val NewGameRoute = "new_game"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -50,7 +53,11 @@ fun StatefulHome(
     ) {
       composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
-      composable(PlayRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
+      composable(PlayRoute) { StatefulPlayScreen(controller, Modifier.fillMaxSize()) }
+      composable(NewGameRoute) {
+        /* TODO: ADD Matthieu's stateful game */
+        StatefulProfileScreen(user, Modifier.fillMaxSize())
+      }
     }
   }
 }
