@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.toColor
 
@@ -26,20 +27,22 @@ fun PersonCard(
     modifier: Modifier = Modifier,
     trailingAction: @Composable () -> Unit = {}
 ) {
-
   ListItem(
       modifier = modifier,
-      text = {
-        Text(
-            person.name,
-            color = MaterialTheme.colors.primaryVariant,
-            style = MaterialTheme.typography.subtitle1)
-      },
       icon = {
         Box(
             modifier =
                 Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
         ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
+      },
+      text = {
+        Text(
+            text = person.name,
+            color = MaterialTheme.colors.primaryVariant,
+            style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
       },
       trailing = trailingAction,
   )
