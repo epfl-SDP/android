@@ -79,11 +79,24 @@ fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
   return ChessBoardState.Piece(id = this.id, rank = rank, color = color)
 }
 
+/**
+ * A remember with a [GameScreenState] implementation
+ *
+ * @return The remember of the [SnapshotChessBoardState]
+ */
 @Composable
 fun rememberGameScreenState(): GameScreenState<PieceIdentifier> {
   return remember { SnapshotChessBoardState() }
 }
 
+/**
+ *  The [StatefulGameScreen] to be used for the Navigation
+ *
+ * @param user the currently logged-in user.
+ * @param modifier the [Modifier] for the composable
+ *
+ * @return
+ */
 @Composable
 fun StatefulGameScreen(
     user: AuthenticatedUser,
