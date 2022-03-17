@@ -44,5 +44,6 @@ class NavigationTest {
     // Do we see the bottom navigation ?
     rule.onNodeWithText(strings.sectionSocial).assertExists()
     rule.onNodeWithText(strings.sectionSettings).assertExists()
+    rule.onNodeWithText(strings.sectionPlay).assertExists()
   }
 }

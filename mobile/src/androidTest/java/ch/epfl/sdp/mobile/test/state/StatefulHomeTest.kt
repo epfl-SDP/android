@@ -48,4 +48,15 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
   }
+
+  @Test
+  fun clickPlaySection_selectsPlaySection() = runTest {
+    val api = AuthenticationFacade(emptyAuth(), emptyStore())
+    api.signUpWithEmail("email", "name", "password")
+    val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings = rule.setContentWithLocalizedStrings { StatefulHome(user) }
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
+    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+  }
 }
