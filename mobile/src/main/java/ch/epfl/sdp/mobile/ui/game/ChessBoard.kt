@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -93,36 +94,11 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
                         )
                       }
                     }
-                    .pointerInput(Unit) {
-                      detectDragGestures(
-                          onDragStart = {
-                            draggingState.offset = currentTarget
-                            draggingState.isDragging = true
-                          },
-                          onDrag = { change, dragAmount ->
-                            change.consumeAllChanges()
-                            draggingState.offset += dragAmount
-                          },
-                          onDragEnd = {
-                            scope.launch {
-                              // Set the current dragging state to false, so the LaunchedEffect is
-                              // triggered and the offset is animated to the right target position.
-                              draggingState.isDragging = false
-                              currentTargetAnimatable.snapTo(draggingState.offset)
-
-                              val (x, y) = draggingState.offset / cellPx
-                              state.onDropPiece(
-                                  piece = piece,
-                                  endPosition =
-                                      Position(
-                                          x.roundToInt().coerceIn(0, ChessBoardCells - 1),
-                                          y.roundToInt().coerceIn(0, ChessBoardCells - 1),
-                                      ),
-                              )
-                            }
-                          },
-                          onDragCancel = { draggingState.isDragging = false },
-                      )
+                    .movablePiece(draggingState, currentTarget, cellPx) { droppedPosition ->
+                      scope.launch {
+                        currentTargetAnimatable.snapTo(draggingState.offset)
+                        state.onDropPiece(piece, droppedPosition)
+                      }
                     }
                     .size(cellDp),
         )
@@ -138,6 +114,45 @@ private class DraggingState(
 ) {
   var isDragging: Boolean by isDragging
   var offset: Offset by offset
+}
+
+/**
+ * A custom [Modifier] which records drag gestures to the provided [DraggingState], and consumes the
+ * changes as needed. When the drag gesture starts, the [DraggingState] will be set to [target],
+ * which indicates the starting position of the piece. Once dropped, [onDrop] is called with the
+ * drop position, computed using the [cellSize].
+ *
+ * @param state the [DraggingState] for this composable.
+ * @param target the [Offset] at which the piece rests.
+ * @param cellSize the size of each square / piece of the board.
+ * @param onDrop the callback called when the piece is dropped.
+ */
+private fun Modifier.movablePiece(
+    state: DraggingState,
+    target: Offset,
+    cellSize: Float,
+    onDrop: (Position) -> Unit,
+): Modifier = composed {
+  val currentTarget by rememberUpdatedState(target)
+  val currentOnDrop by rememberUpdatedState(onDrop)
+  pointerInput(Unit) {
+    detectDragGestures(
+        onDragStart = {
+          state.offset = currentTarget
+          state.isDragging = true
+        },
+        onDrag = { change, dragAmount ->
+          change.consumeAllChanges()
+          state.offset += dragAmount
+        },
+        onDragEnd = {
+          state.isDragging = false
+          val (x, y) = state.offset / cellSize
+          currentOnDrop(Position(x.roundToInt(), y.roundToInt()))
+        },
+        onDragCancel = { state.isDragging = false },
+    )
+  }
 }
 
 /**
