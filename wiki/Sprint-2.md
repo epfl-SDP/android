@@ -19,6 +19,7 @@ This sprint, I implemented tasks that were assigned to Lars and Fouad due to a m
 Fortunately, we noticed the issue early which let us reassign tasks without duplicating work and loosing too much time.
 
 The cause of this issue was narrowed down to ambiguous wording in the sprint tasks and user stories. We decided that the scrum master would now be responsible to make sure that everyone has a clear understanding of their tasks.
+
 ## Fouad Mahmoud
 My tasks were altered a few times this sprint and there were some misunderstandings in my approaches to implement the user’s following technique that I had to refactor. As I was working on a different area this week other than the UI that I worked on last week and was initially going to continue on this week, I took some time to get familiar with a few things such as the Firebase API. I was also a bit hesitant on multiple class modifications that I had to change. These factors made my sprint time increase.
 
