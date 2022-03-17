@@ -146,4 +146,30 @@ class ChessBoardTest {
             .getBoundsInRoot()
     assertThat(DpOffset(10.dp, 10.dp) in bounds).isTrue()
   }
+
+  @Test
+  fun disablingBoardDuringDrag_dropsPiece() = runTest {
+    val state = SinglePieceSnapshotChessBoardState()
+    var enabled by mutableStateOf(true)
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ChessBoard(state, Modifier.size(160.dp).testTag("board"), enabled = enabled)
+        }
+    rule.onNodeWithTag("board").performTouchInput {
+      down(Offset(10.dp.toPx(), 10.dp.toPx()))
+      moveBy(Offset(0.dp.toPx(), 20.dp.toPx()))
+    }
+    enabled = false // We expect the piece to be dropped mid-gesture.
+    rule.onNodeWithTag("board").performTouchInput {
+      moveBy(Offset(0.dp.toPx(), 20.dp.toPx()))
+      up()
+    }
+    val bounds =
+        rule.onNodeWithContentDescription(
+                strings.boardPieceContentDescription(
+                    strings.boardColorWhite, strings.boardPiecePawn),
+            )
+            .getBoundsInRoot()
+    assertThat(DpOffset(10.dp, 30.dp) in bounds).isTrue()
+  }
 }
