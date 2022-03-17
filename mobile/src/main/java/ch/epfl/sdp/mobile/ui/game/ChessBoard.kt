@@ -3,26 +3,26 @@ package ch.epfl.sdp.mobile.ui.game
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -151,56 +151,20 @@ private fun Piece(
     piece: Piece,
     modifier: Modifier = Modifier,
 ) {
+  val strings = LocalLocalizedStrings.current
+  val painter =
+      when (piece.color) {
+        Black -> piece.rank.blackIcon
+        White -> piece.rank.whiteIcon
+      }
+  val contentDescription =
+      strings.boardPieceContentDescription(
+          piece.color.contentDescription(strings),
+          piece.rank.contentDescription(strings),
+      )
   Icon(
-      painter = piece.icon,
-      contentDescription = piece.contentDescription,
+      painter = painter(),
+      contentDescription = contentDescription,
       modifier = modifier,
   )
 }
-
-/** Returns the [Painter] associated to the value of this [Piece]. */
-private val Piece.icon: Painter
-  @Composable
-  get() =
-      when (color) {
-        Black ->
-            when (rank) {
-              King -> ChessIcons.BlackKing
-              Queen -> ChessIcons.BlackQueen
-              Rook -> ChessIcons.BlackRook
-              Bishop -> ChessIcons.BlackBishop
-              Knight -> ChessIcons.BlackKnight
-              Pawn -> ChessIcons.BlackPawn
-            }
-        White ->
-            when (rank) {
-              King -> ChessIcons.WhiteKing
-              Queen -> ChessIcons.WhiteQueen
-              Rook -> ChessIcons.WhiteRook
-              Bishop -> ChessIcons.WhiteBishop
-              Knight -> ChessIcons.WhiteKnight
-              Pawn -> ChessIcons.WhitePawn
-            }
-      }
-
-/** Returns the [String] content description associated to the value of this [Piece]. */
-private val Piece.contentDescription: String
-  @Composable
-  get() {
-    val strings = LocalLocalizedStrings.current
-    val color =
-        when (color) {
-          Black -> strings.boardColorBlack
-          White -> strings.boardColorWhite
-        }
-    val rank =
-        when (rank) {
-          King -> strings.boardPieceKing
-          Queen -> strings.boardPieceQueen
-          Rook -> strings.boardPieceRook
-          Bishop -> strings.boardPieceBishop
-          Knight -> strings.boardPieceKnight
-          Pawn -> strings.boardPiecePawn
-        }
-    return strings.boardPieceContentDescription(color, rank)
-  }
