@@ -10,21 +10,16 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.PawniesTheme
 
-@Preview()
-@Composable
-fun preview() {
-  val state =
-      object : PlayScreenState {
-        override val onNewGame = {}
-      }
-  PawniesTheme { PlayScreen(state) }
-}
-
+/**
+ * Composable that composes the PlayScreen [FIXME] Contains a new game button only, should be
+ * expanded
+ *
+ * @param state state of the PlayScreen
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun PlayScreen(
     state: PlayScreenState,
@@ -35,10 +30,14 @@ fun PlayScreen(
   }
 }
 
+/**
+ * Composable that composes a new game button
+ * @param onNewGame callable upon button action
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun NewGameButton(onNewGame: () -> Unit, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
-
   Button(
       onClick = onNewGame,
       shape = CircleShape,
