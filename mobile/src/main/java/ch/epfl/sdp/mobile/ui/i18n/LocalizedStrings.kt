@@ -32,8 +32,22 @@ interface LocalizedStrings {
   val profilePuzzle: String
   val profileSettings: String
 
+  val boardColorBlack: String
+  val boardColorWhite: String
+  val boardPieceKing: String
+  val boardPieceQueen: String
+  val boardPieceRook: String
+  val boardPieceBishop: String
+  val boardPieceKnight: String
+  val boardPiecePawn: String
+  val boardPieceContentDescription: (color: String, rank: String) -> String
+
   val socialFollowingTitle: String
   val socialPerformPlay: String
+  val socialFollow: String
+  val socialSearchBarPlaceHolder: String
+  val socialSearchEmptyTitle: String
+  val socialSearchEmptySubtitle: String
 
   val sectionSocial: String
   val sectionSettings: String
