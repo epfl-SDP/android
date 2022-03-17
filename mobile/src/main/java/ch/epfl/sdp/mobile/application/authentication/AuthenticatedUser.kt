@@ -47,7 +47,7 @@ class AuthenticatedUser(
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
-      firestore.collection("users").document(user.uid).set { UpdateScope(this).also(block) }
+      firestore.collection("users").document(user.uid).update { UpdateScope(this).also(block) }
       true
     } catch (exception: Throwable) {
       false

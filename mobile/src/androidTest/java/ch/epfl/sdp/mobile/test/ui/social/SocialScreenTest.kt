@@ -24,8 +24,7 @@ class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
   private class SnapshotSocialScreenState : SocialScreenState {
-    override val searchResult: List<Person>
-      get() = TODO("Not yet implemented")
+    override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
         listOf(
@@ -35,7 +34,7 @@ class SocialScreenTest {
             createPerson(Color.Default, "Cirrus", "TwT"))
     override var input: String by mutableStateOf("")
     override var searchFieldInteraction: MutableInteractionSource
-      get() = TODO("Not yet implemented")
+      get() = MutableInteractionSource()
       set(value) {}
 
     override fun onValueChange() {
@@ -70,6 +69,14 @@ class SocialScreenTest {
   @Test
   fun type_switchMode() {
     val state = SnapshotSocialScreenState()
+    state.searchResult =
+        listOf(
+            object : Person {
+              override val backgroundColor = Color.Default
+              override val name = "test"
+              override val emoji = ":)"
+              override val uid = ""
+            })
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
 
@@ -132,7 +139,17 @@ class SocialScreenTest {
   @Test
   fun searchList_hasFollowText() {
     val state = SnapshotSocialScreenState()
-    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state.following, onClick = {p -> {}}) }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          SearchResultList(
+              listOf(
+                  object : Person {
+                    override val backgroundColor = Color.Default
+                    override val name = "test"
+                    override val emoji = ":)"
+                    override val uid = ""
+                  }), onClick = {p -> {}})
+        }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
   }

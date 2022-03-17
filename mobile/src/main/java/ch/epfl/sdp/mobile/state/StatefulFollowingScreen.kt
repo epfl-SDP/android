@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreDocumentEditScope
 import ch.epfl.sdp.mobile.ui.social.Person
 import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
@@ -36,14 +37,14 @@ private data class ProfileAdapter(
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
-    dScope: DocumentEditScope,
+    dScope: DocumentEditScope = FirestoreDocumentEditScope(),
     modifier: Modifier = Modifier,
 ) {
   val following =
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
 
   val socialFacade = LocalSocialFacade.current
-  val input = remember { mutableStateOf("") } // MutalStateOf or Snapshot flow
+  val input = remember { mutableStateOf("") }
   val searchResults =
       remember { snapshotFlow { input.value }.flatMapLatest { s -> socialFacade.search(s) } }
           .collectAsState(emptyList())
