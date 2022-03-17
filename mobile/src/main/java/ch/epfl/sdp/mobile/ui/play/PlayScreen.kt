@@ -44,7 +44,7 @@ fun NewGameButton(onNewGame: () -> Unit, modifier: Modifier = Modifier) {
       shape = CircleShape,
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
       modifier = modifier.padding(end = 16.dp, bottom = 16.dp)) {
-    Icon(imageVector = Icons.Default.Add, contentDescription = null)
+    Icon(Icons.Default.Add, null)
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.newGame, modifier = modifier)
   }

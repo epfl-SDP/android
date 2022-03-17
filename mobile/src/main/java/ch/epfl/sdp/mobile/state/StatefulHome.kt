@@ -45,6 +45,7 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
+      hideBar = entry?.destination?.route == NewGameRoute,
       modifier = modifier,
   ) {
     NavHost(
