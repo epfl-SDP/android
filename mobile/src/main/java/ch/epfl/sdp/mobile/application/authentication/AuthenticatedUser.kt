@@ -61,8 +61,8 @@ class AuthenticatedUser(
 
   /** Returns a [Flow] of the [Profile]s which are currently followed by this user. */
   val following: Flow<List<Profile>> =
-      firestore.collection("users").asFlow<ProfileDocument>().map {
-        it.mapNotNull { doc -> doc?.toProfile() }
+    firestore.collection("users").whereArrayContains("following", user.uid).asFlow<ProfileDocument>().map {
+      it.mapNotNull { doc -> doc?.toProfile() }
       }
 }
 

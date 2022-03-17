@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.FakeQuery
@@ -24,7 +25,11 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
     return combine(flows) { FakeQuerySnapshot(it.filterNotNull()) }
   }
 
-  override fun <T : Any> document(
+    override fun startsWith(field: String, prefix: String): Query {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Any> document(
       path: String,
       value: T,
       valueClass: KClass<T>,

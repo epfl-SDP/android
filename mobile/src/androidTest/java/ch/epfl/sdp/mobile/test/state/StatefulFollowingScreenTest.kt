@@ -32,6 +32,8 @@ class StatefulFollowingScreenTest {
                     get() = "Hans Peter"
                   override val backgroundColor: Color
                     get() = Color.Default
+                  override val uid: String
+                    get() = ""
                 }))
 
     val mockSocialFacade = mockk<SocialFacade>()

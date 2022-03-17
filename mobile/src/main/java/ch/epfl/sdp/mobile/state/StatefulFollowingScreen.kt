@@ -37,7 +37,6 @@ private data class ProfileAdapter(
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
-    dScope: DocumentEditScope = FirestoreDocumentEditScope(),
     modifier: Modifier = Modifier,
 ) {
   val following =
@@ -57,7 +56,7 @@ fun StatefulFollowingScreen(
   val scope = rememberCoroutineScope()
 
   SocialScreen(
-      SnapshotSocialScreenState(following, input, searchResults, mode, searchFieldInteraction, socialFacade, dScope, scope),
+      SnapshotSocialScreenState(following, input, searchResults, mode, searchFieldInteraction, socialFacade, scope),
       modifier.fillMaxSize())
 }
 
@@ -68,7 +67,6 @@ private class SnapshotSocialScreenState(
     mode: SocialScreenState.Mode,
     searchFieldInteraction: MutableInteractionSource,
     private val facade: SocialFacade,
-    private val dScope: DocumentEditScope,
     private val scope: CoroutineScope,
 ) : SocialScreenState {
 
@@ -82,7 +80,7 @@ private class SnapshotSocialScreenState(
 
   override fun onFollow(followed: Person) {
       scope.launch {
-          facade.follow(followed, dScope)
+          facade.follow(followed)
       }
   }
 }

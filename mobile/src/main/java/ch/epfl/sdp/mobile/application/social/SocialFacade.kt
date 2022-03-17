@@ -30,8 +30,8 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
     }
   }
 
-  suspend fun follow(followed: Person, scope: DocumentEditScope) {
-    store.collection("users").document(auth.currentUser.firstOrNull()?.uid ?: "").update { scope.arrayUnion("following", followed.uid) }
+  suspend fun follow(followed: Person) {
+    store.collection("users").document(auth.currentUser.firstOrNull()?.uid ?: "").update { arrayUnion("following", followed.uid) }
   }
 
   private fun ProfileDocument?.toProfile(): Profile {
