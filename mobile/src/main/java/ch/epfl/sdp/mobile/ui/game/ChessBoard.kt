@@ -31,15 +31,15 @@ const val ChessBoardCells = 8
 
 /**
  * A composable which displays a chess board based on some given state. Each piece is disambiguated
- * using its [Identifier], so pieces smoothly animate when the board changes.
+ * using its unique [Piece] type, so pieces smoothly animate when the board changes.
  *
- * @param Identifier the type of the piece identifiers.
+ * @param Piece the type of the pieces.
  * @param state the [ChessBoardState] that is used by this composable.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <Identifier> ChessBoard(
-    state: ChessBoardState<Identifier>,
+fun <Piece : ChessBoardState.Piece> ChessBoard(
+    state: ChessBoardState<Piece>,
     modifier: Modifier = Modifier,
 ) {
   BoxWithConstraints(
@@ -148,7 +148,7 @@ private class DraggingState(
  */
 @Composable
 private fun Piece(
-    piece: Piece<*>,
+    piece: Piece,
     modifier: Modifier = Modifier,
 ) {
   Icon(
@@ -159,7 +159,7 @@ private fun Piece(
 }
 
 /** Returns the [Painter] associated to the value of this [Piece]. */
-private val Piece<*>.icon: Painter
+private val Piece.icon: Painter
   @Composable
   get() =
       when (color) {
@@ -184,7 +184,7 @@ private val Piece<*>.icon: Painter
       }
 
 /** Returns the [String] content description associated to the value of this [Piece]. */
-private val Piece<*>.contentDescription: String
+private val Piece.contentDescription: String
   @Composable
   get() {
     val strings = LocalLocalizedStrings.current
