@@ -22,15 +22,15 @@ enum class HomeSection(
     val icon: ImageVector,
     val title: LocalizedStrings.() -> String,
 ) {
-
+    /** The section to play a chess game */
+    Play(PawniesIcons.SectionPlay, { sectionPlay }),
   /** The section which displays all the people we follow. */
   Social(PawniesIcons.SectionSocial, { sectionSocial }),
 
   /** The section to manage our preferences. */
   Settings(PawniesIcons.SectionSettings, { sectionSettings }),
 
-  /** The section to play a chess game */
-  Play(PawniesIcons.SectionPlay, { sectionPlay }),
+
 }
 
 /**

@@ -55,7 +55,7 @@ fun StatefulHome(
       composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
       composable(PlayRoute) {
-        StatefulPlayScreen(controller, paddingValues, Modifier.fillMaxSize())
+        StatefulPlayScreen(controller, Modifier.fillMaxSize(), paddingValues)
       }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
