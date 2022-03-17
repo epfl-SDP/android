@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 val LocalAuthenticationFacade =
     compositionLocalOf<AuthenticationFacade> { error("Missing Authentication API.") }
 
+/** A global composition local which provides access to an instance of [SocialFacade]. */
 val LocalSocialFacade = compositionLocalOf<SocialFacade> { error("Missing Social API.") }
 
 /**
