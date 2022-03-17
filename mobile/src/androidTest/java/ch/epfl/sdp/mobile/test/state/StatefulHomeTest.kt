@@ -72,6 +72,5 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.newGame).assertExists()
     rule.onNodeWithText(strings.newGame).performClick()
     rule.onNodeWithText(strings.newGame).assertDoesNotExist()
-
   }
 }
