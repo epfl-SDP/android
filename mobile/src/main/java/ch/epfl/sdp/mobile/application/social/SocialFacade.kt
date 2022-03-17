@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
 class SocialFacade(private val auth: Auth, private val store: Store) {
 
   /**
-   * Searches user by exact max on name
+   * Searches user by exact match on name
    *
    * @param text search criteria.
    */
