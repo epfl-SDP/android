@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,46 +28,30 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
 @Composable
 fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
 
-  val strings = LocalLocalizedStrings.current
-
   val transition = updateTransition(state.mode, "Social state")
 
-  Column(
-      modifier.padding(8.dp),
-      verticalArrangement = Arrangement.spacedBy(8.dp),
-      horizontalAlignment = Alignment.CenterHorizontally) {
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = state.input,
-        onValueChange = {
-          state.input = it
-          state.onValueChange()
-        },
-        placeholder = {
-          Text(
-              text = strings.socialSearchBarPlaceHolder,
-              modifier = Modifier,
-              textAlign = TextAlign.Center)
-        },
-        leadingIcon = { Icon(PawniesIcons.Search, contentDescription = "") },
-        singleLine = true,
-        shape = RoundedCornerShape(56.dp),
-        colors =
-            TextFieldDefaults.textFieldColors(
-                backgroundColor = MaterialTheme.colors.onPrimary.copy(0.15f),
-                textColor = MaterialTheme.colors.primaryVariant,
-                focusedIndicatorColor = MaterialTheme.colors.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent),
-    )
-    transition.AnimatedContent { target ->
-      when (target) {
-        Following -> FollowList(state.players)
-        Searching ->
-            if (state.input.isEmpty()) EmptySearch() else SearchResultList(players = state.players)
-      }
-    }
-  }
+  Scaffold(
+      modifier = modifier,
+      topBar = {
+        Surface(elevation = 0.dp) {
+          SearchField(
+              modifier = Modifier.fillMaxWidth().padding(16.dp),
+              value = state.input,
+              onValueChange = { state.input = it },
+          )
+        }
+      },
+      content = {
+        transition.AnimatedContent { target ->
+          when (target) {
+            Following -> FollowList(state.players)
+            Searching ->
+                if (state.input.isEmpty()) EmptySearch()
+                else SearchResultList(players = state.players)
+          }
+        }
+      },
+  )
 }
 
 /**
@@ -79,28 +62,32 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
 @Composable
 fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
-  Column(modifier) {
-    Text(
-        text = strings.socialFollowingTitle,
-        color = MaterialTheme.colors.primary,
-        style = MaterialTheme.typography.h4,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
-    LazyColumn(Modifier.testTag("friendList"), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-      items(players) { friend ->
-        PersonCard(
-            person = friend,
-            trailingAction = {
-              OutlinedButton(
-                  onClick = { /*TODO*/},
-                  shape = RoundedCornerShape(24.dp),
-              ) {
-                Text(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    text = strings.socialPerformPlay,
-                )
-              }
-            })
-      }
+  LazyColumn(
+      modifier = modifier.testTag("friendList"),
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+  ) {
+    item {
+      Text(
+          text = strings.socialFollowingTitle,
+          style = MaterialTheme.typography.h4,
+          modifier = Modifier.padding(horizontal = 16.dp),
+      )
+    }
+    items(players) { friend ->
+      PersonCard(
+          person = friend,
+          trailingAction = {
+            OutlinedButton(
+                onClick = { /*TODO*/},
+                shape = RoundedCornerShape(24.dp),
+            ) {
+              Text(
+                  modifier = Modifier.padding(horizontal = 8.dp),
+                  text = strings.socialPerformPlay,
+              )
+            }
+          },
+      )
     }
   }
 }
