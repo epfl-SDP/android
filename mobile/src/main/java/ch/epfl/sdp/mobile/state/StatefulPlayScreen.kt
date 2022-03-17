@@ -27,8 +27,8 @@ class Player(private val newGame: () -> Unit) : PlayScreenState {
 @Composable
 fun StatefulPlayScreen(
     controller: NavHostController,
-    contentPadding: PaddingValues = PaddingValues(),
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   /* TODO: Add any necessary args: authenticated user ... */
   val state = remember(controller) { Player(newGame = { controller.navigate(GameRoute) }) }
