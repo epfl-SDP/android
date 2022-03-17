@@ -8,6 +8,7 @@ for it though. I (Badr) worked on supporting navigation to the new chess board i
 
 ## Lars Barmettler
 In the second week of the project the biggest challenge was still the understanding of the technology stack. Although, I can already see some more broader concepts in the code there is still a lot to learn. I tried with Fouad this week to make a peer coding session. Which had only limited success, since we both were just not at a necessary skill level to get the full benefits out of this approach. Organisation wise, I feel that each person in the group finds more and more his place and begins to contribute in a productive way.
+
 ## Matthieu Burguburu
 My tasks for this sprint were implementing a static chessboard, and then working with Alexandre to enable dragging pieces to new positions by using the first version of the chess engine. Overall, things went quite smoothly and there was no real problem for any of my tasks. My time estimates were quite accurate, but we had to adjust the way time was counted for tasks that were assigned to two people, as the task Alexandre and I had was first estimated as the time for each of us and in a separate way and not added together.
 
