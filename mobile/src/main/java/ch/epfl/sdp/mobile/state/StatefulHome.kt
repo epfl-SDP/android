@@ -54,10 +54,7 @@ fun StatefulHome(
       composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
       composable(PlayRoute) { StatefulPlayScreen(controller, Modifier.fillMaxSize()) }
-      composable(NewGameRoute) {
-        /* TODO: ADD Matthieu's stateful game */
-        StatefulProfileScreen(user, Modifier.fillMaxSize())
-      }
+      composable(NewGameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
   }
 }

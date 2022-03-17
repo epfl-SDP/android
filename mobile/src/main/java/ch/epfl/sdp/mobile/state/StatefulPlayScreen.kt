@@ -8,12 +8,13 @@ import ch.epfl.sdp.mobile.ui.play.PlayScreen
 import ch.epfl.sdp.mobile.ui.play.PlayScreenState
 
 class Player(private val newGame: () -> Unit) : PlayScreenState {
-  /*TODO: override other attributes*/
+  /* TODO: override other attributes */
   override val onNewGame = newGame
 }
 
 @Composable
 fun StatefulPlayScreen(controller: NavHostController, modifier: Modifier = Modifier) {
+  /* TODO: Add any necessary args: authenticated user ... */
   val state = remember(controller) { Player(newGame = { controller.navigate(NewGameRoute) }) }
   PlayScreen(state, modifier)
 }

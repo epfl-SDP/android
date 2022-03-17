@@ -23,7 +23,7 @@ data class PersistentGame(
             else ->
                 copy(
                     nextPlayer = nextPlayer.other(),
-                    board = board.set(to, board[from]).set(from, null),
+                    board = board.set(from, null).set(to, board[from]),
                 )
           }
         }
