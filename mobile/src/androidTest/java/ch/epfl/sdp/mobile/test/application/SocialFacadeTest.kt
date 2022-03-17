@@ -49,8 +49,10 @@ class SocialFacadeTest {
   fun follow_addUidOfFollowedProfile() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "b") }
     val store = buildStore {
-      collection("users") { document("0", ProfileDocument(uid = "0"));
-        document("1", ProfileDocument(uid = "1")) }
+      collection("users") {
+        document("0", ProfileDocument(uid = "0"))
+        document("1", ProfileDocument(uid = "1"))
+      }
     }
     val facade = SocialFacade(auth, store)
 

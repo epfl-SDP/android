@@ -8,10 +8,7 @@ import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreDocumentEditScope
 import ch.epfl.sdp.mobile.ui.social.Person
 import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
@@ -56,7 +53,8 @@ fun StatefulFollowingScreen(
   val scope = rememberCoroutineScope()
 
   SocialScreen(
-      SnapshotSocialScreenState(following, input, searchResults, mode, searchFieldInteraction, socialFacade, scope),
+      SnapshotSocialScreenState(
+          following, input, searchResults, mode, searchFieldInteraction, socialFacade, scope),
       modifier.fillMaxSize())
 }
 
@@ -79,8 +77,6 @@ private class SnapshotSocialScreenState(
   override fun onValueChange() {}
 
   override fun onFollow(followed: Person) {
-      scope.launch {
-          facade.follow(followed)
-      }
+    scope.launch { facade.follow(followed) }
   }
 }

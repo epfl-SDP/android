@@ -136,7 +136,7 @@ class AuthenticationFacadeTest {
       override val emoji: String = this@toProfile?.emoji ?: "😎"
       override val name: String = this@toProfile?.name ?: ""
       override val backgroundColor: Color =
-        this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
+          this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
       override val uid: String = this@toProfile?.uid ?: ""
     }
   }
@@ -150,9 +150,12 @@ class AuthenticationFacadeTest {
     facade.signInWithEmail("email@example.org", "password")
 
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val following = store.collection("users").asFlow<ProfileDocument>().map {
-      it.mapNotNull { doc -> doc?.toProfile() }
-    }.first()
+    val following =
+        store
+            .collection("users")
+            .asFlow<ProfileDocument>()
+            .map { it.mapNotNull { doc -> doc?.toProfile() } }
+            .first()
 
     val profile = following[0]
     assertThat(profile.name).isEqualTo("")

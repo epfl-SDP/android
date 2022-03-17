@@ -131,7 +131,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = {p -> {}}) }
+    rule.setContent { SearchResultList(state.following, onClick = { p -> {} }) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -148,7 +148,8 @@ class SocialScreenTest {
                     override val name = "test"
                     override val emoji = ":)"
                     override val uid = ""
-                  }), onClick = {p -> {}})
+                  }),
+              onClick = { p -> {} })
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()

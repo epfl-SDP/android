@@ -30,7 +30,10 @@ class FirestoreQuery(
       FirestoreQuery(reference.whereArrayContains(field, value))
 
   override fun startsWith(field: String, prefix: String): Query =
-      FirestoreQuery(reference.whereGreaterThanOrEqualTo(field, prefix).whereLessThan(field, prefix + '\uf8ff'))
+      FirestoreQuery(
+          reference
+              .whereGreaterThanOrEqualTo(field, prefix)
+              .whereLessThan(field, prefix + '\uf8ff'))
 
   override fun asQuerySnapshotFlow(): Flow<QuerySnapshot> =
       callbackFlow<QuerySnapshot> {

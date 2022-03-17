@@ -142,14 +142,18 @@ fun EmptySearch(modifier: Modifier = Modifier) {
  * @param modifier the [Modifier] for the composable
  */
 @Composable
-fun SearchResultList(players: List<Person>, modifier: Modifier = Modifier, onClick: (p: Person) -> Unit) {
+fun SearchResultList(
+    players: List<Person>,
+    modifier: Modifier = Modifier,
+    onClick: (p: Person) -> Unit
+) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
       PersonCard(
           person = player,
           trailingAction = {
             OutlinedButton(
-                onClick = fun () = onClick(player),
+                onClick = fun() = onClick(player),
                 shape = RoundedCornerShape(24.dp),
             ) {
               Icon(

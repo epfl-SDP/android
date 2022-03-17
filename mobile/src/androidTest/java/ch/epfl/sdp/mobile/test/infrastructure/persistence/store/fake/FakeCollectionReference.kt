@@ -25,11 +25,11 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
     return combine(flows) { FakeQuerySnapshot(it.filterNotNull()) }
   }
 
-    override fun startsWith(field: String, prefix: String): Query {
-        TODO("Not yet implemented")
-    }
+  override fun startsWith(field: String, prefix: String): Query {
+    TODO("Not yet implemented")
+  }
 
-    override fun <T : Any> document(
+  override fun <T : Any> document(
       path: String,
       value: T,
       valueClass: KClass<T>,
