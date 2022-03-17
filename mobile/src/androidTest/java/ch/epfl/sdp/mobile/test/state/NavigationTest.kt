@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.SuspendingAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import kotlinx.coroutines.test.runTest
@@ -21,10 +22,9 @@ class NavigationTest {
 
   @Test
   fun loadingSection_isEmpty() {
-    val auth = emptyAuth()
     val store = emptyStore()
-    val facade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
+    val facade = AuthenticationFacade(SuspendingAuth, store)
+    val socialFacade = SocialFacade(SuspendingAuth, store)
     rule.setContentWithLocalizedStrings { ProvideFacades(facade, socialFacade) { Navigation() } }
     rule.onAllNodes(keyIsDefined(SemanticsProperties.Text)).assertCountEquals(0)
   }
