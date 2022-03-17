@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
  * @param modifier the [Modifier] for the composable
  */
 @Composable
-fun <Identifier> GameScreen(
-    state: GameScreenState<Identifier>,
+fun <Piece : ChessBoardState.Piece> GameScreen(
+    state: GameScreenState<Piece>,
     modifier: Modifier = Modifier,
 ) {
   Column(modifier) {
