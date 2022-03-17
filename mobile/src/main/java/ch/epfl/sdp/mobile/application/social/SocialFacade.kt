@@ -2,6 +2,8 @@ package ch.epfl.sdp.mobile.application.social
 
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.toProfile
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
@@ -17,18 +19,15 @@ import kotlinx.coroutines.flow.map
  */
 class SocialFacade(private val auth: Auth, private val store: Store) {
 
+  /**
+   * Searches user by exact max on name
+   *
+   * @param text search criteria.
+   */
   fun search(text: String): Flow<List<Profile>> {
     return store.collection("users").whereEquals("name", text).asFlow<ProfileDocument>().map {
       it.mapNotNull { doc -> doc?.toProfile() }
     }
   }
 
-  private fun ProfileDocument?.toProfile(): Profile {
-    return object : Profile {
-      override val emoji: String = this@toProfile?.emoji ?: "😎"
-      override val name: String = this@toProfile?.name ?: ""
-      override val backgroundColor: Profile.Color =
-          this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
-    }
-  }
 }

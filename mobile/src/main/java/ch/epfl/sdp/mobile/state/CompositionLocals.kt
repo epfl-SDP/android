@@ -17,6 +17,7 @@ val LocalSocialFacade = compositionLocalOf<SocialFacade> { error("Missing Social
  * available throughout the hierarchy.
  *
  * @param authentication the [AuthenticationFacade] that will be provided.
+ * @param social the [SocialFacade] that will be provided.
  */
 @Composable
 fun ProvideFacades(

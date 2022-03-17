@@ -22,16 +22,20 @@ class NavigationTest {
 
   @Test
   fun loadingSection_isEmpty() {
-    val facade = AuthenticationFacade(SuspendingAuth, emptyStore())
-    val socialFacade = SocialFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
     rule.setContentWithLocalizedStrings { ProvideFacades(facade, socialFacade) { Navigation() } }
     rule.onAllNodes(keyIsDefined(SemanticsProperties.Text)).assertCountEquals(0)
   }
 
   @Test
   fun notAuthenticated_displaysAuthenticationScreen() = runTest {
-    val facade = AuthenticationFacade(emptyAuth(), emptyStore())
-    val socialFacade = SocialFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade) { Navigation() }
@@ -43,8 +47,10 @@ class NavigationTest {
 
   @Test
   fun authenticated_displaysHome() = runTest {
-    val facade = AuthenticationFacade(emptyAuth(), emptyStore())
-    val socialFacade = SocialFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade) { Navigation() }
