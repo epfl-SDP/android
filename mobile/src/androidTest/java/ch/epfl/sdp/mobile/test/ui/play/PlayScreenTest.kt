@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.ui.play.PlayScreenState
 import org.junit.Rule
 import org.junit.Test
 
-open class TestPlayScreenState(override val onNewGame: () -> Unit) : PlayScreenState
+open class TestPlayScreenState(override val onNewGameClick: () -> Unit) : PlayScreenState
 
 object FakePlayScreenState : TestPlayScreenState({ println("Button new game clicked !") })
 

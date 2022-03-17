@@ -4,7 +4,7 @@ package ch.epfl.sdp.mobile.ui.play
 interface PlayScreenState {
 
   /* Callable upon actioning button */
-  val onNewGame: () -> Unit
+  val onNewGameClick: () -> Unit
 
   /* TODO: add necessary attributes: games log... */
 }

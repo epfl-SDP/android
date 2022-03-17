@@ -24,7 +24,7 @@ private const val SettingsRoute = "settings"
 private const val PlayRoute = "play"
 
 /** The route associated to new game button */
-const val NewGameRoute = "new_game"
+const val GameRoute = "new_game"
 
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
@@ -45,7 +45,7 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hideBar = entry?.destination?.route == NewGameRoute,
+      hiddenBar = entry?.destination?.route == GameRoute,
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -57,7 +57,7 @@ fun StatefulHome(
       composable(PlayRoute) {
         StatefulPlayScreen(controller, paddingValues, Modifier.fillMaxSize())
       }
-      composable(NewGameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
+      composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
   }
 }

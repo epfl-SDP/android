@@ -26,7 +26,7 @@ fun PlayScreen(
     modifier: Modifier = Modifier,
 ) {
   Box(contentAlignment = Alignment.BottomEnd, modifier = modifier.fillMaxSize()) {
-    NewGameButton(onNewGame = state.onNewGame)
+    NewGameButton(onNewGame = state.onNewGameClick)
   }
 }
 

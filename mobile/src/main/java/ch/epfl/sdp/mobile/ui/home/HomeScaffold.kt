@@ -46,14 +46,14 @@ enum class HomeSection(
 fun HomeScaffold(
     section: HomeSection,
     onSectionChange: (HomeSection) -> Unit,
-    hideBar: Boolean,
+    hiddenBar: Boolean,
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
 ) {
   Scaffold(
       modifier = modifier,
       bottomBar = {
-        if (!hideBar) {
+        if (!hiddenBar) {
           BottomNavigation(
               section = section,
               onSectionChange = onSectionChange,
