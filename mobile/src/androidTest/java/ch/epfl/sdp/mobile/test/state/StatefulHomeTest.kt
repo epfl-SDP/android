@@ -9,9 +9,6 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import io.mockk.every
-import io.mockk.mockk
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -24,32 +21,30 @@ class StatefulHomeTest {
 
   @Test
   fun defaultSection_isSocial() = runTest {
-    val api = AuthenticationFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val api = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val mockSocialFacade = mockk<SocialFacade>()
-    every { mockSocialFacade.search("") } returns emptyFlow()
-    val mockAuthenticationFacade = mockk<AuthenticationFacade>()
     val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(mockAuthenticationFacade, mockSocialFacade) { StatefulHome(user) }
-        }
+        rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
   }
 
   @Test
   fun clickingSettingsTab_selectsSettingsSection() = runTest {
-    val api = AuthenticationFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val api = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val mockSocialFacade = mockk<SocialFacade>()
-    every { mockSocialFacade.search("") } returns emptyFlow()
-    val mockAuthenticationFacade = mockk<AuthenticationFacade>()
     val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(mockAuthenticationFacade, mockSocialFacade) { StatefulHome(user) }
-        }
+        rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
     rule.onAllNodesWithText(strings.sectionSettings).assertAny(isSelected())
@@ -57,16 +52,16 @@ class StatefulHomeTest {
 
   @Test
   fun clickSocialSection_selectsSocialSection() = runTest {
-    val api = AuthenticationFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val api = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val mockSocialFacade = mockk<SocialFacade>()
-    every { mockSocialFacade.search("") } returns emptyFlow()
-    val mockAuthenticationFacade = mockk<AuthenticationFacade>()
+
     val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(mockAuthenticationFacade, mockSocialFacade) { StatefulHome(user) }
-        }
+        rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()

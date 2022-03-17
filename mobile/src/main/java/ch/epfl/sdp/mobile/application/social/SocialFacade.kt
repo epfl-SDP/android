@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.application.social
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.toProfile
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
@@ -29,5 +28,4 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       it.mapNotNull { doc -> doc?.toProfile() }
     }
   }
-
 }

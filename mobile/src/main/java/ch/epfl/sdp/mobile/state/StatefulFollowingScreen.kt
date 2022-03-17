@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
@@ -43,11 +42,12 @@ fun StatefulFollowingScreen(
           .map { ProfileAdapter(it) }
 
   val searchFieldInteraction = remember { MutableInteractionSource() }
-  val focused = searchFieldInteraction.collectIsFocusedAsState()
-  val mode = if (focused.value) Searching else Following
+  val focused by searchFieldInteraction.collectIsFocusedAsState()
+  val mode = if (focused) Searching else Following
+
   SocialScreen(
       SnapshotSocialScreenState(following, input, searchResults, mode, searchFieldInteraction),
-      modifier.fillMaxSize())
+      modifier)
 }
 
 private class SnapshotSocialScreenState(
@@ -63,5 +63,6 @@ private class SnapshotSocialScreenState(
   override var mode = mode
   override var searchFieldInteraction = searchFieldInteraction
 
+  // TODO replace with functionality
   override fun onValueChange() {}
 }
