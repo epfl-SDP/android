@@ -13,4 +13,7 @@ interface Person {
 
   /** The emoji of the profile picture of the user. */
   val emoji: String
+
+  /** The unique identifier of the person. */
+  val uid: String
 }

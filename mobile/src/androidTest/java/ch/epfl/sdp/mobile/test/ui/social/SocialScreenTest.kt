@@ -42,12 +42,18 @@ class SocialScreenTest {
       mode = Searching
     }
 
+    override fun onFollow(followed: Person) {
+      TODO("Not yet implemented")
+    }
+
     companion object {
       fun createPerson(bgColor: Color, name: String, emoji: String): Person {
         return object : Person {
           override val backgroundColor: Color = bgColor
           override val name: String = name
           override val emoji: String = emoji
+          override val uid: String
+            get() = TODO("Not yet implemented")
         }
       }
     }
@@ -118,7 +124,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following) }
+    rule.setContent { SearchResultList(state.following, onClick = {p -> {}}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -126,7 +132,7 @@ class SocialScreenTest {
   @Test
   fun searchList_hasFollowText() {
     val state = SnapshotSocialScreenState()
-    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state.following) }
+    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state.following, onClick = {p -> {}}) }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
   }

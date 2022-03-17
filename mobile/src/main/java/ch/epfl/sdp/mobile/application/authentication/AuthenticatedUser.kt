@@ -73,5 +73,6 @@ private fun ProfileDocument?.toProfile(): Profile {
     override val name: String = this@toProfile?.name ?: ""
     override val backgroundColor: Color =
         this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
+    override val uid: String = this@toProfile?.uid ?: ""
   }
 }

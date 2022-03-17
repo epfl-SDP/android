@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.Modifier
 
 /**
  * A state which indicates the content of an [SocialScreen] composable. It will keep track of the
@@ -36,6 +37,13 @@ interface SocialScreenState {
 
   var searchFieldInteraction: MutableInteractionSource
 
-  /** A callback invoked when the user type in the search text field */
+  /** A callback invoked when the user types in the search text field */
   fun onValueChange()
+
+  /**
+   * A callback invoked when the user follows another user
+   *
+   * @param followed A [Person] that the current user wants to follow
+   */
+  fun onFollow(followed: Person)
 }

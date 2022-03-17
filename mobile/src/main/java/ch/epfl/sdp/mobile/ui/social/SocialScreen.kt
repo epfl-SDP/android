@@ -69,7 +69,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         Following -> FollowList(state.following)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
-            else SearchResultList(players = state.searchResult)
+            else SearchResultList(players = state.searchResult, onClick = state::onFollow)
       }
     }
   }
@@ -142,14 +142,14 @@ fun EmptySearch(modifier: Modifier = Modifier) {
  * @param modifier the [Modifier] for the composable
  */
 @Composable
-fun SearchResultList(players: List<Person>, modifier: Modifier = Modifier) {
+fun SearchResultList(players: List<Person>, modifier: Modifier = Modifier, onClick: (p: Person) -> Unit) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
       PersonCard(
           person = player,
           trailingAction = {
             OutlinedButton(
-                onClick = { /*TODO*/},
+                onClick = fun () = onClick(player),
                 shape = RoundedCornerShape(24.dp),
             ) {
               Icon(
