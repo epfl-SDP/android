@@ -37,11 +37,13 @@ const val ChessBoardCells = 8
  * @param Piece the type of the pieces.
  * @param state the [ChessBoardState] that is used by this composable.
  * @param modifier the [Modifier] for this composable.
+ * @param enabled true iff the [ChessBoardState] should allow for user interactions.
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> ChessBoard(
     state: ChessBoardState<Piece>,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
   BoxWithConstraints(
       modifier
@@ -94,12 +96,17 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
                         )
                       }
                     }
-                    .movablePiece(draggingState, currentTarget, cellPx) { droppedPosition ->
-                      scope.launch {
-                        currentTargetAnimatable.snapTo(draggingState.offset)
-                        state.onDropPiece(piece, droppedPosition)
-                      }
-                    }
+                    .then(
+                        if (enabled)
+                            Modifier.movablePiece(draggingState, currentTarget, cellPx) {
+                                droppedPosition ->
+                              scope.launch {
+                                currentTargetAnimatable.snapTo(draggingState.offset)
+                                state.onDropPiece(piece, droppedPosition)
+                              }
+                            }
+                        else Modifier,
+                    )
                     .size(cellDp),
         )
       }
