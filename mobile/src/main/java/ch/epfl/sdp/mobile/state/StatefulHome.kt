@@ -45,7 +45,7 @@ fun StatefulHome(
         navController = controller,
         startDestination = SocialRoute,
     ) {
-      composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
+      composable(SocialRoute) { StatefulFollowingScreen(user, modifier = Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
     }
   }

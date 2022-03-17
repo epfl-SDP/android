@@ -47,7 +47,7 @@ class AuthenticatedUser(
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
-      firestore.collection("users").document(user.uid).set { UpdateScope(this).also(block) }
+      firestore.collection("users").document(user.uid).update { UpdateScope(this).also(block) }
       true
     } catch (exception: Throwable) {
       false
@@ -73,5 +73,6 @@ private fun ProfileDocument?.toProfile(): Profile {
     override val name: String = this@toProfile?.name ?: ""
     override val backgroundColor: Color =
         this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
+    override val uid: String = this@toProfile?.uid ?: ""
   }
 }
