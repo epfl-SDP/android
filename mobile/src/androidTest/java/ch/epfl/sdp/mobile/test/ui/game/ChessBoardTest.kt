@@ -81,6 +81,20 @@ class ChessBoardTest {
   }
 
   @Test
+  fun draggingPawnOutsideBoard_works() = runTest {
+    val state = SinglePieceSnapshotChessBoardState()
+    rule.setContentWithLocalizedStrings {
+      ChessBoard(state, Modifier.size(160.dp).testTag("board"))
+    }
+    rule.onNodeWithTag("board").performTouchInput {
+      down(Offset(10.dp.toPx(), 10.dp.toPx()))
+      moveBy(Offset(-20.dp.toPx(), -20.dp.toPx()))
+      up()
+    }
+    assertThat(state.position).isEqualTo(Position(-1, -1))
+  }
+
+  @Test
   fun draggingPawnAround_withDisabledBoard_movesNothing() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
     val strings =
