@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.test.application
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Failure
@@ -129,16 +130,6 @@ class AuthenticationFacadeTest {
 
     val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     assertThat(updatedUser.name).isEqualTo("Alexandre")
-  }
-
-  private fun ProfileDocument?.toProfile(): Profile {
-    return object : Profile {
-      override val emoji: String = this@toProfile?.emoji ?: "😎"
-      override val name: String = this@toProfile?.name ?: ""
-      override val backgroundColor: Color =
-          this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
-      override val uid: String = this@toProfile?.uid ?: ""
-    }
   }
 
   @Test

@@ -33,9 +33,7 @@ class SocialScreenTest {
             createPerson(Color.Default, "Travis", ";)"),
             createPerson(Color.Default, "Cirrus", "TwT"))
     override var input: String by mutableStateOf("")
-    override var searchFieldInteraction: MutableInteractionSource
-      get() = MutableInteractionSource()
-      set(value) {}
+    override val searchFieldInteraction = MutableInteractionSource()
 
     override fun onValueChange() {
       mode = Searching

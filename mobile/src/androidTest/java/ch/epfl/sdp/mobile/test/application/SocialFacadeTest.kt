@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.ui.social.Person
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.first
@@ -25,9 +26,7 @@ class SocialFacadeTest {
   @Test
   fun search_returnWithEmptySearchString() = runTest {
     val auth = emptyAuth()
-    val store = buildStore {
-      collection("users") { document("uid", ProfileDocument(name = "test")) }
-    }
+    val store = emptyStore()
     val facade = SocialFacade(auth, store)
 
     Truth.assertThat(facade.search("").first()).isEmpty()

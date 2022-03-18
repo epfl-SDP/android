@@ -70,6 +70,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
             else SearchResultList(players = state.searchResult, onClick = state::onFollow)
+
       }
     }
   }

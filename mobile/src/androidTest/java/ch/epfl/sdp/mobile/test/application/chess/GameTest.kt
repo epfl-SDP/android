@@ -21,6 +21,13 @@ class GameTest {
   }
 
   @Test
+  fun emptyGame_outOfBoundsMove_preservesPlayer() {
+    val game = emptyGame().play { Position(0, 0) += Delta(0, -1) }
+    val step = game.nextStep as NextStep.MovePiece
+    assertThat(step.turn).isEqualTo(Color.White)
+  }
+
+  @Test
   fun emptyGame_twoValidMoves_switchesFirstPlayer() {
     val game =
         emptyGame().play {
