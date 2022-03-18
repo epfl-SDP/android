@@ -109,7 +109,7 @@ fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
       verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
     ProfilePicture(state)
-    Column {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(state.name, style = MaterialTheme.typography.h5)
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
