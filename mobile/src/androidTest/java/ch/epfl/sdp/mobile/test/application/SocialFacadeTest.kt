@@ -57,5 +57,14 @@ class SocialFacadeTest {
     val facade = SocialFacade(auth, store)
 
     facade.follow(FakePerson())
+    val fakePersonFollowers =
+        store
+            .collection("users")
+            .document("1")
+            .asDocumentSnapshotFlow()
+            .first()
+            ?.toObject(ProfileDocument::class)
+            ?.followers
+    Truth.assertThat(fakePersonFollowers).contains("0")
   }
 }

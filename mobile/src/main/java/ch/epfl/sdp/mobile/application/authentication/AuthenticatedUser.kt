@@ -63,7 +63,7 @@ class AuthenticatedUser(
   val following: Flow<List<Profile>> =
       firestore
           .collection("users")
-          .whereArrayContains("following", user.uid)
+          .whereArrayContains("followers", user.uid)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile() } }
 }

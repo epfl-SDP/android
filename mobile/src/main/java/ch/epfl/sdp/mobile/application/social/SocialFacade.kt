@@ -27,9 +27,8 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   }
 
   suspend fun follow(followed: Person) {
-    store.collection("users").document(auth.currentUser.firstOrNull()?.uid ?: "").update {
-      arrayUnion("following", followed.uid)
-    }
+    val currentUid = auth.currentUser.firstOrNull()?.uid ?: ""
+    store.collection("users").document(followed.uid).update { arrayUnion("followers", currentUid) }
   }
 
   private fun ProfileDocument?.toProfile(): Profile {
