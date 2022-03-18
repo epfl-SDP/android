@@ -7,7 +7,7 @@ package ch.epfl.sdp.mobile.application.chess
 interface Game {
 
   /** The current [Board], which contains some pieces and should be rendered to the user. */
-  val board: Board
+  val board: Board<Piece<Color>>
 
   /** Represents the [NextStep] that must be performed on this [Game]. */
   val nextStep: NextStep

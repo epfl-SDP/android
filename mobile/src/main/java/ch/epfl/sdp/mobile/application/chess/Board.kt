@@ -1,7 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess
 
-/** A [Board] contains a bunch of [Piece] positioned in a certain way. */
-interface Board {
+/**
+ * A [Board] contains a bunch of [Piece] positioned in a certain way.
+ *
+ * @param Piece the type of the pieces which are present in a board.
+ */
+interface Board<Piece : Any> {
 
   /**
    * Returns the [Piece] at a certain [Position] in the board, or null if no [Piece] is localed
@@ -18,5 +22,11 @@ interface Board {
    * @param position the [Position] of the board at which the [Piece] is set.
    * @param piece the [Piece] which is set at the given position.
    */
-  fun set(position: Position, piece: Piece?): Board
+  fun set(position: Position, piece: Piece?): Board<Piece>
+
+  companion object {
+
+    /** The size of a [Board]. */
+    const val Size = 8
+  }
 }
