@@ -13,3 +13,12 @@ data class ProfileDocument(
     val emoji: String? = null,
     val backgroundColor: String? = null
 )
+
+fun ProfileDocument?.toProfile(): Profile {
+  return object : Profile {
+    override val emoji: String = this@toProfile?.emoji ?: "😎"
+    override val name: String = this@toProfile?.name ?: ""
+    override val backgroundColor: Profile.Color =
+        this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
+  }
+}
