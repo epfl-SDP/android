@@ -7,13 +7,13 @@ import androidx.compose.runtime.Stable
  * state of the game, and offers some ways for the [ChessBoard] to interact with it and indicate the
  * user gestures.
  *
- * Each [ChessBoardState.Piece] has unique [Identifier], which is used to display some smooth
- * animations if multiple pieces with the same ranks and colors exist.
+ * Each [ChessBoardState.Piece] has unique [ChessBoardState.Piece], which is used to display some
+ * smooth animations if multiple pieces with the same ranks and colors exist.
  *
- * @param Identifier the type of the identifiers of each piece.
+ * @param Piece the type of the [ChessBoardState.Piece].
  */
 @Stable
-interface ChessBoardState<Identifier> {
+interface ChessBoardState<Piece : ChessBoardState.Piece> {
 
   /** The different ranks which may be displayed by a [ChessBoard]. */
   enum class Rank {
@@ -40,22 +40,19 @@ interface ChessBoardState<Identifier> {
    */
   data class Position(val x: Int, val y: Int)
 
-  /**
-   * A class representing a [Piece] that may be displayed on a [ChessBoard].
-   *
-   * @param id the unique identifier for this [Piece]. Two different pieces with the same rank and
-   * color must have different identifiers.
-   * @param rank the rank of the piece.
-   * @param color the color of the piece.
-   */
-  data class Piece<out Identifier>(
-      val id: Identifier,
-      val rank: Rank,
-      val color: Color,
-  )
+  /** An interface representing a [Piece] that may be displayed on a [ChessBoard]. */
+  @Stable
+  interface Piece {
+
+    /** The rank of the piece. */
+    val rank: Rank
+
+    /** The color of the piece. */
+    val color: Color
+  }
 
   /** A [Map] of the [Piece], associated to their [Position] on the board. */
-  val pieces: Map<Position, Piece<Identifier>>
+  val pieces: Map<Position, Piece>
 
   /**
    * A callback which should be called when the given [Piece] was moved from a start position to an
@@ -64,5 +61,5 @@ interface ChessBoardState<Identifier> {
    * @param piece the [Piece] that was moved.
    * @param endPosition the place where the [Piece] was dropped.
    */
-  fun onDropPiece(piece: Piece<Identifier>, endPosition: Position)
+  fun onDropPiece(piece: Piece, endPosition: Position)
 }

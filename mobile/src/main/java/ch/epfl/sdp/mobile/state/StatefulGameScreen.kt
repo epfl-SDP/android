@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
@@ -13,10 +14,24 @@ import ch.epfl.sdp.mobile.ui.game.Move
  * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
  * and has a static move list
  */
-class SnapshotChessBoardState : GameScreenState<PieceIdentifier> {
+class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
   private var game by mutableStateOf(emptyGame())
 
-  override val pieces: Map<ChessBoardState.Position, ChessBoardState.Piece<PieceIdentifier>>
+  /**
+   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
+   * different pieces.
+   *
+   * @param id the unique [PieceIdentifier].
+   * @param color the color for the piece.
+   * @param rank the rank for the piece.
+   */
+  data class SnapshotPiece(
+      val id: PieceIdentifier,
+      override val color: ChessBoardState.Color,
+      override val rank: ChessBoardState.Rank,
+  ) : ChessBoardState.Piece
+
+  override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
         Position.all()
             .map { game.board[it]?.let { p -> it to p } }
@@ -24,10 +39,7 @@ class SnapshotChessBoardState : GameScreenState<PieceIdentifier> {
             .map { (a, b) -> a.toPosition() to b.toPiece() }
             .toMap()
 
-  override fun onDropPiece(
-      piece: ChessBoardState.Piece<PieceIdentifier>,
-      endPosition: ChessBoardState.Position
-  ) {
+  override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     val step = game.nextStep as NextStep.MovePiece
 
@@ -59,7 +71,7 @@ private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
 
-private fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
+private fun Piece.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
         Rank.King -> ChessBoardState.Rank.King
@@ -76,7 +88,7 @@ private fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
         Color.White -> ChessBoardState.Color.White
       }
 
-  return ChessBoardState.Piece(id = this.id, rank = rank, color = color)
+  return SnapshotPiece(id = this.id, rank = rank, color = color)
 }
 
 /**
@@ -85,7 +97,7 @@ private fun Piece.toPiece(): ChessBoardState.Piece<PieceIdentifier> {
  * @return The remember of the [SnapshotChessBoardState]
  */
 @Composable
-fun rememberGameScreenState(): GameScreenState<PieceIdentifier> {
+fun rememberGameScreenState(): GameScreenState<SnapshotPiece> {
   return remember { SnapshotChessBoardState() }
 }
 

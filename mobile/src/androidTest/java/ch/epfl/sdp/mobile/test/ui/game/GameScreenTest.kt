@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.state.ChessMove
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
@@ -18,8 +19,8 @@ class GameScreenTest {
   @get:Rule val rule = createComposeRule()
 
   private class SnapshotGameScreenState :
-      GameScreenState<Unit>,
-      ChessBoardState<Unit> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
+      GameScreenState<Piece>,
+      ChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
     override val moves: List<Move>
       get() =
           listOf(
