@@ -102,7 +102,7 @@ class ChessBoardTest {
   }
 
   @Test
-  fun draggingPawnAround_whileBoardIsSuccessful_dropsOnRightTarget() = runTest {
+  fun draggingPawnAround_whileBoardIsEnabled_dropsOnRightTarget() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
     val strings =
         rule.setContentWithLocalizedStrings {
