@@ -1,6 +1,11 @@
 package ch.epfl.sdp.mobile.ui.game
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.graphics.painter.Painter
+import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.BlackKing
+import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
  * An interface which represents the state of a [ChessBoard] composable. It display the current
@@ -15,20 +20,60 @@ import androidx.compose.runtime.Stable
 @Stable
 interface ChessBoardState<Piece : ChessBoardState.Piece> {
 
-  /** The different ranks which may be displayed by a [ChessBoard]. */
-  enum class Rank {
-    King,
-    Queen,
-    Rook,
-    Bishop,
-    Knight,
-    Pawn,
+  /**
+   * The different ranks which may be displayed by a [ChessBoard].
+   *
+   * @param contentDescription the content description for this rank.
+   * @param whiteIcon the icon for the white variant of this rank.
+   * @param blackIcon the icon for the black variant of this rank.
+   */
+  enum class Rank(
+      val contentDescription: LocalizedStrings.() -> String,
+      val whiteIcon: @Composable () -> Painter,
+      val blackIcon: @Composable () -> Painter,
+  ) {
+    King(
+        contentDescription = { boardPieceKing },
+        whiteIcon = { ChessIcons.WhiteKing },
+        blackIcon = { ChessIcons.BlackKing },
+    ),
+    Queen(
+        contentDescription = { boardPieceQueen },
+        whiteIcon = { ChessIcons.WhiteQueen },
+        blackIcon = { ChessIcons.BlackQueen },
+    ),
+    Rook(
+        contentDescription = { boardPieceRook },
+        whiteIcon = { ChessIcons.WhiteRook },
+        blackIcon = { ChessIcons.BlackRook },
+    ),
+    Bishop(
+        contentDescription = { boardPieceBishop },
+        whiteIcon = { ChessIcons.WhiteBishop },
+        blackIcon = { ChessIcons.BlackBishop },
+    ),
+    Knight(
+        contentDescription = { boardPieceKnight },
+        whiteIcon = { ChessIcons.WhiteKnight },
+        blackIcon = { ChessIcons.BlackKnight },
+    ),
+    Pawn(
+        contentDescription = { boardPiecePawn },
+        whiteIcon = { ChessIcons.WhitePawn },
+        blackIcon = { ChessIcons.BlackPawn },
+    ),
   }
 
-  /** The different colors which may be displayed by a [ChessBoard]. */
-  enum class Color {
-    Black,
-    White,
+  /**
+   * The different colors which may be displayed by a [ChessBoard].
+   *
+   * @param contentDescription the content description for this color.
+   */
+  enum class Color(
+      val contentDescription: LocalizedStrings.() -> String,
+  ) {
+    Black(contentDescription = { boardColorBlack }),
+    White(contentDescription = { boardColorWhite }),
   }
 
   /**
