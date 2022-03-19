@@ -17,6 +17,16 @@ enum class Rank(
   Queen(moves = { diagonals(it) + lines(it) }),
   Rook(moves = { lines(it) }),
   Bishop(moves = { diagonals(it) }),
-  Knight(moves = { none() }),
+  Knight(
+      moves = {
+        delta(it, 1, -2) +
+            delta(it, 2, -1) +
+            delta(it, 2, 1) +
+            delta(it, 1, 2) +
+            delta(it, -1, 2) +
+            delta(it, -2, 1) +
+            delta(it, -2, -1) +
+            delta(it, -1, -2)
+      }),
   Pawn(moves = { delta(it, x = 0, y = -1) + delta(it, x = 0, y = -2) }),
 }
