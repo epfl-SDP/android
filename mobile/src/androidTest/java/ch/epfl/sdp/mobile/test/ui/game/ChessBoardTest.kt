@@ -60,16 +60,20 @@ class ChessBoardTest {
    * @param piece the [Piece] which should be moved.
    */
   class SinglePieceSnapshotChessBoardState(
-      private val piece: Piece<Unit> = Piece(Unit, Pawn, White),
-  ) : ChessBoardState<Unit> {
+      private val piece: Piece =
+          object : Piece {
+            override val color = White
+            override val rank = Pawn
+          },
+  ) : ChessBoardState<Piece> {
 
     var position: Position by mutableStateOf(Position(0, 0))
 
-    override val pieces: Map<Position, Piece<Unit>>
+    override val pieces: Map<Position, Piece>
       get() = mapOf(position to piece)
 
     override fun onDropPiece(
-        piece: Piece<Unit>,
+        piece: Piece,
         endPosition: Position,
     ) {
       position = endPosition
