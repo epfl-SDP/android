@@ -52,6 +52,18 @@ fun Board<Piece<Role>>.doubleUp(
 }
 
 /**
+ * A [Moves] implementation which will let pawns take pieces in diagonal.
+ *
+ * @param from the original [Position] of the pawn.
+ */
+fun Board<Piece<Role>>.sideTakes(
+    from: Position,
+): Moves = sequence {
+  if (get(Position(from.x - 1, from.y - 1)) != null) yieldAll(delta(from, -1, -1))
+  if (get(Position(from.x + 1, from.y - 1)) != null) yieldAll(delta(from, 1, -1))
+}
+
+/**
  * Repeats the given [Delta] from 1 to [maxRepeats] (excluded) times. If an adversary is encountered
  * or the target gets out of bounds, the repeat process will be stopped.
  *
