@@ -11,12 +11,12 @@ import ch.epfl.sdp.mobile.application.chess.moves.*
  * TODO : Support all the moves.
  */
 enum class Rank(
-    val moves: GameWithRoles.() -> Moves,
+    val moves: Board<Piece<Role>>.(Position) -> Moves,
 ) {
-  King(moves = { diagonals(1) + lines(1) }),
-  Queen(moves = { diagonals() + lines() }),
-  Rook(moves = { lines() }),
-  Bishop(moves = { diagonals() }),
+  King(moves = { diagonals(it, 1) + lines(it, 1) }),
+  Queen(moves = { diagonals(it) + lines(it) }),
+  Rook(moves = { lines(it) }),
+  Bishop(moves = { diagonals(it) }),
   Knight(moves = { none() }),
-  Pawn(moves = { delta(0, 1) + delta(0, 2) }),
+  Pawn(moves = { delta(it, x = 0, y = -1) + delta(it, x = 0, y = -2) }),
 }

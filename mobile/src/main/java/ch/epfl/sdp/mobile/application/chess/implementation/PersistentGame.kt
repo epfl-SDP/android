@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.moves.GameWithRoles
 import ch.epfl.sdp.mobile.application.chess.moves.Role
 
 /**
@@ -19,15 +18,16 @@ data class PersistentGame(
     get() =
         NextStep.MovePiece(nextPlayer) { from, delta ->
           val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
-          val moves =
-              Position.all().flatMap { position ->
-                val piece = normalizedBoard[position] ?: return@flatMap emptySequence()
-                if (piece.color == Role.Adversary) return@flatMap emptySequence()
-                piece.rank.moves(normalizedBoard.withPosition(position))
-              }
+          val normalizedFrom = nextPlayer.normalize(from)
+          val normalizedDelta = nextPlayer.normalize(delta) // TODO : Normalize delta.
+          val piece = normalizedBoard[normalizedFrom] ?: return@MovePiece this
+          if (piece.color == Role.Adversary) return@MovePiece this
+          val moves = piece.rank.moves(normalizedBoard, normalizedFrom)
 
           val (_, effects) =
-              moves.firstOrNull { (action, _) -> action.from == from && action.delta == delta }
+              moves.firstOrNull { (action, _) ->
+                action.from == normalizedFrom && action.delta == normalizedDelta
+              }
                   ?: return@MovePiece this
 
           val nextBoard = DenormalizedBoardDecorator(nextPlayer, effects.perform(normalizedBoard))
@@ -36,10 +36,3 @@ data class PersistentGame(
           copy(nextPlayer = nextPlayer.other(), board = nextBoard)
         }
 }
-
-fun Board<Piece<Role>>.withPosition(
-    position: Position,
-): GameWithRoles =
-    object : GameWithRoles, Board<Piece<Role>> by this {
-      override val position = position
-    }
