@@ -35,9 +35,6 @@ fun Board<Piece<Role>>.lines(
   }
 }
 
-/** Represents some [Moves] indicating that this piece may not perform any action. */
-fun Board<Piece<Role>>.none(): Moves = emptySequence()
-
 /**
  * Moves along the diagonals, until either [maxDistance] or a piece is reached .
  *
