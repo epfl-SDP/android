@@ -11,7 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.moves.*
  * TODO : Support all the moves.
  */
 enum class Rank(
-    private val moves: GameWithRoles.() -> Moves,
+    val moves: GameWithRoles.() -> Moves,
 ) {
   King(moves = { diagonals(1) + lines(1) }),
   Queen(moves = { diagonals() + lines() }),
