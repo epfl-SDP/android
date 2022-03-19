@@ -8,4 +8,10 @@ import ch.epfl.sdp.mobile.application.chess.PieceIdentifier
  *
  * @param id the actual identifier of the piece.
  */
-data class PersistentPieceIdentifier(private val id: Int) : PieceIdentifier
+data class PersistentPieceIdentifier(private val id: Int) : PieceIdentifier {
+
+  /** Returns an incremented [PersistentPieceIdentifier]. */
+  operator fun inc(): PersistentPieceIdentifier {
+    return PersistentPieceIdentifier(id + 1)
+  }
+}

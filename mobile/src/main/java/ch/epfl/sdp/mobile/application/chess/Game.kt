@@ -1,5 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess
 
+import ch.epfl.sdp.mobile.application.chess.Color.Black
+import ch.epfl.sdp.mobile.application.chess.Color.White
+import ch.epfl.sdp.mobile.application.chess.Rank.*
+import ch.epfl.sdp.mobile.application.chess.implementation.PersistentGame
+import ch.epfl.sdp.mobile.application.chess.implementation.PersistentPieceIdentifier
+import ch.epfl.sdp.mobile.application.chess.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.rules.Action
 
 /**
@@ -22,4 +28,36 @@ interface Game {
    * @return the [Sequence] of available actions.
    */
   fun actions(position: Position): Sequence<Action>
+}
+
+/** Creates a new [Game], with the standard starting positions for both players. */
+fun emptyGame(): Game {
+  val board =
+      buildBoard<Piece<Color>> {
+        var id = PersistentPieceIdentifier(0)
+
+        /** Populates a [row] with all the pieces of a given [color]. */
+        fun populateSide(row: Int, color: Color) {
+          set(Position(0, row), Piece(color, Rook, id++))
+          set(Position(1, row), Piece(color, Knight, id++))
+          set(Position(2, row), Piece(color, Bishop, id++))
+          set(Position(3, row), Piece(color, Queen, id++))
+          set(Position(4, row), Piece(color, King, id++))
+          set(Position(5, row), Piece(color, Bishop, id++))
+          set(Position(6, row), Piece(color, Knight, id++))
+          set(Position(7, row), Piece(color, Rook, id++))
+        }
+
+        // Populate the pieces.
+        populateSide(0, Black)
+        populateSide(7, White)
+
+        // Populate the pawns.
+        repeat(Board.Size) { column ->
+          set(Position(column, 1), Piece(Black, Pawn, id++))
+          set(Position(column, 6), Piece(White, Pawn, id++))
+        }
+      }
+
+  return PersistentGame(nextPlayer = White, board = board)
 }
