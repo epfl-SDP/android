@@ -52,7 +52,11 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
               cells = ChessBoardCells,
               color = MaterialTheme.colors.onPrimary.copy(alpha = ContentAlpha.disabled),
           )
-          .grid(cells = ChessBoardCells, color = MaterialTheme.colors.primary),
+          .grid(cells = ChessBoardCells, color = MaterialTheme.colors.primary)
+          .actions(
+              positions = state.availableMoves,
+              color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.disabled),
+          ),
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
     val cellPx = minDimension / ChessBoardCells

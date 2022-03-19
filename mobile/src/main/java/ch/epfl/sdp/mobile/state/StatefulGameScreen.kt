@@ -39,6 +39,15 @@ class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
             .map { (a, b) -> a.toPosition() to b.toPiece() }
             .toMap()
 
+  override val availableMoves: Set<ChessBoardState.Position>
+    // Display all the possible moves for all the pieces on the board.
+    get() =
+        Position.all()
+            .flatMap { game.actions(it) }
+            .mapNotNull { it.from + it.delta }
+            .map { it.toPosition() }
+            .toSet()
+
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     val step = game.nextStep as NextStep.MovePiece

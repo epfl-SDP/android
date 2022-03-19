@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.moves.Action
+import ch.epfl.sdp.mobile.application.chess.moves.Moves
 import ch.epfl.sdp.mobile.application.chess.moves.Role
 
 /**
@@ -19,10 +21,8 @@ data class PersistentGame(
         NextStep.MovePiece(nextPlayer) { from, delta ->
           val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
           val normalizedFrom = nextPlayer.normalize(from)
-          val normalizedDelta = nextPlayer.normalize(delta) // TODO : Normalize delta.
-          val piece = normalizedBoard[normalizedFrom] ?: return@MovePiece this
-          if (piece.color == Role.Adversary) return@MovePiece this
-          val moves = piece.rank.moves(normalizedBoard, normalizedFrom)
+          val normalizedDelta = nextPlayer.normalize(delta)
+          val moves = normalizedMoves(from)
 
           val (_, effects) =
               moves.firstOrNull { (action, _) ->
@@ -35,4 +35,23 @@ data class PersistentGame(
           // TODO : Eventually flatten this ?
           copy(nextPlayer = nextPlayer.other(), board = nextBoard)
         }
+
+  override fun actions(position: Position): Sequence<Action> {
+    return normalizedMoves(position).map { it.first }
+        .map { Action(nextPlayer.normalize(it.from), nextPlayer.normalize(it.delta)) }
+  }
+
+  /**
+   * Returns all the [Moves] which are available for the given position.
+   *
+   * @param position the [Position] for which the moves are queried.
+   * @return the [Moves] for the position.
+   */
+  private fun normalizedMoves(position: Position): Moves {
+    val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
+    val normalizedFrom = nextPlayer.normalize(position)
+    val piece = normalizedBoard[normalizedFrom] ?: return emptySequence()
+    if (piece.color == Role.Adversary) return emptySequence()
+    return piece.rank.moves(normalizedBoard, normalizedFrom)
+  }
 }
