@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.moves
+package ch.epfl.sdp.mobile.application.chess.rules
 
 import ch.epfl.sdp.mobile.application.chess.Delta
 import ch.epfl.sdp.mobile.application.chess.Position

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.moves
+package ch.epfl.sdp.mobile.application.chess.rules
 
 /** An enumeration representing the [Role] that each piece may have, from a logical perspective. */
 enum class Role {

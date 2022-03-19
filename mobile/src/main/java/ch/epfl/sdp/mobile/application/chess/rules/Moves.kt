@@ -1,7 +1,6 @@
-package ch.epfl.sdp.mobile.application.chess.moves
+package ch.epfl.sdp.mobile.application.chess.rules
 
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.rules.Effect
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.move
 
 /**

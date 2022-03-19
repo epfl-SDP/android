@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.moves.Action
-import ch.epfl.sdp.mobile.application.chess.moves.Moves
-import ch.epfl.sdp.mobile.application.chess.moves.Role
+import ch.epfl.sdp.mobile.application.chess.rules.Action
+import ch.epfl.sdp.mobile.application.chess.rules.Moves
+import ch.epfl.sdp.mobile.application.chess.rules.Role
 
 /**
  * A persistent implementation of a [Game], which contains some information about the current board

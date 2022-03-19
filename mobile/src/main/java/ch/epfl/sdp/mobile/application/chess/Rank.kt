@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess
 
-import ch.epfl.sdp.mobile.application.chess.moves.*
+import ch.epfl.sdp.mobile.application.chess.rules.*
 
 /**
  * An enumeration representing the abilities of each [Piece] in classic chess.

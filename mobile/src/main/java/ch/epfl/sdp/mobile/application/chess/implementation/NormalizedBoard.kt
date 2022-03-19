@@ -4,9 +4,9 @@ import ch.epfl.sdp.mobile.application.chess.Board
 import ch.epfl.sdp.mobile.application.chess.Color
 import ch.epfl.sdp.mobile.application.chess.Piece
 import ch.epfl.sdp.mobile.application.chess.Position
-import ch.epfl.sdp.mobile.application.chess.moves.Role
-import ch.epfl.sdp.mobile.application.chess.moves.Role.Adversary
-import ch.epfl.sdp.mobile.application.chess.moves.Role.Allied
+import ch.epfl.sdp.mobile.application.chess.rules.Role
+import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
+import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
 
 /**
  * A decorator of a [Board] of pieces with colors, which returns a [Board] of pieces with roles
