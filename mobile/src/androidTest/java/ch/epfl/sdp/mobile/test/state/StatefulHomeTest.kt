@@ -51,9 +51,9 @@ class StatefulHomeTest {
 
   @Test
   fun clickPlaySection_selectsPlaySection() = runTest {
-    val api = AuthenticationFacade(emptyAuth(), emptyStore())
-    api.signUpWithEmail("email", "name", "password")
-    val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val facade = AuthenticationFacade(emptyAuth(), emptyStore())
+    facade.signUpWithEmail("email", "name", "password")
+    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings = rule.setContentWithLocalizedStrings { StatefulHome(user) }
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
