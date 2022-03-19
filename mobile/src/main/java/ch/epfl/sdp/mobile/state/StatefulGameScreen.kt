@@ -71,7 +71,7 @@ private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
 
-private fun Piece.toPiece(): SnapshotPiece {
+private fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
         Rank.King -> ChessBoardState.Rank.King

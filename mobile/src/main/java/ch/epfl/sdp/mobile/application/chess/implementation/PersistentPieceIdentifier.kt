@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.internal
+package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.PieceIdentifier
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.internal
+package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.Color
 import ch.epfl.sdp.mobile.application.chess.Game
@@ -28,10 +28,3 @@ data class PersistentGame(
           }
         }
 }
-
-/** Returns the opposite [Color]. */
-private fun Color.other(): Color =
-    when (this) {
-      Color.Black -> Color.White
-      Color.White -> Color.Black
-    }

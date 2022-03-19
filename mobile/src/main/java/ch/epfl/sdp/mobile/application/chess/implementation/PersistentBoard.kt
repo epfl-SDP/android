@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.internal
+package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.*
 import kotlinx.collections.immutable.PersistentList
@@ -50,17 +50,17 @@ private val DefaultCells =
  */
 data class PersistentBoard
 constructor(
-    private val cells: PersistentList<PersistentList<Piece?>>,
-) : Board {
+    private val cells: PersistentList<PersistentList<Piece<Color>?>>,
+) : Board<Piece<Color>> {
 
   /** A convenience constructor which creates a board with default cells. */
   constructor() : this(DefaultCells)
 
-  override fun get(position: Position): Piece? {
+  override fun get(position: Position): Piece<Color>? {
     return cells[position.y][position.x]
   }
 
-  override fun set(position: Position, piece: Piece?): PersistentBoard {
+  override fun set(position: Position, piece: Piece<Color>?): PersistentBoard {
     val row = cells[position.y]
     val updatedRow = row.set(position.x, piece)
     val updatedCells = cells.set(position.y, updatedRow)
