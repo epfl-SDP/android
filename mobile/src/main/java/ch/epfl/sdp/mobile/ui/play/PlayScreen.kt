@@ -27,8 +27,7 @@ fun PlayScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  Box(
-      modifier = modifier.fillMaxSize().padding(contentPadding)) {
+  Box(modifier = modifier.fillMaxSize().padding(contentPadding)) {
     NewGameButton(onNewGame = state.onNewGameClick, modifier = Modifier.align(Alignment.BottomEnd))
   }
 }
