@@ -46,7 +46,7 @@ fun NewGameButton(onNewGame: () -> Unit, modifier: Modifier = Modifier) {
       text = { Text(strings.newGame) },
       onClick = onNewGame,
       shape = CircleShape,
-      modifier = modifier.padding(16.dp).size(169.dp, 56.dp),
+      modifier = modifier.padding(16.dp).height(56.dp),
       backgroundColor = PawniesColors.Green800,
       icon = { Icon(PawniesIcons.Add, null) })
 }

@@ -29,6 +29,6 @@ fun StatefulPlayScreen(
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   /* TODO: Add any necessary args: authenticated user ... */
-  val state = remember { Player(newGame = navigateToGame) }
+  val state = remember(navigateToGame) { Player(newGame = navigateToGame) }
   PlayScreen(state, modifier, contentPadding)
 }
