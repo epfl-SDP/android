@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.application.chess.rules.*
  * @param moves the moves and threats that each piece may perform, depending on the current board
  * configuration.
  *
- * TODO : Support all the moves.
+ * TODO : Support history-aware moves.
  */
 enum class Rank(
     val moves: Board<Piece<Role>>.(Position) -> Moves,
