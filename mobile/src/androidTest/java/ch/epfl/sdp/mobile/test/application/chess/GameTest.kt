@@ -15,7 +15,7 @@ class GameTest {
 
   @Test
   fun emptyGame_validMove_switchesNextPlayer() {
-    val game = emptyGame().play { Position(0, 6) += Delta(0, 1) }
+    val game = emptyGame().play { Position(0, 6) += Delta(0, -1) }
     val step = game.nextStep as NextStep.MovePiece
     assertThat(step.turn).isEqualTo(Color.Black)
   }
