@@ -29,5 +29,5 @@ enum class Rank(
             delta(it, -1, -2)
       },
   ),
-  Pawn(moves = { delta(it, x = 0, y = -1, includeAdversary = false) }),
+  Pawn(moves = { delta(it, x = 0, y = -1, includeAdversary = false) + doubleUp(it) }),
 }
