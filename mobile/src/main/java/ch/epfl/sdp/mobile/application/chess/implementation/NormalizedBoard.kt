@@ -8,6 +8,13 @@ import ch.epfl.sdp.mobile.application.chess.moves.Role
 import ch.epfl.sdp.mobile.application.chess.moves.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.moves.Role.Allied
 
+/**
+ * A decorator of a [Board] of pieces with colors, which returns a [Board] of pieces with roles
+ * depending on the current player [Color].
+ *
+ * @param player the [Color] of the current player.
+ * @param board the [Board] of pieces with colors to decorate.
+ */
 class NormalizedBoardDecorator(
     private val player: Color,
     private val board: Board<Piece<Color>>,
@@ -29,6 +36,13 @@ class NormalizedBoardDecorator(
   }
 }
 
+/**
+ * A decorator of a [Board] of pieces with roles, which returns a [Board] of pieces with colors
+ * depending on the current player [Color].
+ *
+ * @param player the [Color] of the current player.
+ * @param board the [Board] of pieces with roles to decorate.
+ */
 class DenormalizedBoardDecorator(
     private val player: Color,
     private val board: Board<Piece<Role>>,
