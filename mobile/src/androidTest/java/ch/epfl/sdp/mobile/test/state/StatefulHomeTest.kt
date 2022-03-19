@@ -69,8 +69,6 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
-    rule.onNodeWithText(strings.newGame).assertExists()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.newGame).assertDoesNotExist()
+    rule.onNodeWithText(strings.newGame).assertExists().performClick().assertDoesNotExist()
   }
 }

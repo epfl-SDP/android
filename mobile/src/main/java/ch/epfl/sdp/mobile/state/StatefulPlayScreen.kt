@@ -1,11 +1,9 @@
 package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import ch.epfl.sdp.mobile.ui.play.PlayScreen
 import ch.epfl.sdp.mobile.ui.play.PlayScreenState
 
@@ -21,16 +19,16 @@ class Player(private val newGame: () -> Unit) : PlayScreenState {
 
 /**
  * A stateful implementation of the PlayScreen
- * @param controller Navigation controller to navigate to components
+ * @param navigateToGame Callable lambda to navigate to game screen
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun StatefulPlayScreen(
-    controller: NavHostController,
+    navigateToGame: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   /* TODO: Add any necessary args: authenticated user ... */
-  val state = remember(controller) { Player(newGame = { controller.navigate(GameRoute) }) }
-  PlayScreen(state, modifier.padding(contentPadding))
+  val state = remember { Player(newGame = navigateToGame) }
+  PlayScreen(state, modifier, contentPadding)
 }

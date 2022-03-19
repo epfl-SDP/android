@@ -10,7 +10,7 @@ import org.junit.Test
 
 open class TestPlayScreenState(override val onNewGameClick: () -> Unit) : PlayScreenState
 
-object FakePlayScreenState : TestPlayScreenState({ println("Button new game clicked !") })
+object FakePlayScreenState : TestPlayScreenState({})
 
 class PlayScreenTest {
   @get:Rule val rule = createComposeRule()

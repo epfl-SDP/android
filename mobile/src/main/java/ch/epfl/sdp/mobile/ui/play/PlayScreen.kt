@@ -2,20 +2,21 @@ package ch.epfl.sdp.mobile.ui.play
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.Add
+import ch.epfl.sdp.mobile.ui.PawniesColors
+import ch.epfl.sdp.mobile.ui.PawniesIcons
 
 /**
- * Composable that composes the PlayScreen [FIXME] Contains a new game button only, should be
- * expanded
+ * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
+ * expanded to include history of matches
  *
  * @param state state of the PlayScreen
  * @param modifier the [Modifier] for this composable.
@@ -24,8 +25,11 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 fun PlayScreen(
     state: PlayScreenState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
-  Box(contentAlignment = Alignment.BottomEnd, modifier = modifier.fillMaxSize()) {
+  Box(
+      contentAlignment = Alignment.BottomEnd,
+      modifier = modifier.fillMaxSize().padding(contentPadding)) {
     NewGameButton(onNewGame = state.onNewGameClick)
   }
 }
@@ -38,13 +42,11 @@ fun PlayScreen(
 @Composable
 fun NewGameButton(onNewGame: () -> Unit, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
-  Button(
+  ExtendedFloatingActionButton(
+      text = { Text(strings.newGame) },
       onClick = onNewGame,
       shape = CircleShape,
-      contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-      modifier = modifier.padding(end = 16.dp, bottom = 16.dp)) {
-    Icon(Icons.Default.Add, null)
-    Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.newGame, modifier = modifier)
-  }
+      modifier = modifier.padding(16.dp).size(169.dp, 56.dp),
+      backgroundColor = PawniesColors.Green800,
+      icon = { Icon(PawniesIcons.Add, null) })
 }
