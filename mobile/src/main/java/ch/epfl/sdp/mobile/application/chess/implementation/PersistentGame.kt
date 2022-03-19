@@ -37,8 +37,9 @@ data class PersistentGame(
         }
 
   override fun actions(position: Position): Sequence<Action> {
-    return normalizedMoves(position).map { it.first }
-        .map { Action(nextPlayer.normalize(it.from), nextPlayer.normalize(it.delta)) }
+    return normalizedMoves(position).map { it.first }.map {
+      Action(nextPlayer.normalize(it.from), nextPlayer.normalize(it.delta))
+    }
   }
 
   /**
