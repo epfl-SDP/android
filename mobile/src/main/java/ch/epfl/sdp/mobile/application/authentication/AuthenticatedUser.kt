@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.application.authentication
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
@@ -64,14 +65,4 @@ class AuthenticatedUser(
       firestore.collection("users").asFlow<ProfileDocument>().map {
         it.mapNotNull { doc -> doc?.toProfile() }
       }
-}
-
-// TODO : Combine method to re-use some bits of FirebaseAuthenticatedUser
-private fun ProfileDocument?.toProfile(): Profile {
-  return object : Profile {
-    override val emoji: String = this@toProfile?.emoji ?: "😎"
-    override val name: String = this@toProfile?.name ?: ""
-    override val backgroundColor: Color =
-        this@toProfile?.backgroundColor?.let(::Color) ?: Color.Default
-  }
 }

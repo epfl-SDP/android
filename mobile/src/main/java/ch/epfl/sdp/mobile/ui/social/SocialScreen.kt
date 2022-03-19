@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
  * @param state the [SocialScreenState], manage the composable contents
  * @param modifier the [Modifier] for the composable
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
 
@@ -53,6 +55,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         leadingIcon = { Icon(PawniesIcons.Search, contentDescription = "") },
         singleLine = true,
         shape = RoundedCornerShape(56.dp),
+        interactionSource = state.searchFieldInteraction,
         colors =
             TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.onPrimary.copy(0.15f),
@@ -63,9 +66,10 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
     )
     transition.AnimatedContent { target ->
       when (target) {
-        Following -> FollowList(state.players)
+        Following -> FollowList(state.following)
         Searching ->
-            if (state.input.isEmpty()) EmptySearch() else SearchResultList(players = state.players)
+            if (state.input.isEmpty()) EmptySearch()
+            else SearchResultList(players = state.searchResult)
       }
     }
   }

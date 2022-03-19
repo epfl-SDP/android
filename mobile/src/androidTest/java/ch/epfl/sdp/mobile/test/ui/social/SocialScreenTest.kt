@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.ui.social
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,14 +24,16 @@ class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
   private class SnapshotSocialScreenState : SocialScreenState {
+    override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
-    override var players: List<Person> =
+    override var following: List<Person> =
         listOf(
             createPerson(Color.Default, "Toto", ":)"),
             createPerson(Color.Default, "John", ":3"),
             createPerson(Color.Default, "Travis", ";)"),
             createPerson(Color.Default, "Cirrus", "TwT"))
     override var input: String by mutableStateOf("")
+    override val searchFieldInteraction = MutableInteractionSource()
 
     override fun onValueChange() {
       mode = Searching
@@ -58,6 +61,13 @@ class SocialScreenTest {
   @Test
   fun type_switchMode() {
     val state = SnapshotSocialScreenState()
+    state.searchResult =
+        listOf(
+            object : Person {
+              override val backgroundColor = Color.Default
+              override val name = "test"
+              override val emoji = ":)"
+            })
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
 
@@ -112,7 +122,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.players) }
+    rule.setContent { SearchResultList(state.following) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -120,7 +130,16 @@ class SocialScreenTest {
   @Test
   fun searchList_hasFollowText() {
     val state = SnapshotSocialScreenState()
-    val strings = rule.setContentWithLocalizedStrings { SearchResultList(state.players) }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          SearchResultList(
+              listOf(
+                  object : Person {
+                    override val backgroundColor = Color.Default
+                    override val name = "test"
+                    override val emoji = ":)"
+                  }))
+        }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
   }
