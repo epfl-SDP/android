@@ -47,17 +47,6 @@ fun interface Effect<Piece : Any> {
     }
 
     /**
-     * Composes all the [Effect] in order, and returns the associated resulting [Effect].
-     *
-     * @param P the type of the pieces.
-     * @param moves all the [Effect]s which must be sequenced.
-     * @return the valid resulting [Effect].
-     */
-    fun <P : Any> all(vararg moves: Effect<P>): Effect<P> = Effect {
-      moves.fold(it) { board, move -> move.perform(board) }
-    }
-
-    /**
      * Moves the piece at the given [Position] by the given [Delta]. If no piece was present at the
      * starting position or the move didn't stay in the board bounds, the [Effect] will have no
      * effect on the board (since it's not valid).
