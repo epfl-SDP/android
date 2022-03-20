@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store
 
+import android.util.Log
 import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

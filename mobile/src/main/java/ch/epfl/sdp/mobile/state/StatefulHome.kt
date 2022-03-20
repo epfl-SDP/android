@@ -18,7 +18,7 @@ import ch.epfl.sdp.mobile.ui.home.HomeSection
 private const val SocialRoute = "social"
 
 /** The route associated to the settings tab. */
-private const val SettingsRoute = "settings"
+const val ProfileRoute = "settings"
 
 /** The route associated to the game tab. */
 private const val GameRoute = "game"
@@ -35,7 +35,7 @@ private const val GameRoute = "game"
 fun StatefulHome(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
-    controller: NavHostController = rememberNavController(),
+        controller: NavHostController = rememberNavController(),
 ) {
   val entry by controller.currentBackStackEntryAsState()
   val section = entry?.toSection() ?: HomeSection.Social
@@ -48,8 +48,13 @@ fun StatefulHome(
         navController = controller,
         startDestination = SocialRoute,
     ) {
-      composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
-      composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
+      composable(SocialRoute) { StatefulFollowingScreen(user, controller, Modifier.fillMaxSize()) }
+      composable("$ProfileRoute/{profileName}") {
+              backStackEntry -> StatefulProfileScreen(
+                user,
+                backStackEntry.arguments?.getString("profileName") ?: "",
+                Modifier.fillMaxSize())
+      }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
   }
@@ -58,7 +63,7 @@ fun StatefulHome(
 /** Maps a [NavBackStackEntry] to the appropriate [HomeSection]. */
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
-      SettingsRoute -> HomeSection.Settings
+      ProfileRoute -> HomeSection.Settings
       GameRoute -> HomeSection.Game
       else -> HomeSection.Social
     }
@@ -67,6 +72,6 @@ private fun NavBackStackEntry.toSection(): HomeSection =
 private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
-      HomeSection.Settings -> SettingsRoute
+      HomeSection.Settings -> ProfileRoute
       HomeSection.Game -> GameRoute
     }

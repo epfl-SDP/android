@@ -37,6 +37,9 @@ interface SocialScreenState {
   /** Flow for interaction on search field */
   val searchFieldInteraction: MutableInteractionSource
 
+  /** Callback function to open profile of person */
+  val openProfile: (Person)->Unit
+
   /** A callback invoked when the user type in the search text field */
   fun onValueChange()
 }
