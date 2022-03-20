@@ -78,8 +78,8 @@ private fun Board<Piece<Role>>.repeatDirection(
     maxRepeats: Int = Board.Size,
     includeAdversary: Boolean = true,
 ): Moves = sequence {
-  for (i in 1..maxRepeats) {
-    val delta = direction * i
+  repeat(maxRepeats) { i ->
+    val delta = direction * (i + 1)
     val target = from + delta ?: return@sequence // Stop if out of bounds.
     val piece = get(target)
     val action = Action(from, delta)

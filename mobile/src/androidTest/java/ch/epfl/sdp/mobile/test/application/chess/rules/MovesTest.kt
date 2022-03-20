@@ -101,4 +101,47 @@ class MovesTest {
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, -1)))
   }
+
+  @Test
+  fun diagonal_isOnTopLeftToBottomRightDiagonal() {
+    val from = Position(0, 0)
+    val board = emptyBoard<Piece<Role>>()
+    val actions = board.diagonals(from).map { it.first }.filter { (_, d) -> d.x != d.y }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun diagonal_hittingAlliedPiece_hasNoActions() {
+    val from = Position(0, 0)
+    val to = Position(1, 1)
+    val board = buildBoard<Piece<Role>> { set(to, alliedPawn) }
+    val actions = board.diagonals(from).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun diagonal_notIncludeAdversaries_hasNoActions() {
+    val from = Position(0, 0)
+    val to = Position(1, 1)
+    val board = buildBoard<Piece<Role>> { set(to, adversaryPawn) }
+    val actions = board.diagonals(from, includeAdversary = false).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun diagonal_includeAdversaries_hasOneAction() {
+    val from = Position(0, 0)
+    val to = Position(1, 1)
+    val board = buildBoard<Piece<Role>> { set(to, adversaryPawn) }
+    val actions = board.diagonals(from).map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
+  }
+
+  @Test
+  fun lines_isOnFirstRowOrColumn() {
+    val from = Position(0, 0)
+    val board = emptyBoard<Piece<Role>>()
+    val actions = board.lines(from).map { it.first }.filter { (_, d) -> d.x != 0 && d.y != 0 }
+    assertThat(actions.asIterable()).isEmpty()
+  }
 }
