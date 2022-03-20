@@ -35,7 +35,7 @@ data class PersistentGame(
 
           // TODO : Eventually flatten this ?
           copy(
-              previous = this to action,
+              previous = this to nextPlayer.normalize(action),
               nextPlayer = nextPlayer.other(),
               board = nextBoard,
           )
