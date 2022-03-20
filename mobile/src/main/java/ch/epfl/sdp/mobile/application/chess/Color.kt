@@ -3,20 +3,20 @@ package ch.epfl.sdp.mobile.application.chess
 /**
  * The classical colors of a game of chess.
  *
- * @param normalizeToWhiteDelta a function which normalizes the [Delta].
- * @param normalizeToWhitePosition a function which normalizes the [Position].
+ * @param normalizeDelta a function which normalizes the [Delta].
+ * @param normalizePosition a function which normalizes the [Position].
  * @param opposite a function that returns the opposite color.
  */
 enum class Color(
-    private val normalizeToWhiteDelta: Delta.() -> Delta,
-    private val normalizeToWhitePosition: Position.() -> Position,
+    private val normalizeDelta: Delta.() -> Delta,
+    private val normalizePosition: Position.() -> Position,
     private val opposite: () -> Color,
 ) {
 
   /** The black color. */
   Black(
-      normalizeToWhiteDelta = { Delta(x = x, y = -y) },
-      normalizeToWhitePosition = {
+      normalizeDelta = { Delta(x = x, y = -y) },
+      normalizePosition = {
         Position(
             x = x,
             y = Board.Size - y - 1, // A simple vertical symmetry.
@@ -27,8 +27,8 @@ enum class Color(
 
   /** The white color. Starts the game. */
   White(
-      normalizeToWhiteDelta = { this },
-      normalizeToWhitePosition = { this },
+      normalizeDelta = { this },
+      normalizePosition = { this },
       opposite = { Black },
   );
 
@@ -38,7 +38,7 @@ enum class Color(
    * @param delta the [Delta] to normalize.
    * @return the normalized delta.
    */
-  fun normalize(delta: Delta): Delta = normalizeToWhiteDelta(delta)
+  fun normalize(delta: Delta): Delta = normalizeDelta(delta)
 
   /**
    * Normalizes the given [Position].
@@ -46,7 +46,7 @@ enum class Color(
    * @param position the [Position] to normalize.
    * @return the normalized position.
    */
-  fun normalize(position: Position): Position = normalizeToWhitePosition(position)
+  fun normalize(position: Position): Position = normalizePosition(position)
 
   /** Returns the [Color] of the adversary. */
   fun other(): Color = opposite()
