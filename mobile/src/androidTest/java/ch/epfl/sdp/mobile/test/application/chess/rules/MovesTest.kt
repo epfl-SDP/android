@@ -7,12 +7,9 @@ import ch.epfl.sdp.mobile.application.chess.Rank.Pawn
 import ch.epfl.sdp.mobile.application.chess.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.implementation.emptyBoard
-import ch.epfl.sdp.mobile.application.chess.rules.Action
-import ch.epfl.sdp.mobile.application.chess.rules.Role
+import ch.epfl.sdp.mobile.application.chess.rules.*
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
-import ch.epfl.sdp.mobile.application.chess.rules.delta
-import ch.epfl.sdp.mobile.application.chess.rules.doubleUp
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -77,5 +74,31 @@ class MovesTest {
     val board = emptyBoard<Piece<Role>>()
     val actions = board.doubleUp(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(0, -2)))
+  }
+
+  @Test
+  fun sideTakes_noPieces_hasNoActions() {
+    val from = Position(1, 1)
+    val board = emptyBoard<Piece<Role>>()
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun sideTakes_left_hasOneAction() {
+    val from = Position(1, 1)
+    val left = Position(0, 0)
+    val board = buildBoard<Piece<Role>> { set(left, adversaryPawn) }
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(-1, -1)))
+  }
+
+  @Test
+  fun sideTakes_right_hasOneAction() {
+    val from = Position(1, 1)
+    val right = Position(2, 0)
+    val board = buildBoard<Piece<Role>> { set(right, adversaryPawn) }
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, -1)))
   }
 }
