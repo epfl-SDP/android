@@ -13,7 +13,7 @@ android {
 
   defaultConfig {
     applicationId = "ch.epfl.sdp.mobile"
-    minSdk = 23
+    minSdk = 24
     targetSdk = 31
     versionCode = 1
     versionName = "0.1.0"
@@ -38,7 +38,10 @@ android {
 
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
-  buildFeatures { compose = true }
+  buildFeatures {
+    viewBinding = true
+    compose = true
+  }
   kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
   testCoverage { jacocoVersion = libs.versions.jacoco.get() }
@@ -53,7 +56,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-
+  implementation("androidx.constraintlayout:constraintlayout:2.0.4")
   // Testing.
   testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
@@ -84,6 +87,11 @@ dependencies {
 
   // Jetpack Compose
   implementation(libs.bundles.compose.android)
+
+  // ArCore
+  implementation("com.google.ar:core:1.30.0")
+
+  implementation("io.github.sceneview:arsceneview:0.2.0")
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }

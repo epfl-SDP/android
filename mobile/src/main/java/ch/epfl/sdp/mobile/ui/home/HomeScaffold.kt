@@ -2,14 +2,13 @@ package ch.epfl.sdp.mobile.ui.home
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.SectionGame
-import ch.epfl.sdp.mobile.ui.SectionSettings
-import ch.epfl.sdp.mobile.ui.SectionSocial
+import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -31,6 +30,8 @@ enum class HomeSection(
 
   /** The section which displays a chess game. */
   Game(PawniesIcons.SectionGame, { sectionGame }),
+
+  Ar(PawniesIcons.ArView, {sectionAr})
 }
 
 /**

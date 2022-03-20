@@ -45,6 +45,7 @@ object English : LocalizedStrings {
   override val socialSearchEmptySubtitle =
       "Find any player using their name, follow them, or invite them to play or see their match history"
 
+  override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
   override val sectionGame = "Game"
