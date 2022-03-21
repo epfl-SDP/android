@@ -39,10 +39,6 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
     }
   }
 
-  override fun startsWith(field: String, prefix: String): Query {
-    TODO("Not yet implemented")
-  }
-
   override fun <T : Any> document(
       path: String,
       value: T,

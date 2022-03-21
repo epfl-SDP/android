@@ -20,10 +20,6 @@ class WhereFakeQueryDecorator(
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> =
       query.asQuerySnapshotFlow().map { it.copy(documents = it.documents.filter(keep)) }
 
-  override fun startsWith(field: String, prefix: String): Query {
-    TODO("Not yet implemented")
-  }
-
   /** A bunch of helper filters for the [WhereFakeQueryDecorator]. */
   companion object Filter {
 

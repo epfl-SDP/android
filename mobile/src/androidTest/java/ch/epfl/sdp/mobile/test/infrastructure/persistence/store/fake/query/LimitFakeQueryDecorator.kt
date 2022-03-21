@@ -18,8 +18,4 @@ class LimitFakeQueryDecorator(
 
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> =
       query.asQuerySnapshotFlow().map { it.copy(documents = it.documents.take(count.toInt())) }
-
-  override fun startsWith(field: String, prefix: String): Query {
-    TODO("Not yet implemented")
-  }
 }
