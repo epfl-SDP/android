@@ -80,10 +80,16 @@ class StatefulHomeTest {
 
   @Test
   fun clickNewGame_inPlaySection_switchesToBoard() = runTest {
-    val facade = AuthenticationFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
     facade.signUpWithEmail("email", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings = rule.setContentWithLocalizedStrings { StatefulHome(user) }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social) { StatefulHome(user) }
+        }
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
