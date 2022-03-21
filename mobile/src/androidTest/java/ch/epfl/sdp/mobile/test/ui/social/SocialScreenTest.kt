@@ -39,8 +39,7 @@ class SocialScreenTest {
       mode = Searching
     }
 
-    override fun onFollowClick(followed: Person) {
-    }
+    override fun onFollowClick(followed: Person) = Unit
 
     companion object {
       fun createPerson(bgColor: Color, name: String, emoji: String): Person {
@@ -125,7 +124,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = { p -> {} }) }
+    rule.setContent { SearchResultList(state.following, onClick = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -142,7 +141,7 @@ class SocialScreenTest {
                     override val name = "test"
                     override val emoji = ":)"
                   }),
-              onClick = { p -> {} })
+              onClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()

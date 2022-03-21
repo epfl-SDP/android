@@ -131,8 +131,8 @@ task<JacocoReport>("jacocoTestReport") {
       fileTree(baseDir = project.buildDir) {
         setIncludes(
             listOf(
-                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-                "outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec"
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/code_coverage/debugAndroidTest/connected/*coverage.ec",
             ),
         )
       },

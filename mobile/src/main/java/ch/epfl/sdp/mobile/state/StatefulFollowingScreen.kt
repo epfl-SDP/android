@@ -7,7 +7,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.ui.social.Person
 import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
@@ -17,6 +16,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * A class that turns a provided [Profile] into a [Person].
+ *
+ * @param profile the [Profile] to turn into a [Person].
+ */
 private data class ProfileAdapter(
     val profile: Profile,
 ) : Person {
@@ -25,6 +29,13 @@ private data class ProfileAdapter(
   override val emoji = profile.emoji
 }
 
+/**
+ * A stateful implementation of the [SocialScreen] composable, which uses some composition-local
+ * values to retrieve the appropriate dependencies.
+ *
+ * @param user the current [AuthenticatedUser].
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
@@ -59,6 +70,20 @@ fun StatefulFollowingScreen(
       modifier.fillMaxSize())
 }
 
+/**
+ * An implementation of the [SocialScreenState] that performs social requests.
+ *
+ * It uses a [ProfileAdapter] as the generic [Person] type to be able to retrieve the [Person]'s uid
+ * by converting it to a [Profile]
+ *
+ * @param user the current [AuthenticatedUser].
+ * @param following the list of [ProfileAdapter]s that are being followed by the current user.
+ * @param input the typed text field input [String].
+ * @param searchResult a list of [ProfileAdapter]s that are displayed after a user's profile search.
+ * @param mode the current [SocialScreenState.Mode] of the social screen.
+ * @param searchFieldInteraction the [MutableInteractionSource] of the search field.
+ * @param scope the [CoroutineScope] on which requests are performed.
+ */
 private class SnapshotSocialScreenState(
     private val user: AuthenticatedUser,
     following: List<ProfileAdapter>,

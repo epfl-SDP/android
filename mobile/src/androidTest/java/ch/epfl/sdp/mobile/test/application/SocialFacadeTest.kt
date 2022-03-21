@@ -10,7 +10,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.ui.social.Person
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -19,10 +18,11 @@ import org.junit.Test
 
 class SocialFacadeTest {
 
-  private class FakeProfile(override val uid: String,
-  ): Profile {
+  private class FakeProfile(
+      override val uid: String,
+  ) : Profile {
     override val backgroundColor: Profile.Color = Profile.Color.Default
-    override val name: String = "andy"
+    override val name: String = "Andy"
     override val emoji: String = ":3"
   }
 
@@ -50,11 +50,7 @@ class SocialFacadeTest {
   @Test
   fun follow_addUidOfFollowedProfile() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "b") }
-    val store = buildStore {
-      collection("users") {
-        document("other", ProfileDocument())
-      }
-    }
+    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example", "name", "password")

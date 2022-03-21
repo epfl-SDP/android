@@ -22,10 +22,11 @@ import ch.epfl.sdp.mobile.ui.Search
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
 
 /**
- * This screen displays all registered users of the app
+ * This screen displays all registered users of the app.
  *
- * @param state the [SocialScreenState], manage the composable contents
- * @param modifier the [Modifier] for the composable
+ * @param P the type of the [Person].
+ * @param state the [SocialScreenState], manage the composable contents.
+ * @param modifier the [Modifier] for the composable.
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -76,9 +77,11 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
 }
 
 /**
- * Display the list of followed player
- * @param players A list of [Person] that need to be displayed
- * @param modifier modifier the [Modifier] for the composable
+ * Display the list of followed player.
+ *
+ * @param P the type of the [Person].
+ * @param players A list of [Person] that need to be displayed.
+ * @param modifier modifier the [Modifier] for the composable.
  */
 @Composable
 fun <P : Person> FollowList(players: List<P>, modifier: Modifier = Modifier) {
@@ -110,9 +113,9 @@ fun <P : Person> FollowList(players: List<P>, modifier: Modifier = Modifier) {
 }
 
 /**
- * This composable display the screen when the user is [Searching] mode but the input is empty
+ * This composable display the screen when the user is [Searching] mode but the input is empty.
  *
- * @param modifier the [Modifier] for the composable
+ * @param modifier the [Modifier] for the composable.
  */
 @Composable
 fun EmptySearch(modifier: Modifier = Modifier) {
@@ -136,10 +139,12 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 
 /**
  * This composable display all the players that are in the [SocialScreenState]. This composable also
- * allow user to follow another player
+ * allow user to follow another player.
  *
- * @param players A list of [Person] that will be displayed
- * @param modifier the [Modifier] for the composable
+ * @param P the type of the [Person].
+ * @param players A list of [P] that will be displayed.
+ * @param onClick A function to be executed once a [Person]'s follow button is clicked.
+ * @param modifier the [Modifier] for the composable.
  */
 @Composable
 fun <P : Person> SearchResultList(

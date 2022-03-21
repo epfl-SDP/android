@@ -2,16 +2,18 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 
 /**
  * A state which indicates the content of an [SocialScreen] composable. It will keep track of the
  * values of research text field.
  *
- * This state contains a [Mode] that describe which screen to display
+ * This state contains a [Mode] that describe which screen to display and a [Person] used to have an
+ * additional uid parameter.
+ *
+ * @param P the type of the [Person].
  */
 @Stable
-interface SocialScreenState<P: Person> {
+interface SocialScreenState<P : Person> {
 
   /** Indicate if displayed screen is the Following or the Searching screen */
   enum class Mode {
@@ -42,9 +44,9 @@ interface SocialScreenState<P: Person> {
   fun onValueChange()
 
   /**
-   * A callback invoked when the user follows another user
+   * A callback invoked when the user follows another user.
    *
-   * @param followed A [Person] that the current user wants to follow
+   * @param followed A [P] that the current user wants to follow.
    */
   fun onFollowClick(followed: P)
 }
