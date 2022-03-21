@@ -13,7 +13,7 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.*
 
-class FakeDocumentReference(id: FakeDocumentId): DocumentReference, CollectionBuilder {
+class FakeDocumentReference(id: FakeDocumentId) : DocumentReference, CollectionBuilder {
 
   data class State(
       val id: FakeDocumentId,
