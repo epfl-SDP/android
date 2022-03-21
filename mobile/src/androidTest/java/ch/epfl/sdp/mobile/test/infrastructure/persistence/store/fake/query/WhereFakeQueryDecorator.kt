@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeDocumentSnapshot
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
 import kotlinx.coroutines.flow.Flow

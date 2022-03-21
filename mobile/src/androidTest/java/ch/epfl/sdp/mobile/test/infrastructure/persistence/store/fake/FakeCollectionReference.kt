@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.combineOrEmpty
 import ch.epfl.sdp.mobile.test.getOrPut
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
