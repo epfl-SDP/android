@@ -1,7 +1,9 @@
 package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring.StiffnessLow
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
@@ -79,7 +81,7 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
         // towards its value. However, if we're currently dragging, we won't play the animatable.
         LaunchedEffect(currentTarget, draggingState.isDragging) {
           if (!draggingState.isDragging) {
-            currentTargetAnimatable.animateTo(currentTarget)
+            currentTargetAnimatable.animateTo(currentTarget, spring(stiffness = StiffnessLow))
           }
         }
 
