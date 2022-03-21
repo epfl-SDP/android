@@ -35,35 +35,38 @@ interface Game {
    * @return the [Sequence] of available actions.
    */
   fun actions(position: Position): Sequence<Action>
+
+  companion object {
+
+    /** Creates a new [Game], with the standard starting positions for both players. */
+    fun create(): Game =
+        buildGame(White) {
+          var id = PersistentPieceIdentifier(0)
+
+          /** Populates a [row] with all the pieces of a given [color]. */
+          fun populateSide(row: Int, color: Color) {
+            set(Position(0, row), Piece(color, Rook, id++))
+            set(Position(1, row), Piece(color, Knight, id++))
+            set(Position(2, row), Piece(color, Bishop, id++))
+            set(Position(3, row), Piece(color, Queen, id++))
+            set(Position(4, row), Piece(color, King, id++))
+            set(Position(5, row), Piece(color, Bishop, id++))
+            set(Position(6, row), Piece(color, Knight, id++))
+            set(Position(7, row), Piece(color, Rook, id++))
+          }
+
+          // Populate the pieces.
+          populateSide(0, Black)
+          populateSide(7, White)
+
+          // Populate the pawns.
+          repeat(Board.Size) { column ->
+            set(Position(column, 1), Piece(Black, Pawn, id++))
+            set(Position(column, 6), Piece(White, Pawn, id++))
+          }
+        }
+  }
 }
-
-/** Creates a new [Game], with the standard starting positions for both players. */
-fun emptyGame(): Game =
-    buildGame(White) {
-      var id = PersistentPieceIdentifier(0)
-
-      /** Populates a [row] with all the pieces of a given [color]. */
-      fun populateSide(row: Int, color: Color) {
-        set(Position(0, row), Piece(color, Rook, id++))
-        set(Position(1, row), Piece(color, Knight, id++))
-        set(Position(2, row), Piece(color, Bishop, id++))
-        set(Position(3, row), Piece(color, Queen, id++))
-        set(Position(4, row), Piece(color, King, id++))
-        set(Position(5, row), Piece(color, Bishop, id++))
-        set(Position(6, row), Piece(color, Knight, id++))
-        set(Position(7, row), Piece(color, Rook, id++))
-      }
-
-      // Populate the pieces.
-      populateSide(0, Black)
-      populateSide(7, White)
-
-      // Populate the pawns.
-      repeat(Board.Size) { column ->
-        set(Position(column, 1), Piece(Black, Pawn, id++))
-        set(Position(column, 6), Piece(White, Pawn, id++))
-      }
-    }
 
 /**
  * Builds a new [Game] using the provided [BoardBuilder] to prepare the board.
