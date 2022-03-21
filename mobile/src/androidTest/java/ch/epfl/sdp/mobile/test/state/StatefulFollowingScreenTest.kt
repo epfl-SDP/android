@@ -5,9 +5,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +34,16 @@ class StatefulFollowingScreenTest {
                     get() = Color.Default
                 }))
 
-    rule.setContent { StatefulFollowingScreen(mockUser) }
+    val mockSocialFacade = mockk<SocialFacade>()
+    val mockAuthenticationFacade = mockk<AuthenticationFacade>()
+
+    every { mockSocialFacade.search("") } returns emptyFlow()
+
+    rule.setContent {
+      ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
+        StatefulFollowingScreen(mockUser)
+      }
+    }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
 }
