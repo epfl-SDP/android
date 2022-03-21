@@ -15,7 +15,6 @@ class SocialCardTest {
     override val backgroundColor: Color = Color.Default
     override val name: String = "Toto"
     override val emoji: String = ":3"
-    override val uid: String = ""
   }
 
   @Test

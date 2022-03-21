@@ -23,7 +23,7 @@ import org.junit.Test
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotSocialScreenState : SocialScreenState {
+  private class SnapshotSocialScreenState : SocialScreenState<Person> {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
@@ -39,8 +39,7 @@ class SocialScreenTest {
       mode = Searching
     }
 
-    override fun onFollow(followed: Person) {
-      TODO("Not yet implemented")
+    override fun onFollowClick(followed: Person) {
     }
 
     companion object {
@@ -49,8 +48,6 @@ class SocialScreenTest {
           override val backgroundColor: Color = bgColor
           override val name: String = name
           override val emoji: String = emoji
-          override val uid: String
-            get() = TODO("Not yet implemented")
         }
       }
     }
@@ -73,7 +70,6 @@ class SocialScreenTest {
               override val backgroundColor = Color.Default
               override val name = "test"
               override val emoji = ":)"
-              override val uid = ""
             })
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
@@ -145,7 +141,6 @@ class SocialScreenTest {
                     override val backgroundColor = Color.Default
                     override val name = "test"
                     override val emoji = ":)"
-                    override val uid = ""
                   }),
               onClick = { p -> {} })
         }

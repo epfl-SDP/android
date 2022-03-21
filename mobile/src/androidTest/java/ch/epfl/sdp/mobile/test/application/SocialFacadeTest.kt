@@ -2,6 +2,8 @@ package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
@@ -10,17 +12,18 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.ui.social.Person
 import com.google.common.truth.Truth
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class SocialFacadeTest {
 
-  private class FakePerson : Person {
+  private class FakeProfile(override val uid: String,
+  ): Profile {
     override val backgroundColor: Profile.Color = Profile.Color.Default
     override val name: String = "andy"
     override val emoji: String = ":3"
-    override val uid: String = "1"
   }
 
   @Test
@@ -49,21 +52,15 @@ class SocialFacadeTest {
     val auth = buildAuth { user("a@hotmail.com", "b") }
     val store = buildStore {
       collection("users") {
-        document("0", ProfileDocument(uid = "0"))
-        document("1", ProfileDocument(uid = "1"))
+        document("other", ProfileDocument())
       }
     }
-    val facade = SocialFacade(auth, store)
+    val authenticationFacade = AuthenticationFacade(auth, store)
 
-    facade.follow(FakePerson())
-    val fakePersonFollowers =
-        store
-            .collection("users")
-            .document("1")
-            .asDocumentSnapshotFlow()
-            .first()
-            ?.toObject(ProfileDocument::class)
-            ?.followers
-    Truth.assertThat(fakePersonFollowers).contains("0")
+    authenticationFacade.signUpWithEmail("example", "name", "password")
+    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    user.follow(FakeProfile("other"))
+    val fakePersonFollowing = user.following.first().map { it.uid }
+    Truth.assertThat(fakePersonFollowing).contains("other")
   }
 }
