@@ -16,7 +16,7 @@ private constructor(
 ) : Store, CollectionBuilder by root {
 
   /** A convenience constructor, which creates an empty [FakeStore]. */
-  constructor() : this(FakeDocumentReference())
+  constructor() : this(FakeDocumentReference(FakeDocumentId.Root))
 
   override fun collection(path: String): CollectionReference = root.collection(path)
 }
