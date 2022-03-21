@@ -15,7 +15,7 @@ import ch.epfl.sdp.mobile.ui.game.Move
  * and has a static move list
  */
 class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
-  private var game by mutableStateOf(emptyGame())
+  private var game by mutableStateOf(Game.create())
 
   /**
    * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
