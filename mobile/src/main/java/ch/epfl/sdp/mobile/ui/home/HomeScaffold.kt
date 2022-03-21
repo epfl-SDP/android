@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.SectionGame
+import ch.epfl.sdp.mobile.ui.SectionPlay
 import ch.epfl.sdp.mobile.ui.SectionSettings
 import ch.epfl.sdp.mobile.ui.SectionSocial
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -22,15 +22,13 @@ enum class HomeSection(
     val icon: ImageVector,
     val title: LocalizedStrings.() -> String,
 ) {
-
+  /** The section to play a chess game */
+  Play(PawniesIcons.SectionPlay, { sectionPlay }),
   /** The section which displays all the people we follow. */
   Social(PawniesIcons.SectionSocial, { sectionSocial }),
 
   /** The section to manage our preferences. */
   Settings(PawniesIcons.SectionSettings, { sectionSettings }),
-
-  /** The section which displays a chess game. */
-  Game(PawniesIcons.SectionGame, { sectionGame }),
 }
 
 /**
@@ -46,16 +44,19 @@ enum class HomeSection(
 fun HomeScaffold(
     section: HomeSection,
     onSectionChange: (HomeSection) -> Unit,
+    hiddenBar: Boolean,
     modifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
 ) {
   Scaffold(
       modifier = modifier,
       bottomBar = {
-        BottomNavigation(
-            section = section,
-            onSectionChange = onSectionChange,
-        )
+        if (!hiddenBar) {
+          BottomNavigation(
+              section = section,
+              onSectionChange = onSectionChange,
+          )
+        }
       },
       content = { paddingValues -> content(paddingValues) },
   )

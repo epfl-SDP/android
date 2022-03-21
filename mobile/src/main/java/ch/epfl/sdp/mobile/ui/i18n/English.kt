@@ -47,7 +47,7 @@ object English : LocalizedStrings {
 
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
-  override val sectionGame = "Game"
+
   override val pregameChooseColor = "Pick your color :"
   override val pregameChooseOpponent = "Pick an opponent :"
   override val pregameChooseGame = "Pick your game :"
