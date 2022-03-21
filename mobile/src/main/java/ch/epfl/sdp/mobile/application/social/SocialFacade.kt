@@ -31,13 +31,4 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       it.mapNotNull { doc -> doc?.toProfile() }
     }
   }
-  /**
-   * Follows the given user
-   *
-   * @param followed the user to follow.
-   */
-  suspend fun follow(followed: Person) {
-    val currentUid = auth.currentUser.firstOrNull()?.uid ?: ""
-    store.collection("users").document(followed.uid).update { arrayUnion("followers", currentUid) }
-  }
 }

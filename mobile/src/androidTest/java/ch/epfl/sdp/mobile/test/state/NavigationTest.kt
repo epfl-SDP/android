@@ -46,7 +46,6 @@ class NavigationTest {
 
   @Test
   fun authenticated_displaysHome() = runTest {
-
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)

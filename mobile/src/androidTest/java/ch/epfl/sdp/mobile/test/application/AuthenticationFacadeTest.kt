@@ -1,14 +1,13 @@
 package ch.epfl.sdp.mobile.test.application
 
-import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
-import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Success
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth

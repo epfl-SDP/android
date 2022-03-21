@@ -8,8 +8,12 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
+import ch.epfl.sdp.mobile.ui.social.Person
+import com.google.firebase.firestore.FieldValue.arrayUnion
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 /** Indicates that an [AuthenticatedUser] is currently authenticated. */
@@ -55,12 +59,25 @@ class AuthenticatedUser(
     }
   }
 
+  /**
+   * Follows the given user
+   *
+   * @param followed the user to follow.
+   */
+  suspend fun follow(followed: Profile) {
+    firestore.collection("users").document(followed.uid).update { arrayUnion("followers", user.uid) }
+  }
+
   /** Signs this user out of the [AuthenticationFacade]. */
   suspend fun signOut() {
     auth.signOut()
   }
 
-  /** Returns a [Flow] of the [Profile]s which are currently followed by this user. */
+  /**
+   * Returns a [Flow] of the [Profile]s which are currently followed by this user by going through
+   * all users in the database and checking which ones have the uid of that user in their list of
+   * follower unique identifiers.
+   */
   val following: Flow<List<Profile>> =
       firestore
           .collection("users")

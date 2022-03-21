@@ -29,7 +29,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
+fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = Modifier) {
 
   val strings = LocalLocalizedStrings.current
 
@@ -69,8 +69,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         Following -> FollowList(state.following)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
-            else SearchResultList(players = state.searchResult, onClick = state::onFollow)
-
+            else SearchResultList(players = state.searchResult, onClick = state::onFollowClick)
       }
     }
   }
@@ -82,7 +81,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
  * @param modifier modifier the [Modifier] for the composable
  */
 @Composable
-fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
+fun <P : Person> FollowList(players: List<P>, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
@@ -143,10 +142,10 @@ fun EmptySearch(modifier: Modifier = Modifier) {
  * @param modifier the [Modifier] for the composable
  */
 @Composable
-fun SearchResultList(
-    players: List<Person>,
-    modifier: Modifier = Modifier,
-    onClick: (p: Person) -> Unit
+fun <P : Person> SearchResultList(
+    players: List<P>,
+    onClick: (P) -> Unit,
+    modifier: Modifier = Modifier
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
@@ -154,7 +153,7 @@ fun SearchResultList(
           person = player,
           trailingAction = {
             OutlinedButton(
-                onClick = fun() = onClick(player),
+                onClick = { onClick(player) },
                 shape = RoundedCornerShape(24.dp),
             ) {
               Icon(

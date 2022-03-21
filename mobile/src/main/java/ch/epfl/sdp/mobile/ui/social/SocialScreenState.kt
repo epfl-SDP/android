@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 
 /**
  * A state which indicates the content of an [SocialScreen] composable. It will keep track of the
@@ -10,7 +11,7 @@ import androidx.compose.runtime.Stable
  * This state contains a [Mode] that describe which screen to display
  */
 @Stable
-interface SocialScreenState {
+interface SocialScreenState<P: Person> {
 
   /** Indicate if displayed screen is the Following or the Searching screen */
   enum class Mode {
@@ -23,10 +24,10 @@ interface SocialScreenState {
   }
 
   /** The [List] of followers that need to be displayed */
-  val following: List<Person>
+  val following: List<P>
 
   /** The [List] of search results that getting displayed if search is activated */
-  val searchResult: List<Person>
+  val searchResult: List<P>
 
   /** The current [Mode] */
   var mode: Mode
@@ -45,5 +46,5 @@ interface SocialScreenState {
    *
    * @param followed A [Person] that the current user wants to follow
    */
-  fun onFollow(followed: Person)
+  fun onFollowClick(followed: P)
 }

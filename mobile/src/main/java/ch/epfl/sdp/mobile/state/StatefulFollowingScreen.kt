@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.ui.social.Person
@@ -19,16 +18,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 private data class ProfileAdapter(
-    private val profile: Profile,
+    val profile: Profile,
 ) : Person {
-  override val backgroundColor: Color
-    get() = profile.backgroundColor
-  override val name: String
-    get() = profile.name
-  override val emoji: String
-    get() = profile.emoji
-  override val uid: String
-    get() = profile.uid
+  override val backgroundColor = profile.backgroundColor
+  override val name = profile.name
+  override val emoji = profile.emoji
 }
 
 @Composable
@@ -54,19 +48,26 @@ fun StatefulFollowingScreen(
 
   SocialScreen(
       SnapshotSocialScreenState(
-          following, input, searchResults, mode, searchFieldInteraction, socialFacade, scope),
+          user = user,
+          following = following,
+          input = input,
+          searchResult = searchResults,
+          mode = mode,
+          searchFieldInteraction = searchFieldInteraction,
+          scope = scope,
+      ),
       modifier.fillMaxSize())
 }
 
 private class SnapshotSocialScreenState(
-    following: List<Person>,
+    private val user: AuthenticatedUser,
+    following: List<ProfileAdapter>,
     input: MutableState<String>,
-    searchResult: List<Person>,
+    searchResult: List<ProfileAdapter>,
     mode: SocialScreenState.Mode,
     searchFieldInteraction: MutableInteractionSource,
-    private val facade: SocialFacade,
     private val scope: CoroutineScope,
-) : SocialScreenState {
+) : SocialScreenState<ProfileAdapter> {
 
   override var following = following
   override var input by input
@@ -76,7 +77,7 @@ private class SnapshotSocialScreenState(
 
   override fun onValueChange() {}
 
-  override fun onFollow(followed: Person) {
-    scope.launch { facade.follow(followed) }
+  override fun onFollowClick(followed: ProfileAdapter) {
+    scope.launch { user.follow(followed.profile) }
   }
 }
