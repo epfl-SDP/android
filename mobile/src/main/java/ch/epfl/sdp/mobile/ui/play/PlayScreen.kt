@@ -17,7 +17,6 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
 /**
  * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
  * expanded to include history of matches
- *
  * @param state state of the PlayScreen
  * @param modifier the [Modifier] for this composable.
  */

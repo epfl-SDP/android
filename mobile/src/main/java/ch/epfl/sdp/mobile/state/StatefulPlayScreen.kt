@@ -9,7 +9,7 @@ import ch.epfl.sdp.mobile.ui.play.PlayScreenState
 
 /**
  * Player class that holds info about chess player
- * @param newGame Callable action for newGame
+ * @param newGame Callable when new game button is actioned. Switches to pregame screen
  */
 /* FIXME: add more useful args : user... */
 class Player(private val newGame: () -> Unit) : PlayScreenState {
