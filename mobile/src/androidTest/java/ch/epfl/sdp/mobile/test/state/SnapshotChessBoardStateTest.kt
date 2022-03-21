@@ -11,19 +11,19 @@ class SnapshotChessBoardStateTest {
   @Test
   fun movingAPawn_IsSuccessful() {
     val game = SnapshotChessBoardState()
-    val initPos = Position(4, 1)
-    val finalPos = Position(4, 2)
+    val initPos = Position(4, 6)
+    val finalPos = Position(4, 5)
 
     val piece = requireNotNull(game.pieces[initPos])
     assertThat(piece.rank).isEqualTo(Pawn)
-    assertThat(piece.color).isEqualTo(Black)
+    assertThat(piece.color).isEqualTo(White)
 
     game.onDropPiece(piece, finalPos)
 
     val newPiece = requireNotNull(game.pieces[finalPos])
 
     assertThat(newPiece.rank).isEqualTo(Pawn)
-    assertThat(newPiece.color).isEqualTo(Black)
+    assertThat(newPiece.color).isEqualTo(White)
   }
 
   @Test

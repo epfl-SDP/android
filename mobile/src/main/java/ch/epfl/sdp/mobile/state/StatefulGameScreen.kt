@@ -15,7 +15,7 @@ import ch.epfl.sdp.mobile.ui.game.Move
  * and has a static move list
  */
 class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
-  private var game by mutableStateOf(emptyGame())
+  private var game by mutableStateOf(Game.create())
 
   /**
    * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
@@ -38,6 +38,15 @@ class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
             .filterNotNull()
             .map { (a, b) -> a.toPosition() to b.toPiece() }
             .toMap()
+
+  override val availableMoves: Set<ChessBoardState.Position>
+    // Display all the possible moves for all the pieces on the board.
+    get() =
+        Position.all()
+            .flatMap { game.actions(it) }
+            .mapNotNull { it.from + it.delta }
+            .map { it.toPosition() }
+            .toSet()
 
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
@@ -71,7 +80,7 @@ private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
 
-private fun Piece.toPiece(): SnapshotPiece {
+private fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
         Rank.King -> ChessBoardState.Rank.King
