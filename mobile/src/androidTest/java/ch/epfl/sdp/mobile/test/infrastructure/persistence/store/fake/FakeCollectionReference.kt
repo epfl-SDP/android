@@ -27,7 +27,7 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
 
   override fun document(path: String): FakeDocumentReference {
     return state.updateAndGetWithValue {
-      val (doc, ref) = it.documents.getOrPut(path) { FakeDocumentReference() }
+      val (doc, ref) = it.documents.getOrPut(path) { FakeDocumentReference(FakeDocumentId(path)) }
       it.copy(documents = doc) to ref
     }
   }

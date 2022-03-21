@@ -67,4 +67,39 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
   }
+
+  @Test
+  fun clickPlaySection_selectsPlaySection() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    facade.signUpWithEmail("email", "name", "password")
+    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social) { StatefulHome(user) }
+        }
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
+    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+  }
+
+  @Test
+  fun clickNewGame_inPlaySection_switchesToBoard() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    facade.signUpWithEmail("email", "name", "password")
+    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social) { StatefulHome(user) }
+        }
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
+    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+    rule.onNodeWithText(strings.newGame).assertExists().performClick().assertDoesNotExist()
+  }
 }

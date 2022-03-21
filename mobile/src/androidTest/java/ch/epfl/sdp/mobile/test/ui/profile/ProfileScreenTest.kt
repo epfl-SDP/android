@@ -10,7 +10,8 @@ import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Loss
-import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.*
+import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.CHECKMATE
+import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.FORFEIT
 import ch.epfl.sdp.mobile.ui.social.Tie
 import ch.epfl.sdp.mobile.ui.social.Win
 import org.junit.Rule
