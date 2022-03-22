@@ -9,6 +9,13 @@ import kotlinx.coroutines.flow.Flow
 interface CollectionReference : Query {
 
   /**
+   * Accesses (creates) a document with no specified path (generates one automatically).
+   *
+   * @return a [DocumentReference] to the document.
+   */
+  fun document(): DocumentReference
+
+  /**
    * Accesses a document.
    *
    * @param path the id of the document.

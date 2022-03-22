@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.combineOrEmpty
 import ch.epfl.sdp.mobile.test.getOrPut
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
@@ -8,6 +9,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.DocumentBuilder
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.FakeQuery
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization.fromObject
 import ch.epfl.sdp.mobile.test.updateAndGetWithValue
+import java.util.*
 import kotlin.reflect.KClass
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
@@ -23,6 +25,14 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
   )
 
   private val state = MutableStateFlow(State())
+
+  override fun document(): DocumentReference {
+    val id = UUID.randomUUID().toString()
+    return state.updateAndGetWithValue {
+      val (doc, ref) = it.documents.getOrPut(id) { FakeDocumentReference(FakeDocumentId(id)) }
+      it.copy(documents = doc) to ref
+    }
+  }
 
   override fun document(path: String): FakeDocumentReference {
     return state.updateAndGetWithValue {
