@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess
 
+import ch.epfl.sdp.mobile.application.chess.rules.Action
+
 /**
  * The classical colors of a game of chess.
  *
@@ -47,6 +49,14 @@ enum class Color(
    * @return the normalized position.
    */
   fun normalize(position: Position): Position = normalizePosition(position)
+
+  /**
+   * Normalizes the given [Action].
+   *
+   * @param action the [Action] to normalize.
+   * @return the normalized action.
+   */
+  fun normalize(action: Action): Action = Action(normalize(action.from), normalize(action.delta))
 
   /** Returns the [Color] of the adversary. */
   fun other(): Color = opposite()
