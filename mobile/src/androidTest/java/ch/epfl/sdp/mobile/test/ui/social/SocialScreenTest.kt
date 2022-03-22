@@ -23,7 +23,7 @@ import org.junit.Test
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotSocialScreenState : SocialScreenState {
+  private class SnapshotSocialScreenState() : SocialScreenState {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
@@ -38,6 +38,8 @@ class SocialScreenTest {
     override fun onValueChange() {
       mode = Searching
     }
+
+    override val openProfile: (Person) -> Unit = {}
 
     companion object {
       fun createPerson(bgColor: Color, name: String, emoji: String): Person {
@@ -122,14 +124,13 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following) }
+    rule.setContent { SearchResultList(state.following, {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
 
   @Test
   fun searchList_hasFollowText() {
-    val state = SnapshotSocialScreenState()
     val strings =
         rule.setContentWithLocalizedStrings {
           SearchResultList(
@@ -138,7 +139,8 @@ class SocialScreenTest {
                     override val backgroundColor = Color.Default
                     override val name = "test"
                     override val emoji = ":)"
-                  }))
+                  }),
+              {})
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()

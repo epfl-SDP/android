@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.navigation.NavHostController
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -36,14 +37,13 @@ class StatefulFollowingScreenTest {
 
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
+    val mockNavHostController = mockk<NavHostController>()
 
     every { mockSocialFacade.search("") } returns emptyFlow()
 
     rule.setContent {
       ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
-        StatefulFollowingScreen(
-            mockUser,
-        )
+        StatefulFollowingScreen(mockUser, mockNavHostController)
       }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
