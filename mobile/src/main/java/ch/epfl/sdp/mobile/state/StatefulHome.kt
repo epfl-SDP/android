@@ -52,7 +52,7 @@ fun StatefulHome(
         navController = controller,
         startDestination = SocialRoute,
     ) {
-      composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
+      composable(SocialRoute) { StatefulFollowingScreen(user, controller, Modifier.fillMaxSize()) }
       composable("$ProfileRoute") { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{profileName}") { backStackEntry ->
         StatefulProfileScreen(
@@ -71,7 +71,7 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       ProfileRoute -> HomeSection.Settings
-      GameRoute -> HomeSection.Game
+      GameRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
 
@@ -80,5 +80,5 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> ProfileRoute
-      HomeSection.Game -> GameRoute
+      HomeSection.Play -> GameRoute
     }
