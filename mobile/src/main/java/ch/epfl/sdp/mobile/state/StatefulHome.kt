@@ -1,22 +1,15 @@
 package ch.epfl.sdp.mobile.state
 
-import android.content.Intent
-import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ch.epfl.sdp.mobile.R
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
@@ -64,10 +57,7 @@ fun StatefulHome(
       composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
-      composable(ArRoute) {
-        val intent = Intent(LocalContext.current, ArActivity::class.java)
-        startActivity(LocalContext.current, intent, Bundle.EMPTY)
-      }
+      composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
   }
 }
