@@ -20,8 +20,11 @@ private const val SocialRoute = "social"
 /** The route associated to the settings tab. */
 const val ProfileRoute = "settings"
 
-/** The route associated to the game tab. */
-private const val GameRoute = "game"
+/** The route associated to the play tab. */
+private const val PlayRoute = "play"
+
+/** The route associated to new game button */
+private const val GameRoute = "new_game"
 
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
@@ -42,17 +45,22 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
+      hiddenBar = entry?.destination?.route == GameRoute,
       modifier = modifier,
-  ) {
+  ) { paddingValues ->
     NavHost(
         navController = controller,
         startDestination = SocialRoute,
     ) {
-      composable(SocialRoute) { StatefulFollowingScreen(user, controller, Modifier.fillMaxSize()) }
+      composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute") { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{profileName}") { backStackEntry ->
         StatefulProfileScreen(
             backStackEntry.arguments?.getString("profileName") ?: "", Modifier.fillMaxSize())
+      }
+      composable(PlayRoute) {
+        StatefulPlayScreen(
+            { controller.navigate(GameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
