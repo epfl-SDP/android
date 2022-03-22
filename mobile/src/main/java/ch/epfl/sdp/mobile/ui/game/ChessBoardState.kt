@@ -100,6 +100,12 @@ interface ChessBoardState<Piece : ChessBoardState.Piece> {
   val pieces: Map<Position, Piece>
 
   /**
+   * A [Set] of the positions which are available to the player for actions, depending on the pieces
+   * which they are currently holding.
+   */
+  val availableMoves: Set<Position>
+
+  /**
    * A callback which should be called when the given [Piece] was moved from a start position to an
    * end position.
    *

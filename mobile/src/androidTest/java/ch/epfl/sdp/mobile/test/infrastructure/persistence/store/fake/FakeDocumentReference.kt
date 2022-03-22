@@ -13,14 +13,15 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.*
 
-class FakeDocumentReference : DocumentReference, CollectionBuilder {
+class FakeDocumentReference(id: FakeDocumentId) : DocumentReference, CollectionBuilder {
 
   data class State(
+      val id: FakeDocumentId,
       val record: FakeDocumentRecord? = null,
       val collections: PersistentMap<String, FakeCollectionReference> = persistentMapOf(),
   )
 
-  val state = MutableStateFlow(State())
+  val state = MutableStateFlow(State(id))
 
   override fun collection(path: String): CollectionReference {
     return state.updateAndGetWithValue {
@@ -30,7 +31,7 @@ class FakeDocumentReference : DocumentReference, CollectionBuilder {
   }
 
   override fun asDocumentSnapshotFlow(): Flow<FakeDocumentSnapshot?> =
-      state.map { FakeDocumentSnapshot(it.record) }
+      state.map { FakeDocumentSnapshot(it.id, it.record) }
 
   override suspend fun delete() = state.update { it.copy(record = null) }
 

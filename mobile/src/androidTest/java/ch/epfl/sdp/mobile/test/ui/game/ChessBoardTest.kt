@@ -72,6 +72,9 @@ class ChessBoardTest {
     override val pieces: Map<Position, Piece>
       get() = mapOf(position to piece)
 
+    override val availableMoves: Set<Position>
+      get() = emptySet()
+
     override fun onDropPiece(
         piece: Piece,
         endPosition: Position,
