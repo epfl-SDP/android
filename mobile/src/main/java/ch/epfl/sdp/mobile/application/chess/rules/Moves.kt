@@ -1,10 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess.rules
 
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.Rank.King
-import ch.epfl.sdp.mobile.application.chess.Rank.Rook
+import ch.epfl.sdp.mobile.application.chess.Rank.*
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.all
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.move
+import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.remove
+import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
 
 /**
@@ -194,6 +195,43 @@ private fun BoardWithHistory<Piece<Role>>.castling(
           all(
               move(kingStart, kingEnd - kingStart),
               move(rookStart, rookEnd - rookStart),
+          ),
+  )
+}
+
+/**
+ * Moves representing an en-passant take, which may be performed by the current piece on existing
+ * pawn.
+ *
+ * @param position the position at which the current piece is.
+ * @param delta the relative position to which the adversary pawn is.
+ */
+fun BoardWithHistory<Piece<Role>>.enPassant(
+    position: Position,
+    delta: Delta,
+): Moves = sequence {
+  val neighbour = position + delta ?: return@sequence
+  val adversary = get(neighbour)?.takeIf { (role, rank) -> role == Adversary && rank == Pawn }
+
+  // Do we have two pawns next to each other ?
+  adversary ?: return@sequence
+
+  // Are we on the right row to perform an en-passant ?
+  if (position.y != 3) return@sequence
+
+  // Are the neighbour positions valid ?
+  val adversaryStart = neighbour + Delta(x = 0, y = -2) ?: return@sequence
+  val adversaryStep = neighbour + Delta(x = 0, y = -1) ?: return@sequence
+
+  // Check that the adversary stayed on their starting position for the whole game, except for the
+  // previous move.
+  if (asSequence().drop(1).any { it[adversaryStart] != adversary }) return@sequence
+
+  yield(
+      Action(position, adversaryStep - position) to
+          all(
+              remove(neighbour),
+              move(position, adversaryStep - position),
           ),
   )
 }
