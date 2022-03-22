@@ -22,7 +22,7 @@ import ch.epfl.sdp.mobile.ui.Search
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
 
 /**
- * This screen display all registered users of the app
+ * This screen display all register user of the app
  *
  * @param state the [SocialScreenState], manage the composable contents
  * @param modifier the [Modifier] for the composable
