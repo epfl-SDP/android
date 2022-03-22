@@ -1,9 +1,8 @@
 package ch.epfl.sdp.mobile.application
 
-import ch.epfl.sdp.mobile.application.chess.Delta
-import ch.epfl.sdp.mobile.application.chess.Game
-import ch.epfl.sdp.mobile.application.chess.NextStep
-import ch.epfl.sdp.mobile.application.chess.Position
+import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.rules.Action
+import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
  * A document which represents the profile of a user. All the profile documents are stored in the
@@ -35,7 +34,6 @@ fun ProfileDocument?.toProfile(): Profile {
  * @param moves
  * @param whiteId
  * @param blackId
- *
  */
 data class ChessDocument(
     val moves: List<String>? = null,
@@ -46,11 +44,7 @@ data class ChessDocument(
 fun ChessDocument?.deserialize(): Game {
   var game = Game.create()
 
-  if (this?.moves == null) {
-    return game
-  }
-
-  for (move in this.moves) {
+  for (move in this?.moves ?: emptyList()) {
     val (position, delta) = parseStringToMove(move)
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(position, delta) ?: game
   }
@@ -62,7 +56,7 @@ fun Game.serialize(whiteId: String? = null, blackId: String? = null): ChessDocum
     var previous = this@serialize.previous
     while (previous != null) {
       val (game, action) = previous
-      val str = parseMoveToString(action.from to action.delta)
+      val str = parseMoveToString(game, action)
       yield(str)
       previous = game.previous
     }
@@ -71,18 +65,62 @@ fun Game.serialize(whiteId: String? = null, blackId: String? = null): ChessDocum
   return ChessDocument(sequence.toList().asReversed(), whiteId, blackId)
 }
 
-/** A temporary function to parse ultra-basic moves in the form of (fromX; fromY; deltaX; deltaY) */
+/** Parsing string to moves */
 private fun parseStringToMove(move: String): Pair<Position, Delta> {
-  val (posX, posY, delX, delY) = move.split(";")
 
-  val position = Position(posX.toInt(), posY.toInt())
-  val delta = Delta(delX.toInt(), delY.toInt())
+  val length = move.length
+  val fromStr = move.subSequence(length - 5, length - 3).toString()
+  val toStr = move.subSequence(length - 2, length).toString()
 
-  return position to delta
+  val from = chessNotationToPosition(fromStr)
+  val to = chessNotationToPosition(toStr)
+  val delta = Delta(to.x - from.x, to.y - from.y)
+
+  return from to delta
 }
 
-/** A temporary function to parse ultra-basic moves to the form of (fromX; fromY; deltaX; deltaY) */
-private fun parseMoveToString(move: Pair<Position, Delta>): String {
-  val (position, delta) = move
-  return "${position.x};${position.y};${delta.x};${delta.y}"
+private fun chessNotationToPosition(pos: String): Position {
+  val x = pos[0].code - 'a'.code
+  val y = (ChessBoardCells - 1) - (pos[1].code - '1'.code)
+
+  return Position(x, y)
+}
+
+/** Parsing moves to string */
+private fun parseMoveToString(game: Game, action: Action): String {
+  val (from, delta) = action
+
+  val pieceFrom = game.board[from]
+
+  val to = from.plus(delta)
+  val pieceTo = to?.let { game.board[it] }
+
+  val pieceStr = pieceToChessNotation(pieceFrom)
+  val fromStr = positionToChessNotation(from)
+  val interStr = if (pieceTo == null) "-" else "x"
+  val toStr = positionToChessNotation(to)
+
+  return pieceStr + fromStr + interStr + toStr
+}
+
+private fun pieceToChessNotation(piece: Piece<Color>?): String {
+  return when (piece?.rank) {
+    Rank.King -> "K"
+    Rank.Queen -> "Q"
+    Rank.Rook -> "R"
+    Rank.Bishop -> "B"
+    Rank.Knight -> "N"
+    Rank.Pawn -> ""
+    else -> "?"
+  }
+}
+
+private fun positionToChessNotation(pos: Position?): String {
+  return if (pos == null || !pos.inBounds) {
+    "?"
+  } else {
+    val col = (pos.x.toChar() + 'a'.code).toString()
+    val row = ChessBoardCells - pos.y
+    col + row
+  }
 }
