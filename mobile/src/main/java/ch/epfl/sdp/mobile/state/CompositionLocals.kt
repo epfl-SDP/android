@@ -26,10 +26,10 @@ val LocalChessFacade = compositionLocalOf<ChessFacade> { error("Missing Chess AP
  */
 @Composable
 fun ProvideFacades(
-  authentication: AuthenticationFacade,
-  social: SocialFacade,
-  chess: ChessFacade,
-  content: @Composable () -> Unit,
+    authentication: AuthenticationFacade,
+    social: SocialFacade,
+    chess: ChessFacade,
+    content: @Composable () -> Unit,
 ) {
   CompositionLocalProvider(
       LocalAuthenticationFacade provides authentication,

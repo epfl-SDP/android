@@ -30,7 +30,8 @@ class HomeActivity : ComponentActivity() {
     setContent {
       PawniesTheme {
         ProvideLocalizedStrings {
-          ProvideFacades(authentication = authenticationFacade, social = socialFacade, chess = chessFacade) {
+          ProvideFacades(
+              authentication = authenticationFacade, social = socialFacade, chess = chessFacade) {
             Navigation()
           }
         }
