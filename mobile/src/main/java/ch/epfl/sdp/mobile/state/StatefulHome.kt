@@ -35,7 +35,7 @@ private const val GameRoute = "game"
 fun StatefulHome(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
-        controller: NavHostController = rememberNavController(),
+    controller: NavHostController = rememberNavController(),
 ) {
   val entry by controller.currentBackStackEntryAsState()
   val section = entry?.toSection() ?: HomeSection.Social
@@ -49,11 +49,10 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) { StatefulFollowingScreen(user, controller, Modifier.fillMaxSize()) }
-      composable("$ProfileRoute/{profileName}") {
-              backStackEntry -> StatefulProfileScreen(
-                user,
-                backStackEntry.arguments?.getString("profileName") ?: "",
-                Modifier.fillMaxSize())
+      composable("$ProfileRoute") { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
+      composable("$ProfileRoute/{profileName}") { backStackEntry ->
+        StatefulProfileScreen(
+            backStackEntry.arguments?.getString("profileName") ?: "", Modifier.fillMaxSize())
       }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }

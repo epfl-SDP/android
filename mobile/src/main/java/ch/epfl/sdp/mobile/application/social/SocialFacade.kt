@@ -7,7 +7,6 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -35,9 +34,13 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
    *
    * @param text search criteria.
    */
-  suspend fun get(name: String): Profile {
-    return store.collection("users").whereEquals("name", name).limit(1).asFlow<ProfileDocument>().map {
-      it.mapNotNull { doc -> doc?.toProfile() }
-    }.first()[0]
+  fun get(name: String): Flow<Profile> {
+    return store
+        .collection("users")
+        .whereEquals("name", name)
+        .limit(1)
+        .asFlow<ProfileDocument>()
+        .map { it.mapNotNull { doc -> doc?.toProfile() } }
+        .map { it[0] }
   }
 }

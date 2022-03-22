@@ -41,7 +41,9 @@ class StatefulFollowingScreenTest {
 
     rule.setContent {
       ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
-        StatefulFollowingScreen(mockUser, )
+        StatefulFollowingScreen(
+            mockUser,
+        )
       }
     }
     rule.onNodeWithText("Hans Peter").assertExists()

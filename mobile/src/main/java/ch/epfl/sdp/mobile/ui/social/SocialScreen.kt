@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.ui.social
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -70,7 +69,7 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         Following -> FollowList(state.following, state.openProfile)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
-            else SearchResultList(players = state.searchResult, openProfile= state.openProfile)
+            else SearchResultList(players = state.searchResult, openProfile = state.openProfile)
       }
     }
   }
@@ -82,7 +81,11 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
  * @param modifier modifier the [Modifier] for the composable
  */
 @Composable
-fun FollowList(players: List<Person>, openProfile: (Person)->Unit, modifier: Modifier = Modifier) {
+fun FollowList(
+    players: List<Person>,
+    openProfile: (Person) -> Unit,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
@@ -144,7 +147,11 @@ fun EmptySearch(modifier: Modifier = Modifier) {
  * @param modifier the [Modifier] for the composable
  */
 @Composable
-fun SearchResultList(players: List<Person>, openProfile: (Person)-> Unit, modifier: Modifier = Modifier) {
+fun SearchResultList(
+    players: List<Person>,
+    openProfile: (Person) -> Unit,
+    modifier: Modifier = Modifier
+) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
       PersonCard(

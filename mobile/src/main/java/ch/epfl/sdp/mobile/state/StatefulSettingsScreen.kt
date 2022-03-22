@@ -2,19 +2,20 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.Profile.Color
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
-class FetchedUserProfileScreenState(
-    user: Profile,
+class AuthenticatedUserProfileScreenState(
+    private val user: AuthenticatedUser,
 ) : ProfileScreenState {
-  override val email = ""
+  override val email = user.email
   override val pastGamesCount = 0
   override val puzzlesCount = 0
   override val matches = emptyList<ChessMatch>()
-  override val backgroundColor = user.backgroundColor
+  override val backgroundColor = Color.Orange
   override val name = user.name
   override val emoji = user.emoji
 
@@ -23,14 +24,10 @@ class FetchedUserProfileScreenState(
 }
 
 @Composable
-fun StatefulProfileScreen(
-    profileName: String,
+fun StatefulSettingsScreen(
+    user: AuthenticatedUser,
     modifier: Modifier = Modifier,
 ) {
-  val socialFacade = LocalSocialFacade.current
-  val profile by socialFacade.get(profileName).collectAsState(null)
-  val state = profile?.let { FetchedUserProfileScreenState(it) }
-  if (state != null) {
-    ProfileScreen(state, modifier)
-  }
+  val state = remember(user) { AuthenticatedUserProfileScreenState(user) }
+  ProfileScreen(state, modifier)
 }

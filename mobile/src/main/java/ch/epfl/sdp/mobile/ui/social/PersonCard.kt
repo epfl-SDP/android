@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.toColor
 
@@ -25,7 +24,7 @@ import ch.epfl.sdp.mobile.state.toColor
 @Composable
 fun PersonCard(
     person: Person,
-    openProfile: (Person)->Unit,
+    openProfile: (Person) -> Unit,
     modifier: Modifier = Modifier,
     trailingAction: @Composable () -> Unit = {}
 ) {

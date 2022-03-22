@@ -20,9 +20,6 @@ interface ProfileScreenState : Person {
   /** List of chess matches */
   val matches: List<ChessMatch>
 
-  /** Indicates if the visited profile is the current user */
-  val isProfileOfCurrentUser: Boolean
-
   /** On settings button clicked */
   fun onSettingsClick()
 
