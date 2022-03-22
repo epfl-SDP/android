@@ -27,11 +27,7 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
   private val state = MutableStateFlow(State())
 
   override fun document(): DocumentReference {
-    val id = UUID.randomUUID().toString()
-    return state.updateAndGetWithValue {
-      val (doc, ref) = it.documents.getOrPut(id) { FakeDocumentReference(FakeDocumentId(id)) }
-      it.copy(documents = doc) to ref
-    }
+    return document(UUID.randomUUID().toString())
   }
 
   override fun document(path: String): FakeDocumentReference {
