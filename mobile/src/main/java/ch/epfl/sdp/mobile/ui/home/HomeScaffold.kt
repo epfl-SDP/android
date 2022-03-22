@@ -2,8 +2,6 @@ package ch.epfl.sdp.mobile.ui.home
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -30,8 +28,7 @@ enum class HomeSection(
 
   /** The section which displays a chess game. */
   Game(PawniesIcons.SectionGame, { sectionGame }),
-
-  Ar(PawniesIcons.ArView, {sectionAr})
+  Ar(PawniesIcons.ArView, { sectionAr })
 }
 
 /**

@@ -49,7 +49,7 @@ interface LocalizedStrings {
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
 
-  val sectionAr : String
+  val sectionAr: String
   val sectionSocial: String
   val sectionSettings: String
   val sectionGame: String
