@@ -15,6 +15,12 @@ import ch.epfl.sdp.mobile.application.chess.rules.Action
  */
 interface Game {
 
+  /**
+   * The previous state of the [Game], as well as the [Action] that was performed to obtain the
+   * current state. If this is the initial [Game] state, and empty [Pair] is returned.
+   */
+  val previous: Pair<Game, Action>?
+
   /** The current [Board], which contains some pieces and should be rendered to the user. */
   val board: Board<Piece<Color>>
 
@@ -71,4 +77,4 @@ interface Game {
 fun buildGame(
     nextPlayer: Color,
     block: BoardBuilder<Piece<Color>>.() -> Unit,
-): Game = PersistentGame(nextPlayer, buildBoard(block))
+): Game = PersistentGame(previous = null, nextPlayer = nextPlayer, board = buildBoard(block))

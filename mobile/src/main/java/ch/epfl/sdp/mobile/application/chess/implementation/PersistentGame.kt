@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.chess.rules.Role
  * @param nextPlayer the [Color] of the next player to play.
  */
 data class PersistentGame(
+    override val previous: Pair<Game, Action>?,
     val nextPlayer: Color,
     override val board: Board<Piece<Color>>,
 ) : Game {
@@ -24,7 +25,7 @@ data class PersistentGame(
           val normalizedDelta = nextPlayer.normalize(delta)
           val moves = normalizedMoves(from)
 
-          val (_, effects) =
+          val (action, effects) =
               moves.firstOrNull { (action, _) ->
                 action.from == normalizedFrom && action.delta == normalizedDelta
               }
@@ -33,7 +34,11 @@ data class PersistentGame(
           val nextBoard = DenormalizedBoardDecorator(nextPlayer, effects.perform(normalizedBoard))
 
           // TODO : Eventually flatten this ?
-          copy(nextPlayer = nextPlayer.other(), board = nextBoard)
+          copy(
+              previous = this to nextPlayer.normalize(action),
+              nextPlayer = nextPlayer.other(),
+              board = nextBoard,
+          )
         }
 
   override fun actions(position: Position): Sequence<Action> {
