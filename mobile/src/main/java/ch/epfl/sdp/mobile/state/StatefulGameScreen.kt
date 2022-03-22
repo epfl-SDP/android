@@ -9,13 +9,19 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
  * and has a static move list
  */
-class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
-  private var game by mutableStateOf(Game.create())
+class SnapshotChessBoardState(
+    gameState: State<Game>,
+    private val scope: CoroutineScope,
+    private val uploadGame: suspend (Game) -> Unit,
+) : GameScreenState<SnapshotPiece> {
+  private val game by gameState
 
   /**
    * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
@@ -52,11 +58,14 @@ class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     val step = game.nextStep as NextStep.MovePiece
 
-    game =
-        step.move(
-            Position(startPosition.x, startPosition.y),
-            Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
-        )
+    scope.launch {
+      uploadGame(
+          step.move(
+              Position(startPosition.x, startPosition.y),
+              Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
+          ),
+      )
+    }
   }
 
   override val moves: List<Move> =
@@ -101,16 +110,6 @@ private fun Piece<Color>.toPiece(): SnapshotPiece {
 }
 
 /**
- * A remember with a [GameScreenState] implementation
- *
- * @return The remember of the [SnapshotChessBoardState]
- */
-@Composable
-fun rememberGameScreenState(): GameScreenState<SnapshotPiece> {
-  return remember { SnapshotChessBoardState() }
-}
-
-/**
  * The [StatefulGameScreen] to be used for the Navigation
  *
  * @param user the currently logged-in user.
@@ -121,5 +120,20 @@ fun StatefulGameScreen(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
 ) {
-  GameScreen(rememberGameScreenState(), modifier)
+  val chessFacade = LocalChessFacade.current
+  val scope = rememberCoroutineScope()
+
+  // TODO: User userId and opponentId to find correct game
+  val gameId = "sample"
+
+  val game = remember { chessFacade.game(gameId) }.collectAsState(Game.create())
+
+  suspend fun updateGameWithId(game: Game) {
+    chessFacade.updateGame(gameId, game)
+  }
+
+  val gameScreenState =
+      remember(game, scope) { SnapshotChessBoardState(game, scope, ::updateGameWithId) }
+
+  GameScreen(gameScreenState, modifier)
 }
