@@ -11,9 +11,9 @@ import ch.epfl.sdp.mobile.application.chess.rules.*
  * TODO : Support history-aware moves.
  */
 enum class Rank(
-    val moves: Board<Piece<Role>>.(Position) -> Moves,
+    val moves: BoardWithHistory<Piece<Role>>.(Position) -> Moves,
 ) {
-  King(moves = { diagonals(it, 1) + lines(it, 1) }),
+  King(moves = { diagonals(it, 1) + lines(it, 1) + leftCastling() + rightCastling() }),
   Queen(moves = { diagonals(it) + lines(it) }),
   Rook(moves = { lines(it) }),
   Bishop(moves = { diagonals(it) }),

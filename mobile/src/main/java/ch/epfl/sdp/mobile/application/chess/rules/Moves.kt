@@ -1,7 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess.rules
 
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.Rank.King
+import ch.epfl.sdp.mobile.application.chess.Rank.Rook
+import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.all
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.move
+import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
 
 /**
  * An alias which which describes a lazily-built collection of moves in the game. Each move has an
@@ -141,4 +145,55 @@ fun Board<Piece<Role>>.diagonals(
         ),
     )
   }
+}
+
+/** Moves representing a castling to the left. */
+fun BoardWithHistory<Piece<Role>>.leftCastling() =
+    castling(
+        kingStart = Position(x = 4, y = 7),
+        kingEnd = Position(x = 2, y = 7),
+        rookStart = Position(x = 0, y = 7),
+        rookEnd = Position(x = 3, y = 7),
+        empty = setOf(Position(x = 1, y = 7), Position(x = 2, y = 7), Position(x = 3, y = 7)),
+    )
+
+/** Moves representing a castling to the right. */
+fun BoardWithHistory<Piece<Role>>.rightCastling() =
+    castling(
+        kingStart = Position(x = 4, y = 7),
+        kingEnd = Position(x = 6, y = 7),
+        rookStart = Position(x = 7, y = 7),
+        rookEnd = Position(x = 5, y = 7),
+        empty = setOf(Position(x = 5, y = 7), Position(x = 6, y = 7)),
+    )
+
+private fun BoardWithHistory<Piece<Role>>.castling(
+    kingStart: Position,
+    kingEnd: Position,
+    rookStart: Position,
+    rookEnd: Position,
+    empty: Set<Position>,
+): Moves = sequence {
+  val king = get(kingStart)?.takeIf { (role, rank) -> role == Allied && rank == King }
+  val rook = get(rookStart)?.takeIf { (role, rank) -> role == Allied && rank == Rook }
+
+  // Ensure that the kind and rook are actually present.
+  king ?: return@sequence
+  rook ?: return@sequence
+
+  // If any of the cells is not empty, we can't castle.
+  // TODO : Check if these cells are in check.
+  if (empty.any { get(it) != null }) return@sequence
+
+  // Check that the king and rook have never moved.
+  if (asSequence().any { it[kingStart] != king || it[rookStart] != rook }) return@sequence
+
+  // We can perform the castling.
+  yield(
+      Action(kingStart, kingEnd - kingStart) to
+          all(
+              move(kingStart, kingEnd - kingStart),
+              move(rookStart, rookEnd - rookStart),
+          ),
+  )
 }
