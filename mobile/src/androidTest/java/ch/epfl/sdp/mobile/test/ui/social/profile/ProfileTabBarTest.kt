@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.test.ui.profile
+package ch.epfl.sdp.mobile.test.ui.social.profile
 
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule

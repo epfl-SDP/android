@@ -4,13 +4,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
-import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
+import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
+import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 class AuthenticatedUserProfileScreenState(
     private val user: AuthenticatedUser,
-) : ProfileScreenState {
+) : SettingScreenState {
   override val email = user.email
   override val pastGamesCount = 0
   override val puzzlesCount = 0
@@ -18,7 +18,6 @@ class AuthenticatedUserProfileScreenState(
   override val backgroundColor = Color.Orange
   override val name = user.name
   override val emoji = user.emoji
-  override val isCurrentUser = true
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}
@@ -35,5 +34,5 @@ fun StatefulSettingsScreen(
     modifier: Modifier = Modifier,
 ) {
   val state = remember(user) { AuthenticatedUserProfileScreenState(user) }
-  ProfileScreen(state, modifier)
+  SettingsScreen(state, modifier)
 }

@@ -12,15 +12,13 @@ class FetchedUserProfileScreenState(
 ) : ProfileScreenState {
   override val email = ""
   override val pastGamesCount = 0
-  override val puzzlesCount = 0
   override val matches = emptyList<ChessMatch>()
   override val backgroundColor = user.backgroundColor
   override val name = user.name
   override val emoji = user.emoji
-  override val isCurrentUser = false
 
-  override fun onSettingsClick() {}
-  override fun onEditClick() {}
+  override fun onUnfollowClick() {}
+  override fun onChallengeClick() {}
 }
 /**
  * A stateful composable to visit the profile page of other players
