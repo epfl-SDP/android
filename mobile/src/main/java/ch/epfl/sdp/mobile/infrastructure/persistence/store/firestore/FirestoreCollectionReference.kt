@@ -14,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference as ActualCollectionRefe
 class FirestoreCollectionReference(
     private val reference: ActualCollectionReference,
 ) : CollectionReference, Query by FirestoreQuery(reference) {
+
   override fun document(): DocumentReference = FirestoreDocumentReference(reference.document())
 
   override fun document(path: String): DocumentReference =
