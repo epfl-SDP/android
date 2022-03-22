@@ -59,4 +59,16 @@ class SocialFacadeTest {
     val fakePersonFollowing = user.following.first().map { it.uid }
     Truth.assertThat(fakePersonFollowing).contains("other")
   }
+
+  @Test
+  fun following_newUserHasNoFollowings() = runTest {
+    val auth = buildAuth { user("a@hotmail.com", "b") }
+    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+
+    authenticationFacade.signUpWithEmail("example", "name", "password")
+    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val userFollowing = user.following.first()
+    Truth.assertThat(userFollowing).isEmpty()
+  }
 }
