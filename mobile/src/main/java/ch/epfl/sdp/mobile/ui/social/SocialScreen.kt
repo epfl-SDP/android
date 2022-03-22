@@ -150,7 +150,7 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 fun <P : Person> SearchResultList(
     players: List<P>,
     onClick: (P) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->

@@ -76,8 +76,7 @@ class AuthenticatedUser(
 
   /**
    * Returns a [Flow] of the [Profile]s which are currently followed by this user by going through
-   * all users in the database and checking which ones have the uid of that user in their list of
-   * follower unique identifiers.
+   * all users' list of followers.
    */
   val following: Flow<List<Profile>> =
       firestore
