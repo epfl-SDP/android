@@ -17,11 +17,17 @@ class FetchedUserProfileScreenState(
   override val backgroundColor = user.backgroundColor
   override val name = user.name
   override val emoji = user.emoji
+  override val isCurrentUser = false
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}
 }
-
+/**
+ * A stateful composable to visit the profile page of other players
+ *
+ * @param profileName of the player.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun StatefulProfileScreen(
     profileName: String,

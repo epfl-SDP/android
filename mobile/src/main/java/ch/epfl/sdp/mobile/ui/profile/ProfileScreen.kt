@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
@@ -103,6 +104,7 @@ private fun chooseSubtitle(
  */
 @Composable
 fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
+
   Column(
       modifier = modifier,
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,7 +115,16 @@ fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
       Text(state.name, style = MaterialTheme.typography.h5)
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
-    SettingsButton(onClick = state::onSettingsClick)
+    if (state.isCurrentUser) {
+      SettingsButton(onClick = state::onSettingsClick)
+    } else {
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center) {
+            UnfollowButton(onClick = state::onSettingsClick)
+            Spacer(Modifier.size(16.dp))
+            ChallengeButton(onClick = state::onSettingsClick)
+        }
+    }
   }
 }
 
@@ -128,18 +139,21 @@ fun ProfilePicture(
     modifier: Modifier = Modifier,
 ) {
   Box(
-      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
+      modifier = modifier
+          .size(118.dp)
+          .background(state.backgroundColor.toColor(), CircleShape),
       contentAlignment = Alignment.Center,
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
         onClick = state::onEditClick,
         modifier =
-            Modifier.align(Alignment.BottomEnd)
-                .shadow(2.dp, CircleShape)
-                .background(MaterialTheme.colors.surface, CircleShape)
-                .border(2.dp, MaterialTheme.colors.primary, CircleShape)
-                .size(40.dp),
+        Modifier
+            .align(Alignment.BottomEnd)
+            .shadow(2.dp, CircleShape)
+            .background(MaterialTheme.colors.surface, CircleShape)
+            .border(2.dp, MaterialTheme.colors.primary, CircleShape)
+            .size(40.dp),
     ) { Icon(Icons.Default.Edit, "Edit profile icon") }
   }
 }
@@ -150,12 +164,10 @@ fun ProfilePicture(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun SettingsButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-  val strings = LocalLocalizedStrings.current
-  OutlinedButton(
+fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val strings = LocalLocalizedStrings.current
+
+    OutlinedButton(
       onClick = onClick,
       shape = CircleShape,
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
@@ -164,6 +176,45 @@ fun SettingsButton(
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileSettings)
   }
+}
+
+/**
+ * Composes the unfollow button
+ * @param onClick call back method for unfollow button
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+fun UnfollowButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val strings = LocalLocalizedStrings.current
+
+    OutlinedButton(
+        onClick = onClick,
+        shape = CircleShape,
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+        modifier = modifier) {
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(strings.profileUnfollow)
+    }
+}
+
+/**
+ * Composes the challenge button
+ * @param onClick call back method for challenge button
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val strings = LocalLocalizedStrings.current
+
+    OutlinedButton(
+        onClick = onClick,
+        shape = CircleShape,
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface),
+        modifier = modifier) {
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(strings.profileChallenge.uppercase())
+    }
 }
 
 /**

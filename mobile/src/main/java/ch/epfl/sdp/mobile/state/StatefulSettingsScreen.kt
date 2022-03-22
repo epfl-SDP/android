@@ -18,11 +18,17 @@ class AuthenticatedUserProfileScreenState(
   override val backgroundColor = Color.Orange
   override val name = user.name
   override val emoji = user.emoji
+  override val isCurrentUser = true
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}
 }
-
+/**
+ * A stateful composable to visit setting page of the loged-in user
+ *
+ * @param user the current logged-in user.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
