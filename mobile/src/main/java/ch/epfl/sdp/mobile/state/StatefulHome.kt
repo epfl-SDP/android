@@ -20,8 +20,11 @@ private const val SocialRoute = "social"
 /** The route associated to the settings tab. */
 private const val SettingsRoute = "settings"
 
-/** The route associated to the game tab. */
-private const val GameRoute = "game"
+/** The route associated to the play tab. */
+private const val PlayRoute = "play"
+
+/** The route associated to new game button */
+private const val GameRoute = "new_game"
 
 /**
  * The route associated to the ar tab. Note : This tab is temporary, use only for the development
@@ -48,14 +51,19 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
+      hiddenBar = entry?.destination?.route == GameRoute,
       modifier = modifier,
-  ) {
+  ) { paddingValues ->
     NavHost(
         navController = controller,
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) { StatefulFollowingScreen(user, Modifier.fillMaxSize()) }
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
+      composable(PlayRoute) {
+        StatefulPlayScreen(
+            { controller.navigate(GameRoute) }, Modifier.fillMaxSize(), paddingValues)
+      }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
@@ -66,8 +74,8 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
-      GameRoute -> HomeSection.Game
       ArRoute -> HomeSection.Ar
+      PlayRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
 
@@ -76,6 +84,6 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
-      HomeSection.Game -> GameRoute
       HomeSection.Ar -> ArRoute
+      HomeSection.Play -> PlayRoute
     }

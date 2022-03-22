@@ -32,15 +32,15 @@ val PawniesIcons.SectionSocial
 val PawniesIcons.SectionSettings
   get() = Icons.Default.Settings
 
+/** An icon for the chess board section. */
+val PawniesIcons.SectionPlay
+  get() = Icons.Default.Games
+
 val PawniesIcons.Add
   get() = Icons.Default.Add
 
 val PawniesIcons.Search
   get() = Icons.Default.Search
-
-/** An icon for the game section. */
-val PawniesIcons.SectionGame
-  get() = Icons.Default.Piano
 
 /** Chess pieces */
 object ChessIcons
