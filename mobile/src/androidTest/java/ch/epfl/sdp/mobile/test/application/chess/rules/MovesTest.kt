@@ -1,22 +1,25 @@
 package ch.epfl.sdp.mobile.test.application.chess.rules
 
-import ch.epfl.sdp.mobile.application.chess.Delta
-import ch.epfl.sdp.mobile.application.chess.Piece
-import ch.epfl.sdp.mobile.application.chess.Position
-import ch.epfl.sdp.mobile.application.chess.Rank.Pawn
+import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.Rank.*
 import ch.epfl.sdp.mobile.application.chess.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.rules.*
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
+import ch.epfl.sdp.mobile.test.application.chess.buildBoardWithHistory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class MovesTest {
 
+  private val adversaryKing = Piece(Adversary, King, PersistentPieceIdentifier(0))
   private val adversaryPawn = Piece(Adversary, Pawn, PersistentPieceIdentifier(0))
+  private val adversaryRook = Piece(Adversary, Rook, PersistentPieceIdentifier(0))
+  private val alliedKing = Piece(Allied, King, PersistentPieceIdentifier(0))
   private val alliedPawn = Piece(Allied, Pawn, PersistentPieceIdentifier(0))
+  private val alliedRook = Piece(Allied, Rook, PersistentPieceIdentifier(0))
 
   @Test
   fun delta_outOfBounds_hasNoActions() {
@@ -142,6 +145,163 @@ class MovesTest {
     val from = Position(0, 0)
     val board = emptyBoard<Piece<Role>>()
     val actions = board.lines(from).map { it.first }.filter { (_, d) -> d.x != 0 && d.y != 0 }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_missingKing() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(7, 7), alliedRook) },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_missingRook() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(4, 7), alliedKing) },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_emptyHistory_isSuccessful() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(Position(4, 7), Delta(2, 0)))
+  }
+
+  @Test
+  fun castling_blockingPiece() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(5, 7), adversaryPawn)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_movedKing() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(3, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_movedRook() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 6), alliedRook)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_adversaryKing() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), adversaryKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_adversaryRook() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), adversaryRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_alliedButNotKing() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedPawn)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_alliedButNotRook() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedPawn)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
 }
