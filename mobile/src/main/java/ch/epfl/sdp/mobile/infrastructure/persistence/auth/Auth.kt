@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.auth
 import kotlinx.coroutines.flow.Flow
 
 /**
- * An interface representing the primitives that the application may use to perform some basic
+ * An interface representing the primitives that the application may used to perform some basic
  * authentication duties.
  */
 interface Auth {
