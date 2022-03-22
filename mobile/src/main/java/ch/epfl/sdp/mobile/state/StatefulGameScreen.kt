@@ -21,6 +21,7 @@ class SnapshotChessBoardState(
     private val scope: CoroutineScope,
     private val uploadGame: suspend (Game) -> Unit,
 ) : GameScreenState<SnapshotPiece> {
+
   private val game by gameState
 
   /**
@@ -58,6 +59,7 @@ class SnapshotChessBoardState(
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     val step = game.nextStep as NextStep.MovePiece
 
+    // TODO: Update game locally first, then verify upload was successful?
     scope.launch {
       uploadGame(
           step.move(
@@ -126,7 +128,7 @@ fun StatefulGameScreen(
   // TODO: User userId and opponentId to find correct game
   val gameId = "sample"
 
-  val game = remember { chessFacade.game(gameId) }.collectAsState(Game.create())
+  val game = remember { chessFacade.fetchGame(gameId) }.collectAsState(Game.create())
 
   suspend fun updateGameWithId(game: Game) {
     chessFacade.updateGame(gameId, game)

@@ -18,7 +18,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     reference.set(chessDocument)
   }
 
-  fun game(id: String): Flow<Game> {
+  fun fetchGame(id: String): Flow<Game> {
     return store.collection("games").document(id).asGameFlow()
   }
 
