@@ -220,8 +220,8 @@ fun BoardWithHistory<Piece<Role>>.enPassant(
   if (position.y != 3) return@sequence
 
   // Are the neighbour positions valid ?
-  val adversaryStart = neighbour + Delta(x = 0, y = -2) ?: return@sequence
   val adversaryStep = neighbour + Delta(x = 0, y = -1) ?: return@sequence
+  val adversaryStart = neighbour + Delta(x = 0, y = -2) ?: return@sequence
 
   // Check that the adversary stayed on their starting position for the whole game, except for the
   // previous move.

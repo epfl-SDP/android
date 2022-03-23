@@ -304,4 +304,118 @@ class MovesTest {
     val actions = board.rightCastling().map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
+
+  @Test
+  fun enPassant_emptyHistory_isSuccessful() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 1), adversaryPawn)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 3), adversaryPawn)
+              },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(Position(0, 3), Delta(1, -1)))
+  }
+
+  @Test
+  fun enPassant_inBetweenMove() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 2), adversaryPawn)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 3), adversaryPawn)
+              },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_badRow() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(0, 4), alliedPawn)
+                set(Position(1, 4), adversaryPawn)
+              },
+          )
+        }
+    val actions = board.enPassant(Position(0, 4), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_noNeighbour() {
+    val board = buildBoardWithHistory<Piece<Role>> { yield(emptyBoard()) }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsAllied() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(1, 3), alliedPawn) },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsNotPawn() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(1, 3), adversaryRook) },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsOutOfBounds1() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(7, 0), adversaryPawn) },
+          )
+        }
+    // This isn't really a valid Delta, but our enPassant implementation allows it.
+    val actions = board.enPassant(Position(6, 3), Delta(1, -3)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsOutOfBounds2() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(7, 1), adversaryPawn) },
+          )
+        }
+    // This isn't really a valid Delta, but our enPassant implementation allows it.
+    val actions = board.enPassant(Position(6, 3), Delta(1, -2)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
 }
