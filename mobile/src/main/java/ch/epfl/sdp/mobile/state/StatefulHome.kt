@@ -53,7 +53,7 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) { StatefulFollowingScreen(user, controller, Modifier.fillMaxSize()) }
-      composable("$ProfileRoute") { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
+      composable(ProfileRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{profileName}") { backStackEntry ->
         StatefulProfileScreen(
             backStackEntry.arguments?.getString("profileName") ?: "", Modifier.fillMaxSize())

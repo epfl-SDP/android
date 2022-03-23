@@ -92,8 +92,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     facade.signUpWithEmail("email", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
+    val strings = rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionPlay).performClick()
