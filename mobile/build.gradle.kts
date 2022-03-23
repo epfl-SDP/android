@@ -56,7 +56,6 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-  implementation("androidx.constraintlayout:constraintlayout:2.0.4")
   // Testing.
   testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
@@ -87,9 +86,6 @@ dependencies {
 
   // Jetpack Compose
   implementation(libs.bundles.compose.android)
-
-  // ArCore
-  implementation("com.google.ar:core:1.30.0")
 
   implementation("io.github.sceneview:arsceneview:0.2.0")
 }
