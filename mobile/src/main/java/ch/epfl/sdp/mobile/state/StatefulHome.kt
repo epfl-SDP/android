@@ -18,7 +18,10 @@ import ch.epfl.sdp.mobile.ui.home.HomeSection
 private const val SocialRoute = "social"
 
 /** The route associated to the settings tab. */
-const val ProfileRoute = "settings"
+private const val SettingsRoute = "settings"
+
+/** The route associated to the play tab. */
+const val ProfileRoute = "profile"
 
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
@@ -53,7 +56,7 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) { StatefulFollowingScreen(user, controller, Modifier.fillMaxSize()) }
-      composable(ProfileRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
+      composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{profileName}") { backStackEntry ->
         StatefulProfileScreen(
             backStackEntry.arguments?.getString("profileName") ?: "", Modifier.fillMaxSize())
@@ -70,7 +73,7 @@ fun StatefulHome(
 /** Maps a [NavBackStackEntry] to the appropriate [HomeSection]. */
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
-      ProfileRoute -> HomeSection.Settings
+      SettingsRoute -> HomeSection.Settings
       PlayRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
@@ -79,6 +82,6 @@ private fun NavBackStackEntry.toSection(): HomeSection =
 private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
-      HomeSection.Settings -> ProfileRoute
+      HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
     }
