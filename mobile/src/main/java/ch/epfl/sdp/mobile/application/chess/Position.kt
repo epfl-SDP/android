@@ -21,7 +21,7 @@ data class Position(val x: Int, val y: Int) {
   companion object {
 
     /** The bounds which correspond to the valid positions on a board. */
-    private val AxisBounds = 0..7
+    private val AxisBounds = 0 until Board.Size
 
     /** Returns a [Sequence] with all the valid [Position] within a board. */
     fun all(): Sequence<Position> = sequence {
@@ -36,4 +36,8 @@ data class Position(val x: Int, val y: Int) {
  * @param x the delta on the first axis.
  * @param y the delta on the second axis.
  */
-data class Delta(val x: Int, val y: Int)
+data class Delta(val x: Int, val y: Int) {
+
+  /** Multiplies this [Delta] the given amount of times. */
+  operator fun times(count: Int): Delta = Delta(x = x * count, y = y * count)
+}
