@@ -40,7 +40,7 @@ interface DocumentReference {
    * Sets the given document with the provided [value].
    *
    * @param T the type of the document.
-   * @param value hte value of the document which should be set. Existing fields will be discarded.
+   * @param value the value of the document which should be set. Existing fields will be discarded.
    * @param valueClass the [KClass] of the item that is set.
    */
   suspend fun <T : Any> set(value: T, valueClass: KClass<T>)
