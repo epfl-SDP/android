@@ -1,10 +1,9 @@
 package ch.epfl.sdp.mobile.application
 
-import com.google.firebase.firestore.DocumentId
-
 import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.application.chess.rules.Action
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
+import com.google.firebase.firestore.DocumentId
 
 /**
  * A document which represents the profile of a user. All the profile documents are stored in the
@@ -43,6 +42,7 @@ fun ProfileDocument?.toProfile(): Profile {
  * @param blackId
  */
 data class ChessDocument(
+    @DocumentId val uid: String? = null,
     val moves: List<String>? = null,
     val whiteId: String? = null,
     val blackId: String? = null,
@@ -69,7 +69,7 @@ fun Game.serialize(whiteId: String? = null, blackId: String? = null): ChessDocum
     }
   }
 
-  return ChessDocument(sequence.toList().asReversed(), whiteId, blackId)
+  return ChessDocument(moves = sequence.toList().asReversed(), whiteId = whiteId, blackId = blackId)
 }
 
 /** Parsing string to moves */
