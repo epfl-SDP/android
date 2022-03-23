@@ -149,7 +149,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_missingKing() {
+  fun castling_missingKing_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -161,7 +161,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_missingRook() {
+  fun castling_missingRook_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -188,7 +188,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_blockingPiece() {
+  fun castling_blockingPiece_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -204,7 +204,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_movedKing() {
+  fun castling_movedKing_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -225,7 +225,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_movedRook() {
+  fun castling_movedRook_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -246,7 +246,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_adversaryKing() {
+  fun castling_adversaryKing_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -261,7 +261,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_adversaryRook() {
+  fun castling_adversaryRook_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -276,7 +276,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_alliedButNotKing() {
+  fun castling_alliedButNotKing_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -291,7 +291,7 @@ class MovesTest {
   }
 
   @Test
-  fun castling_alliedButNotRook() {
+  fun castling_alliedButNotRook_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -327,7 +327,7 @@ class MovesTest {
   }
 
   @Test
-  fun enPassant_inBetweenMove() {
+  fun enPassant_inBetweenMove_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -348,7 +348,7 @@ class MovesTest {
   }
 
   @Test
-  fun enPassant_badRow() {
+  fun enPassant_badRow_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -363,14 +363,14 @@ class MovesTest {
   }
 
   @Test
-  fun enPassant_noNeighbour() {
+  fun enPassant_noNeighbour_isNotAllowed() {
     val board = buildBoardWithHistory<Piece<Role>> { yield(emptyBoard()) }
     val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
 
   @Test
-  fun enPassant_neighbourIsAllied() {
+  fun enPassant_neighbourIsAllied_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -382,7 +382,7 @@ class MovesTest {
   }
 
   @Test
-  fun enPassant_neighbourIsNotPawn() {
+  fun enPassant_neighbourIsNotPawn_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -394,7 +394,7 @@ class MovesTest {
   }
 
   @Test
-  fun enPassant_neighbourIsOutOfBounds1() {
+  fun enPassant_neighbourIsOutOfBounds1_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
@@ -407,7 +407,7 @@ class MovesTest {
   }
 
   @Test
-  fun enPassant_neighbourIsOutOfBounds2() {
+  fun enPassant_neighbourIsOutOfBounds2_isNotAllowed() {
     val board =
         buildBoardWithHistory<Piece<Role>> {
           yield(
