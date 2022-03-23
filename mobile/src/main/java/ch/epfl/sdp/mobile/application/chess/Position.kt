@@ -18,6 +18,11 @@ data class Position(val x: Int, val y: Int) {
     return Position(x + delta.x, y + delta.y).takeIf { it.inBounds }
   }
 
+  /** Removes a [Position] from another [Position], and returns the corresponding [Delta]. */
+  operator fun minus(position: Position): Delta {
+    return Delta(x - position.x, y - position.y)
+  }
+
   companion object {
 
     /** The bounds which correspond to the valid positions on a board. */
