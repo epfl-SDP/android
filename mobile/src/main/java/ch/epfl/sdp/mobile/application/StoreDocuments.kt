@@ -10,7 +10,7 @@ import com.google.firebase.firestore.DocumentId
  * @param name the human-readable name associated to this profile.
  * @param emoji the emoji associated with this profile.
  * @param backgroundColor the hex color code for this profile.
- * @param following a list of unique identifiers of the profiles this profile is following.
+ * @param followers a list of unique identifiers of the users who follow this profile.
  */
 data class ProfileDocument(
     @DocumentId val uid: String? = null,
