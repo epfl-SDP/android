@@ -53,7 +53,7 @@ fun interface Effect<Piece : Any> {
      * @param P the type of the pieces.
      * @param effects the sequence of effects that should be applied.
      */
-    fun <P : Any> all(vararg effects: Effect<P>): Effect<P> = Effect {
+    fun <P : Any> combine(vararg effects: Effect<P>): Effect<P> = Effect {
       effects.fold(it) { board, effect -> effect.perform(board) }
     }
 

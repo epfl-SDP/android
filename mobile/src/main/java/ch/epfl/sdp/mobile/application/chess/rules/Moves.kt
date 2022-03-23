@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.application.chess.rules
 
 import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.application.chess.Rank.*
-import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.all
+import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.combine
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.move
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.remove
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
@@ -192,7 +192,7 @@ private fun BoardWithHistory<Piece<Role>>.castling(
   // We can perform the castling.
   yield(
       Action(kingStart, kingEnd - kingStart) to
-          all(
+          combine(
               move(kingStart, kingEnd - kingStart),
               move(rookStart, rookEnd - rookStart),
           ),
@@ -229,7 +229,7 @@ fun BoardWithHistory<Piece<Role>>.enPassant(
 
   yield(
       Action(position, adversaryStep - position) to
-          all(
+          combine(
               remove(neighbour),
               move(position, adversaryStep - position),
           ),
