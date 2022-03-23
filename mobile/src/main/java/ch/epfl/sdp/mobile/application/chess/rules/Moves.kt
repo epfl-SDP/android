@@ -20,8 +20,10 @@ typealias BoardSequence<P> = Sequence<Board<P>>
  * An alias which which describes a lazily-built collection of moves in the game. Each move has an
  * associated [Action], which describes what gesture that the player will have performed on the
  * screen to reach this state.
+ *
+ * @param P the type of the pieces of the board.
  */
-typealias Moves = Sequence<Pair<Action, Effect<Piece<Role>>>>
+typealias Moves<P> = Sequence<Pair<Action, Effect<P>>>
 
 /**
  * A simple [Moves] implementation which represents a displacement of the [Piece] with a certain
@@ -37,7 +39,7 @@ fun BoardSequence<Piece<Role>>.delta(
     x: Int,
     y: Int,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val board = first()
   val delta = Delta(x, y)
   val target = from + delta ?: return@sequence // Stop if out of bounds.
@@ -59,7 +61,7 @@ fun BoardSequence<Piece<Role>>.doubleUp(
     from: Position,
     row: Int = 6,
     includeAdversary: Boolean = false,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val board = first()
   if (from.y != row) return@sequence // Not on the right row.
   if (board[Position(from.x, from.y - 1)] != null) return@sequence // A piece is in the path.
@@ -73,7 +75,7 @@ fun BoardSequence<Piece<Role>>.doubleUp(
  */
 fun BoardSequence<Piece<Role>>.sideTakes(
     from: Position,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val board = first()
   if (board[Position(from.x - 1, from.y - 1)] != null) yieldAll(delta(from, -1, -1))
   if (board[Position(from.x + 1, from.y - 1)] != null) yieldAll(delta(from, 1, -1))
@@ -93,7 +95,7 @@ private fun BoardSequence<Piece<Role>>.repeatDirection(
     direction: Delta,
     maxRepeats: Int = Board.Size,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val board = first()
   repeat(maxRepeats) { i ->
     val delta = direction * (i + 1)
@@ -121,7 +123,7 @@ fun BoardSequence<Piece<Role>>.lines(
     from: Position,
     maxDistance: Int = Board.Size,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val directions = listOf(Delta(0, 1), Delta(0, -1), Delta(1, 0), Delta(-1, 0))
   for (direction in directions) {
     yieldAll(
@@ -146,7 +148,7 @@ fun BoardSequence<Piece<Role>>.diagonals(
     from: Position,
     maxDistance: Int = Board.Size,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val directions = listOf(Delta(-1, -1), Delta(-1, 1), Delta(1, -1), Delta(1, 1))
   for (direction in directions) {
     yieldAll(
@@ -186,7 +188,7 @@ private fun BoardSequence<Piece<Role>>.castling(
     rookStart: Position,
     rookEnd: Position,
     empty: Set<Position>,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val board = first()
   val king = board[kingStart]?.takeIf { (role, rank) -> role == Allied && rank == King }
   val rook = board[rookStart]?.takeIf { (role, rank) -> role == Allied && rank == Rook }
@@ -222,7 +224,7 @@ private fun BoardSequence<Piece<Role>>.castling(
 fun BoardSequence<Piece<Role>>.enPassant(
     position: Position,
     delta: Delta,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val board = first()
   val neighbour = position + delta ?: return@sequence
   val adversary = board[neighbour]?.takeIf { (role, rank) -> role == Adversary && rank == Pawn }

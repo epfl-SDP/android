@@ -56,7 +56,7 @@ data class PersistentGame(
    * @param position the [Position] for which the moves are queried.
    * @return the [Moves] for the position.
    */
-  private fun normalizedMoves(position: Position): Moves {
+  private fun normalizedMoves(position: Position): Moves<Piece<Role>> {
     val normalizedBoards =
         boards.asReversed().asSequence().map { NormalizedBoardDecorator(nextPlayer, it) }
     val normalizedFrom = nextPlayer.normalize(position)
