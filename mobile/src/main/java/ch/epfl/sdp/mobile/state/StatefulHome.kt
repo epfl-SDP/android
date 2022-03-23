@@ -71,7 +71,7 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       ProfileRoute -> HomeSection.Settings
-      GameRoute -> HomeSection.Play
+      PlayRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
 
@@ -80,5 +80,5 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> ProfileRoute
-      HomeSection.Play -> GameRoute
+      HomeSection.Play -> PlayRoute
     }
