@@ -51,7 +51,7 @@ fun <Piece : Any> buildBoard(
 data class PersistentBoard<Piece : Any>
 constructor(
     private val cells: PersistentMap<Position, Piece>,
-) : Board<Piece> {
+) : Board<Piece>, Iterable<Pair<Position, Piece>> by cells.map({ (a, b) -> Pair(a, b) }) {
 
   override fun get(position: Position): Piece? = cells[position]
 
