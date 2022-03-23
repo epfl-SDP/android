@@ -40,6 +40,8 @@ class StatefulFollowingScreenTest {
                     get() = Color.Default
                   override val uid: String
                     get() = ""
+                  override val followed: Boolean
+                    get() = false
                 }))
 
     val mockSocialFacade = mockk<SocialFacade>()
@@ -73,7 +75,7 @@ class StatefulFollowingScreenTest {
             ProvideFacades(authenticationFacade, socialFacade) { StatefulFollowingScreen(user) }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
-      rule.onNodeWithText(strings.socialFollow).performClick()
+      rule.onNodeWithText(strings.socialPerformFollow).performClick()
       val profile =
           store
               .collection("users")

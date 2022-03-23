@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application
 
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
 import com.google.firebase.firestore.DocumentId
 
 /**
@@ -20,12 +22,17 @@ data class ProfileDocument(
     val followers: List<String>? = null,
 )
 
-fun ProfileDocument?.toProfile(): Profile {
+fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
   return object : Profile {
     override val emoji: String = this@toProfile?.emoji ?: "😎"
     override val name: String = this@toProfile?.name ?: ""
     override val backgroundColor: Profile.Color =
         this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
     override val uid: String = this@toProfile?.uid ?: ""
+    override val followed: Boolean = currentUserUid in (this@toProfile?.followers ?: emptyList())
   }
+}
+
+fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
+  return toProfile((currentUser as? AuthenticatedUser)?.uid)
 }

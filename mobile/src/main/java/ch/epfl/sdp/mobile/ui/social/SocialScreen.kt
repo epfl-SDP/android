@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Search
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
@@ -157,19 +156,12 @@ fun <P : Person> SearchResultList(
       PersonCard(
           person = player,
           trailingAction = {
-            OutlinedButton(
+            FollowButton(
+                following = player.followed,
                 onClick = { onClick(player) },
-                shape = RoundedCornerShape(24.dp),
-            ) {
-              Icon(
-                  PawniesIcons.Add, contentDescription = LocalLocalizedStrings.current.socialFollow)
-
-              Text(
-                  modifier = Modifier.padding(start = 8.dp),
-                  text = LocalLocalizedStrings.current.socialFollow,
-              )
-            }
-          })
+            )
+          },
+      )
     }
   }
 }

@@ -6,10 +6,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.google.firebase.firestore.FieldValue.arrayUnion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,7 +17,7 @@ class AuthenticatedUser(
     private val firestore: Store,
     private val user: User,
     document: ProfileDocument?,
-) : AuthenticationUser, Profile by document.toProfile() {
+) : AuthenticationUser, Profile by document.toProfile(user.uid) {
 
   /** The email of the currently logged in user. */
   val email: String = user.email ?: ""
@@ -69,6 +66,12 @@ class AuthenticatedUser(
     }
   }
 
+  suspend fun unfollow(followed: Profile) {
+    firestore.collection("users").document(followed.uid).update {
+      arrayRemove("followers", user.uid)
+    }
+  }
+
   /** Signs this user out of the [AuthenticationFacade]. */
   suspend fun signOut() {
     auth.signOut()
@@ -83,5 +86,5 @@ class AuthenticatedUser(
           .collection("users")
           .whereArrayContains("followers", user.uid)
           .asFlow<ProfileDocument>()
-          .map { it.mapNotNull { doc -> doc?.toProfile() } }
+          .map { it.mapNotNull { doc -> doc?.toProfile(this) } }
 }

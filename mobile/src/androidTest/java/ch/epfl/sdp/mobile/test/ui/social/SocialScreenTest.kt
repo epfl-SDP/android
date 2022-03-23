@@ -8,7 +8,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.i18n.English.socialFollow
+import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformFollow
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchBarPlaceHolder
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchEmptyTitle
 import ch.epfl.sdp.mobile.ui.social.Person
@@ -58,7 +58,7 @@ class SocialScreenTest {
     val state = SnapshotSocialScreenState()
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
 
-    rule.onNodeWithText(socialFollow).assertDoesNotExist()
+    rule.onNodeWithText(socialPerformFollow).assertDoesNotExist()
   }
 
   @Test
@@ -76,7 +76,7 @@ class SocialScreenTest {
 
     rule.onNodeWithText(socialSearchBarPlaceHolder).performTextInput("test")
 
-    rule.onAllNodesWithText(socialFollow).onFirst().assertExists()
+    rule.onAllNodesWithText(socialPerformFollow).onFirst().assertExists()
   }
 
   @Test
@@ -145,6 +145,6 @@ class SocialScreenTest {
               onClick = {})
         }
 
-    rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
+    rule.onAllNodesWithText(strings.socialPerformFollow.uppercase()).onFirst().assertExists()
   }
 }

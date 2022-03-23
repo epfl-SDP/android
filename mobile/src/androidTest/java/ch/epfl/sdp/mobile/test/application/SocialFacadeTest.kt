@@ -24,6 +24,7 @@ class SocialFacadeTest {
     override val backgroundColor: Profile.Color = Profile.Color.Default
     override val name: String = "Andy"
     override val emoji: String = ":3"
+    override val followed: Boolean = false
   }
 
   @Test
