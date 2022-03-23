@@ -67,7 +67,7 @@ fun StatefulFollowingScreen(
           searchFieldInteraction = searchFieldInteraction,
           scope = scope,
       ),
-      modifier.fillMaxSize())
+      modifier)
 }
 
 /**
