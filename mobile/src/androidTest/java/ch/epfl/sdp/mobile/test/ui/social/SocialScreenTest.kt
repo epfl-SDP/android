@@ -17,13 +17,14 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
+import com.google.common.truth.Truth.*
 import org.junit.Rule
 import org.junit.Test
 
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotSocialScreenState : SocialScreenState {
+  private class SnapshotSocialScreenState : SocialScreenState<Person> {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
@@ -38,6 +39,8 @@ class SocialScreenTest {
     override fun onValueChange() {
       mode = Searching
     }
+
+    override fun onFollowClick(followed: Person) = Unit
 
     companion object {
       fun createPerson(bgColor: Color, name: String, emoji: String): Person {
@@ -122,7 +125,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following) }
+    rule.setContent { SearchResultList(state.following, onClick = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -138,7 +141,8 @@ class SocialScreenTest {
                     override val backgroundColor = Color.Default
                     override val name = "test"
                     override val emoji = ":)"
-                  }))
+                  }),
+              onClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
