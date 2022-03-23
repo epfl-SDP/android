@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.test.application.chess.rules
 import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.application.chess.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.implementation.emptyBoard
+import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.combine
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.move
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.remove
 import ch.epfl.sdp.mobile.application.chess.rules.Effect.Factory.replace
@@ -40,6 +41,26 @@ class EffectTest {
     val board = buildBoard<UnitPiece> { set(position, bishop) }
     val effect = replace(position, pawn)
     assertThat(effect.perform(board)[position]).isEqualTo(pawn)
+  }
+
+  @Test
+  fun combine_identityOnBoard() {
+    val board = emptyBoard<UnitPiece>()
+    val effect = combine<UnitPiece>()
+    assertThat(effect.perform(board)).isEqualTo(board)
+  }
+
+  @Test
+  fun combine_appliesMultipleEffects() {
+    val first = Position(0, 0)
+    val second = Position(1, 1)
+    val board =
+        buildBoard<UnitPiece> {
+          set(first, bishop)
+          set(second, pawn)
+        }
+    val effect = combine<UnitPiece>(remove(first), remove(second))
+    assertThat(effect.perform(board)).isEqualTo(emptyBoard<UnitPiece>())
   }
 
   @Test

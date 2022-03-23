@@ -47,6 +47,17 @@ fun interface Effect<Piece : Any> {
     }
 
     /**
+     * Applies a sequence of [Effect] in order, from left to right. This may be useful if you want
+     * to combine some simple effects into a single action.
+     *
+     * @param P the type of the pieces.
+     * @param effects the sequence of effects that should be applied.
+     */
+    fun <P : Any> combine(vararg effects: Effect<P>): Effect<P> = Effect {
+      effects.fold(it) { board, effect -> effect.perform(board) }
+    }
+
+    /**
      * Moves the piece at the given [Position] by the given [Delta]. If no piece was present at the
      * starting position or the move didn't stay in the board bounds, the [Effect] will have no
      * effect on the board (since it's not valid).
