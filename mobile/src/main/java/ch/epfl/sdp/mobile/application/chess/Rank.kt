@@ -11,7 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.rules.*
  * TODO : Support check-awareness in moves.
  */
 enum class Rank(
-    val moves: BoardWithHistory<Piece<Role>>.(Position) -> Moves,
+    val moves: BoardSequence<Piece<Role>>.(Position) -> Moves,
 ) {
   King(moves = { diagonals(it, 1) + lines(it, 1) + leftCastling() + rightCastling() }),
   Queen(moves = { diagonals(it) + lines(it) }),

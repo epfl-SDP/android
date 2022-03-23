@@ -4,6 +4,7 @@ import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.application.chess.rules.Action
 import ch.epfl.sdp.mobile.application.chess.rules.Moves
 import ch.epfl.sdp.mobile.application.chess.rules.Role
+import kotlinx.collections.immutable.PersistentList
 
 /**
  * A persistent implementation of a [Game], which contains some information about the current board
@@ -14,27 +15,15 @@ import ch.epfl.sdp.mobile.application.chess.rules.Role
 data class PersistentGame(
     override val previous: Pair<PersistentGame, Action>?,
     val nextPlayer: Color,
-    override val board: Board<Piece<Color>>,
+    private val boards: PersistentList<Board<Piece<Color>>>,
 ) : Game {
 
-  /**
-   * An implementation of a [BoardWithHistory] which delegates retrieving information to the current
-   * [board] or the [previous] [PersistentGame].
-   *
-   * @param player the [Color] for which the board should be normalized.
-   */
-  private inner class PersistentNormalizedGameBoardWithHistory(
-      private val player: Color,
-  ) : BoardWithHistory<Piece<Role>>, Board<Piece<Role>> by NormalizedBoardDecorator(player, board) {
-
-    override val previousBoardWithHistory: BoardWithHistory<Piece<Role>>?
-      get() = previous?.let { (game, _) -> game.PersistentNormalizedGameBoardWithHistory(player) }
-  }
+  override val board: Board<Piece<Color>> = boards.last()
 
   override val nextStep: NextStep
     get() =
         NextStep.MovePiece(nextPlayer) { from, delta ->
-          val normalizedBoard = PersistentNormalizedGameBoardWithHistory(nextPlayer)
+          val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
           val normalizedFrom = nextPlayer.normalize(from)
           val normalizedDelta = nextPlayer.normalize(delta)
           val moves = normalizedMoves(from)
@@ -51,7 +40,7 @@ data class PersistentGame(
           copy(
               previous = this to nextPlayer.normalize(action),
               nextPlayer = nextPlayer.other(),
-              board = nextBoard,
+              boards = boards.add(nextBoard),
           )
         }
 
@@ -68,10 +57,11 @@ data class PersistentGame(
    * @return the [Moves] for the position.
    */
   private fun normalizedMoves(position: Position): Moves {
-    val normalizedBoard = PersistentNormalizedGameBoardWithHistory(nextPlayer)
+    val normalizedBoards =
+        boards.asReversed().asSequence().map { NormalizedBoardDecorator(nextPlayer, it) }
     val normalizedFrom = nextPlayer.normalize(position)
-    val piece = normalizedBoard[normalizedFrom] ?: return emptySequence()
+    val piece = normalizedBoards.first()[normalizedFrom] ?: return emptySequence()
     if (piece.color == Role.Adversary) return emptySequence()
-    return piece.rank.moves(normalizedBoard, normalizedFrom)
+    return piece.rank.moves(normalizedBoards, normalizedFrom)
   }
 }
