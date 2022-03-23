@@ -26,7 +26,7 @@ fun <Piece : Any> buildBoardWithHistory(
     block: suspend SequenceScope<Board<Piece>>.() -> Unit,
 ): BoardWithHistory<Piece> {
   val boards = sequence(block).toList()
-  if (boards.isEmpty()) throw IllegalStateException("You must yield at least one board.")
+  if (boards.isEmpty()) throw IllegalArgumentException("You must yield at least one board.")
   val head = boards.first()
   val tail = boards.drop(1)
   return tail.fold(FakeBoardWithHistory(head, null)) { history, board ->
