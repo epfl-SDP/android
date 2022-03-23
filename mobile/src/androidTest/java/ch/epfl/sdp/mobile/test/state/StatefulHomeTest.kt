@@ -28,6 +28,7 @@ class StatefulHomeTest {
 
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
     val strings =
         rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()

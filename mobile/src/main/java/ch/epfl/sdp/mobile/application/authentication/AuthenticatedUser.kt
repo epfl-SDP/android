@@ -8,7 +8,9 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
+import com.google.firebase.firestore.FieldValue.arrayUnion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -55,14 +57,31 @@ class AuthenticatedUser(
     }
   }
 
+  /**
+   * Follows the given [Profile] by updating the list of followers of the followed profile with the
+   * uid of the current user.
+   *
+   * @param followed the [Profile] to follow.
+   */
+  suspend fun follow(followed: Profile) {
+    firestore.collection("users").document(followed.uid).update {
+      arrayUnion("followers", user.uid)
+    }
+  }
+
   /** Signs this user out of the [AuthenticationFacade]. */
   suspend fun signOut() {
     auth.signOut()
   }
 
-  /** Returns a [Flow] of the [Profile]s which are currently followed by this user. */
+  /**
+   * Returns a [Flow] of the [Profile]s which are currently followed by this user by going through
+   * all users' list of followers.
+   */
   val following: Flow<List<Profile>> =
-      firestore.collection("users").asFlow<ProfileDocument>().map {
-        it.mapNotNull { doc -> doc?.toProfile() }
-      }
+      firestore
+          .collection("users")
+          .whereArrayContains("followers", user.uid)
+          .asFlow<ProfileDocument>()
+          .map { it.mapNotNull { doc -> doc?.toProfile() } }
 }

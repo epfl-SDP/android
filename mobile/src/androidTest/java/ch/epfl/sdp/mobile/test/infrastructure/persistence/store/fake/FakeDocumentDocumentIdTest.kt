@@ -53,4 +53,17 @@ class FakeDocumentDocumentIdTest {
     store.doc().set(mapOf("id" to "Hello"))
     assertThrows<RuntimeException> { store.doc().asFlow<DocumentWithAnnotation>().firstNotNull() }
   }
+
+  @Test
+  fun documentWithNoId_isGenerated() = runTest {
+    val store =
+        emptyStore().apply { collection("users").document().set(mapOf("name" to "matthieu")) }
+    assertThat(
+            store
+                .collection("users")
+                .whereEquals("name", "matthieu")
+                .asFlow<DocumentWithAnnotation>()
+                .firstNotNull())
+        .hasSize(1)
+  }
 }
