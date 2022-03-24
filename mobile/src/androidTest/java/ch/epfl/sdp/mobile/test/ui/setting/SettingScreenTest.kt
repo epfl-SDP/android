@@ -49,7 +49,7 @@ class SettingScreenTest {
   }
 
   @Test
-  fun counts_areDisplayed() {
+  fun pastGameCount_areDisplayed() {
     rule.setContent { SettingsScreen(FakeSetttingScreenState) }
 
     rule.onNodeWithText(FakeSetttingScreenState.pastGamesCount.toString()).assertExists()
