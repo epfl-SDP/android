@@ -28,14 +28,15 @@ data class PersistentGame(
   override val nextStep: NextStep
     get() {
       val hasActions = boardSequence.hasAnyMoveAvailable(nextPlayer)
+      val inCheck = boardSequence.inCheck(nextPlayer)
       if (!hasActions) {
-        return if (boardSequence.inCheck(nextPlayer)) {
+        return if (inCheck) {
           NextStep.Checkmate(nextPlayer.other())
         } else {
           NextStep.Stalemate
         }
       } else {
-        return NextStep.MovePiece(nextPlayer) { from, delta ->
+        return NextStep.MovePiece(nextPlayer, inCheck) { from, delta ->
           val (action, effects) =
               actionsAndEffects(from).firstOrNull { (action, _) ->
                 action.from == from && action.delta == delta
