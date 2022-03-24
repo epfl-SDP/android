@@ -1,9 +1,8 @@
 package ch.epfl.sdp.mobile.application.chess.implementation
 
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.rules.Action
-import ch.epfl.sdp.mobile.application.chess.rules.Moves
-import ch.epfl.sdp.mobile.application.chess.rules.Role
+import ch.epfl.sdp.mobile.application.chess.Rank.King
+import ch.epfl.sdp.mobile.application.chess.rules.*
 import kotlinx.collections.immutable.PersistentList
 
 /**
@@ -18,25 +17,21 @@ data class PersistentGame(
     private val boards: PersistentList<Board<Piece<Color>>>,
 ) : Game {
 
+  private val boardSequence = boards.asReversed().asSequence()
+
   override val board: Board<Piece<Color>> = boards.last()
 
   override val nextStep: NextStep
     get() =
         NextStep.MovePiece(nextPlayer) { from, delta ->
-          val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
-          val normalizedFrom = nextPlayer.normalize(from)
-          val normalizedDelta = nextPlayer.normalize(delta)
-          val moves = normalizedMoves(from)
-
           val (action, effects) =
-              moves.firstOrNull { (action, _) ->
-                action.from == normalizedFrom && action.delta == normalizedDelta
+              actionsAndEffects(from).firstOrNull { (action, _) ->
+                action.from == from && action.delta == delta
               }
                   ?: return@MovePiece this
 
-          val nextBoard = DenormalizedBoardDecorator(nextPlayer, effects.perform(normalizedBoard))
+          val nextBoard = effects.perform(board)
 
-          // TODO : Eventually flatten this ?
           copy(
               previous = this to nextPlayer.normalize(action),
               nextPlayer = nextPlayer.other(),
@@ -44,24 +39,41 @@ data class PersistentGame(
           )
         }
 
-  override fun actions(position: Position): Sequence<Action> {
-    return normalizedMoves(position).map { it.first }.map {
-      Action(nextPlayer.normalize(it.from), nextPlayer.normalize(it.delta))
-    }
-  }
+  override fun actions(position: Position): Sequence<Action> =
+      actionsAndEffects(position).map { it.first }
 
-  /**
-   * Returns all the [Moves] which are available for the given position.
-   *
-   * @param position the [Position] for which the moves are queried.
-   * @return the [Moves] for the position.
-   */
-  private fun normalizedMoves(position: Position): Moves<Piece<Role>> {
-    val normalizedBoards =
-        boards.asReversed().asSequence().map { NormalizedBoardDecorator(nextPlayer, it) }
-    val normalizedFrom = nextPlayer.normalize(position)
-    val piece = normalizedBoards.first()[normalizedFrom] ?: return emptySequence()
-    if (piece.color == Role.Adversary) return emptySequence()
-    return piece.rank.moves(normalizedBoards, normalizedFrom)
+  private fun actionsAndEffects(
+      position: Position,
+  ): Sequence<Pair<Action, Effect<Piece<Color>>>> =
+      boardSequence.allMovesAtPosition(nextPlayer, position).filter { (_, effect) ->
+        val next = effect.perform(board)
+        !(sequenceOf(next) + boardSequence).inCheck(nextPlayer)
+      }
+}
+
+/** Returns true iff the [Board] has at least one piece of the given [Rank] and [Color]. */
+private fun <Color> Board<Piece<Color>>.hasAnyOfRankAndColor(rank: Rank, player: Color): Boolean {
+  return asSequence().any { (_, piece) -> piece.rank == rank && piece.color == player }
+}
+
+private fun BoardSequence<Piece<Color>>.inCheck(player: Color): Boolean {
+  return allMoves(player.other()).any { (_, effect) ->
+    !effect.perform(first()).hasAnyOfRankAndColor(King, player)
   }
+}
+
+private fun BoardSequence<Piece<Color>>.allMoves(color: Color): Moves<Piece<Color>> {
+  return first().asSequence().flatMap { (pos, _) -> allMovesAtPosition(color, pos) }
+}
+
+private fun BoardSequence<Piece<Color>>.allMovesAtPosition(
+    color: Color,
+    position: Position
+): Moves<Piece<Color>> {
+  val normalizedBoards = map { NormalizedBoardDecorator(color, it) }
+  val normalizedFrom = color.normalize(position)
+  val piece = normalizedBoards.first()[normalizedFrom] ?: return emptySequence()
+  if (piece.color == Role.Adversary) return emptySequence()
+  val moves = piece.rank.moves(normalizedBoards, normalizedFrom)
+  return moves.map { (action, effect) -> color.normalize(action) to color.denormalize(effect) }
 }
