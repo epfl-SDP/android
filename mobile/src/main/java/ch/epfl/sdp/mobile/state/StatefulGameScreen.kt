@@ -4,26 +4,67 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.online.ChessFacade.GameIdInfo
+import ch.epfl.sdp.mobile.application.chess.online.Match
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+
+/**
+ * The [StatefulGameScreen] to be used for the Navigation
+ *
+ * @param user the currently logged-in user.
+ * @param modifier the [Modifier] for the composable
+ */
+@Composable
+fun StatefulGameScreen(
+    user: AuthenticatedUser,
+    modifier: Modifier = Modifier,
+) {
+  val chessFacade = LocalChessFacade.current
+  val scope = rememberCoroutineScope()
+
+  // TODO: Select correct game if several exist (once we have a screen to display ongoing games)
+  val match =
+      remember(chessFacade) { chessFacade.fetchMatchesForUser(user).map { it[0] } }
+          .collectAsState(Match.create())
+
+  println("DEBUG: MatchID = " + match.value.gameId)
+
+  suspend fun updateMatch(match: Match) {
+    val step = match.game.nextStep as NextStep.MovePiece
+    val currentPlayingId =
+        when (step.turn) {
+          Color.Black -> match.blackId
+          Color.White -> match.whiteId
+        }
+
+    if (currentPlayingId == user.uid) {
+      chessFacade.updateMatch(match)
+    }
+  }
+
+  val gameScreenState =
+      remember(match, scope) { SnapshotChessBoardState(match, scope, ::updateMatch) }
+
+  GameScreen(gameScreenState, modifier)
+}
 
 /**
  * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
  * and has a static move list
  */
 class SnapshotChessBoardState(
-    gameState: State<Game>,
+    matchState: State<Match>,
     private val scope: CoroutineScope,
-    private val uploadGame: suspend (Game) -> Unit,
+    private val uploadMatch: suspend (Match) -> Unit,
 ) : GameScreenState<SnapshotPiece> {
 
-  private val game by gameState
+  private val match by matchState
 
   /**
    * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
@@ -42,7 +83,7 @@ class SnapshotChessBoardState(
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
         Position.all()
-            .map { game.board[it]?.let { p -> it to p } }
+            .map { match.game.board[it]?.let { p -> it to p } }
             .filterNotNull()
             .map { (a, b) -> a.toPosition() to b.toPiece() }
             .toMap()
@@ -51,23 +92,24 @@ class SnapshotChessBoardState(
     // Display all the possible moves for all the pieces on the board.
     get() =
         Position.all()
-            .flatMap { game.actions(it) }
+            .flatMap { match.game.actions(it) }
             .mapNotNull { it.from + it.delta }
             .map { it.toPosition() }
             .toSet()
 
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
-    val step = game.nextStep as NextStep.MovePiece
+    val step = match.game.nextStep as NextStep.MovePiece
 
     // TODO: Update game locally first, then verify upload was successful?
     scope.launch {
-      uploadGame(
+      val newGame =
           step.move(
               Position(startPosition.x, startPosition.y),
               Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
-          ),
-      )
+          )
+
+      uploadMatch(Match(newGame, match.whiteId, match.blackId))
     }
   }
 
@@ -110,47 +152,4 @@ private fun Piece<Color>.toPiece(): SnapshotPiece {
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)
-}
-
-/**
- * The [StatefulGameScreen] to be used for the Navigation
- *
- * @param user the currently logged-in user.
- * @param modifier the [Modifier] for the composable
- */
-@Composable
-fun StatefulGameScreen(
-    user: AuthenticatedUser,
-    modifier: Modifier = Modifier,
-) {
-  val chessFacade = LocalChessFacade.current
-  val scope = rememberCoroutineScope()
-
-  // TODO: Select correct game if several exist
-  val gameIdState = remember { chessFacade.fetchGameIds(user) }.collectAsState(listOf(GameIdInfo()))
-  println("DEBUG: GameIdInfo=$gameIdState")
-
-  val gameIdInfo = gameIdState.value[0]
-
-  // TODO: How to get rid of this default value without propagating the null too far
-  val gameId = gameIdInfo.gameId ?: "sample"
-  val game = remember { chessFacade.fetchGame(gameId) }.collectAsState(Game.create())
-
-  suspend fun updateGameWithId(game: Game) {
-    val step = game.nextStep as NextStep.MovePiece
-    val currentPlayingId =
-        when (step.turn) {
-          Color.Black -> gameIdInfo.blackId
-          Color.White -> gameIdInfo.whiteId
-        }
-
-    if (currentPlayingId == user.uid) {
-      chessFacade.updateGame(gameId, game)
-    }
-  }
-
-  val gameScreenState =
-      remember(game, scope) { SnapshotChessBoardState(game, scope, ::updateGameWithId) }
-
-  GameScreen(gameScreenState, modifier)
 }

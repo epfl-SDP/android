@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.application
 
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.online.Match
 import ch.epfl.sdp.mobile.application.chess.rules.Action
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 import com.google.firebase.firestore.DocumentId
@@ -48,19 +49,19 @@ data class ChessDocument(
     val blackId: String? = null,
 )
 
-fun ChessDocument?.deserialize(): Game {
+fun ChessDocument?.deserialize(): Match {
   var game = Game.create()
 
   for (move in this?.moves ?: emptyList()) {
     val (position, delta) = parseStringToMove(move)
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(position, delta) ?: game
   }
-  return game
+  return Match(game, this?.whiteId, this?.blackId)
 }
 
-fun Game.serialize(whiteId: String? = null, blackId: String? = null): ChessDocument {
+fun Match.serialize(): ChessDocument {
   val sequence = sequence {
-    var previous = this@serialize.previous
+    var previous = this@serialize.game.previous
     while (previous != null) {
       val (game, action) = previous
       val str = parseMoveToString(game, action)
@@ -69,7 +70,8 @@ fun Game.serialize(whiteId: String? = null, blackId: String? = null): ChessDocum
     }
   }
 
-  return ChessDocument(moves = sequence.toList().asReversed(), whiteId = whiteId, blackId = blackId)
+  return ChessDocument(
+      moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
 }
 
 /** Parsing string to moves */
