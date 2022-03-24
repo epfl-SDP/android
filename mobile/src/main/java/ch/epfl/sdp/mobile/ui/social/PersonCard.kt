@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,13 +23,12 @@ import ch.epfl.sdp.mobile.state.toColor
 @Composable
 fun PersonCard(
     person: Person,
-    openProfile: (Person) -> Unit,
     modifier: Modifier = Modifier,
     trailingAction: @Composable () -> Unit = {}
 ) {
 
   ListItem(
-      modifier = modifier.clickable { openProfile(person) },
+      modifier = modifier,
       text = {
         Text(
             person.name,

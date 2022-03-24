@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.ui.social
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -104,7 +105,7 @@ fun <P : Person> FollowList(
       items(players) { friend ->
         PersonCard(
             person = friend,
-            openProfile = { onPersonClick(friend) },
+            modifier = modifier.clickable { onPersonClick(friend) },
             trailingAction = {
               OutlinedButton(
                   onClick = { /*TODO*/},
@@ -166,7 +167,7 @@ fun <P : Person> SearchResultList(
     items(players) { player ->
       PersonCard(
           person = player,
-          openProfile = { onPersonClick(player) },
+          modifier = modifier.clickable { onPersonClick(player) },
           trailingAction = {
             OutlinedButton(
                 onClick = { onClick(player) },
