@@ -32,36 +32,36 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   fun fetchMatchesForUser(profile: Profile): Flow<List<Match>> {
-    val gamesAsWhite =
-        queryGamesForPlayer(colorField = "whiteId", playerId = profile.uid)
-            .asMatchListFlow()
-            .onStart { emit(emptyList()) }
-    val gamesAsBlack =
-        queryGamesForPlayer(colorField = "blackId", playerId = profile.uid)
-            .asMatchListFlow()
-            .onStart { emit(emptyList()) }
+    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
+    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
   }
 
   fun fetchMatchesForPlayers(player: Profile, opponent: Profile): Flow<List<Match>> {
-    val gamesAsWhite =
-        queryGamesForPlayer(colorField = "whiteId", playerId = player.uid)
-            .whereEquals("blackId", opponent.uid)
-            .asMatchListFlow()
-            .onStart { emit(emptyList()) }
+    val gamesAsWhite = getMatchesForPlayers(player.uid, opponent.uid)
 
-    val gamesAsBlack =
-        queryGamesForPlayer(colorField = "blackId", playerId = player.uid)
-            .whereEquals("whiteId", opponent.uid)
-            .asMatchListFlow()
-            .onStart { emit(emptyList()) }
+    val gamesAsBlack = getMatchesForPlayers(opponent.uid, player.uid)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
   }
 
-  private fun queryGamesForPlayer(colorField: String, playerId: String): Query {
-    return store.collection("games").whereEquals(colorField, playerId)
+  private fun getMatchesForPlayer(colorField: String, playerId: String): Flow<List<Match>> {
+    return store.collection("games").whereEquals(colorField, playerId).asMatchListFlow().onStart {
+      emit(emptyList())
+    }
+  }
+
+  private fun getMatchesForPlayers(
+      whitePlayerId: String,
+      blackPlayerId: String
+  ): Flow<List<Match>> {
+    return store
+        .collection("games")
+        .whereEquals("whiteId", whitePlayerId)
+        .whereEquals("blackId", blackPlayerId)
+        .asMatchListFlow()
+        .onStart { emit(emptyList()) }
   }
 
   private fun Query.asMatchListFlow(): Flow<List<Match>> {
