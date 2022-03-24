@@ -15,6 +15,9 @@ interface Profile {
   /** The background color associated to the [Profile]. */
   val backgroundColor: Color
 
+  /** The unique identifier of the person. */
+  val uid: String
+
   /**
    * A class representing the different colors that the profile picture background might take. It
    * may contain arbitrary [String], but some default values are provided in [Color.Companion].

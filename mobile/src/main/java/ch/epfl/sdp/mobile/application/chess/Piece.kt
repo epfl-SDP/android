@@ -7,8 +7,13 @@ package ch.epfl.sdp.mobile.application.chess
  * are equal, the [id] should be compared as well. A [Board] may contain some pieces with the same
  * [id] but different colors and ranks, but each triplet ([Color], [Rank], [id]) will be unique.
  *
+ * @param Color type of the color of a [Piece].
  * @param color the [Color] of the player who owns the piece.
  * @param rank the rank indicating the abilities of the [Piece].
  * @param id the unique identifier for this piece, used for disambiguation.
  */
-data class Piece(val color: Color, val rank: Rank, val id: PieceIdentifier)
+data class Piece<Color>(
+    val color: Color,
+    val rank: Rank,
+    val id: PieceIdentifier,
+)

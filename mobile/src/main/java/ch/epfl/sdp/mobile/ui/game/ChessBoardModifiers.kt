@@ -79,3 +79,32 @@ fun Modifier.grid(
     }
   }
 }
+
+/**
+ * A [Modifier] which draws a [Set] of [ChessBoardState.Position].
+ *
+ * @param positions the positions to draw on the component.
+ * @param color the [Color] of the circles.
+ * @param diameter the size of each circle.
+ * @param cells the number of cells in the grid.
+ */
+fun Modifier.actions(
+    positions: Set<ChessBoardState.Position>,
+    color: Color = Color.Unspecified,
+    diameter: Dp = 16.dp,
+    cells: Int = ChessBoardCells
+): Modifier = composed {
+  val surfaceColor = color.takeOrElse { LocalContentColor.current }
+  drawBehind {
+    val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
+    val squareSize = size.minDimension / cells
+    val halfSquare = Offset(squareSize, squareSize) / 2f
+    for ((x, y) in positions) {
+      drawCircle(
+          color = surfaceColor,
+          radius = diameter.toPx() / 2,
+          center = origin + Offset(x * squareSize, y * squareSize) + halfSquare,
+      )
+    }
+  }
+}
