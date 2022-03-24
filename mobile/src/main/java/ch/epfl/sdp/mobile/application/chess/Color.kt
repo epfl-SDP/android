@@ -62,7 +62,7 @@ enum class Color(
    */
   fun normalize(action: Action): Action = Action(normalize(action.from), normalize(action.delta))
 
-    // TODO : Is there another way to do this ?
+  // TODO : Is there another way to do this ?
   fun denormalize(effect: Effect<Piece<Role>>): Effect<Piece<Color>> = Effect { board ->
     DenormalizedBoardDecorator(this, effect.perform(NormalizedBoardDecorator(this, board)))
   }
