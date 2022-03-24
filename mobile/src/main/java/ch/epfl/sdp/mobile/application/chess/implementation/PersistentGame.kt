@@ -17,6 +17,10 @@ data class PersistentGame(
     private val boards: PersistentList<Board<Piece<Color>>>,
 ) : Game {
 
+  /**
+   * The sequence of boards, guaranteed to have a size of at least one. The current board is
+   * available as [first].
+   */
   private val boardSequence = boards.asReversed().asSequence()
 
   override val board: Board<Piece<Color>> = boards.last()
@@ -42,6 +46,10 @@ data class PersistentGame(
   override fun actions(position: Position): Sequence<Action> =
       actionsAndEffects(position).map { it.first }
 
+  /**
+   * Returns a [Sequence] of [Action] and [Effect] that can be performed at the given [Position] by
+   * the player [nextPlayer]. Actions which would result in a check position are ignored.
+   */
   private fun actionsAndEffects(
       position: Position,
   ): Sequence<Pair<Action, Effect<Piece<Color>>>> =
@@ -56,19 +64,36 @@ private fun <Color> Board<Piece<Color>>.hasAnyOfRankAndColor(rank: Rank, player:
   return asSequence().any { (_, piece) -> piece.rank == rank && piece.color == player }
 }
 
+/**
+ * Returns true if and only if the player with the given color is in check.
+ *
+ * @param player the [Color] of the player for whom the check is checked.
+ */
 private fun BoardSequence<Piece<Color>>.inCheck(player: Color): Boolean {
   return allMoves(player.other()).any { (_, effect) ->
     !effect.perform(first()).hasAnyOfRankAndColor(King, player)
   }
 }
 
+/**
+ * Computes all the [Moves] which can be performed by a player of the given [color].
+ *
+ * @param color the [Color] of the player for whom all the moves are computed.
+ */
 private fun BoardSequence<Piece<Color>>.allMoves(color: Color): Moves<Piece<Color>> {
   return first().asSequence().flatMap { (pos, _) -> allMovesAtPosition(color, pos) }
 }
 
+/**
+ * Returns all of the moves that may be originating from the given [position], considering that the
+ * current player is of a specific [color].
+ *
+ * @param color the [Color] of the player whose turn is next.
+ * @param position the [Position] for which the possible [Moves] are computed.
+ */
 private fun BoardSequence<Piece<Color>>.allMovesAtPosition(
     color: Color,
-    position: Position
+    position: Position,
 ): Moves<Piece<Color>> {
   val normalizedBoards = map { NormalizedBoardDecorator(color, it) }
   val normalizedFrom = color.normalize(position)
