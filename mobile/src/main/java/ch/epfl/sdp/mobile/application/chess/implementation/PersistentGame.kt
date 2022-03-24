@@ -12,15 +12,29 @@ import ch.epfl.sdp.mobile.application.chess.rules.Role
  * @param nextPlayer the [Color] of the next player to play.
  */
 data class PersistentGame(
-    override val previous: Pair<Game, Action>?,
+    override val previous: Pair<PersistentGame, Action>?,
     val nextPlayer: Color,
     override val board: Board<Piece<Color>>,
 ) : Game {
 
+  /**
+   * An implementation of a [BoardWithHistory] which delegates retrieving information to the current
+   * [board] or the [previous] [PersistentGame].
+   *
+   * @param player the [Color] for which the board should be normalized.
+   */
+  private inner class PersistentNormalizedGameBoardWithHistory(
+      private val player: Color,
+  ) : BoardWithHistory<Piece<Role>>, Board<Piece<Role>> by NormalizedBoardDecorator(player, board) {
+
+    override val previousBoardWithHistory: BoardWithHistory<Piece<Role>>?
+      get() = previous?.let { (game, _) -> game.PersistentNormalizedGameBoardWithHistory(player) }
+  }
+
   override val nextStep: NextStep
     get() =
         NextStep.MovePiece(nextPlayer) { from, delta ->
-          val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
+          val normalizedBoard = PersistentNormalizedGameBoardWithHistory(nextPlayer)
           val normalizedFrom = nextPlayer.normalize(from)
           val normalizedDelta = nextPlayer.normalize(delta)
           val moves = normalizedMoves(from)
@@ -54,7 +68,7 @@ data class PersistentGame(
    * @return the [Moves] for the position.
    */
   private fun normalizedMoves(position: Position): Moves {
-    val normalizedBoard = NormalizedBoardDecorator(nextPlayer, board)
+    val normalizedBoard = PersistentNormalizedGameBoardWithHistory(nextPlayer)
     val normalizedFrom = nextPlayer.normalize(position)
     val piece = normalizedBoard[normalizedFrom] ?: return emptySequence()
     if (piece.color == Role.Adversary) return emptySequence()

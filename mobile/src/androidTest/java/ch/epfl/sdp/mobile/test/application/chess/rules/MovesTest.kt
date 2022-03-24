@@ -1,22 +1,25 @@
 package ch.epfl.sdp.mobile.test.application.chess.rules
 
-import ch.epfl.sdp.mobile.application.chess.Delta
-import ch.epfl.sdp.mobile.application.chess.Piece
-import ch.epfl.sdp.mobile.application.chess.Position
-import ch.epfl.sdp.mobile.application.chess.Rank.Pawn
+import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.Rank.*
 import ch.epfl.sdp.mobile.application.chess.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.rules.*
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
+import ch.epfl.sdp.mobile.test.application.chess.buildBoardWithHistory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class MovesTest {
 
+  private val adversaryKing = Piece(Adversary, King, PersistentPieceIdentifier(0))
   private val adversaryPawn = Piece(Adversary, Pawn, PersistentPieceIdentifier(0))
+  private val adversaryRook = Piece(Adversary, Rook, PersistentPieceIdentifier(0))
+  private val alliedKing = Piece(Allied, King, PersistentPieceIdentifier(0))
   private val alliedPawn = Piece(Allied, Pawn, PersistentPieceIdentifier(0))
+  private val alliedRook = Piece(Allied, Rook, PersistentPieceIdentifier(0))
 
   @Test
   fun delta_outOfBounds_hasNoActions() {
@@ -142,6 +145,277 @@ class MovesTest {
     val from = Position(0, 0)
     val board = emptyBoard<Piece<Role>>()
     val actions = board.lines(from).map { it.first }.filter { (_, d) -> d.x != 0 && d.y != 0 }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_missingKing_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(7, 7), alliedRook) },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_missingRook_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(4, 7), alliedKing) },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_emptyHistory_isSuccessful() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(Position(4, 7), Delta(2, 0)))
+  }
+
+  @Test
+  fun castling_blockingPiece_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(5, 7), adversaryPawn)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_movedKing_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(3, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_movedRook_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 6), alliedRook)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_adversaryKing_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), adversaryKing)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_adversaryRook_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), adversaryRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_alliedButNotKing_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedPawn)
+                set(Position(7, 7), alliedRook)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun castling_alliedButNotRook_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(4, 7), alliedKing)
+                set(Position(7, 7), alliedPawn)
+              },
+          )
+        }
+    val actions = board.rightCastling().map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_emptyHistory_isSuccessful() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 1), adversaryPawn)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 3), adversaryPawn)
+              },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).containsExactly(Action(Position(0, 3), Delta(1, -1)))
+  }
+
+  @Test
+  fun enPassant_inBetweenMove_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 2), adversaryPawn)
+              },
+          )
+          yield(
+              buildBoard {
+                set(Position(0, 3), alliedPawn)
+                set(Position(1, 3), adversaryPawn)
+              },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_badRow_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard {
+                set(Position(0, 4), alliedPawn)
+                set(Position(1, 4), adversaryPawn)
+              },
+          )
+        }
+    val actions = board.enPassant(Position(0, 4), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_noNeighbour_isNotAllowed() {
+    val board = buildBoardWithHistory<Piece<Role>> { yield(emptyBoard()) }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsAllied_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(1, 3), alliedPawn) },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsNotPawn_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(1, 3), adversaryRook) },
+          )
+        }
+    val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsOutOfBounds1_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(7, 0), adversaryPawn) },
+          )
+        }
+    // This isn't really a valid Delta, but our enPassant implementation allows it.
+    val actions = board.enPassant(Position(6, 3), Delta(1, -3)).map { it.first }
+    assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun enPassant_neighbourIsOutOfBounds2_isNotAllowed() {
+    val board =
+        buildBoardWithHistory<Piece<Role>> {
+          yield(
+              buildBoard { set(Position(7, 1), adversaryPawn) },
+          )
+        }
+    // This isn't really a valid Delta, but our enPassant implementation allows it.
+    val actions = board.enPassant(Position(6, 3), Delta(1, -2)).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
 }
