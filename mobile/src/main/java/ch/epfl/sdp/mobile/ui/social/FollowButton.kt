@@ -20,8 +20,15 @@ import ch.epfl.sdp.mobile.ui.FadeEnterTransition
 import ch.epfl.sdp.mobile.ui.FadeExitTransition
 import ch.epfl.sdp.mobile.ui.PawniesColors
 
+/**
+ * An implementation of [ButtonColors] used to change the color of a button according to whether it
+ * is selected.
+ *
+ * @param selected a [State] of [Boolean] indicating whether the button is selected.
+ */
 private class FollowButtonColors(selected: State<Boolean>) : ButtonColors {
 
+  /** A [State] of [Boolean] indicating whether the button is selected. */
   private val selected by selected
 
   @Composable
@@ -35,6 +42,14 @@ private class FollowButtonColors(selected: State<Boolean>) : ButtonColors {
   }
 }
 
+/**
+ * A variation of [OutlinedButton] used to follow or unfollow a user.
+ *
+ * @param following a [Boolean] indicating whether the button is active.
+ * @param onClick the action to be performed once the button is clicked.
+ * @param modifier the [Modifier] for the composable.
+ * @param shape the [RoundedCornerShape] of the button.
+ */
 @Composable
 fun FollowButton(
     following: Boolean,

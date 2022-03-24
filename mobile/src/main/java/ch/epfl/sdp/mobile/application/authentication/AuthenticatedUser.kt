@@ -55,8 +55,7 @@ class AuthenticatedUser(
   }
 
   /**
-   * Follows the given [Profile] by updating the list of followers of the followed profile with the
-   * uid of the current user.
+   * Follows the given [Profile] by updating its list of followers with the uid of the current user.
    *
    * @param followed the [Profile] to follow.
    */
@@ -66,8 +65,14 @@ class AuthenticatedUser(
     }
   }
 
-  suspend fun unfollow(followed: Profile) {
-    firestore.collection("users").document(followed.uid).update {
+  /**
+   * Unfollows the given [Profile] by removing the uid of the current user from its list of
+   * followers.
+   *
+   * @param unfollowed the [Profile] to unfollow.
+   */
+  suspend fun unfollow(unfollowed: Profile) {
+    firestore.collection("users").document(unfollowed.uid).update {
       arrayRemove("followers", user.uid)
     }
   }
