@@ -56,4 +56,20 @@ class GameTest {
     val b = game.board[Position(1, 1)]
     assertThat(a).isNotEqualTo(b)
   }
+
+  @Test
+  fun game_canPerformCastling() {
+    val game =
+        Game.create().play {
+          Position(4, 6) += Delta(0, -2) // White moves pawn
+          Position(1, 0) += Delta(1, 2) // Black moves knight
+          Position(5, 7) += Delta(-1, -1) // White moves bishop
+          Position(2, 2) += Delta(-1, -2) // Black moves knight
+          Position(6, 7) += Delta(-1, -2) // White moves knight
+          Position(1, 0) += Delta(1, 2) // Black moves knight
+          Position(4, 7) += Delta(2, 0) // White castles !
+        }
+    assertThat(game.board[Position(5, 7)]?.rank).isEqualTo(Rank.Rook)
+    assertThat(game.board[Position(6, 7)]?.rank).isEqualTo(Rank.King)
+  }
 }

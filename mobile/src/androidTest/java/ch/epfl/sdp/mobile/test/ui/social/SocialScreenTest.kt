@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
+import com.google.common.truth.Truth.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -39,7 +40,7 @@ class SocialScreenTest {
       mode = Searching
     }
 
-    override val openProfile: (Person) -> Unit = {}
+    override fun onFollowClick(followed: Person) = Unit
 
     companion object {
       fun createPerson(bgColor: Color, name: String, emoji: String): Person {
@@ -126,7 +127,7 @@ class SocialScreenTest {
 
     val state = FakeSnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, {}) }
+    rule.setContent { SearchResultList(state.following, onClick = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -142,7 +143,7 @@ class SocialScreenTest {
                     override val name = "test"
                     override val emoji = ":)"
                   }),
-              {})
+              onClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()

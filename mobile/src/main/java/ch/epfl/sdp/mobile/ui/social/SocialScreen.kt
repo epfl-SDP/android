@@ -22,14 +22,15 @@ import ch.epfl.sdp.mobile.ui.Search
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
 
 /**
- * This screen display all register user of the app
+ * This screen displays all registered users of the app.
  *
- * @param state the [SocialScreenState], manage the composable contents
- * @param modifier the [Modifier] for the composable
+ * @param P the type of the [Person].
+ * @param state the [SocialScreenState], manage the composable contents.
+ * @param modifier the [Modifier] for the composable.
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
+fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = Modifier) {
 
   val strings = LocalLocalizedStrings.current
 
@@ -69,23 +70,21 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
         Following -> FollowList(state.following, state.openProfile)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
-            else SearchResultList(players = state.searchResult, openProfile = state.openProfile)
+            else SearchResultList(players = state.searchResult, onClick = state::onFollowClick)
       }
     }
   }
 }
 
 /**
- * Display the list of followed player
- * @param players A list of [Person] that need to be displayed
- * @param modifier modifier the [Modifier] for the composable
+ * Display the list of followed player.
+ *
+ * @param P the type of the [Person].
+ * @param players A list of [Person] that need to be displayed.
+ * @param modifier modifier the [Modifier] for the composable.
  */
 @Composable
-fun FollowList(
-    players: List<Person>,
-    openProfile: (Person) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun <P : Person> FollowList(players: List<P>, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
@@ -115,9 +114,9 @@ fun FollowList(
 }
 
 /**
- * This composable display the screen when the user is [Searching] mode but the input is empty
+ * This composable display the screen when the user is [Searching] mode but the input is empty.
  *
- * @param modifier the [Modifier] for the composable
+ * @param modifier the [Modifier] for the composable.
  */
 @Composable
 fun EmptySearch(modifier: Modifier = Modifier) {
@@ -141,16 +140,18 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 
 /**
  * This composable display all the players that are in the [SocialScreenState]. This composable also
- * allow user to follow another player
+ * allow user to follow another player.
  *
- * @param players A list of [Person] that will be displayed
- * @param modifier the [Modifier] for the composable
+ * @param P the type of the [Person].
+ * @param players A list of [P] that will be displayed.
+ * @param onClick A function to be executed once a [Person]'s follow button is clicked.
+ * @param modifier the [Modifier] for the composable.
  */
 @Composable
-fun SearchResultList(
-    players: List<Person>,
-    openProfile: (Person) -> Unit,
-    modifier: Modifier = Modifier
+fun <P : Person> SearchResultList(
+    players: List<P>,
+    onClick: (P) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
@@ -159,7 +160,7 @@ fun SearchResultList(
           openProfile = openProfile,
           trailingAction = {
             OutlinedButton(
-                onClick = { /*TODO*/},
+                onClick = { onClick(player) },
                 shape = RoundedCornerShape(24.dp),
             ) {
               Icon(
