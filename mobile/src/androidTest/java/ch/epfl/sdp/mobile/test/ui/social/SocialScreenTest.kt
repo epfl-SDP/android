@@ -48,6 +48,7 @@ class SocialScreenTest {
           override val backgroundColor: Color = bgColor
           override val name: String = name
           override val emoji: String = emoji
+          override val followed = false
         }
       }
     }
@@ -70,6 +71,7 @@ class SocialScreenTest {
               override val backgroundColor = Color.Default
               override val name = "test"
               override val emoji = ":)"
+              override val followed = false
             })
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
@@ -141,6 +143,7 @@ class SocialScreenTest {
                     override val backgroundColor = Color.Default
                     override val name = "test"
                     override val emoji = ":)"
+                    override val followed = false
                   }),
               onClick = {})
         }

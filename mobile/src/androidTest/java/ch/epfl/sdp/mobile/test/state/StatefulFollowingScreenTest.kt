@@ -43,6 +43,7 @@ class StatefulFollowingScreenTest {
                   override val followed: Boolean
                     get() = false
                 }))
+    every { mockUser.followed } returns false
 
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()

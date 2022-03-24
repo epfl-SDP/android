@@ -62,6 +62,33 @@ class SocialFacadeTest {
   }
 
   @Test
+  fun follow_removeUidOfFollowedProfile() = runTest {
+    val auth = buildAuth { user("a@hotmail.com", "b") }
+    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+
+    authenticationFacade.signUpWithEmail("example", "name", "password")
+    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    user.follow(FakeProfile("other"))
+    user.unfollow((FakeProfile("other")))
+    val fakePersonFollowing = user.following.first().map { it.uid }
+    Truth.assertThat(fakePersonFollowing).doesNotContain("other")
+  }
+
+  @Test
+  fun follow_unfollowProfileNotInFollowersDoesNothing() = runTest {
+    val auth = buildAuth { user("a@hotmail.com", "b") }
+    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+
+    authenticationFacade.signUpWithEmail("example", "name", "password")
+    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    user.unfollow((FakeProfile("other")))
+    val fakePersonFollowing = user.following.first().map { it.uid }
+    Truth.assertThat(fakePersonFollowing).isEmpty()
+  }
+
+  @Test
   fun following_newUserHasNoFollowings() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "b") }
     val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
