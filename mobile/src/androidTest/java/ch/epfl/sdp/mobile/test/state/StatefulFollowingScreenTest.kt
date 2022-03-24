@@ -47,7 +47,7 @@ class StatefulFollowingScreenTest {
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
 
-    every { mockSocialFacade.search("") } returns emptyFlow()
+    every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
 
     rule.setContent {
       ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
