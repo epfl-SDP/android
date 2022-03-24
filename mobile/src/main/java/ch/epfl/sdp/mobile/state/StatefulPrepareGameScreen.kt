@@ -1,8 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.prepare_game.ColorChoice
@@ -15,16 +13,15 @@ class PrepareGameScreenStateImpl(
     override val onNewLocalGame: () -> Unit,
     override val onNewOnlineGame: () -> Unit,
 ) : PrepareGameScreenState {
-  override var colorChoice: ColorChoice = ColorChoice.WHITE
-  override var gameType: GameType = GameType.LOCAL
+  override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.WHITE)
+  override var gameType: GameType by mutableStateOf(GameType.LOCAL)
 }
 
 @Composable
 fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues = PaddingValues()
 ) {
-  val state = remember(user) { PrepareGameScreenStateImpl(user,{/*TODO*/},{/*TODO*/}) }
-  PrepareGameScreen(state, modifier, paddingValues)
+  val state = remember(user) { PrepareGameScreenStateImpl(user, { /*TODO*/}, { /*TODO*/}) }
+  PrepareGameScreen(state, modifier)
 }

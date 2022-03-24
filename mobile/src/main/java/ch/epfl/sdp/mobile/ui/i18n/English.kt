@@ -50,14 +50,14 @@ object English : LocalizedStrings {
   override val sectionPlay = "Play"
   override val newGame = "New game".uppercase()
 
-  override val pregameChooseColor = "Pick your color :"
-  override val pregameChooseOpponent = "Pick an opponent :"
-  override val pregameChooseGame = "Pick your game :"
-  override val pregameWhiteColor = "White".uppercase()
-  override val pregameBlackColor = "Black".uppercase()
-  override val pregameStart = "Start!".uppercase()
-  override val pregameSelectOpponent = "Select".uppercase()
-  override val pregameSelectedOpponent = "Selected".uppercase()
-  override val pregamePlayLocal = "Play locally".uppercase()
-  override val pregamePlayOnline = "Play against opponent".uppercase()
+  override val prepareGameChooseColor = "Pick your color :"
+  override val prepareGameChooseOpponent = "Pick an opponent :"
+  override val prepareGameChooseGame = "Pick your game :"
+  override val prepareGameWhiteColor = "White".uppercase()
+  override val prepareGameBlackColor = "Black".uppercase()
+  override val prepareGameStart = "Start!".uppercase()
+  override val prepareGameSelectOpponent = "Select".uppercase()
+  override val prepareGameSelectedOpponent = "Selected".uppercase()
+  override val prepareGamePlayLocal = "Play locally".uppercase()
+  override val prepareGamePlayOnline = "Play against opponent".uppercase()
 }

@@ -54,15 +54,14 @@ interface LocalizedStrings {
   val sectionPlay: String
   val newGame: String
 
-  val pregameChooseColor : String
-  val pregameChooseOpponent : String
-  val pregameChooseGame : String
-  val pregameWhiteColor : String
-  val pregameBlackColor : String
-  val pregameStart : String
-  val pregameSelectOpponent : String
-  val pregameSelectedOpponent : String
-  val pregamePlayLocal: String
-  val pregamePlayOnline: String
-
+  val prepareGameChooseColor: String
+  val prepareGameChooseOpponent: String
+  val prepareGameChooseGame: String
+  val prepareGameWhiteColor: String
+  val prepareGameBlackColor: String
+  val prepareGameStart: String
+  val prepareGameSelectOpponent: String
+  val prepareGameSelectedOpponent: String
+  val prepareGamePlayLocal: String
+  val prepareGamePlayOnline: String
 }

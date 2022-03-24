@@ -60,7 +60,7 @@ fun StatefulHome(
         StatefulPlayScreen(
             { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
-      composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize(), paddingValues) }
+      composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
   }
@@ -83,5 +83,5 @@ private fun HomeSection.toRoute(): String =
     }
 
 private fun hideBar(route: String?): Boolean {
-    return route == GameRoute || route == PrepareGameRoute
+  return route == GameRoute || route == PrepareGameRoute
 }

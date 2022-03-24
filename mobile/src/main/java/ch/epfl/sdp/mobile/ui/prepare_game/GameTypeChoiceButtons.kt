@@ -7,7 +7,6 @@ import androidx.compose.material.ButtonDefaults.buttonColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Check
@@ -27,13 +26,13 @@ fun GameTypeChoiceButtons(
       horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     ChoiceButton(
-        text = strings.pregamePlayLocal,
+        text = strings.prepareGamePlayLocal,
         selected = gameType == GameType.LOCAL,
         onClick = onNewLocalGame,
     )
     Spacer(modifier = modifier.height(16.dp))
     ChoiceButton(
-        text = strings.pregamePlayOnline,
+        text = strings.prepareGamePlayOnline,
         selected = gameType == GameType.ONLINE,
         onClick = onNewOnlineGame,
     )
@@ -67,5 +66,5 @@ fun ChoiceButton(
 private fun buttonColors(selected: Boolean): ButtonColors {
   return if (selected)
       buttonColors(backgroundColor = PawniesColors.Green800, contentColor = PawniesColors.Green500)
-  else buttonColors(backgroundColor = Color.Transparent, contentColor = PawniesColors.Green500)
+  else buttonColors(backgroundColor = PawniesColors.Beige050, contentColor = PawniesColors.Green500)
 }
