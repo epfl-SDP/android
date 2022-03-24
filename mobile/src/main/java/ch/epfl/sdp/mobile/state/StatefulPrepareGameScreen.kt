@@ -10,8 +10,10 @@ import ch.epfl.sdp.mobile.ui.prepare_game.GameType
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 
-class PrepareGameScreenImpl(
+class PrepareGameScreenStateImpl(
     private val user: AuthenticatedUser,
+    override val onNewLocalGame: () -> Unit,
+    override val onNewOnlineGame: () -> Unit,
 ) : PrepareGameScreenState {
   override var colorChoice: ColorChoice = ColorChoice.WHITE
   override var gameType: GameType = GameType.LOCAL
@@ -23,6 +25,6 @@ fun StatefulPrepareGameScreen(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues()
 ) {
-  val state = remember(user) { PrepareGameScreenImpl(user) }
+  val state = remember(user) { PrepareGameScreenStateImpl(user,{/*TODO*/},{/*TODO*/}) }
   PrepareGameScreen(state, modifier, paddingValues)
 }

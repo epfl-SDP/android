@@ -26,6 +26,8 @@ private const val PlayRoute = "play"
 /** The route associated to new game button */
 private const val GameRoute = "new_game"
 
+private const val PrepareGameRoute = "prepare_game"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -45,7 +47,7 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hiddenBar = entry?.destination?.route == GameRoute,
+      hiddenBar = hideBar(entry?.destination?.route),
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -56,8 +58,9 @@ fun StatefulHome(
       composable(SettingsRoute) { StatefulProfileScreen(user, Modifier.fillMaxSize()) }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            { controller.navigate(GameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
+      composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize(), paddingValues) }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
     }
   }
@@ -78,3 +81,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
     }
+
+private fun hideBar(route: String?): Boolean {
+    return route == GameRoute || route == PrepareGameRoute
+}
