@@ -47,7 +47,7 @@ class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
 
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
-    val step = game.nextStep as NextStep.MovePiece
+    val step = game.nextStep as? NextStep.MovePiece ?: return
 
     game =
         step.move(

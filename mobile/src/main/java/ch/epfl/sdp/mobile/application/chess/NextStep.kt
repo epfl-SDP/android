@@ -8,6 +8,19 @@ package ch.epfl.sdp.mobile.application.chess
 sealed interface NextStep {
 
   /**
+   * A [NextStep] which indicates that the current player may not perform any moves without putting
+   * themselves in a check position, but is not currently in check.
+   */
+  object Stalemate : NextStep
+
+  /**
+   * A [NextStep] which indicates that the game is over.
+   *
+   * @param winner the [Color] of the player who won.
+   */
+  data class Checkmate(val winner: Color) : NextStep
+
+  /**
    * A [NextStep] which indicates that the [Game] expects the player with color [turn] to perform a
    * move.
    *

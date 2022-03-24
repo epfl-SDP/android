@@ -26,8 +26,16 @@ data class PersistentGame(
   override val board: Board<Piece<Color>> = boards.last()
 
   override val nextStep: NextStep
-    get() =
-        NextStep.MovePiece(nextPlayer) { from, delta ->
+    get() {
+      val hasActions = boardSequence.hasAnyMoveAvailable(nextPlayer)
+      if (!hasActions) {
+        return if (boardSequence.inCheck(nextPlayer)) {
+          NextStep.Checkmate(nextPlayer.other())
+        } else {
+          NextStep.Stalemate
+        }
+      } else {
+        return NextStep.MovePiece(nextPlayer) { from, delta ->
           val (action, effects) =
               actionsAndEffects(from).firstOrNull { (action, _) ->
                 action.from == from && action.delta == delta
@@ -42,6 +50,8 @@ data class PersistentGame(
               boards = boards.add(nextBoard),
           )
         }
+      }
+    }
 
   override fun actions(position: Position): Sequence<Action> =
       actionsAndEffects(position).map { it.first }
@@ -57,6 +67,13 @@ data class PersistentGame(
         val next = effect.perform(board)
         !(sequenceOf(next) + boardSequence).inCheck(nextPlayer)
       }
+}
+
+/** Returns true iff the [Board] has any move available for any piece of the given [Color]. */
+private fun BoardSequence<Piece<Color>>.hasAnyMoveAvailable(color: Color): Boolean {
+  return allMoves(color).any { (_, effect) ->
+    !(sequenceOf(effect.perform(first())) + this).inCheck(color)
+  }
 }
 
 /** Returns true iff the [Board] has at least one piece of the given [Rank] and [Color]. */
