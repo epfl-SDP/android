@@ -8,12 +8,12 @@ import ch.epfl.sdp.mobile.application.chess.rules.*
  * @param moves the moves and threats that each piece may perform, depending on the current board
  * configuration.
  *
- * TODO : Support history-aware moves.
+ * TODO : Support check-awareness in moves.
  */
 enum class Rank(
-    val moves: Board<Piece<Role>>.(Position) -> Moves,
+    val moves: BoardWithHistory<Piece<Role>>.(Position) -> Moves,
 ) {
-  King(moves = { diagonals(it, 1) + lines(it, 1) }),
+  King(moves = { diagonals(it, 1) + lines(it, 1) + leftCastling() + rightCastling() }),
   Queen(moves = { diagonals(it) + lines(it) }),
   Rook(moves = { lines(it) }),
   Bishop(moves = { diagonals(it) }),
@@ -30,6 +30,12 @@ enum class Rank(
       },
   ),
   Pawn(
-      moves = { delta(it, x = 0, y = -1, includeAdversary = false) + doubleUp(it) + sideTakes(it) },
+      moves = {
+        delta(it, x = 0, y = -1, includeAdversary = false) +
+            doubleUp(it) +
+            sideTakes(it) +
+            enPassant(it, Delta(x = 1, y = 0)) +
+            enPassant(it, Delta(x = -1, y = 0))
+      },
   ),
 }

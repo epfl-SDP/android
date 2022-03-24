@@ -67,7 +67,7 @@ inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> =
  * Sets the given document with the provided [value].
  *
  * @param T the type of the document.
- * @param value hte value of the document which should be set. Existing fields will be discarded.
+ * @param value the value of the document which should be set. Existing fields will be discarded.
  */
 suspend inline fun <reified T : Any> DocumentReference.set(value: T): Unit = set(value, T::class)
 

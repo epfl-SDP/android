@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.online.ChessFacade.GameIdInfo
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
@@ -125,13 +126,27 @@ fun StatefulGameScreen(
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
 
-  // TODO: User userId and opponentId to find correct game
-  val gameId = "sample"
+  // TODO: Select correct game if several exist
+  val gameIdState = remember { chessFacade.fetchGameIds(user) }.collectAsState(listOf(GameIdInfo()))
+  println("DEBUG: GameIdInfo=$gameIdState")
 
+  val gameIdInfo = gameIdState.value[0]
+
+  // TODO: How to get rid of this default value without propagating the null too far
+  val gameId = gameIdInfo.gameId ?: "sample"
   val game = remember { chessFacade.fetchGame(gameId) }.collectAsState(Game.create())
 
   suspend fun updateGameWithId(game: Game) {
-    chessFacade.updateGame(gameId, game)
+    val step = game.nextStep as NextStep.MovePiece
+    val currentPlayingId =
+        when (step.turn) {
+          Color.Black -> gameIdInfo.blackId
+          Color.White -> gameIdInfo.whiteId
+        }
+
+    if (currentPlayingId == user.uid) {
+      chessFacade.updateGame(gameId, game)
+    }
   }
 
   val gameScreenState =
