@@ -71,7 +71,7 @@ fun StatefulFollowingScreen(
           mode = mode,
           searchFieldInteraction = searchFieldInteraction,
           scope = scope,
-      ),
+          openProfile = openProfile),
       modifier)
 }
 
@@ -93,10 +93,11 @@ private class SnapshotSocialScreenState(
     private val user: AuthenticatedUser,
     following: List<ProfileAdapter>,
     input: MutableState<String>,
-    searchResult: List<ProfileAdapter>,
-    mode: SocialScreenState.Mode,
-    searchFieldInteraction: MutableInteractionSource,
+    override var searchResult: List<ProfileAdapter>,
+    override var mode: SocialScreenState.Mode,
+    override var searchFieldInteraction: MutableInteractionSource,
     private val scope: CoroutineScope,
+    override val openProfile: (ProfileAdapter) -> Unit,
 ) : SocialScreenState<ProfileAdapter> {
 
   override var following = following

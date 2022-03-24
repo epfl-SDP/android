@@ -24,7 +24,7 @@ import org.junit.Test
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class FakeSnapshotSocialScreenState() : SocialScreenState {
+  private class FakeSnapshotSocialScreenState() : SocialScreenState<Person> {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
@@ -39,6 +39,8 @@ class SocialScreenTest {
     override fun onValueChange() {
       mode = Searching
     }
+
+    override val openProfile: (Person) -> Unit = {}
 
     override fun onFollowClick(followed: Person) = Unit
 
@@ -127,7 +129,7 @@ class SocialScreenTest {
 
     val state = FakeSnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = {}) }
+    rule.setContent { SearchResultList(state.following, onClick = {}, openProfile = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -143,7 +145,8 @@ class SocialScreenTest {
                     override val name = "test"
                     override val emoji = ":)"
                   }),
-              onClick = {})
+              onClick = {},
+              openProfile = {})
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()

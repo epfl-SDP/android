@@ -67,12 +67,15 @@ class StatefulFollowingScreenTest {
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
+      val mockNavHostController = mockk<NavHostController>()
 
       authenticationFacade.signUpWithEmail("example", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade) { StatefulFollowingScreen(user) }
+            ProvideFacades(authenticationFacade, socialFacade) {
+              StatefulFollowingScreen(user, mockNavHostController)
+            }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialFollow).performClick()
