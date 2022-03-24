@@ -59,17 +59,16 @@ class ChessBoardTest {
     }
   }
 
-  /*
   @Test
   fun draggingPawnAroundIsSuccessful() = runTest {
-    val state = SnapshotChessBoardState()
+    val state = SinglePieceSnapshotChessBoardState()
     val strings =
         rule.setContentWithLocalizedStrings {
           ChessBoard(state, Modifier.size(160.dp).testTag("board"))
         }
     rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(90.dp.toPx(), 130.dp.toPx()))
-      moveBy(Offset(0.dp.toPx(), -40.dp.toPx()))
+      down(Offset(10.dp.toPx(), 10.dp.toPx()))
+      moveBy(Offset(0.dp.toPx(), 40.dp.toPx()))
       up()
     }
     rule.awaitIdle()
@@ -79,10 +78,9 @@ class ChessBoardTest {
                     strings.boardColorWhite, strings.boardPiecePawn),
             )
             .fetchSemanticsNodes()
-            .any { DpOffset(90.dp, 90.dp) in it.getBoundsInRoot() }
+            .any { DpOffset(10.dp, 50.dp) in it.getBoundsInRoot() }
     assertThat(inBounds).isTrue()
   }
-   */
 
   @Test
   fun draggingPawnOutsideBoard_works() = runTest {

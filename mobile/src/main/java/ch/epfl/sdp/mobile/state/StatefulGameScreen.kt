@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.online.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.online.Match
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
@@ -11,6 +12,7 @@ import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -28,17 +30,8 @@ fun StatefulGameScreen(
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
 
-  // TODO: Select correct game if several exist (once we have a screen to display ongoing games)
-  val match =
-      remember(chessFacade, user) {
-            chessFacade.fetchMatchesForUser(user).map { it.firstOrNull() ?: Match.create() }
-          }
-          .collectAsState(Match.create())
-
   val gameScreenState =
-      remember(match, scope, user, chessFacade) {
-        SnapshotChessBoardState(match, user, scope, chessFacade::updateMatch)
-      }
+      remember(user, scope, chessFacade) { SnapshotChessBoardState(user, scope, chessFacade) }
 
   GameScreen(gameScreenState, modifier)
 }
@@ -48,13 +41,21 @@ fun StatefulGameScreen(
  * and has a static move list
  */
 class SnapshotChessBoardState(
-    matchState: State<Match>,
     private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
-    private val uploadMatch: suspend (Match) -> Unit,
+    private val chessFacade: ChessFacade,
 ) : GameScreenState<SnapshotPiece> {
 
-  private val match by matchState
+  var match by mutableStateOf(Match.create())
+
+  init {
+    // TODO: Select correct game if several exist (once we have a screen to display ongoing games)
+    scope.launch {
+      chessFacade.fetchMatchesForUser(user).map { it.firstOrNull() ?: Match.create() }.collect {
+        match = it
+      }
+    }
+  }
 
   /**
    * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
@@ -106,7 +107,7 @@ class SnapshotChessBoardState(
                 Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
             )
 
-        uploadMatch(Match(newGame, match.gameId, match.whiteId, match.blackId))
+        chessFacade.updateMatch(Match(newGame, match.gameId, match.whiteId, match.blackId))
       }
     }
   }
