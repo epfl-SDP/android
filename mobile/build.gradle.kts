@@ -38,10 +38,7 @@ android {
 
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
-  buildFeatures {
-    viewBinding = true
-    compose = true
-  }
+  buildFeatures { compose = true }
   kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
   testCoverage { jacocoVersion = libs.versions.jacoco.get() }
@@ -87,7 +84,7 @@ dependencies {
   // Jetpack Compose
   implementation(libs.bundles.compose.android)
 
-  implementation("io.github.sceneview:arsceneview:0.2.0")
+  implementation(libs.arsceneview)
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }
@@ -136,8 +133,7 @@ task<JacocoReport>("jacocoTestReport") {
         setIncludes(
             listOf(
                 "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-                "outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec"
-            ),
+                "outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec"),
         )
       },
   )
