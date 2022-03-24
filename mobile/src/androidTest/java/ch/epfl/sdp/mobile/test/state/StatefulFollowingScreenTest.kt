@@ -111,24 +111,4 @@ class StatefulFollowingScreenTest {
       rule.onNodeWithText(strings.socialPerformFollow).assertExists()
     }
   }
-  /*
-  @Test
-  fun followButton_followedAppears() {
-    val state = SocialScreenTest.SnapshotSocialScreenState()
-    state.searchResult =
-        listOf(
-            object : Person {
-              override val backgroundColor = Color.Default
-              override val name = "test"
-              override val emoji = ":)"
-              override val followed = false
-            })
-    rule.setContentWithLocalizedStrings { SocialScreen(state) }
-    rule.onRoot().performTouchInput { swipeUp() }
-
-    rule.onNodeWithText(English.socialSearchBarPlaceHolder).performTextInput("test")
-
-    rule.onAllNodesWithText(English.socialPerformFollow).onFirst().performClick()
-    rule.onAllNodesWithText(English.socialPerformUnfollow).onFirst().assertExists()
-  }*/
 }
