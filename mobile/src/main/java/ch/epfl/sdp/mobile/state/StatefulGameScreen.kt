@@ -35,8 +35,6 @@ fun StatefulGameScreen(
           }
           .collectAsState(Match.create())
 
-  println("DEBUG: MatchId = " + match.value.gameId)
-
   val gameScreenState =
       remember(match, scope, user, chessFacade) {
         SnapshotChessBoardState(match, user, scope, chessFacade::updateMatch)
@@ -98,9 +96,7 @@ class SnapshotChessBoardState(
           Color.Black -> match.blackId
           Color.White -> match.whiteId
         }
-    println("DEBUG: onDropPiece gameId = " + match.gameId)
-    println("DEBUG: onDropPiece playingId = " + currentPlayingId)
-    println("DEBUG: onDropPiece userId = " + user.uid)
+
     if (currentPlayingId == user.uid) {
       // TODO: Update game locally first, then verify upload was successful?
       scope.launch {
