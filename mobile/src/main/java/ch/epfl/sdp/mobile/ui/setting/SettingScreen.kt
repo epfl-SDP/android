@@ -5,8 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -21,14 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
-import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.SectionSocial
-import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.*
-import ch.epfl.sdp.mobile.ui.social.Loss
-import ch.epfl.sdp.mobile.ui.social.MatchResult
-import ch.epfl.sdp.mobile.ui.social.Tie
-import ch.epfl.sdp.mobile.ui.social.Win
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
@@ -41,58 +32,28 @@ fun SettingsScreen(
     state: SettingScreenState,
     modifier: Modifier = Modifier,
 ) {
-  val strings = LocalLocalizedStrings.current
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberSettingTabBarState(state.pastGamesCount, state.puzzlesCount)
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
-  LazyColumn(
-      state = lazyColumnState,
-      verticalArrangement = Arrangement.Top,
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier,
-  ) {
-    item { SettingHeader(state, Modifier.padding(vertical = 16.dp)) }
-    stickyHeader {
-      SettingTabBar(
-          state = tabBarState,
-          modifier = Modifier.fillMaxWidth(),
-          elevation = elevation,
-      )
-    }
-    items(state.matches) { match ->
-      val title = strings.profileMatchTitle(match.adversary)
-      val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
-      Match(title, subtitle, PawniesIcons.SectionSocial)
-    }
-  }
-}
 
-/**
- * Chooses a subtitle given a [MatchResult] and number of moves [nMoves] of the match
- * @param matchResult result of the match
- * @param nMoves number of moves
- */
-private fun chooseSubtitle(
-    strings: LocalizedStrings,
-    matchResult: MatchResult,
-    nMoves: Int
-): String {
-  val text =
-      when (matchResult) {
-        Tie -> strings.profileTieInfo
-        is Loss ->
-            when (matchResult.reason) {
-              MatchResult.Reason.CHECKMATE -> strings.profileLostByCheckmate
-              MatchResult.Reason.FORFEIT -> strings.profileLostByForfeit
-            }
-        is Win ->
-            when (matchResult.reason) {
-              MatchResult.Reason.CHECKMATE -> strings.profileWonByCheckmate
-              MatchResult.Reason.FORFEIT -> strings.profileWonByForfeit
-            }
-      }
-  return text(nMoves)
+  UserScreenSlot(
+      Header = {
+        SettingHeader(
+            state = state,
+            modifier = Modifier.padding(vertical = 16.dp),
+        )
+      },
+      ProfileTabBar = {
+        SettingTabBar(
+            state = tabBarState,
+            modifier = Modifier.fillMaxWidth(),
+            elevation = elevation,
+        )
+      },
+      matches = state.matches,
+      lazyColumnState = lazyColumnState,
+      modifier = modifier)
 }
 
 /**

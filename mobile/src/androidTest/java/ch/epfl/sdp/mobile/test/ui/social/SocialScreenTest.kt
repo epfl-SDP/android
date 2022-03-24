@@ -40,7 +40,7 @@ class SocialScreenTest {
       mode = Searching
     }
 
-    override val openProfile: (Person) -> Unit = {}
+    override val onPersonClick: (Person) -> Unit = {}
 
     override fun onFollowClick(followed: Person) = Unit
 
@@ -129,7 +129,7 @@ class SocialScreenTest {
 
     val state = FakeSnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = {}, openProfile = {}) }
+    rule.setContent { SearchResultList(state.following, onClick = {}, onPersonClick = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -146,7 +146,7 @@ class SocialScreenTest {
                     override val emoji = ":)"
                   }),
               onClick = {},
-              openProfile = {})
+              onPersonClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()

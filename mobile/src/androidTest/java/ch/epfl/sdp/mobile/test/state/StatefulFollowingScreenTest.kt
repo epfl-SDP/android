@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.navigation.NavHostController
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
@@ -45,13 +44,12 @@ class StatefulFollowingScreenTest {
 
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
-    val mockNavHostController = mockk<NavHostController>()
 
     every { mockSocialFacade.search("") } returns emptyFlow()
 
     rule.setContent {
       ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
-        StatefulFollowingScreen(mockUser, mockNavHostController)
+        StatefulFollowingScreen(mockUser, {})
       }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
@@ -67,15 +65,12 @@ class StatefulFollowingScreenTest {
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val mockNavHostController = mockk<NavHostController>()
 
       authenticationFacade.signUpWithEmail("example", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade) {
-              StatefulFollowingScreen(user, mockNavHostController)
-            }
+            ProvideFacades(authenticationFacade, socialFacade) { StatefulFollowingScreen(user, {}) }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialFollow).performClick()

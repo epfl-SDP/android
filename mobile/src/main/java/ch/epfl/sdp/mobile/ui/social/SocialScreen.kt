@@ -67,14 +67,14 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
     )
     transition.AnimatedContent { target ->
       when (target) {
-        Following -> FollowList(state.following, state.openProfile)
+        Following -> FollowList(state.following, state.onPersonClick)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
             else
                 SearchResultList(
                     players = state.searchResult,
                     onClick = state::onFollowClick,
-                    openProfile = state.openProfile)
+                    onPersonClick = state.onPersonClick)
       }
     }
   }
@@ -90,7 +90,7 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
 @Composable
 fun <P : Person> FollowList(
     players: List<P>,
-    openProfile: (P) -> Unit,
+    onPersonClick: (P) -> Unit,
     modifier: Modifier = Modifier
 ) {
   val strings = LocalLocalizedStrings.current
@@ -104,7 +104,7 @@ fun <P : Person> FollowList(
       items(players) { friend ->
         PersonCard(
             person = friend,
-            openProfile = { openProfile(friend) },
+            openProfile = { onPersonClick(friend) },
             trailingAction = {
               OutlinedButton(
                   onClick = { /*TODO*/},
@@ -159,14 +159,14 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 fun <P : Person> SearchResultList(
     players: List<P>,
     onClick: (P) -> Unit,
-    openProfile: (P) -> Unit,
+    onPersonClick: (P) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
       PersonCard(
           person = player,
-          openProfile = { openProfile(player) },
+          openProfile = { onPersonClick(player) },
           trailingAction = {
             OutlinedButton(
                 onClick = { onClick(player) },

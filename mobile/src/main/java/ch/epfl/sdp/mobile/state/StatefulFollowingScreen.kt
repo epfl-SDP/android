@@ -4,7 +4,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.social.Person
@@ -39,8 +38,8 @@ private data class ProfileAdapter(
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
-    controller: NavHostController,
-    modifier: Modifier = Modifier,
+    onPersonClick: (Person) -> Unit,
+    modifier: Modifier = Modifier
 ) {
   val following =
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
@@ -58,10 +57,6 @@ fun StatefulFollowingScreen(
   val mode = if (focused.value) Searching else Following
   val scope = rememberCoroutineScope()
 
-  val openProfile: (person: Person) -> Unit = { person ->
-    controller.navigate("$ProfileRoute/${person.name}")
-  }
-
   SocialScreen(
       SnapshotSocialScreenState(
           user = user,
@@ -71,7 +66,7 @@ fun StatefulFollowingScreen(
           mode = mode,
           searchFieldInteraction = searchFieldInteraction,
           scope = scope,
-          openProfile = openProfile),
+          onPersonClick = onPersonClick),
       modifier)
 }
 
@@ -97,7 +92,7 @@ private class SnapshotSocialScreenState(
     override var mode: SocialScreenState.Mode,
     override var searchFieldInteraction: MutableInteractionSource,
     private val scope: CoroutineScope,
-    override val openProfile: (ProfileAdapter) -> Unit,
+    override val onPersonClick: (ProfileAdapter) -> Unit,
 ) : SocialScreenState<ProfileAdapter> {
 
   override var following = following

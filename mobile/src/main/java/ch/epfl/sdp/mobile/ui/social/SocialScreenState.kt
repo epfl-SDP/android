@@ -41,7 +41,7 @@ interface SocialScreenState<P : Person> {
   val searchFieldInteraction: MutableInteractionSource
 
   /** Callback function to open profile of person */
-  val openProfile: (P) -> Unit
+  val onPersonClick: (P) -> Unit
 
   /** A callback invoked when the user type in the search text field */
   fun onValueChange()
