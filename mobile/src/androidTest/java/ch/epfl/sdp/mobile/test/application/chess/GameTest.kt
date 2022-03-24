@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.application.chess
 
 import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.rules.Action
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -71,5 +72,20 @@ class GameTest {
         }
     assertThat(game.board[Position(5, 7)]?.rank).isEqualTo(Rank.Rook)
     assertThat(game.board[Position(6, 7)]?.rank).isEqualTo(Rank.King)
+  }
+
+  @Test
+  fun gameHistory_isDenormalized() {
+    val game =
+        Game.create().play {
+          Position(6, 7) += Delta(-1, -2)
+          Position(6, 0) += Delta(-1, 2)
+        }
+
+    val second = game.previous
+    val first = game.previous?.first?.previous
+
+    assertThat(first?.second).isEqualTo(Action(Position(6, 7), Delta(-1, -2)))
+    assertThat(second?.second).isEqualTo(Action(Position(6, 0), Delta(-1, 2)))
   }
 }

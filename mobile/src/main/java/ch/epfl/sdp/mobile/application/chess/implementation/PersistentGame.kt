@@ -46,7 +46,7 @@ data class PersistentGame(
           val nextBoard = effects.perform(board)
 
           copy(
-              previous = this to nextPlayer.normalize(action),
+              previous = this to action,
               nextPlayer = nextPlayer.other(),
               boards = boards.add(nextBoard),
           )
