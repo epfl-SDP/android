@@ -22,6 +22,11 @@ data class ProfileDocument(
     val followers: List<String>? = null,
 )
 
+/**
+ * Transforms a given unique identifier to a [Profile].
+ *
+ * @param currentUserUid the unique identifier [String] of the [ProfileDocument] to transform.
+ */
 fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
   return object : Profile {
     override val emoji: String = this@toProfile?.emoji ?: "😎"
@@ -33,6 +38,11 @@ fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
   }
 }
 
+/**
+ * Transforms a given [AuthenticationUser] to a [Profile].
+ *
+ * @param currentUser the [AuthenticationUser] to transform.
+ */
 fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
   return toProfile((currentUser as? AuthenticatedUser)?.uid)
 }

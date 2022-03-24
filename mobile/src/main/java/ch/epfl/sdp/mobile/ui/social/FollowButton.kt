@@ -45,7 +45,8 @@ private class FollowButtonColors(selected: State<Boolean>) : ButtonColors {
 /**
  * A variation of [OutlinedButton] used to follow or unfollow a user.
  *
- * @param following a [Boolean] indicating whether the button is active.
+ * @param following a [Boolean] indicating whether the button's user is followed by the current
+ * user.
  * @param onClick the action to be performed once the button is clicked.
  * @param modifier the [Modifier] for the composable.
  * @param shape the [RoundedCornerShape] of the button.
