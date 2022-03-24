@@ -25,18 +25,18 @@ fun GameTypeChoiceButtons(
   Column(
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier) {
+  ) {
     ChoiceButton(
         text = strings.pregamePlayLocal,
         selected = gameType == GameType.LOCAL,
-        onClick = onNewLocalGame
-        )
+        onClick = onNewLocalGame,
+    )
     Spacer(modifier = modifier.height(16.dp))
     ChoiceButton(
         text = strings.pregamePlayOnline,
         selected = gameType == GameType.ONLINE,
-        onClick = onNewOnlineGame
-        )
+        onClick = onNewOnlineGame,
+    )
   }
 }
 
@@ -54,7 +54,7 @@ fun ChoiceButton(
       shape = RoundedCornerShape(24.dp),
       colors = buttonColors(selected),
       onClick = onClick) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = modifier) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       if (selected) {
         Icon(PawniesIcons.Check, null)
       }

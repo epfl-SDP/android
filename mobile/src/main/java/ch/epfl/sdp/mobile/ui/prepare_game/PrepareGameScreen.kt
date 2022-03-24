@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,47 +31,34 @@ fun PrepareGameScreen(
     paddingValues: PaddingValues = PaddingValues()
 ) {
   val strings = LocalLocalizedStrings.current
-  val state = rememberPrepareGameScreenState(state)
-
-  Column(verticalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier.padding(paddingValues)) {
+  var colorChoice by remember { mutableStateOf(state.colorChoice) }
+  var gameType by remember { mutableStateOf(state.gameType) }
+  Column(
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+      modifier = modifier.padding(paddingValues)) {
     Text(text = strings.pregameChooseColor, style = MaterialTheme.typography.subtitle1)
     ColorChoiceBar(
-        colorChoice = state.colorChoice,
-        onColorChange = { state.colorChoice = it },
-        modifier = modifier)
+        colorChoice = colorChoice,
+        onColorChange = { colorChoice = it },
+    )
     Text(
         text =
-            when (state.gameType) {
+            when (gameType) {
               GameType.ONLINE -> strings.pregameChooseOpponent
               GameType.LOCAL -> strings.pregameChooseGame
             },
         style = MaterialTheme.typography.subtitle1)
 
     GameTypeChoiceButtons(
-        state.gameType,
-        { state.gameType = GameType.ONLINE },
-        { state.gameType = GameType.LOCAL },
-        modifier)
-  }
-}
-
-class PrepareGameScreenStateImpl(
-    private val colorChoiceState: MutableState<ColorChoice>,
-    private val gameTypeState: MutableState<GameType>,
-    override val onNewLocalGame: () -> Unit,
-    override val onNewOnlineGame: () -> Unit
-) : PrepareGameScreenState {
-
-  override var colorChoice by colorChoiceState
-  override var gameType by gameTypeState
-}
-
-@Composable
-private fun rememberPrepareGameScreenState(state: PrepareGameScreenState): PrepareGameScreenState {
-  val gameType = remember { mutableStateOf(state.gameType) }
-  val colorChoice = remember { mutableStateOf(state.colorChoice) }
-
-  return remember {
-    PrepareGameScreenStateImpl(colorChoice, gameType, state.onNewLocalGame, state.onNewOnlineGame)
+        gameType,
+        {
+          gameType = GameType.ONLINE
+          state.onNewLocalGame
+        },
+        {
+          gameType = GameType.LOCAL
+          state.onNewLocalGame
+        },
+        Modifier.align(Alignment.CenterHorizontally))
   }
 }
