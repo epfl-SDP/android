@@ -7,8 +7,9 @@ import ch.epfl.sdp.mobile.application.serialize
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onStart
 
 class ChessFacade(private val auth: Auth, private val store: Store) {
 
@@ -32,11 +33,15 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
 
   fun fetchMatchesForUser(profile: Profile): Flow<List<Match>> {
     val gamesAsWhite =
-        queryGamesForPlayer(colorField = "whiteId", playerId = profile.uid).asMatchListFlow()
+        queryGamesForPlayer(colorField = "whiteId", playerId = profile.uid)
+            .asMatchListFlow()
+            .onStart { emit(emptyList()) }
     val gamesAsBlack =
-        queryGamesForPlayer(colorField = "blackId", playerId = profile.uid).asMatchListFlow()
+        queryGamesForPlayer(colorField = "blackId", playerId = profile.uid)
+            .asMatchListFlow()
+            .onStart { emit(emptyList()) }
 
-    return merge(gamesAsWhite, gamesAsBlack)
+    return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
   }
 
   fun fetchMatchesForPlayers(player: Profile, opponent: Profile): Flow<List<Match>> {
@@ -44,13 +49,15 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
         queryGamesForPlayer(colorField = "whiteId", playerId = player.uid)
             .whereEquals("blackId", opponent.uid)
             .asMatchListFlow()
+            .onStart { emit(emptyList()) }
 
     val gamesAsBlack =
         queryGamesForPlayer(colorField = "blackId", playerId = player.uid)
             .whereEquals("whiteId", opponent.uid)
             .asMatchListFlow()
+            .onStart { emit(emptyList()) }
 
-    return merge(gamesAsWhite, gamesAsBlack)
+    return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
   }
 
   private fun queryGamesForPlayer(colorField: String, playerId: String): Query {

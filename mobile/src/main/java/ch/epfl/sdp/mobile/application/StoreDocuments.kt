@@ -56,7 +56,7 @@ fun ChessDocument?.deserialize(): Match {
     val (position, delta) = parseStringToMove(move)
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(position, delta) ?: game
   }
-  return Match(game, this?.whiteId, this?.blackId)
+  return Match(game, this?.uid, this?.whiteId, this?.blackId)
 }
 
 fun Match.serialize(): ChessDocument {

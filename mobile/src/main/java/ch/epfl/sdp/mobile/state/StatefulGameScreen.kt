@@ -30,26 +30,17 @@ fun StatefulGameScreen(
 
   // TODO: Select correct game if several exist (once we have a screen to display ongoing games)
   val match =
-      remember(chessFacade) { chessFacade.fetchMatchesForUser(user).map { it[0] } }
+      remember(chessFacade, user) {
+            chessFacade.fetchMatchesForUser(user).map { it.firstOrNull() ?: Match.create() }
+          }
           .collectAsState(Match.create())
 
-  println("DEBUG: MatchID = " + match.value.gameId)
-
-  suspend fun updateMatch(match: Match) {
-    val step = match.game.nextStep as NextStep.MovePiece
-    val currentPlayingId =
-        when (step.turn) {
-          Color.Black -> match.blackId
-          Color.White -> match.whiteId
-        }
-
-    if (currentPlayingId == user.uid) {
-      chessFacade.updateMatch(match)
-    }
-  }
+  println("DEBUG: MatchId = " + match.value.gameId)
 
   val gameScreenState =
-      remember(match, scope) { SnapshotChessBoardState(match, scope, ::updateMatch) }
+      remember(match, scope, user, chessFacade) {
+        SnapshotChessBoardState(match, user, scope, chessFacade::updateMatch)
+      }
 
   GameScreen(gameScreenState, modifier)
 }
@@ -60,6 +51,7 @@ fun StatefulGameScreen(
  */
 class SnapshotChessBoardState(
     matchState: State<Match>,
+    private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
     private val uploadMatch: suspend (Match) -> Unit,
 ) : GameScreenState<SnapshotPiece> {
@@ -101,15 +93,25 @@ class SnapshotChessBoardState(
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     val step = match.game.nextStep as NextStep.MovePiece
 
-    // TODO: Update game locally first, then verify upload was successful?
-    scope.launch {
-      val newGame =
-          step.move(
-              Position(startPosition.x, startPosition.y),
-              Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
-          )
+    val currentPlayingId =
+        when (step.turn) {
+          Color.Black -> match.blackId
+          Color.White -> match.whiteId
+        }
+    println("DEBUG: onDropPiece gameId = " + match.gameId)
+    println("DEBUG: onDropPiece playingId = " + currentPlayingId)
+    println("DEBUG: onDropPiece userId = " + user.uid)
+    if (currentPlayingId == user.uid) {
+      // TODO: Update game locally first, then verify upload was successful?
+      scope.launch {
+        val newGame =
+            step.move(
+                Position(startPosition.x, startPosition.y),
+                Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
+            )
 
-      uploadMatch(Match(newGame, match.whiteId, match.blackId))
+        uploadMatch(Match(newGame, match.gameId, match.whiteId, match.blackId))
+      }
     }
   }
 
