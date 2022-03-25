@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.chess.online.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.state.ProvideFacades
@@ -46,11 +47,12 @@ class StatefulFollowingScreenTest {
 
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
+    val mockChessFacade = mockk<ChessFacade>()
 
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
 
     rule.setContent {
-      ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
+      ProvideFacades(mockAuthenticationFacade, mockSocialFacade, mockChessFacade) {
         StatefulFollowingScreen(mockUser)
       }
     }
@@ -67,12 +69,15 @@ class StatefulFollowingScreenTest {
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store)
 
       authenticationFacade.signUpWithEmail("example", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade) { StatefulFollowingScreen(user) }
+            ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+              StatefulFollowingScreen(user)
+            }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
@@ -97,12 +102,15 @@ class StatefulFollowingScreenTest {
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store)
 
       authenticationFacade.signUpWithEmail("example", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade) { StatefulFollowingScreen(user) }
+            ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+              StatefulFollowingScreen(user)
+            }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()

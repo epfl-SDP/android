@@ -4,6 +4,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.chess.online.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
@@ -25,12 +26,15 @@ class StatefulHomeTest {
     val store = emptyStore()
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
 
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
-        rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(api, social, chess) { StatefulHome(user) }
+        }
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
   }
@@ -41,11 +45,14 @@ class StatefulHomeTest {
     val store = emptyStore()
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
 
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
-        rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(api, social, chess) { StatefulHome(user) }
+        }
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
     rule.onAllNodesWithText(strings.sectionSettings).assertAny(isSelected())
@@ -57,12 +64,15 @@ class StatefulHomeTest {
     val store = emptyStore()
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
 
     api.signUpWithEmail("email", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
-        rule.setContentWithLocalizedStrings { ProvideFacades(api, social) { StatefulHome(user) } }
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(api, social, chess) { StatefulHome(user) }
+        }
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
@@ -74,11 +84,13 @@ class StatefulHomeTest {
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
     facade.signUpWithEmail("email", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social) { StatefulHome(user) }
+          ProvideFacades(facade, social, chess) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
@@ -91,11 +103,13 @@ class StatefulHomeTest {
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
     facade.signUpWithEmail("email", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social) { StatefulHome(user) }
+          ProvideFacades(facade, social, chess) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()

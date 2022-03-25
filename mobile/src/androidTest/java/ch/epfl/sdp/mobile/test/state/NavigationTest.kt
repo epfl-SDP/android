@@ -6,6 +6,7 @@ import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.chess.online.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
@@ -25,7 +26,10 @@ class NavigationTest {
     val store = emptyStore()
     val facade = AuthenticationFacade(SuspendingAuth, store)
     val socialFacade = SocialFacade(SuspendingAuth, store)
-    rule.setContentWithLocalizedStrings { ProvideFacades(facade, socialFacade) { Navigation() } }
+    val chessFacade = ChessFacade(SuspendingAuth, store)
+    rule.setContentWithLocalizedStrings {
+      ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
+    }
     rule.onAllNodes(keyIsDefined(SemanticsProperties.Text)).assertCountEquals(0)
   }
 
@@ -35,9 +39,10 @@ class NavigationTest {
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade) { Navigation() }
+          ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
         }
 
     // Do we see the authentication screen actions ?
@@ -50,9 +55,10 @@ class NavigationTest {
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade) { Navigation() }
+          ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
         }
     facade.signUpWithEmail("email", "name", "password")
 
