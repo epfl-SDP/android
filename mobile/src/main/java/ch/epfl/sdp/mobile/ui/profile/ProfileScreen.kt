@@ -97,7 +97,8 @@ fun ProfilePicture(
 
 /**
  * Composes the unfollow button
- * @param onClick call back method for unfollow button
+ * @param onClick callback function for the unfollow button.
+
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
