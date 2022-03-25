@@ -8,7 +8,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.i18n.English.socialFollow
+import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformFollow
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchBarPlaceHolder
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchEmptyTitle
 import ch.epfl.sdp.mobile.ui.social.Person
@@ -17,13 +17,14 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
+import com.google.common.truth.Truth.*
 import org.junit.Rule
 import org.junit.Test
 
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotSocialScreenState : SocialScreenState {
+  private class SnapshotSocialScreenState : SocialScreenState<Person> {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
@@ -39,12 +40,15 @@ class SocialScreenTest {
       mode = Searching
     }
 
+    override fun onFollowClick(followed: Person) = Unit
+
     companion object {
       fun createPerson(bgColor: Color, name: String, emoji: String): Person {
         return object : Person {
           override val backgroundColor: Color = bgColor
           override val name: String = name
           override val emoji: String = emoji
+          override val followed = false
         }
       }
     }
@@ -55,7 +59,7 @@ class SocialScreenTest {
     val state = SnapshotSocialScreenState()
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
 
-    rule.onNodeWithText(socialFollow).assertDoesNotExist()
+    rule.onNodeWithText(socialPerformFollow).assertDoesNotExist()
   }
 
   @Test
@@ -67,13 +71,14 @@ class SocialScreenTest {
               override val backgroundColor = Color.Default
               override val name = "test"
               override val emoji = ":)"
+              override val followed = false
             })
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
 
     rule.onNodeWithText(socialSearchBarPlaceHolder).performTextInput("test")
 
-    rule.onAllNodesWithText(socialFollow).onFirst().assertExists()
+    rule.onAllNodesWithText(socialPerformFollow).onFirst().assertExists()
   }
 
   @Test
@@ -122,7 +127,7 @@ class SocialScreenTest {
 
     val state = SnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following) }
+    rule.setContent { SearchResultList(state.following, onClick = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -138,9 +143,11 @@ class SocialScreenTest {
                     override val backgroundColor = Color.Default
                     override val name = "test"
                     override val emoji = ":)"
-                  }))
+                    override val followed = false
+                  }),
+              onClick = {})
         }
 
-    rule.onAllNodesWithText(strings.socialFollow.uppercase()).onFirst().assertExists()
+    rule.onAllNodesWithText(strings.socialPerformFollow.uppercase()).onFirst().assertExists()
   }
 }

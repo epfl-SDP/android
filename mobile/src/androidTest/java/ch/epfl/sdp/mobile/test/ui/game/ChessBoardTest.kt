@@ -11,7 +11,6 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.test.ui.contains
 import ch.epfl.sdp.mobile.test.ui.getBoundsInRoot
@@ -29,29 +28,6 @@ import org.junit.Test
 class ChessBoardTest {
 
   @get:Rule val rule = createComposeRule()
-
-  @Test
-  fun draggingPawnAroundIsSuccessful() = runTest {
-    val state = SnapshotChessBoardState()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
-        }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(90.dp.toPx(), 130.dp.toPx()))
-      moveBy(Offset(0.dp.toPx(), -40.dp.toPx()))
-      up()
-    }
-    rule.awaitIdle()
-    val inBounds =
-        rule.onAllNodesWithContentDescription(
-                strings.boardPieceContentDescription(
-                    strings.boardColorWhite, strings.boardPiecePawn),
-            )
-            .fetchSemanticsNodes()
-            .any { DpOffset(90.dp, 90.dp) in it.getBoundsInRoot() }
-    assertThat(inBounds).isTrue()
-  }
 
   /**
    * An implementation of [ChessBoardState] which moves a single piece around the chessboard on drag
@@ -72,12 +48,38 @@ class ChessBoardTest {
     override val pieces: Map<Position, Piece>
       get() = mapOf(position to piece)
 
+    override val availableMoves: Set<Position>
+      get() = emptySet()
+
     override fun onDropPiece(
         piece: Piece,
         endPosition: Position,
     ) {
       position = endPosition
     }
+  }
+
+  @Test
+  fun draggingPawnAroundIsSuccessful() = runTest {
+    val state = SinglePieceSnapshotChessBoardState()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
+        }
+    rule.onNodeWithTag("board").performTouchInput {
+      down(Offset(10.dp.toPx(), 10.dp.toPx()))
+      moveBy(Offset(0.dp.toPx(), 40.dp.toPx()))
+      up()
+    }
+    rule.awaitIdle()
+    val inBounds =
+        rule.onAllNodesWithContentDescription(
+                strings.boardPieceContentDescription(
+                    strings.boardColorWhite, strings.boardPiecePawn),
+            )
+            .fetchSemanticsNodes()
+            .any { DpOffset(10.dp, 50.dp) in it.getBoundsInRoot() }
+    assertThat(inBounds).isTrue()
   }
 
   @Test

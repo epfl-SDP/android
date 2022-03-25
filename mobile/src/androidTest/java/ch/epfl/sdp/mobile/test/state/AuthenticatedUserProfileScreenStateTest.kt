@@ -16,6 +16,8 @@ class AuthenticatedUserProfileScreenStateTest {
     every { mockUser.name } returns "test"
     every { mockUser.email } returns "test"
     every { mockUser.emoji } returns "test"
+    every { mockUser.uid } returns "test"
+    every { mockUser.followed } returns false
 
     val state = AuthenticatedUserProfileScreenState(mockUser)
     assertThat(state.name).isEqualTo("test")

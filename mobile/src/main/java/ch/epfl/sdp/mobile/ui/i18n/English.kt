@@ -39,15 +39,18 @@ object English : LocalizedStrings {
 
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Play".uppercase()
-  override val socialFollow = "Follow".uppercase()
+  override val socialPerformFollow = "Follow".uppercase()
+  override val socialPerformUnfollow = "Followed".uppercase()
   override val socialSearchBarPlaceHolder = "Search player ..."
   override val socialSearchEmptyTitle = "Search any player"
   override val socialSearchEmptySubtitle =
       "Find any player using their name, follow them, or invite them to play or see their match history"
 
+  override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
   override val sectionPlay = "Play"
+
   override val newGame = "New game".uppercase()
 
   override val prepareGameChooseColor = "Pick your color :"

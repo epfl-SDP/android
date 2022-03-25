@@ -13,7 +13,7 @@ android {
 
   defaultConfig {
     applicationId = "ch.epfl.sdp.mobile"
-    minSdk = 23
+    minSdk = 24
     targetSdk = 31
     versionCode = 1
     versionName = "0.1.0"
@@ -53,7 +53,6 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-
   // Testing.
   testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
@@ -84,6 +83,8 @@ dependencies {
 
   // Jetpack Compose
   implementation(libs.bundles.compose.android)
+
+  implementation(libs.arsceneview)
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }
@@ -131,9 +132,8 @@ task<JacocoReport>("jacocoTestReport") {
       fileTree(baseDir = project.buildDir) {
         setIncludes(
             listOf(
-                "jacoco/testDebugUnitTest.exec",
-                "outputs/code_coverage/debugAndroidTest/connected/*coverage.ec",
-            ),
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec"),
         )
       },
   )

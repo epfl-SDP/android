@@ -31,6 +31,7 @@ interface LocalizedStrings {
   val boardPieceKnight: String
   val boardPiecePawn: String
   val boardPieceContentDescription: (color: String, rank: String) -> String
+  val boardContentDescription: String
 
   val profileMatchTitle: (String) -> String
   val profileWonByCheckmate: (Int) -> String
@@ -44,11 +45,13 @@ interface LocalizedStrings {
 
   val socialFollowingTitle: String
   val socialPerformPlay: String
-  val socialFollow: String
+  val socialPerformFollow: String
+  val socialPerformUnfollow: String
   val socialSearchBarPlaceHolder: String
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
 
+  val sectionAr: String
   val sectionSocial: String
   val sectionSettings: String
   val sectionPlay: String
