@@ -8,6 +8,7 @@ import ch.epfl.sdp.mobile.application.chess.implementation.PersistentGame
 import ch.epfl.sdp.mobile.application.chess.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.rules.Action
+import kotlinx.collections.immutable.persistentListOf
 
 /**
  * An interface representing the current [Game], which contains a [Board] of pieces and on which
@@ -77,4 +78,9 @@ interface Game {
 fun buildGame(
     nextPlayer: Color,
     block: BoardBuilder<Piece<Color>>.() -> Unit,
-): Game = PersistentGame(previous = null, nextPlayer = nextPlayer, board = buildBoard(block))
+): Game =
+    PersistentGame(
+        previous = null,
+        nextPlayer = nextPlayer,
+        boards = persistentListOf(buildBoard(block)),
+    )
