@@ -83,9 +83,7 @@ class StatefulGameScreenTest {
 
   private fun pos(x: Int, y: Int, density: Density, squareSize: Dp): Offset {
     with(density) {
-      return Offset(
-          x.toAbsDp(squareSize).toPx(),
-          y.toAbsDp(squareSize).toPx())
+      return Offset(x.toAbsDp(squareSize).toPx(), y.toAbsDp(squareSize).toPx())
     }
   }
 
