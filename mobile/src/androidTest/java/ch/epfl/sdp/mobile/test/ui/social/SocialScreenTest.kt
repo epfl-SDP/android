@@ -40,8 +40,6 @@ class SocialScreenTest {
       mode = Searching
     }
 
-    override val onPersonClick: (Person) -> Unit = {}
-
     override fun onFollowClick(followed: Person) = Unit
 
     companion object {
@@ -53,6 +51,8 @@ class SocialScreenTest {
         }
       }
     }
+
+    override fun onPersonClick(person: Person) {}
   }
 
   @Test

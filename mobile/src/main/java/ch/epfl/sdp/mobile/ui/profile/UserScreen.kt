@@ -25,7 +25,7 @@ import ch.epfl.sdp.mobile.ui.social.*
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserScreenSlot(
+fun UserScreen(
     Header: @Composable () -> Unit,
     ProfileTabBar: @Composable () -> Unit,
     matches: List<ChessMatch>,

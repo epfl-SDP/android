@@ -22,7 +22,7 @@ private const val SocialRoute = "social"
 private const val SettingsRoute = "settings"
 
 /** The route associated to the play tab. */
-const val ProfileRoute = "profile"
+private const val ProfileRoute = "profile"
 
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"

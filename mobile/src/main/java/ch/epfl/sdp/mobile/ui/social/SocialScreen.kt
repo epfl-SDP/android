@@ -68,14 +68,14 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
     )
     transition.AnimatedContent { target ->
       when (target) {
-        Following -> FollowList(state.following, state.onPersonClick)
+        Following -> FollowList(state.following, state::onPersonClick)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
             else
                 SearchResultList(
                     players = state.searchResult,
                     onClick = state::onFollowClick,
-                    onPersonClick = state.onPersonClick)
+                    onPersonClick = state::onPersonClick)
       }
     }
   }
@@ -86,6 +86,7 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
  *
  * @param P the type of the [Person].
  * @param players A list of [Person] that need to be displayed.
+ * @param onPersonClick Callback function for click on Item.
  * @param modifier modifier the [Modifier] for the composable.
  */
 @Composable
@@ -154,6 +155,7 @@ fun EmptySearch(modifier: Modifier = Modifier) {
  * @param P the type of the [Person].
  * @param players A list of [P] that will be displayed.
  * @param onClick A function to be executed once a [Person]'s follow button is clicked.
+ * @param onPersonClick A function that is executed if clicked on a result.
  * @param modifier the [Modifier] for the composable.
  */
 @Composable

@@ -37,7 +37,7 @@ fun SettingsScreen(
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
 
-  UserScreenSlot(
+  UserScreen(
       Header = {
         SettingHeader(
             state = state,

@@ -91,7 +91,11 @@ interface SettingTabBarState {
   val puzzlesCount: Int
 }
 
-/** Implementation of the ProfileTabBarState */
+/**
+ * Implementation of the SettingTabBarState
+ * @param pastGamesCount count of games.
+ * @param puzzlesCount count of puzzles done.
+ */
 private class SettingTabBarStateImpl(
     pastGamesCount: State<Int>,
     puzzlesCount: State<Int>,
@@ -101,7 +105,11 @@ private class SettingTabBarStateImpl(
   override var currentTab by mutableStateOf(SettingTabBarState.Tab.PastGames)
 }
 
-/** Function used to remember the state of the ProfileTabBar */
+/**
+ * Function used to remember the state of the ProfileTabBar
+ * @param pastGamesCount count of games.
+ * @param puzzlesCount count of puzzles done.
+ */
 @Composable
 fun rememberSettingTabBarState(
     pastGamesCount: Int,

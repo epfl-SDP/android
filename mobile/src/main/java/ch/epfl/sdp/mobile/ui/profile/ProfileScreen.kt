@@ -35,7 +35,7 @@ fun ProfileScreen(
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
 
-  UserScreenSlot(
+  UserScreen(
       Header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp)) },
       ProfileTabBar = {
         ProfileTabBar(

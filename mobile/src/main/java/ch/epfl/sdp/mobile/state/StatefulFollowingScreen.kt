@@ -88,11 +88,11 @@ private class SnapshotSocialScreenState(
     private val user: AuthenticatedUser,
     following: List<ProfileAdapter>,
     input: MutableState<String>,
-    override var searchResult: List<ProfileAdapter>,
+    override val searchResult: List<ProfileAdapter>,
     override var mode: SocialScreenState.Mode,
-    override var searchFieldInteraction: MutableInteractionSource,
+    override val searchFieldInteraction: MutableInteractionSource,
     private val scope: CoroutineScope,
-    override val onPersonClick: (ProfileAdapter) -> Unit,
+    private val onPersonClick: (Person) -> Unit
 ) : SocialScreenState<ProfileAdapter> {
 
   override var following = following
@@ -102,5 +102,9 @@ private class SnapshotSocialScreenState(
 
   override fun onFollowClick(followed: ProfileAdapter) {
     scope.launch { user.follow(followed.profile) }
+  }
+
+  override fun onPersonClick(person: ProfileAdapter) {
+    onPersonClick(person)
   }
 }
