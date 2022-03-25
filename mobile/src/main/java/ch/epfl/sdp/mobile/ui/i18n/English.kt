@@ -48,6 +48,7 @@ object English : LocalizedStrings {
   override val boardPieceKnight = "knight"
   override val boardPiecePawn = "pawn"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
+  override val boardContentDescription = "chessboard"
 
   override val newGame = "New game".uppercase()
 }
