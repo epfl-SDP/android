@@ -34,7 +34,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   /**
    * Get user by name
    *
-   * @param text search criteria.
+   * @param name text search criteria.
    */
   fun get(name: String): Flow<Profile> {
     return store
