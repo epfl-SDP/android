@@ -32,7 +32,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * Get user by name
+   * Returns a [Flow] of the [Profile] with the given name
    *
    * @param name text search criteria.
    */
