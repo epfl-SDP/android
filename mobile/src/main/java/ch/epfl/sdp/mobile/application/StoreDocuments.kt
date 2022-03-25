@@ -69,8 +69,8 @@ data class ChessDocument(
 /**
  * Deserializes and creates a [Match] from a [ChessDocument]
  *
- * For a null [ChessDocument], a default [Match] with
- * null value and default [Game] positions will be created
+ * For a null [ChessDocument], a default [Match] with null value and default [Game] positions will
+ * be created
  *
  * @return The deserialized [Match]
  */

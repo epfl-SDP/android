@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
 /**
- * An interface which represents all the endpoints and available features for online chess interactions for
- * a user of the Pawnies application.
+ * An interface which represents all the endpoints and available features for online chess
+ * interactions for a user of the Pawnies application.
  *
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
@@ -37,8 +37,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * Updates a [Match] in the [Store]
-   * Should only be called with a [Match] whose gameId is not null
+   * Updates a [Match] in the [Store] Should only be called with a [Match] whose gameId is not null
    * in order to target the correct document in the [Store]
    *
    * @param match The new [Match] to be stores.
@@ -50,8 +49,8 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on
-   * with any other player (or even himself)
+   * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
+   * player (or even himself)
    *
    * @param profile The [Profile] whose [Matches] will be fetched
    *
