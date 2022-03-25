@@ -66,6 +66,14 @@ data class ChessDocument(
     val blackId: String? = null,
 )
 
+/**
+ * Deserializes and creates a [Match] from a [ChessDocument]
+ *
+ * For a null [ChessDocument], a default [Match] with
+ * null value and default [Game] positions will be created
+ *
+ * @return The deserialized [Match]
+ */
 fun ChessDocument?.deserialize(): Match {
   var game = Game.create()
 
@@ -76,6 +84,11 @@ fun ChessDocument?.deserialize(): Match {
   return Match(game, this?.uid, this?.whiteId, this?.blackId)
 }
 
+/**
+ * Serializes a [Match] to a [ChessDocument]
+ *
+ * @return The serialized [ChessDocument]
+ */
 fun Match.serialize(): ChessDocument {
   val sequence = sequence {
     var previous = this@serialize.game.previous

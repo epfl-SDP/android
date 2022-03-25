@@ -11,8 +11,23 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 
+/**
+ * An interface which represents all the endpoints and available features for online chess interactions for
+ * a user of the Pawnies application.
+ *
+ * @param auth the [Auth] instance which will be used to handle authentication.
+ * @param store the [Store] which is used to manage documents.
+ */
 class ChessFacade(private val auth: Auth, private val store: Store) {
 
+  /**
+   * Creates a [Match] between two [Profile]s and stores it in the [Store]
+   *
+   * @param white The [Profile] of the player that will play white
+   * @param black The [Profile] of the player that will play black
+   *
+   * @return The created [Match] before storing it in the [Store] (without the GameId)
+   */
   suspend fun createMatch(white: Profile, black: Profile): Match {
     val match = Match.create(white.uid, black.uid)
     val chessDocument = match.serialize()
@@ -21,12 +36,27 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     return match
   }
 
+  /**
+   * Updates a [Match] in the [Store]
+   * Should only be called with a [Match] whose gameId is not null
+   * in order to target the correct document in the [Store]
+   *
+   * @param match The new [Match] to be stores.
+   */
   suspend fun updateMatch(match: Match) {
     match.gameId ?: return
     val chessDocument = match.serialize()
     store.collection("games").document(match.gameId).set(chessDocument)
   }
 
+  /**
+   * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on
+   * with any other player (or even himself)
+   *
+   * @param profile The [Profile] whose [Matches] will be fetched
+   *
+   * @return The [Flow] of [List] of [Match]s for the [Profile]
+   */
   fun fetchMatchesForUser(profile: Profile): Flow<List<Match>> {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
     val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
