@@ -91,7 +91,7 @@ interface SettingTabBarState {
   val puzzlesCount: Int
 }
 
-/** Implementation of the ProfileTabBarState */
+/** Implementation of the SettingTabBarState */
 private class SettingTabBarStateImpl(
     pastGamesCount: State<Int>,
     puzzlesCount: State<Int>,
