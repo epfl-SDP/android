@@ -25,6 +25,7 @@ class SocialFacadeTest {
     override val backgroundColor: Profile.Color = Profile.Color.Default
     override val name: String = "Andy"
     override val emoji: String = ":3"
+    override val followed: Boolean = false
   }
 
   @Test
@@ -59,6 +60,33 @@ class SocialFacadeTest {
     user.follow(FakeProfile("other"))
     val fakePersonFollowing = user.following.first().map { it.uid }
     Truth.assertThat(fakePersonFollowing).contains("other")
+  }
+
+  @Test
+  fun follow_removeUidOfFollowedProfile() = runTest {
+    val auth = buildAuth { user("a@hotmail.com", "b") }
+    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+
+    authenticationFacade.signUpWithEmail("example", "name", "password")
+    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    user.follow(FakeProfile("other"))
+    user.unfollow((FakeProfile("other")))
+    val fakePersonFollowing = user.following.first().map { it.uid }
+    Truth.assertThat(fakePersonFollowing).doesNotContain("other")
+  }
+
+  @Test
+  fun follow_unfollowProfileNotInFollowersDoesNothing() = runTest {
+    val auth = buildAuth { user("a@hotmail.com", "b") }
+    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+
+    authenticationFacade.signUpWithEmail("example", "name", "password")
+    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    user.unfollow((FakeProfile("other")))
+    val fakePersonFollowing = user.following.first().map { it.uid }
+    Truth.assertThat(fakePersonFollowing).isEmpty()
   }
 
   @Test

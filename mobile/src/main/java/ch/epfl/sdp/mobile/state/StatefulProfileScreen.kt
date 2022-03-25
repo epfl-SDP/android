@@ -16,6 +16,7 @@ class FetchedUserProfileScreenState(
   override val backgroundColor = user.backgroundColor
   override val name = user.name
   override val emoji = user.emoji
+  override val followed = user.followed
 
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {}

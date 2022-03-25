@@ -26,6 +26,7 @@ private data class ProfileAdapter(
   override val backgroundColor = profile.backgroundColor
   override val name = profile.name
   override val emoji = profile.emoji
+  override val followed = profile.followed
 }
 
 /**
@@ -47,7 +48,9 @@ fun StatefulFollowingScreen(
   val socialFacade = LocalSocialFacade.current
   val input = remember { mutableStateOf("") }
   val searchResults =
-      remember { snapshotFlow { input.value }.flatMapLatest { s -> socialFacade.search(s) } }
+      remember(user) {
+        snapshotFlow { input.value }.flatMapLatest { s -> socialFacade.search(s, user) }
+      }
           .collectAsState(emptyList())
           .value
           .map { ProfileAdapter(it) }
@@ -101,7 +104,13 @@ private class SnapshotSocialScreenState(
   override fun onValueChange() {}
 
   override fun onFollowClick(followed: ProfileAdapter) {
-    scope.launch { user.follow(followed.profile) }
+    scope.launch {
+      if (!followed.followed) {
+        user.follow(followed.profile)
+      } else {
+        user.unfollow(followed.profile)
+      }
+    }
   }
 
   override fun onPersonClick(person: ProfileAdapter) {

@@ -19,6 +19,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -47,6 +49,8 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
+  val strings = LocalLocalizedStrings.current
+
   BoxWithConstraints(
       modifier
           .aspectRatio(1f)
@@ -58,7 +62,8 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
           .actions(
               positions = state.availableMoves,
               color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.disabled),
-          ),
+          )
+          .semantics { this.contentDescription = strings.boardContentDescription },
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
     val cellPx = minDimension / ChessBoardCells

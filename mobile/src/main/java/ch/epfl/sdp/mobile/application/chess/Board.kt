@@ -5,7 +5,7 @@ package ch.epfl.sdp.mobile.application.chess
  *
  * @param Piece the type of the pieces which are present in a board.
  */
-interface Board<Piece : Any> {
+interface Board<Piece : Any> : Iterable<Pair<Position, Piece>> {
 
   /**
    * Returns the [Piece] at a certain [Position] in the board, or null if no [Piece] is localed

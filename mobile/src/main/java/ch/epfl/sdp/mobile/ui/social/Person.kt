@@ -13,4 +13,7 @@ interface Person {
 
   /** The emoji of the profile picture of the user. */
   val emoji: String
+
+  /** True iff the current user is following this [Person]. */
+  val followed: Boolean
 }

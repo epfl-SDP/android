@@ -1,6 +1,10 @@
 package ch.epfl.sdp.mobile.application.chess
 
+import ch.epfl.sdp.mobile.application.chess.implementation.DenormalizedBoardDecorator
+import ch.epfl.sdp.mobile.application.chess.implementation.NormalizedBoardDecorator
 import ch.epfl.sdp.mobile.application.chess.rules.Action
+import ch.epfl.sdp.mobile.application.chess.rules.Effect
+import ch.epfl.sdp.mobile.application.chess.rules.Role
 
 /**
  * The classical colors of a game of chess.
@@ -57,6 +61,11 @@ enum class Color(
    * @return the normalized action.
    */
   fun normalize(action: Action): Action = Action(normalize(action.from), normalize(action.delta))
+
+  // TODO : Is there another way to do this ?
+  fun denormalize(effect: Effect<Piece<Role>>): Effect<Piece<Color>> = Effect { board ->
+    DenormalizedBoardDecorator(this, effect.perform(NormalizedBoardDecorator(this, board)))
+  }
 
   /** Returns the [Color] of the adversary. */
   fun other(): Color = opposite()
