@@ -27,7 +27,7 @@ I take time to do my task, but now I have a good understanding of the library an
 
 ## Fouad Mahmoud
 
-This sprint was a lot better for me than the previous ones. Even though I had to refactor my old pull request which took me some time, my new tasks were in the same domain as those of the last sprint which easened my work and reduced my sprint hours considerably based on last week. I did have some assistance from Alexandre to help debug some tests and fasten up my work process which helped increase my kotlin and compose knowledge. 
+This sprint was a lot better for me than the previous ones. Even though I had to refactor my old pull request which took me some time, my new tasks were in the same domain as those of the last sprint which easened my work and reduced my sprint hours considerably based on last week. I did have some assistance from Chau to help verify my Jacoco fix and Alexandre to help debug some tests and fasten up my work process which helped increase my kotlin and compose knowledge. 
  
 Next sprint I will try to be more on track with my work, ask questions early and explore new code areas to enhance my knowledge even further.
 
