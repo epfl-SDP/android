@@ -9,11 +9,21 @@ import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
 
 /**
+ * An alias which describes a sequence of boards. The most recent board will be made available as
+ * the [last] element of the sequence.
+ *
+ * @param P the type of the pieces of the board.
+ */
+typealias BoardSequence<P> = Sequence<Board<P>>
+
+/**
  * An alias which which describes a lazily-built collection of moves in the game. Each move has an
  * associated [Action], which describes what gesture that the player will have performed on the
  * screen to reach this state.
+ *
+ * @param P the type of the pieces of the board.
  */
-typealias Moves = Sequence<Pair<Action, Effect<Piece<Role>>>>
+typealias Moves<P> = Sequence<Pair<Action, Effect<P>>>
 
 /**
  * A simple [Moves] implementation which represents a displacement of the [Piece] with a certain
@@ -24,16 +34,17 @@ typealias Moves = Sequence<Pair<Action, Effect<Piece<Role>>>>
  * @param y the delta on the y axis.
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
  */
-fun Board<Piece<Role>>.delta(
+fun BoardSequence<Piece<Role>>.delta(
     from: Position,
     x: Int,
     y: Int,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
+  val board = first()
   val delta = Delta(x, y)
   val target = from + delta ?: return@sequence // Stop if out of bounds.
-  val piece = get(target)
-  if (piece == null || (includeAdversary && piece.color == Role.Adversary)) {
+  val piece = board[target]
+  if (piece == null || (includeAdversary && piece.color == Adversary)) {
     yield(Action(from, delta) to move(from, delta))
   }
 }
@@ -46,13 +57,14 @@ fun Board<Piece<Role>>.delta(
  * @param row the row on which the double-up move is allowed.
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
  */
-fun Board<Piece<Role>>.doubleUp(
+fun BoardSequence<Piece<Role>>.doubleUp(
     from: Position,
     row: Int = 6,
     includeAdversary: Boolean = false,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
+  val board = first()
   if (from.y != row) return@sequence // Not on the right row.
-  if (get(Position(from.x, from.y - 1)) != null) return@sequence // A piece is in the path.
+  if (board[Position(from.x, from.y - 1)] != null) return@sequence // A piece is in the path.
   yieldAll(delta(from, x = 0, y = -2, includeAdversary = includeAdversary))
 }
 
@@ -61,11 +73,12 @@ fun Board<Piece<Role>>.doubleUp(
  *
  * @param from the original [Position] of the pawn.
  */
-fun Board<Piece<Role>>.sideTakes(
+fun BoardSequence<Piece<Role>>.sideTakes(
     from: Position,
-): Moves = sequence {
-  if (get(Position(from.x - 1, from.y - 1)) != null) yieldAll(delta(from, -1, -1))
-  if (get(Position(from.x + 1, from.y - 1)) != null) yieldAll(delta(from, 1, -1))
+): Moves<Piece<Role>> = sequence {
+  val board = first()
+  if (board[Position(from.x - 1, from.y - 1)] != null) yieldAll(delta(from, -1, -1))
+  if (board[Position(from.x + 1, from.y - 1)] != null) yieldAll(delta(from, 1, -1))
 }
 
 /**
@@ -77,19 +90,20 @@ fun Board<Piece<Role>>.sideTakes(
  * @param maxRepeats the maximum number of steps in the [direction].
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
  */
-private fun Board<Piece<Role>>.repeatDirection(
+private fun BoardSequence<Piece<Role>>.repeatDirection(
     from: Position,
     direction: Delta,
     maxRepeats: Int = Board.Size,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
+  val board = first()
   repeat(maxRepeats) { i ->
     val delta = direction * (i + 1)
     val target = from + delta ?: return@sequence // Stop if out of bounds.
-    val piece = get(target)
+    val piece = board[target]
     val action = Action(from, delta)
     if (piece != null) {
-      if (includeAdversary && piece.color == Role.Adversary) {
+      if (includeAdversary && piece.color == Adversary) {
         yield(action to move(from, delta))
       }
       return@sequence
@@ -105,11 +119,11 @@ private fun Board<Piece<Role>>.repeatDirection(
  * @param maxDistance the maximum moving distance for the piece.
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
  */
-fun Board<Piece<Role>>.lines(
+fun BoardSequence<Piece<Role>>.lines(
     from: Position,
     maxDistance: Int = Board.Size,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val directions = listOf(Delta(0, 1), Delta(0, -1), Delta(1, 0), Delta(-1, 0))
   for (direction in directions) {
     yieldAll(
@@ -130,11 +144,11 @@ fun Board<Piece<Role>>.lines(
  * @param maxDistance the maximum moving distance for the piece.
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
  */
-fun Board<Piece<Role>>.diagonals(
+fun BoardSequence<Piece<Role>>.diagonals(
     from: Position,
     maxDistance: Int = Board.Size,
     includeAdversary: Boolean = true,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
   val directions = listOf(Delta(-1, -1), Delta(-1, 1), Delta(1, -1), Delta(1, 1))
   for (direction in directions) {
     yieldAll(
@@ -149,7 +163,7 @@ fun Board<Piece<Role>>.diagonals(
 }
 
 /** Moves representing a castling to the left. */
-fun BoardWithHistory<Piece<Role>>.leftCastling() =
+fun BoardSequence<Piece<Role>>.leftCastling() =
     castling(
         kingStart = Position(x = 4, y = 7),
         kingEnd = Position(x = 2, y = 7),
@@ -159,7 +173,7 @@ fun BoardWithHistory<Piece<Role>>.leftCastling() =
     )
 
 /** Moves representing a castling to the right. */
-fun BoardWithHistory<Piece<Role>>.rightCastling() =
+fun BoardSequence<Piece<Role>>.rightCastling() =
     castling(
         kingStart = Position(x = 4, y = 7),
         kingEnd = Position(x = 6, y = 7),
@@ -168,15 +182,16 @@ fun BoardWithHistory<Piece<Role>>.rightCastling() =
         empty = setOf(Position(x = 5, y = 7), Position(x = 6, y = 7)),
     )
 
-private fun BoardWithHistory<Piece<Role>>.castling(
+private fun BoardSequence<Piece<Role>>.castling(
     kingStart: Position,
     kingEnd: Position,
     rookStart: Position,
     rookEnd: Position,
     empty: Set<Position>,
-): Moves = sequence {
-  val king = get(kingStart)?.takeIf { (role, rank) -> role == Allied && rank == King }
-  val rook = get(rookStart)?.takeIf { (role, rank) -> role == Allied && rank == Rook }
+): Moves<Piece<Role>> = sequence {
+  val board = first()
+  val king = board[kingStart]?.takeIf { (role, rank) -> role == Allied && rank == King }
+  val rook = board[rookStart]?.takeIf { (role, rank) -> role == Allied && rank == Rook }
 
   // Ensure that the kind and rook are actually present.
   king ?: return@sequence
@@ -184,10 +199,10 @@ private fun BoardWithHistory<Piece<Role>>.castling(
 
   // If any of the cells is not empty, we can't castle.
   // TODO : Check if these cells are in check.
-  if (empty.any { get(it) != null }) return@sequence
+  if (empty.any { board[it] != null }) return@sequence
 
   // Check that the king and rook have never moved.
-  if (asSequence().any { it[kingStart] != king || it[rookStart] != rook }) return@sequence
+  if (any { it[kingStart] != king || it[rookStart] != rook }) return@sequence
 
   // We can perform the castling.
   yield(
@@ -206,12 +221,13 @@ private fun BoardWithHistory<Piece<Role>>.castling(
  * @param position the position at which the current piece is.
  * @param delta the relative position to which the adversary pawn is.
  */
-fun BoardWithHistory<Piece<Role>>.enPassant(
+fun BoardSequence<Piece<Role>>.enPassant(
     position: Position,
     delta: Delta,
-): Moves = sequence {
+): Moves<Piece<Role>> = sequence {
+  val board = first()
   val neighbour = position + delta ?: return@sequence
-  val adversary = get(neighbour)?.takeIf { (role, rank) -> role == Adversary && rank == Pawn }
+  val adversary = board[neighbour]?.takeIf { (role, rank) -> role == Adversary && rank == Pawn }
 
   // Do we have two pawns next to each other ?
   adversary ?: return@sequence
@@ -225,7 +241,7 @@ fun BoardWithHistory<Piece<Role>>.enPassant(
 
   // Check that the adversary stayed on their starting position for the whole game, except for the
   // previous move.
-  if (asSequence().drop(1).any { it[adversaryStart] != adversary }) return@sequence
+  if (drop(1).any { it[adversaryStart] != adversary }) return@sequence
 
   yield(
       Action(position, adversaryStep - position) to

@@ -31,6 +31,12 @@ private const val PlayRoute = "play"
 private const val GameRoute = "new_game"
 
 /**
+ * The route associated to the ar tab. Note : This tab is temporary, use only for the development
+ * TODO : Remove this when we can display the entire game on AR
+ */
+private const val ArRoute = "ar"
+
+/**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
  *
@@ -74,6 +80,7 @@ fun StatefulHome(
             { controller.navigate(GameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
+      composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
   }
 }
@@ -82,6 +89,7 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
+      ArRoute -> HomeSection.Ar
       PlayRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
@@ -91,5 +99,6 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
+      HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
     }

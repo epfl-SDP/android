@@ -8,7 +8,6 @@ import ch.epfl.sdp.mobile.application.chess.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.rules.*
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.rules.Role.Allied
-import ch.epfl.sdp.mobile.test.application.chess.buildBoardWithHistory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -23,7 +22,7 @@ class MovesTest {
 
   @Test
   fun delta_outOfBounds_hasNoActions() {
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val moves = board.delta(Position(0, 0), x = -1, y = -1)
     assertThat(moves.asIterable()).isEmpty()
   }
@@ -31,7 +30,7 @@ class MovesTest {
   @Test
   fun delta_empty_hasOneAction() {
     val position = Position(0, 0)
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.delta(Position(0, 0), x = 1, y = 2).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(position, Delta(1, 2)))
   }
@@ -40,7 +39,7 @@ class MovesTest {
   fun delta_includeAdversaries_hasOneAction() {
     val from = Position(0, 0)
     val to = Position(1, 1)
-    val board = buildBoard<Piece<Role>> { set(to, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.delta(from, x = 1, y = 1).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
   }
@@ -49,7 +48,7 @@ class MovesTest {
   fun delta_notIncludeAdversaries_hasNoActions() {
     val from = Position(0, 0)
     val to = Position(1, 1)
-    val board = buildBoard<Piece<Role>> { set(to, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.delta(from, x = 1, y = 1, includeAdversary = false).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -57,7 +56,7 @@ class MovesTest {
   @Test
   fun doubleUp_fromIncorrectRow_hasNoActions() {
     val from = Position(3, 3)
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.doubleUp(from).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -66,7 +65,7 @@ class MovesTest {
   fun doubleUp_withPieceInPath_hasNoActions() {
     val from = Position(0, 6)
     val blocking = Position(0, 5)
-    val board = buildBoard<Piece<Role>> { set(blocking, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(blocking, adversaryPawn) })
     val actions = board.doubleUp(from).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -74,7 +73,7 @@ class MovesTest {
   @Test
   fun doubleUp_withoutPieceInPath_hasOneAction() {
     val from = Position(0, 6)
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.doubleUp(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(0, -2)))
   }
@@ -82,7 +81,7 @@ class MovesTest {
   @Test
   fun sideTakes_noPieces_hasNoActions() {
     val from = Position(1, 1)
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -91,7 +90,7 @@ class MovesTest {
   fun sideTakes_left_hasOneAction() {
     val from = Position(1, 1)
     val left = Position(0, 0)
-    val board = buildBoard<Piece<Role>> { set(left, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(-1, -1)))
   }
@@ -100,7 +99,7 @@ class MovesTest {
   fun sideTakes_right_hasOneAction() {
     val from = Position(1, 1)
     val right = Position(2, 0)
-    val board = buildBoard<Piece<Role>> { set(right, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(right, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, -1)))
   }
@@ -108,7 +107,7 @@ class MovesTest {
   @Test
   fun diagonal_isOnTopLeftToBottomRightDiagonal() {
     val from = Position(0, 0)
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.diagonals(from).map { it.first }.filter { (_, d) -> d.x != d.y }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -117,7 +116,7 @@ class MovesTest {
   fun diagonal_hittingAlliedPiece_hasNoActions() {
     val from = Position(0, 0)
     val to = Position(1, 1)
-    val board = buildBoard<Piece<Role>> { set(to, alliedPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(to, alliedPawn) })
     val actions = board.diagonals(from).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -126,7 +125,7 @@ class MovesTest {
   fun diagonal_notIncludeAdversaries_hasNoActions() {
     val from = Position(0, 0)
     val to = Position(1, 1)
-    val board = buildBoard<Piece<Role>> { set(to, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.diagonals(from, includeAdversary = false).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -135,7 +134,7 @@ class MovesTest {
   fun diagonal_includeAdversaries_hasOneAction() {
     val from = Position(0, 0)
     val to = Position(1, 1)
-    val board = buildBoard<Piece<Role>> { set(to, adversaryPawn) }
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.diagonals(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
   }
@@ -143,7 +142,7 @@ class MovesTest {
   @Test
   fun lines_isOnFirstRowOrColumn() {
     val from = Position(0, 0)
-    val board = emptyBoard<Piece<Role>>()
+    val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.lines(from).map { it.first }.filter { (_, d) -> d.x != 0 && d.y != 0 }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -151,7 +150,7 @@ class MovesTest {
   @Test
   fun castling_missingKing_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard { set(Position(7, 7), alliedRook) },
           )
@@ -163,7 +162,7 @@ class MovesTest {
   @Test
   fun castling_missingRook_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard { set(Position(4, 7), alliedKing) },
           )
@@ -175,7 +174,7 @@ class MovesTest {
   @Test
   fun castling_emptyHistory_isSuccessful() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), alliedKing)
@@ -190,7 +189,7 @@ class MovesTest {
   @Test
   fun castling_blockingPiece_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), alliedKing)
@@ -206,16 +205,16 @@ class MovesTest {
   @Test
   fun castling_movedKing_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
-                set(Position(3, 7), alliedKing)
+                set(Position(4, 7), alliedKing)
                 set(Position(7, 7), alliedRook)
               },
           )
           yield(
               buildBoard {
-                set(Position(4, 7), alliedKing)
+                set(Position(3, 7), alliedKing)
                 set(Position(7, 7), alliedRook)
               },
           )
@@ -227,17 +226,17 @@ class MovesTest {
   @Test
   fun castling_movedRook_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), alliedKing)
-                set(Position(7, 6), alliedRook)
+                set(Position(7, 7), alliedRook)
               },
           )
           yield(
               buildBoard {
                 set(Position(4, 7), alliedKing)
-                set(Position(7, 7), alliedRook)
+                set(Position(7, 6), alliedRook)
               },
           )
         }
@@ -248,7 +247,7 @@ class MovesTest {
   @Test
   fun castling_adversaryKing_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), adversaryKing)
@@ -263,7 +262,7 @@ class MovesTest {
   @Test
   fun castling_adversaryRook_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), alliedKing)
@@ -278,7 +277,7 @@ class MovesTest {
   @Test
   fun castling_alliedButNotKing_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), alliedPawn)
@@ -293,7 +292,7 @@ class MovesTest {
   @Test
   fun castling_alliedButNotRook_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(4, 7), alliedKing)
@@ -308,17 +307,17 @@ class MovesTest {
   @Test
   fun enPassant_emptyHistory_isSuccessful() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(0, 3), alliedPawn)
-                set(Position(1, 1), adversaryPawn)
+                set(Position(1, 3), adversaryPawn)
               },
           )
           yield(
               buildBoard {
                 set(Position(0, 3), alliedPawn)
-                set(Position(1, 3), adversaryPawn)
+                set(Position(1, 1), adversaryPawn)
               },
           )
         }
@@ -329,17 +328,17 @@ class MovesTest {
   @Test
   fun enPassant_inBetweenMove_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(0, 3), alliedPawn)
-                set(Position(1, 2), adversaryPawn)
+                set(Position(1, 3), adversaryPawn)
               },
           )
           yield(
               buildBoard {
                 set(Position(0, 3), alliedPawn)
-                set(Position(1, 3), adversaryPawn)
+                set(Position(1, 2), adversaryPawn)
               },
           )
         }
@@ -350,7 +349,7 @@ class MovesTest {
   @Test
   fun enPassant_badRow_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard {
                 set(Position(0, 4), alliedPawn)
@@ -364,7 +363,7 @@ class MovesTest {
 
   @Test
   fun enPassant_noNeighbour_isNotAllowed() {
-    val board = buildBoardWithHistory<Piece<Role>> { yield(emptyBoard()) }
+    val board = sequence<Board<Piece<Role>>> { yield(emptyBoard()) }
     val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
   }
@@ -372,7 +371,7 @@ class MovesTest {
   @Test
   fun enPassant_neighbourIsAllied_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard { set(Position(1, 3), alliedPawn) },
           )
@@ -384,7 +383,7 @@ class MovesTest {
   @Test
   fun enPassant_neighbourIsNotPawn_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard { set(Position(1, 3), adversaryRook) },
           )
@@ -396,7 +395,7 @@ class MovesTest {
   @Test
   fun enPassant_neighbourIsOutOfBounds1_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard { set(Position(7, 0), adversaryPawn) },
           )
@@ -409,7 +408,7 @@ class MovesTest {
   @Test
   fun enPassant_neighbourIsOutOfBounds2_isNotAllowed() {
     val board =
-        buildBoardWithHistory<Piece<Role>> {
+        sequence<Board<Piece<Role>>> {
           yield(
               buildBoard { set(Position(7, 1), adversaryPawn) },
           )
