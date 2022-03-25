@@ -34,6 +34,10 @@ class NormalizedBoardDecorator(
     val result = board.set(player.normalize(position), piece?.denormalize())
     return NormalizedBoardDecorator(player, result)
   }
+
+  override fun iterator(): Iterator<Pair<Position, Piece<Role>>> {
+    return board.asSequence().map { (pos, piece) -> pos to piece.normalize() }.iterator()
+  }
 }
 
 /**
@@ -61,5 +65,9 @@ class DenormalizedBoardDecorator(
   override fun set(position: Position, piece: Piece<Color>?): Board<Piece<Color>> {
     val result = board.set(player.normalize(position), piece?.denormalize())
     return DenormalizedBoardDecorator(player, result)
+  }
+
+  override fun iterator(): Iterator<Pair<Position, Piece<Color>>> {
+    return board.asSequence().map { (pos, piece) -> pos to piece.normalize() }.iterator()
   }
 }

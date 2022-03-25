@@ -19,6 +19,7 @@ class AuthenticatedUserProfileScreenState(
   override val backgroundColor = Color.Orange
   override val name = user.name
   override val emoji = user.emoji
+  override val followed = user.followed
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}

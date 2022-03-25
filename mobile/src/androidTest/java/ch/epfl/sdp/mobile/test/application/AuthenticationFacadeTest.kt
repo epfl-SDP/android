@@ -144,7 +144,7 @@ class AuthenticationFacadeTest {
         store
             .collection("users")
             .asFlow<ProfileDocument>()
-            .map { it.mapNotNull { doc -> doc?.toProfile() } }
+            .map { it.mapNotNull { doc -> doc?.toProfile(userAuthenticated) } }
             .first()
 
     val profile = following[0]

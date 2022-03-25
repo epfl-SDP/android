@@ -6,10 +6,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.google.firebase.firestore.FieldValue.arrayUnion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,7 +17,7 @@ class AuthenticatedUser(
     private val firestore: Store,
     private val user: User,
     document: ProfileDocument?,
-) : AuthenticationUser, Profile by document.toProfile() {
+) : AuthenticationUser, Profile by document.toProfile(user.uid) {
 
   /** The email of the currently logged in user. */
   val email: String = user.email ?: ""
@@ -58,14 +55,25 @@ class AuthenticatedUser(
   }
 
   /**
-   * Follows the given [Profile] by updating the list of followers of the followed profile with the
-   * uid of the current user.
+   * Follows the given [Profile] by updating its list of followers with the uid of the current user.
    *
    * @param followed the [Profile] to follow.
    */
   suspend fun follow(followed: Profile) {
     firestore.collection("users").document(followed.uid).update {
       arrayUnion("followers", user.uid)
+    }
+  }
+
+  /**
+   * Unfollows the given [Profile] by removing the uid of the current user from its list of
+   * followers.
+   *
+   * @param unfollowed the [Profile] to unfollow.
+   */
+  suspend fun unfollow(unfollowed: Profile) {
+    firestore.collection("users").document(unfollowed.uid).update {
+      arrayRemove("followers", user.uid)
     }
   }
 
@@ -83,5 +91,5 @@ class AuthenticatedUser(
           .collection("users")
           .whereArrayContains("followers", user.uid)
           .asFlow<ProfileDocument>()
-          .map { it.mapNotNull { doc -> doc?.toProfile() } }
+          .map { it.mapNotNull { doc -> doc?.toProfile(this) } }
 }

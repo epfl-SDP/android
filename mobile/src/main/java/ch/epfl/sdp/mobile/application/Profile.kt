@@ -18,6 +18,9 @@ interface Profile {
   /** The unique identifier of the person. */
   val uid: String
 
+  /** True iff this profile is followed by the current user. */
+  val followed: Boolean
+
   /**
    * A class representing the different colors that the profile picture background might take. It
    * may contain arbitrary [String], but some default values are provided in [Color.Companion].
