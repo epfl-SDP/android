@@ -1,9 +1,6 @@
 package ch.epfl.sdp.mobile.test.state
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.*
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -15,7 +12,12 @@ import ch.epfl.sdp.mobile.state.StatefulGameScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import com.google.common.truth.Truth.assertThat
+import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
+import ch.epfl.sdp.mobile.test.ui.game.drag
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.Pawn
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -53,63 +55,12 @@ class StatefulGameScreenTest {
           ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
         }
 
-    val boardNode =
-        rule.onNodeWithContentDescription(strings.boardContentDescription).fetchSemanticsNode()
+    val robot = ChessBoardRobot(rule, strings)
 
-    val density = requireNotNull(boardNode.root).density
-    val size = boardNode.size
-    val boardBounds = boardNode.boundsInRoot
-    assertThat(size.height).isEqualTo(size.width)
+    robot.performInput { drag(ChessBoardState.Position(0, 6), ChessBoardState.Position(0, 4)) }
+    robot.performInput { drag(ChessBoardState.Position(0, 1), ChessBoardState.Position(0, 3)) }
 
-    val squareSize = size.width / 8
-    val squareSizeDp = with(density) { size.width.toDp() } / 8
-
-    // Move white pawn
-    rule.onNodeWithContentDescription(strings.boardContentDescription).performTouchInput {
-      down(pos(0, 6, density, squareSizeDp))
-      moveTo(pos(0, 4, density, squareSizeDp))
-      up()
-    }
-
-    // Move black pawn
-    rule.onNodeWithContentDescription(strings.boardContentDescription).performTouchInput {
-      down(pos(0, 1, density, squareSizeDp))
-      moveTo(pos(0, 3, density, squareSizeDp))
-      up()
-    }
-
-    // Check white pawn position
-    rule.onAllNodesWithContentDescription(
-            strings.boardPieceContentDescription(strings.boardColorWhite, strings.boardPiecePawn),
-        )
-        .assertAny(
-            SemanticsMatcher("InBounds") {
-              val (x, y) = it.boundsInRoot.center
-              x in boardBounds.left..boardBounds.left + squareSize
-              y in (boardBounds.top + squareSize * 4)..(boardBounds.top + squareSize * 5)
-            },
-        )
-
-    // Check black pawn position
-    rule.onAllNodesWithContentDescription(
-            strings.boardPieceContentDescription(strings.boardColorBlack, strings.boardPiecePawn),
-        )
-        .assertAny(
-            SemanticsMatcher("InBounds") {
-              val (x, y) = it.boundsInRoot.center
-              x in boardBounds.left..boardBounds.left + squareSize
-              y in (boardBounds.top + squareSize * 3)..(boardBounds.top + squareSize * 4)
-            },
-        )
-  }
-
-  private fun pos(x: Int, y: Int, density: Density, squareSize: Dp): Offset {
-    with(density) {
-      return Offset(x.toAbsDp(squareSize).toPx(), y.toAbsDp(squareSize).toPx())
-    }
-  }
-
-  private fun Int.toAbsDp(squareSizeDp: Dp): Dp {
-    return (squareSizeDp / 2) + squareSizeDp.times(this)
+    robot.assertHasPiece(0, 4, White, Pawn)
+    robot.assertHasPiece(0, 3, Black, Pawn)
   }
 }

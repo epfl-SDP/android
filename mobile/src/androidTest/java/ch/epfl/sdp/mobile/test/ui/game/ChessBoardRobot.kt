@@ -55,6 +55,37 @@ interface ChessBoardRobotInputScope {
 }
 
 /**
+ * Performs a click gesture with the pointer with the given id at a specific position.
+ *
+ * @param x the x coordinate of the target cell.
+ * @param y the y coordinate of the target cell.
+ * @param pointerId the identifier of the pointer.
+ */
+fun ChessBoardRobotInputScope.click(x: Int, y: Int, pointerId: Int = 0) {
+  down(x = x, y = y, pointerId = pointerId)
+  // Required to send a move event. See TouchInjectionScope.click() for details.
+  moveBy(x = 0, y = 0, pointerId = pointerId)
+  up(pointerId = pointerId)
+}
+
+/**
+ * Performs a drag gesture between two positions with the pointer with the given id.
+ *
+ * @param from the original [ChessBoardState.Position].
+ * @param to the target [ChessBoardState.Position].
+ * @param pointerId the identifier of the pointer.
+ */
+fun ChessBoardRobotInputScope.drag(
+    from: ChessBoardState.Position,
+    to: ChessBoardState.Position,
+    pointerId: Int = 0,
+) {
+  down(x = from.x, y = from.y, pointerId = pointerId)
+  moveTo(x = to.x, y = to.y, pointerId = pointerId)
+  up(pointerId = pointerId)
+}
+
+/**
  * A robot which may be used to perform actions on a [ch.epfl.sdp.mobile.ui.game.ChessBoard]
  * composable.
  *
