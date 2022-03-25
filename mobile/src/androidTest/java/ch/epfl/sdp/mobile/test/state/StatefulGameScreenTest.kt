@@ -27,7 +27,7 @@ class StatefulGameScreenTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun test() = runTest {
+  fun movingTwoPawns_isSuccessful() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") {
@@ -64,12 +64,21 @@ class StatefulGameScreenTest {
     val squareSize = size.width / 8
     val squareSizeDp = with(density) { size.width.toDp() } / 8
 
+    // Move white pawn
     rule.onNodeWithContentDescription(strings.boardContentDescription).performTouchInput {
       down(pos(0, 6, density, squareSizeDp))
       moveTo(pos(0, 4, density, squareSizeDp))
       up()
     }
 
+    // Move black pawn
+    rule.onNodeWithContentDescription(strings.boardContentDescription).performTouchInput {
+      down(pos(0, 1, density, squareSizeDp))
+      moveTo(pos(0, 3, density, squareSizeDp))
+      up()
+    }
+
+    // Check white pawn position
     rule.onAllNodesWithContentDescription(
             strings.boardPieceContentDescription(strings.boardColorWhite, strings.boardPiecePawn),
         )
@@ -78,7 +87,20 @@ class StatefulGameScreenTest {
               val (x, y) = it.boundsInRoot.center
               x in boardBounds.left..boardBounds.left + squareSize
               y in (boardBounds.top + squareSize * 4)..(boardBounds.top + squareSize * 5)
-            })
+            },
+        )
+
+    // Check black pawn position
+    rule.onAllNodesWithContentDescription(
+            strings.boardPieceContentDescription(strings.boardColorBlack, strings.boardPiecePawn),
+        )
+        .assertAny(
+            SemanticsMatcher("InBounds") {
+              val (x, y) = it.boundsInRoot.center
+              x in boardBounds.left..boardBounds.left + squareSize
+              y in (boardBounds.top + squareSize * 3)..(boardBounds.top + squareSize * 4)
+            },
+        )
   }
 
   private fun pos(x: Int, y: Int, density: Density, squareSize: Dp): Offset {
