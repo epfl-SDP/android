@@ -11,6 +11,16 @@ import androidx.compose.ui.unit.dp
 
 // Adapted from https://gist.github.com/c5inco/796edc5d88e8561872380b61e6089c04
 
+val FadeEnterTransition =
+    fadeIn(
+        animationSpec = tween(210, delayMillis = 90, easing = LinearOutSlowInEasing),
+    )
+
+val FadeExitTransition =
+    fadeOut(
+        animationSpec = tween(90, easing = FastOutLinearInEasing),
+    )
+
 /**
  * An [EnterTransition] for the shared axis motion pattern on the Y axis.
  *
