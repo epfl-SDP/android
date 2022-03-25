@@ -4,7 +4,7 @@
 
 We manage to implement almost all the task. 
 Most of the PR ask a review at the end of the week, which is a bit stressful. We can solve this by creating a smaller task and create multiple PR for one features.
-We see that our organization is perfect (The naming convention for tests for example), but we solve these problems the quickest possible.
+We see that our organization isn't perfect (The naming convention for tests for example), but we solve these problems the quickest possible.
 Some bug/missing implementation are solved in a PR without creating an Issue. 
 But in general, it was a good sprint. We are able to present a good demo with new features.
 
@@ -14,7 +14,7 @@ This week I really made progress in my performance. I understood the basic princ
 
 ## Matthieu Burguburu
 
-My tasks for this sprint were implementing support for online games between two players using Firestore and the chess engine. Overall, things went quite smoothly for the implementation of the feature but were a bit more difficult for the testing phase, for technical reasons involving coroutines. My time estimates would have been pretty accurate without this problem
+My tasks for this sprint were implementing support for online games between two players using Firestore and the chess engine. Overall, things went quite smoothly for the implementation of the feature but were a bit more difficult for the testing phase, for technical reasons involving coroutines. My time estimates would have been pretty accurate without this problem.
 
 ## Chau Ying Kot (Scrum Master)
 
@@ -29,7 +29,7 @@ I take time to do my task, but now I have a good understanding of the library an
 
 This sprint was a lot better for me than the previous ones. Even though I had to refactor my old pull request which took me some time, my new tasks were in the same domain as those of the last sprint which easened my work and reduced my sprint hours considerably based on last week. I did have some assistance from Alexandre to help debug some tests and fasten up my work process which helped increase my kotlin and compose knowledge. 
  
-Next sprint I will try to be more on track with my work, ask questions early and explore new code areas to enhance my knowledge even further
+Next sprint I will try to be more on track with my work, ask questions early and explore new code areas to enhance my knowledge even further.
 
 ## Alexandre Piveteau 
 
