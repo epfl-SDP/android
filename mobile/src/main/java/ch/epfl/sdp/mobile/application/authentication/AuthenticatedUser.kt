@@ -6,11 +6,11 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.google.firebase.firestore.FieldValue.arrayUnion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

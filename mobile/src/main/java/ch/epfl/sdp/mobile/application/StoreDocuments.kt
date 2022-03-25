@@ -60,10 +60,10 @@ fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
  * @param blackId
  */
 data class ChessDocument(
-  @DocumentId val uid: String? = null,
-  val moves: List<String>? = null,
-  val whiteId: String? = null,
-  val blackId: String? = null,
+    @DocumentId val uid: String? = null,
+    val moves: List<String>? = null,
+    val whiteId: String? = null,
+    val blackId: String? = null,
 )
 
 fun ChessDocument?.deserialize(): Match {
@@ -88,7 +88,7 @@ fun Match.serialize(): ChessDocument {
   }
 
   return ChessDocument(
-    moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
+      moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
 }
 
 /** Parsing string to moves */
