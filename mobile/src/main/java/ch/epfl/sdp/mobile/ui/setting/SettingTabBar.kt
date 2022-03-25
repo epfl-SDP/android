@@ -101,7 +101,7 @@ private class SettingTabBarStateImpl(
   override var currentTab by mutableStateOf(SettingTabBarState.Tab.PastGames)
 }
 
-/** Function used to remember the state of the ProfileTabBar */
+/** Function used to remember the state of the SettingTabBar */
 @Composable
 fun rememberSettingTabBarState(
     pastGamesCount: Int,
