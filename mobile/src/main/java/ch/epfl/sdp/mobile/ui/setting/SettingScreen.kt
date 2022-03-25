@@ -57,7 +57,8 @@ fun SettingsScreen(
 }
 
 /**
- * Composes the settings header given the profile [state]. Displays also the ProfilePicture,
+ * Composes the settings header given the profile [SettingScreenState]. Displays also the ProfilePicture,
+
  * SettingsButton, name and email of th user profile
  * @param state state of profile screen
  * @param modifier the [Modifier] for this composable.
