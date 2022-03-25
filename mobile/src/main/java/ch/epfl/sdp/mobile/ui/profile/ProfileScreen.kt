@@ -36,8 +36,8 @@ fun ProfileScreen(
   val elevation by animateDpAsState(targetElevation)
 
   UserScreen(
-      Header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp)) },
-      ProfileTabBar = {
+      header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp)) },
+      profileTabBar = {
         ProfileTabBar(
             pastGamesCount = state.pastGamesCount,
             modifier = Modifier.fillMaxWidth(),

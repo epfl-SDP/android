@@ -153,7 +153,7 @@ class SocialScreenTest {
   }
 
   @Test
-  fun list_clickOnUser() {
+  fun list_renderSuccessfull_displayFourUser() {
 
     val state = FakeSnapshotSocialScreenState()
 

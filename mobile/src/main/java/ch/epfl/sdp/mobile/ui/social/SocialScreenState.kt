@@ -40,7 +40,10 @@ interface SocialScreenState<P : Person> {
   /** Flow for interaction on search field */
   val searchFieldInteraction: MutableInteractionSource
 
-  /** Callback function to open profile of person */
+  /**
+   * Callback function to open profile of person
+   * @param person the type of the [Person] which open the Profile.
+   */
   fun onPersonClick(person: P)
 
   /** A callback invoked when the user type in the search text field */

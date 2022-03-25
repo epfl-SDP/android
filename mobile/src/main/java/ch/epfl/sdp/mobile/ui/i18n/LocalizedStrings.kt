@@ -33,6 +33,7 @@ interface LocalizedStrings {
   val profileSettings: String
   val profileUnfollow: String
   val profileChallenge: String
+  val profileEditIcon: String
 
   val boardColorBlack: String
   val boardColorWhite: String

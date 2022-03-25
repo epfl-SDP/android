@@ -19,15 +19,17 @@ import ch.epfl.sdp.mobile.ui.social.*
 
 /**
  * A Slot Component for Profile or Setting Screen
- * @param Header part of slot construct that comes into the header
- * @param ProfileTabBar part of slot construct that represents the tab bar.
- * @param Matches the part that is responsible for the list of all matches
+ * @param header part of slot construct that comes into the header
+ * @param profileBar part of slot construct that represents the tab bar.
+ * @param matches the part that is responsible for the list of all matches
+ * @param lazyColumnState to keep state of LazyColumn
+ * @param modifier the [Modifier] for this composable.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun UserScreen(
-    Header: @Composable () -> Unit,
-    ProfileTabBar: @Composable () -> Unit,
+    header: @Composable () -> Unit,
+    profileTabBar: @Composable () -> Unit,
     matches: List<ChessMatch>,
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
@@ -40,8 +42,8 @@ fun UserScreen(
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = modifier,
   ) {
-    item { Header() }
-    stickyHeader { ProfileTabBar() }
+    item { header() }
+    stickyHeader { profileTabBar() }
     items(matches) { match ->
       val title = strings.profileMatchTitle(match.adversary)
       val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)

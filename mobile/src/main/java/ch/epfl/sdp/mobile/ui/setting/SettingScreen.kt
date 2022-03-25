@@ -38,13 +38,13 @@ fun SettingsScreen(
   val elevation by animateDpAsState(targetElevation)
 
   UserScreen(
-      Header = {
+      header = {
         SettingHeader(
             state = state,
             modifier = Modifier.padding(vertical = 16.dp),
         )
       },
-      ProfileTabBar = {
+      profileTabBar = {
         SettingTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
@@ -58,10 +58,7 @@ fun SettingsScreen(
 
 /**
  * Composes the settings header given the profile [SettingScreenState]. Displays also the
- * ProfilePicture,
- *
- * SettingsButton, name and email of the user's profile
- *
+ * ProfilePicture, SettingsButton, name and email of the user's profile
  * @param state state of profile screen
  * @param modifier the [Modifier] for this composable.
  */
@@ -92,6 +89,7 @@ fun SettingPicture(
     state: SettingScreenState,
     modifier: Modifier = Modifier,
 ) {
+  val strings = LocalLocalizedStrings.current
   Box(
       modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
       contentAlignment = Alignment.Center,
@@ -105,7 +103,7 @@ fun SettingPicture(
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, "Edit profile icon") }
+    ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
   }
 }
 

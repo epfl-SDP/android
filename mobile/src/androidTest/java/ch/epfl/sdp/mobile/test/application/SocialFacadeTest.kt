@@ -74,7 +74,7 @@ class SocialFacadeTest {
   }
 
   @Test
-  fun get_successfully() = runTest {
+  fun get_successfully_userIsInDatabse() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("uid", ProfileDocument(name = "test")) }
@@ -86,7 +86,7 @@ class SocialFacadeTest {
   }
 
   @Test
-  fun get_unsuccessfully() = runTest {
+  fun get_unsuccessfully_userIsNotInDatabse() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = SocialFacade(auth, store)
