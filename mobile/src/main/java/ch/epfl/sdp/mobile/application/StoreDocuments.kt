@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application
 
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
 import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.application.chess.online.Match
 import ch.epfl.sdp.mobile.application.chess.rules.Action
@@ -24,14 +26,29 @@ data class ProfileDocument(
     val followers: List<String>? = null,
 )
 
-fun ProfileDocument?.toProfile(): Profile {
+/**
+ * Transforms a given unique identifier to a [Profile].
+ *
+ * @param currentUserUid the unique identifier [String] of the [ProfileDocument] to transform.
+ */
+fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
   return object : Profile {
     override val emoji: String = this@toProfile?.emoji ?: "😎"
     override val name: String = this@toProfile?.name ?: ""
     override val backgroundColor: Profile.Color =
         this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
     override val uid: String = this@toProfile?.uid ?: ""
+    override val followed: Boolean = currentUserUid in (this@toProfile?.followers ?: emptyList())
   }
+}
+
+/**
+ * Transforms a given [AuthenticationUser] to a [Profile].
+ *
+ * @param currentUser the [AuthenticationUser] to transform.
+ */
+fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
+  return toProfile((currentUser as? AuthenticatedUser)?.uid)
 }
 
 /**
@@ -43,10 +60,10 @@ fun ProfileDocument?.toProfile(): Profile {
  * @param blackId
  */
 data class ChessDocument(
-    @DocumentId val uid: String? = null,
-    val moves: List<String>? = null,
-    val whiteId: String? = null,
-    val blackId: String? = null,
+  @DocumentId val uid: String? = null,
+  val moves: List<String>? = null,
+  val whiteId: String? = null,
+  val blackId: String? = null,
 )
 
 fun ChessDocument?.deserialize(): Match {
@@ -71,7 +88,7 @@ fun Match.serialize(): ChessDocument {
   }
 
   return ChessDocument(
-      moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
+    moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
 }
 
 /** Parsing string to moves */

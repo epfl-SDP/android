@@ -30,6 +30,7 @@ class ProfileScreenTest {
     override val backgroundColor = Color.Default
     override val name = "Example"
     override val emoji = "🎁"
+    override val followed = false
   }
 
   object FakeProfileScreenState :

@@ -73,24 +73,18 @@ class SnapshotChessBoardState(
 
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
-        Position.all()
-            .map { match.game.board[it]?.let { p -> it to p } }
-            .filterNotNull()
-            .map { (a, b) -> a.toPosition() to b.toPiece() }
-            .toMap()
+        match.game.board.asSequence().map { (pos, piece) -> pos.toPosition() to piece.toPiece() }.toMap()
 
   override val availableMoves: Set<ChessBoardState.Position>
     // Display all the possible moves for all the pieces on the board.
     get() =
-        Position.all()
-            .flatMap { match.game.actions(it) }
-            .mapNotNull { it.from + it.delta }
-            .map { it.toPosition() }
-            .toSet()
+        match.game.board
+            .asSequence()
+            .flatMap { (pos, _) -> match.game.actions(pos) }
 
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
-    val step = match.game.nextStep as NextStep.MovePiece
+    val step = match.game.nextStep as? NextStep.MovePiece ?: return
 
     val currentPlayingId =
         when (step.turn) {
