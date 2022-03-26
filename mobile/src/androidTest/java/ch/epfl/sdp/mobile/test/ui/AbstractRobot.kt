@@ -82,9 +82,9 @@ abstract class AbstractRobot(
    * @return the [SemanticsNodeInteraction] corresponding to the matched node.
    */
   fun onNodeWithLocalizedContentDescription(
-      substring: Boolean,
-      ignoreCase: Boolean,
-      useUnmergedTree: Boolean,
+      substring: Boolean = false,
+      ignoreCase: Boolean = false,
+      useUnmergedTree: Boolean = false,
       label: LocalizedStrings.() -> String,
   ): SemanticsNodeInteraction =
       onNodeWithContentDescription(
@@ -108,9 +108,9 @@ abstract class AbstractRobot(
    * @return the [SemanticsNodeInteractionCollection] corresponding to the matched nodes.
    */
   fun onAllNodesWithLocalizedContentDescription(
-      substring: Boolean,
-      ignoreCase: Boolean,
-      useUnmergedTree: Boolean,
+      substring: Boolean = false,
+      ignoreCase: Boolean = false,
+      useUnmergedTree: Boolean = false,
       label: LocalizedStrings.() -> String,
   ): SemanticsNodeInteractionCollection =
       onAllNodesWithContentDescription(

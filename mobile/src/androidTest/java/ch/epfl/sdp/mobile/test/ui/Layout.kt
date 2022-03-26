@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.test.ui
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpRect
@@ -25,5 +27,16 @@ fun SemanticsNode.getBoundsInRoot(): DpRect =
  * @return true if the offset is contained.
  */
 operator fun DpRect.contains(offset: DpOffset): Boolean {
+  return offset.x in left..right && offset.y in top..bottom
+}
+
+/**
+ * Returns true iff the [Offset] is contained within this [Rect] bounds.
+ *
+ * @receiver the bounds of the [Rect].
+ * @param offset the offset that we're checking some bounds for.
+ * @return true if the offset is contained.
+ */
+operator fun Rect.contains(offset: Offset): Boolean {
   return offset.x in left..right && offset.y in top..bottom
 }
