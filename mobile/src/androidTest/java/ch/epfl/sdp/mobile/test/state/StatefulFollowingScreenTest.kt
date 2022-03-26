@@ -52,7 +52,7 @@ class StatefulFollowingScreenTest {
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
 
     rule.setContent {
-      ProvideFacades(mockAuthenticationFacade, mockSocialFacade) {
+      ProvideFacades(mockAuthenticationFacade, mockSocialFacade, mockChessFacade) {
         StatefulFollowingScreen(mockUser, {})
       }
     }
@@ -75,7 +75,7 @@ class StatefulFollowingScreenTest {
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade) { StatefulFollowingScreen(user, {}) }
+            ProvideFacades(authenticationFacade, socialFacade, chessFacade) { StatefulFollowingScreen(user, {}) }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
@@ -107,7 +107,7 @@ class StatefulFollowingScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-              StatefulFollowingScreen(user)
+              StatefulFollowingScreen(user, {})
             }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)

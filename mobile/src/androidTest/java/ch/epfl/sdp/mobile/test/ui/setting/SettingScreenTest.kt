@@ -30,6 +30,7 @@ class SettingScreenTest {
     override val backgroundColor = Color.Default
     override val name = "Example"
     override val emoji = "🎁"
+    override val followed = true
   }
 
   object FakeSetttingScreenState :

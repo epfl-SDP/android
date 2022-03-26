@@ -38,17 +38,21 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * Returns a [Flow] of the [Profile] with the given name
+   * Returns a [Flow] of the [Profile] by the given name
    *
    * @param name text search criteria.
+   * @param user the [AuthenticationUser] that is performing the get.
    */
-  fun get(name: String): Flow<Profile> {
+  fun get(
+      name: String,
+      user: AuthenticationUser = NotAuthenticatedUser,
+      ): Flow<Profile> {
     return store
         .collection("users")
         .whereEquals("name", name)
         .limit(1)
         .asFlow<ProfileDocument>()
-        .map { it.mapNotNull { doc -> doc?.toProfile() } }
+        .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
         .map { it.first() }
         .catch { null }
   }
