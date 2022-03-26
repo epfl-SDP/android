@@ -21,8 +21,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.profile.ProfileTabBarState.Tab.PastGames
-import ch.epfl.sdp.mobile.ui.profile.ProfileTabBarState.Tab.Puzzles
 
 /**
  * A [Modifier] which can be used to draw a border at the bottom of the composable, which fits the
@@ -48,7 +46,7 @@ private fun Modifier.borderBottom(
  * @param selected indicates if the tab is currently selected
  */
 @Composable
-fun ProfileTabItem(
+fun SettingTabItem(
     text: String,
     num: Int,
     onClick: () -> Unit,
@@ -82,7 +80,7 @@ fun ProfileTabItem(
  * @property pastGamesCount past games count
  * @property puzzlesCount puzzles count
  */
-interface ProfileTabBarState {
+interface SettingTabBarState {
 
   enum class Tab {
     PastGames,
@@ -93,37 +91,45 @@ interface ProfileTabBarState {
   val puzzlesCount: Int
 }
 
-/** Implementation of the ProfileTabBarState */
-private class ProfileTabBarStateImpl(
+/**
+ * Implementation of the SettingTabBarState
+ * @param pastGamesCount count of games.
+ * @param puzzlesCount count of puzzles done.
+ */
+private class SettingTabBarStateImpl(
     pastGamesCount: State<Int>,
     puzzlesCount: State<Int>,
-) : ProfileTabBarState {
+) : SettingTabBarState {
   override val pastGamesCount by pastGamesCount
   override val puzzlesCount by puzzlesCount
-  override var currentTab by mutableStateOf(PastGames)
-}
-
-/** Function used to remember the state of the ProfileTabBar */
-@Composable
-fun rememberProfileTabBarState(
-    pastGamesCount: Int,
-    puzzlesCount: Int,
-): ProfileTabBarState {
-  val pastGamesCountState = rememberUpdatedState(pastGamesCount)
-  val puzzlesCountState = rememberUpdatedState(puzzlesCount)
-  return remember { ProfileTabBarStateImpl(pastGamesCountState, puzzlesCountState) }
+  override var currentTab by mutableStateOf(SettingTabBarState.Tab.PastGames)
 }
 
 /**
- * Composes a ProfileTabBar from puzzles and past games tab items
+ * Function used to remember the state of the ProfileTabBar
+ * @param pastGamesCount count of games.
+ * @param puzzlesCount count of puzzles done.
+ */
+@Composable
+fun rememberSettingTabBarState(
+    pastGamesCount: Int,
+    puzzlesCount: Int,
+): SettingTabBarState {
+  val pastGamesCountState = rememberUpdatedState(pastGamesCount)
+  val puzzlesCountState = rememberUpdatedState(puzzlesCount)
+  return remember { SettingTabBarStateImpl(pastGamesCountState, puzzlesCountState) }
+}
+
+/**
+ * Composes a SettingTabBar from puzzles and past games tab items
  * @param state state of the profile tab
  * @param modifier the [Modifier] for this composable.
  * @param backgroundColor of the tab bar
  * @param elevation elevation dp of the tab bar
  */
 @Composable
-fun ProfileTabBar(
-    state: ProfileTabBarState,
+fun SettingTabBar(
+    state: SettingTabBarState,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colors.background,
     elevation: Dp = 0.dp,
@@ -139,17 +145,17 @@ fun ProfileTabBar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier,
     ) {
-      ProfileTabItem(
+      SettingTabItem(
           text = strings.profilePastGames,
           num = state.pastGamesCount,
-          onClick = { state.currentTab = PastGames },
-          selected = state.currentTab == PastGames,
+          onClick = { state.currentTab = SettingTabBarState.Tab.PastGames },
+          selected = state.currentTab == SettingTabBarState.Tab.PastGames,
       )
-      ProfileTabItem(
+      SettingTabItem(
           text = strings.profilePuzzle,
           num = state.puzzlesCount,
-          onClick = { state.currentTab = Puzzles },
-          selected = state.currentTab == Puzzles,
+          onClick = { state.currentTab = SettingTabBarState.Tab.Puzzles },
+          selected = state.currentTab == SettingTabBarState.Tab.Puzzles,
       )
     }
   }

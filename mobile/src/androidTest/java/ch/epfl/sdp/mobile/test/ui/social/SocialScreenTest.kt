@@ -24,7 +24,7 @@ import org.junit.Test
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotSocialScreenState : SocialScreenState<Person> {
+  private class FakeSnapshotSocialScreenState() : SocialScreenState<Person> {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
     override var following: List<Person> =
@@ -52,11 +52,13 @@ class SocialScreenTest {
         }
       }
     }
+
+    override fun onPersonClick(person: Person) {}
   }
 
   @Test
   fun defaultMode_isFollowing() {
-    val state = SnapshotSocialScreenState()
+    val state = FakeSnapshotSocialScreenState()
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
 
     rule.onNodeWithText(socialPerformFollow).assertDoesNotExist()
@@ -64,7 +66,7 @@ class SocialScreenTest {
 
   @Test
   fun type_switchMode() {
-    val state = SnapshotSocialScreenState()
+    val state = FakeSnapshotSocialScreenState()
     state.searchResult =
         listOf(
             object : Person {
@@ -83,7 +85,7 @@ class SocialScreenTest {
 
   @Test
   fun searchMode_emptyInputScreen() {
-    val state = SnapshotSocialScreenState()
+    val state = FakeSnapshotSocialScreenState()
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
 
@@ -97,7 +99,9 @@ class SocialScreenTest {
   @Test
   fun title_isDisplay() {
     val strings =
-        rule.setContentWithLocalizedStrings { SocialScreen(state = SnapshotSocialScreenState()) }
+        rule.setContentWithLocalizedStrings {
+          SocialScreen(state = FakeSnapshotSocialScreenState())
+        }
 
     rule.onNodeWithText(strings.socialFollowingTitle).assertExists()
   }
@@ -105,7 +109,7 @@ class SocialScreenTest {
   @Test
   fun list_displayAllUser() {
 
-    val state = SnapshotSocialScreenState()
+    val state = FakeSnapshotSocialScreenState()
 
     rule.setContent { SocialScreen(state = state) }
 
@@ -115,7 +119,7 @@ class SocialScreenTest {
   @Test
   fun card_hasPlayButton() {
 
-    val state = SnapshotSocialScreenState()
+    val state = FakeSnapshotSocialScreenState()
 
     val strings = rule.setContentWithLocalizedStrings { SocialScreen(state = state) }
 
@@ -125,16 +129,15 @@ class SocialScreenTest {
   @Test
   fun searchList_displayAllUserInState() {
 
-    val state = SnapshotSocialScreenState()
+    val state = FakeSnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = {}) }
+    rule.setContent { SearchResultList(state.following, onClick = {}, onPersonClick = {}) }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
 
   @Test
   fun searchList_hasFollowText() {
-    val state = SnapshotSocialScreenState()
     val strings =
         rule.setContentWithLocalizedStrings {
           SearchResultList(
@@ -145,9 +148,20 @@ class SocialScreenTest {
                     override val emoji = ":)"
                     override val followed = false
                   }),
-              onClick = {})
+              onClick = {},
+              onPersonClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialPerformFollow.uppercase()).onFirst().assertExists()
+  }
+
+  @Test
+  fun list_renderSuccessfull_displayFourUser() {
+
+    val state = FakeSnapshotSocialScreenState()
+
+    rule.setContent { SocialScreen(state = state) }
+
+    rule.onNodeWithTag("friendList").onChildren().assertCountEquals(4)
   }
 }
