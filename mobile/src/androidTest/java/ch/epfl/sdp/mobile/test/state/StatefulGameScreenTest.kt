@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
+import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
@@ -62,5 +63,67 @@ class StatefulGameScreenTest {
 
     robot.assertHasPiece(0, 4, White, Pawn)
     robot.assertHasPiece(0, 3, Black, Pawn)
+  }
+
+  @Test
+  fun selectingSameCellTwice_hasNoEffectOnBoard() {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") {
+        document("id1", ProfileDocument())
+        document("id2", ProfileDocument())
+      }
+      collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
+    }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val user = mockk<AuthenticatedUser>()
+    every { user.uid } returns "id1"
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+            StatefulGameScreen(user)
+          }
+        }
+    val robot = ChessBoardRobot(rule, strings)
+
+    robot.performInput {
+      click(4, 6)
+      click(4, 6)
+    }
+    robot.assertHasPiece(4, 6, White, Pawn)
+  }
+
+  @Test
+  fun selectingDifferentCells_movesPawn() {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") {
+        document("id1", ProfileDocument())
+        document("id2", ProfileDocument())
+      }
+      collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
+    }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val user = mockk<AuthenticatedUser>()
+    every { user.uid } returns "id1"
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+            StatefulGameScreen(user)
+          }
+        }
+    val robot = ChessBoardRobot(rule, strings)
+
+    robot.performInput {
+      click(4, 6)
+      click(4, 4)
+    }
+    robot.assertHasPiece(4, 4, White, Pawn)
   }
 }
