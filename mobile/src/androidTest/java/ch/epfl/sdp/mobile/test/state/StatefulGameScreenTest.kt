@@ -120,10 +120,9 @@ class StatefulGameScreenTest {
         }
     val robot = ChessBoardRobot(rule, strings)
 
-    robot.performInput {
-      click(4, 6)
-      click(4, 4)
-    }
+    robot.performInput { click(4, 6) }
+    rule.mainClock.advanceTimeByFrame() // Ensures we display the selected state.
+    robot.performInput { click(4, 4) }
     robot.assertHasPiece(4, 4, White, Pawn)
   }
 }

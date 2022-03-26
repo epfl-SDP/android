@@ -20,6 +20,14 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 interface ChessBoardRobotInputScope {
 
   /**
+   * Advances the time by the given amount in milliseconds. The next events will be delayed by this
+   * amount.
+   *
+   * @param durationMillis the amount of time waited.
+   */
+  fun advanceEventTime(durationMillis: Long)
+
+  /**
    * Puts the pointer with the given id down on this cell.
    *
    * @param x the x coordinate at which the pointer goes down.
@@ -171,6 +179,9 @@ private class SizeInfoChessBoardInputScope(
     private val sizeInfo: BoardSizeInfo,
     private val scope: TouchInjectionScope,
 ) : ChessBoardRobotInputScope {
+
+  override fun advanceEventTime(durationMillis: Long) =
+      scope.advanceEventTime(durationMillis = durationMillis)
 
   override fun down(x: Int, y: Int, pointerId: Int) =
       scope.down(
