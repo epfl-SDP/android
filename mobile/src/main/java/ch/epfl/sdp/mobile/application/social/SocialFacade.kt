@@ -46,7 +46,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   fun get(
       name: String,
       user: AuthenticationUser = NotAuthenticatedUser,
-      ): Flow<Profile> {
+  ): Flow<Profile> {
     return store
         .collection("users")
         .whereEquals("name", name)

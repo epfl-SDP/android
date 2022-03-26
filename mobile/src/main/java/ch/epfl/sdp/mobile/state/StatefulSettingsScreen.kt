@@ -11,17 +11,17 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
 class AuthenticatedUserProfileScreenState(
     private val user: AuthenticatedUser,
 ) : SettingScreenState {
-    override val email = user.email
-    override val pastGamesCount = 0
-    override val puzzlesCount = 0
-    override val matches = emptyList<ChessMatch>()
-    override val backgroundColor = Color.Orange
-    override val name = user.name
-    override val emoji = user.emoji
-    override val followed = user.followed
+  override val email = user.email
+  override val pastGamesCount = 0
+  override val puzzlesCount = 0
+  override val matches = emptyList<ChessMatch>()
+  override val backgroundColor = Color.Orange
+  override val name = user.name
+  override val emoji = user.emoji
+  override val followed = user.followed
 
-    override fun onSettingsClick() {}
-    override fun onEditClick() {}
+  override fun onSettingsClick() {}
+  override fun onEditClick() {}
 }
 
 /**
@@ -35,6 +35,6 @@ fun StatefulSettingsScreen(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
 ) {
-    val state = remember(user) { AuthenticatedUserProfileScreenState(user) }
-    SettingsScreen(state, modifier)
+  val state = remember(user) { AuthenticatedUserProfileScreenState(user) }
+  SettingsScreen(state, modifier)
 }

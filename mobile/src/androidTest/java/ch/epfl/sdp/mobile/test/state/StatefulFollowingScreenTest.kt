@@ -75,7 +75,9 @@ class StatefulFollowingScreenTest {
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade, chessFacade) { StatefulFollowingScreen(user, {}) }
+            ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+              StatefulFollowingScreen(user, {})
+            }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
