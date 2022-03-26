@@ -62,6 +62,10 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
               positions = state.availableMoves,
               color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.disabled),
           )
+          .selection(
+              position = state.selectedPosition,
+              color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.medium),
+          )
           .semantics { this.contentDescription = strings.boardContentDescription },
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }

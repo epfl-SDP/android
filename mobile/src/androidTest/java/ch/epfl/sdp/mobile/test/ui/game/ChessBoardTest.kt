@@ -36,6 +36,8 @@ class ChessBoardTest {
 
     var position: Position by mutableStateOf(Position(0, 0))
 
+    override val selectedPosition: Position? = null
+
     override val pieces: Map<Position, Piece>
       get() = mapOf(position to piece)
 

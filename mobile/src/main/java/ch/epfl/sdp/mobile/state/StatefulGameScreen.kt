@@ -71,7 +71,8 @@ class SnapshotChessBoardState(
   ) : ChessBoardState.Piece
 
   /** The currently selected [Position] of the board. */
-  private var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
+  override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
+    private set
 
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
