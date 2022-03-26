@@ -113,4 +113,12 @@ interface ChessBoardState<Piece : ChessBoardState.Piece> {
    * @param endPosition the place where the [Piece] was dropped.
    */
   fun onDropPiece(piece: Piece, endPosition: Position)
+
+  /**
+   * A callback which will be called when the [ChessBoard] is clicked at the given position. A
+   * clicked [ChessBoard] might indicate that the user wants to play a piece.
+   *
+   * @param position the place that was clicked on the board.
+   */
+  fun onPositionClick(position: Position)
 }

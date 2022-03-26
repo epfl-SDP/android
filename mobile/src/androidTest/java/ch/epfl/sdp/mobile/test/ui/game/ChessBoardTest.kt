@@ -48,6 +48,8 @@ class ChessBoardTest {
     ) {
       position = endPosition
     }
+
+    override fun onPositionClick(position: Position) = Unit
   }
 
   @Test

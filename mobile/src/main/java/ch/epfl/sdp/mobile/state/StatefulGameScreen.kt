@@ -71,6 +71,9 @@ class SnapshotChessBoardState(
       override val rank: ChessBoardState.Rank,
   ) : ChessBoardState.Piece
 
+  /** The currently selected [Position] of the board. */
+  private var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
+
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
         match
@@ -82,18 +85,44 @@ class SnapshotChessBoardState(
 
   override val availableMoves: Set<ChessBoardState.Position>
     // Display all the possible moves for all the pieces on the board.
-    get() =
-        match
-            .game
-            .board
-            .asSequence()
-            .flatMap { (pos, _) -> match.game.actions(pos) }
-            .mapNotNull { it.from + it.delta }
-            .map { it.toPosition() }
-            .toSet()
+    get() {
+      val position = selectedPosition ?: return emptySet()
+      return match
+          .game
+          .actions(Position(position.x, position.y))
+          .mapNotNull { it.from + it.delta }
+          .map { it.toPosition() }
+          .toSet()
+    }
 
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
+    tryPerformMove(startPosition, endPosition)
+  }
+
+  override fun onPositionClick(position: ChessBoardState.Position) {
+    val from = selectedPosition
+    if (from == null) {
+      selectedPosition = position
+    } else {
+      tryPerformMove(from, position)
+    }
+  }
+
+  /**
+   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
+   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
+   *
+   * @param from the start [ChessBoardState.Position].
+   * @param to the end [ChessBoardState.Position].
+   */
+  private fun tryPerformMove(
+      from: ChessBoardState.Position,
+      to: ChessBoardState.Position,
+  ) {
+    // Hide the current selection.
+    selectedPosition = null
+
     val step = match.game.nextStep as? NextStep.MovePiece ?: return
 
     val currentPlayingId =
@@ -107,8 +136,8 @@ class SnapshotChessBoardState(
       scope.launch {
         val newGame =
             step.move(
-                Position(startPosition.x, startPosition.y),
-                Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
+                Position(from.x, from.y),
+                Delta(to.x - from.x, to.y - from.y),
             )
 
         chessFacade.updateMatch(Match(newGame, match.gameId, match.whiteId, match.blackId))
