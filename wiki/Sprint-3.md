@@ -33,7 +33,7 @@ Next sprint I will try to be more on track with my work, ask questions early and
 
 ## Alexandre Piveteau 
 
-My main task for this spring was to implement rules into the chess engine. This included making sure that all the pieces are allowed to move according to their standard rules, but also implementing special moves such as castling or the en-passant take. I also added check, checkmate and stalemate detection to the chess engine.
+My main task for this sprint was to implement rules into the chess engine. This included making sure that all the pieces are allowed to move according to their standard rules, but also implementing special moves such as castling or the en-passant take. I also added check, checkmate and stalemate detection to the chess engine.
 
 Additionally, I helped some of my teammates to implement online sync of games, user following or integrating AR with Compose.
 
