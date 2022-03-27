@@ -137,7 +137,7 @@ class StatefulGameScreenTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val user = mockk<AuthenticatedUser>()
-    every { user.uid } returns "id1"
+    every { user.uid } returns "id"
 
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -150,9 +150,9 @@ class StatefulGameScreenTest {
     robot.performInput {
       drag(ChessBoardState.Position(4, 6), ChessBoardState.Position(4, 5))
       drag(ChessBoardState.Position(5, 1), ChessBoardState.Position(5, 2))
-      drag(ChessBoardState.Position(3, 7), ChessBoardState.Position(7, 4))
+      drag(ChessBoardState.Position(3, 7), ChessBoardState.Position(7, 3))
     }
-    rule.mainClock.advanceTimeByFrame() // Ensures we display the selected state.
+    rule.mainClock.advanceTimeByFrame() // Ensures we display the check state.
     robot.performInput { drag(ChessBoardState.Position(6, 1), ChessBoardState.Position(6, 2)) }
     robot.assertHasPiece(6, 2, Black, Pawn)
   }
