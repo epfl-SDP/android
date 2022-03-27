@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.ui.ar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.ar.core.Anchor
 import io.github.sceneview.ar.ArSceneView
@@ -28,6 +29,8 @@ fun ArScreen(modifier: Modifier = Modifier) {
   var green by remember { mutableStateOf<ArModelNode?>(null) }
 
   val context = LocalContext.current
+  val view = LocalView.current
+
   val nodePlacementMode = PlacementMode.PLANE_HORIZONTAL
 
   /**
@@ -69,6 +72,11 @@ fun ArScreen(modifier: Modifier = Modifier) {
     if (node !in view.children) {
       view.addChild(node)
     }
+
+  // Keep the screen only for this composable
+  DisposableEffect(Unit) {
+    view.keepScreenOn = true
+    onDispose { view.keepScreenOn = false }
   }
 
   LaunchedEffect(Unit) {
