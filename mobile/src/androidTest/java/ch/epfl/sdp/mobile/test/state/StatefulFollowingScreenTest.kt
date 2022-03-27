@@ -53,7 +53,7 @@ class StatefulFollowingScreenTest {
 
     rule.setContent {
       ProvideFacades(mockAuthenticationFacade, mockSocialFacade, mockChessFacade) {
-        StatefulFollowingScreen(mockUser)
+        StatefulFollowingScreen(mockUser, {})
       }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
@@ -76,7 +76,7 @@ class StatefulFollowingScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-              StatefulFollowingScreen(user)
+              StatefulFollowingScreen(user, {})
             }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
@@ -109,7 +109,7 @@ class StatefulFollowingScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-              StatefulFollowingScreen(user)
+              StatefulFollowingScreen(user, {})
             }
           }
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)

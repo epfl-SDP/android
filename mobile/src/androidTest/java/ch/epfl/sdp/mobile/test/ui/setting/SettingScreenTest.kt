@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.test.ui.profile
+package ch.epfl.sdp.mobile.test.ui.setting
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
@@ -6,56 +6,59 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
-import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
-import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
+import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
+import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Loss
-import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.CHECKMATE
-import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.FORFEIT
+import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.*
 import ch.epfl.sdp.mobile.ui.social.Tie
 import ch.epfl.sdp.mobile.ui.social.Win
 import org.junit.Rule
 import org.junit.Test
 
-class ProfileScreenTest {
+class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestProfileScreenState(override val matches: List<ChessMatch>) : ProfileScreenState {
+  open class TestSettingScreenState(override val matches: List<ChessMatch>) : SettingScreenState {
     override val email = "example@epfl.ch"
     override val pastGamesCount = 10
-    override fun onChallengeClick() = Unit
-    override fun onUnfollowClick() = Unit
+    override val puzzlesCount = 12
+
+    override fun onEditClick() = Unit
+    override fun onSettingsClick() = Unit
     override val backgroundColor = Color.Default
     override val name = "Example"
     override val emoji = "🎁"
-    override val followed = false
+    override val followed = true
   }
 
-  object FakeProfileScreenState :
-      TestProfileScreenState(
+  object FakeSetttingScreenState :
+      TestSettingScreenState(
           List(20) { ChessMatch("Konor($it)", Win(CHECKMATE), 27) },
-      )
+      ) {
+    override val puzzlesCount = 12
+  }
 
   @Test
   fun profile_isDisplayed() {
-    rule.setContent { ProfileScreen(FakeProfileScreenState) }
+    rule.setContent { SettingsScreen(FakeSetttingScreenState) }
 
-    rule.onNodeWithText(FakeProfileScreenState.email).assertExists()
-    rule.onNodeWithText(FakeProfileScreenState.name).assertExists()
-    rule.onNodeWithText(FakeProfileScreenState.emoji).assertExists()
+    rule.onNodeWithText(FakeSetttingScreenState.email).assertExists()
+    rule.onNodeWithText(FakeSetttingScreenState.name).assertExists()
+    rule.onNodeWithText(FakeSetttingScreenState.emoji).assertExists()
   }
 
   @Test
-  fun counts_areDisplayed() {
-    rule.setContent { ProfileScreen(FakeProfileScreenState) }
+  fun pastGameCount_areDisplayed() {
+    rule.setContent { SettingsScreen(FakeSetttingScreenState) }
 
-    rule.onNodeWithText(FakeProfileScreenState.pastGamesCount.toString()).assertExists()
+    rule.onNodeWithText(FakeSetttingScreenState.pastGamesCount.toString()).assertExists()
   }
 
   @Test
   fun scroll_makesMatchesVisible() {
-    rule.setContentWithLocalizedStrings { ProfileScreen(FakeProfileScreenState) }
+    rule.setContentWithLocalizedStrings { SettingsScreen(FakeSetttingScreenState) }
 
     rule.onRoot().performTouchInput { swipeUp() }
     rule.onAllNodesWithText("Konor", substring = true)
@@ -67,8 +70,8 @@ class ProfileScreenTest {
       match: ChessMatch,
       expected: LocalizedStrings.() -> String,
   ) {
-    val state = TestProfileScreenState(List(20) { match })
-    val strings = rule.setContentWithLocalizedStrings { ProfileScreen(state) }
+    val state = TestSettingScreenState(List(20) { match })
+    val strings = rule.setContentWithLocalizedStrings { SettingsScreen(state) }
 
     rule.onRoot().performTouchInput { swipeUp() }
     rule.onAllNodesWithText(expected(strings)).assertAny(SemanticsMatcher("exists") { true })

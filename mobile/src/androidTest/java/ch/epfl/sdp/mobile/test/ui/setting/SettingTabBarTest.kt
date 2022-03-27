@@ -1,16 +1,16 @@
-package ch.epfl.sdp.mobile.test.ui.profile
+package ch.epfl.sdp.mobile.test.ui.setting
 
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.profile.ProfileTabBar
-import ch.epfl.sdp.mobile.ui.profile.rememberProfileTabBarState
+import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
+import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 import org.junit.Rule
 import org.junit.Test
 
-class ProfileTabBarTest {
+class SettingTabBarTest {
 
   @get:Rule val rule = createComposeRule()
 
@@ -18,8 +18,8 @@ class ProfileTabBarTest {
   fun clickingPastGames_preservesSelection() {
     val strings =
         rule.setContentWithLocalizedStrings {
-          val state = rememberProfileTabBarState(0, 0)
-          ProfileTabBar(state)
+          val state = rememberSettingTabBarState(0, 0)
+          SettingTabBar(state)
         }
 
     rule.onNodeWithText(strings.profilePastGames).performClick()
@@ -30,8 +30,8 @@ class ProfileTabBarTest {
   fun clickingPuzzles_selectsPuzzles() {
     val strings =
         rule.setContentWithLocalizedStrings {
-          val state = rememberProfileTabBarState(0, 0)
-          ProfileTabBar(state)
+          val state = rememberSettingTabBarState(0, 0)
+          SettingTabBar(state)
         }
 
     rule.onNodeWithText(strings.profilePuzzle).performClick()

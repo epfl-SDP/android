@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -98,5 +99,28 @@ class SocialFacadeTest {
     val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val userFollowing = user.following.first()
     Truth.assertThat(userFollowing).isEmpty()
+  }
+
+  @Test
+  fun get_successfully_userIsInDatabse() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("uid", ProfileDocument(name = "test")) }
+    }
+    val facade = SocialFacade(auth, store)
+
+    val user = facade.get("test").first()
+    Truth.assertThat(user.name).isEqualTo("test")
+  }
+
+  @Test
+  fun get_unsuccessfully_userIsNotInDatabse() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = SocialFacade(auth, store)
+
+    val user = facade.get("test").firstOrNull()
+
+    Truth.assertThat(user).isEqualTo(null)
   }
 }
