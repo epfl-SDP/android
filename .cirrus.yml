@@ -39,7 +39,7 @@ check_android_task:
     ./gradlew check connectedCheck
   report_codeclimate_script: |
     export JACOCO_SOURCE_PATH=mobile/src/main/java/
-    ./cc-test-reporter format-coverage ./mobile/build/reports/coverage/androidTest/debug/report.xml --input-type jacoco
+    ./cc-test-reporter format-coverage ./mobile/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
     ./cc-test-reporter upload-coverage
   lint_script:
     ./gradlew lintDebug
