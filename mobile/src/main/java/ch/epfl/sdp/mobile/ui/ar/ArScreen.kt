@@ -10,6 +10,10 @@ import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.math.Position
 
+// ONLY FOR DEBUGGING
+// FIXME : Need to remove it when the project finish
+private const val DisplayAxes = true
+
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
   var pawn1 by remember { mutableStateOf<ArModelNode?>(null) }
@@ -17,6 +21,12 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   var board by remember { mutableStateOf<ArModelNode?>(null) }
   var boardYOffset by remember { mutableStateOf(0f) }
+  // DEBUG
+  var white by remember { mutableStateOf<ArModelNode?>(null) }
+  var red by remember { mutableStateOf<ArModelNode?>(null) }
+  var blue by remember { mutableStateOf<ArModelNode?>(null) }
+  var green by remember { mutableStateOf<ArModelNode?>(null) }
+
   val context = LocalContext.current
   val nodePlacementMode = PlacementMode.PLANE_HORIZONTAL
 
@@ -73,12 +83,41 @@ fun ArScreen(modifier: Modifier = Modifier) {
       // Double the value to get the total height of the box
       boardYOffset = 2 * boardBoundingBox.halfExtent[1]
     }
+    // DEBUG
+    if (DisplayAxes) {
+      white = loadModel("models/white.glb", nodePlacementMode)
+      red = loadModel("models/red.glb", nodePlacementMode)
+      blue = loadModel("models/blue.glb", nodePlacementMode)
+      green = loadModel("models/green.glb", nodePlacementMode)
+    }
   }
 
   AndroidView(
       factory = { ArSceneView(it) },
       modifier = modifier,
       update = { view ->
+        if (DisplayAxes) {
+          white?.let {
+            it.scale(2f)
+            board?.addChild(it)
+            it.placementPosition = Position(y = boardYOffset)
+          }
+          red?.let {
+            it.scale(2f)
+            board?.addChild(it)
+            it.placementPosition = Position(x = 3f, y = boardYOffset)
+          }
+          blue?.let {
+            it.scale(2f)
+            board?.addChild(it)
+            it.placementPosition = Position(z = 3f, y = boardYOffset)
+          }
+          green?.let {
+            it.scale(2f)
+            board?.addChild(it)
+            it.placementPosition = Position(y = 3f + boardYOffset)
+          }
+        }
         pawn1?.let {
           board?.addChild(it)
           it.placementPosition = Position(y = boardYOffset)
