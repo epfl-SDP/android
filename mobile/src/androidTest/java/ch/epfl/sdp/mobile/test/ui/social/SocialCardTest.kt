@@ -16,7 +16,6 @@ class SocialCardTest {
     override val name: String = "Toto"
     override val emoji: String = ":3"
     override val followed: Boolean = false
-    override val uid: String = "uid"
   }
 
   @Test

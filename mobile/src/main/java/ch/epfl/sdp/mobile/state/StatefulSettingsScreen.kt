@@ -18,7 +18,6 @@ class AuthenticatedUserProfileScreenState(private val user: AuthenticatedUser) :
   override val name = user.name
   override val emoji = user.emoji
   override val followed = user.followed
-  override val uid = user.uid
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}

@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
-import ch.epfl.sdp.mobile.ui.social.Person
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -53,7 +52,7 @@ fun StatefulHome(
   val entry by controller.currentBackStackEntryAsState()
   val section = entry?.toSection() ?: HomeSection.Social
 
-  val onPersonClick: (person: Person) -> Unit = { person ->
+  val onPersonItemClick: (person: ProfileAdapter) -> Unit = { person ->
     controller.navigate("$ProfileRoute/${person.uid}")
   }
 
@@ -68,7 +67,7 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) {
-        StatefulFollowingScreen(user, onPersonClick, Modifier.fillMaxSize())
+        StatefulFollowingScreen(user, onPersonItemClick, Modifier.fillMaxSize())
       }
       composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{uid}") { backStackEntry ->

@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.application.social
 
-import android.util.Log
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
@@ -10,7 +9,6 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -44,16 +42,12 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
    * @param uid search criteria.
    * @param user the [AuthenticationUser] that is performing the get.
    */
-  fun get(
+  fun profile(
       uid: String,
       user: AuthenticationUser = NotAuthenticatedUser,
   ): Flow<Profile?> {
-    Log.i("info", uid)
-    return store
-        .collection("users")
-        .document(uid)
-        .asFlow<ProfileDocument>()
-        .map { doc -> doc?.toProfile(user) }
-        .catch { emit(null) }
+    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
+      doc?.toProfile(user)
+    }
   }
 }

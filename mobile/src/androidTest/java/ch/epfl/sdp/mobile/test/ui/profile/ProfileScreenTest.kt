@@ -30,7 +30,6 @@ class ProfileScreenTest {
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = false
-    override val uid = "uid"
   }
 
   object FakeProfileScreenState :

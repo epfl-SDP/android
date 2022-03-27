@@ -5,9 +5,6 @@ import ch.epfl.sdp.mobile.application.Profile.Color
 /** An interface representing a list of people you're following. */
 interface Person {
 
-  /** The the unique identifier of the Person. */
-  val uid: String
-
   /** The background color of the profile of this user. */
   val backgroundColor: Color
 
