@@ -1,12 +1,10 @@
-package ch.epfl.sdp.mobile
+package ch.epfl.sdp.mobile.ui.ar
 
-import ch.epfl.sdp.mobile.ui.ar.ArBoard
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import org.junit.Assert.*
 import org.junit.Test
 
-class ArBoardTest {
-
+public class ArBoardTest {
   private val board = ArBoard(2f, 1f, 10f)
 
   @Test
