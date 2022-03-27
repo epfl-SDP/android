@@ -18,10 +18,10 @@ private const val DisplayAxes = true
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
   var pawn1 by remember { mutableStateOf<ArModelNode?>(null) }
-  var pawn2 by remember { mutableStateOf<ArModelNode?>(null) }
 
   var board by remember { mutableStateOf<ArModelNode?>(null) }
   var boardYOffset by remember { mutableStateOf(0f) }
+
   // DEBUG
   var white by remember { mutableStateOf<ArModelNode?>(null) }
   var red by remember { mutableStateOf<ArModelNode?>(null) }
@@ -48,16 +48,11 @@ fun ArScreen(modifier: Modifier = Modifier) {
   ): ArModelNode {
     val node =
         ArModelNode(placementMode = placementMode, autoAnchor = true, placementPosition = position)
-    val instance =
-        node.loadModel(
-            context = context,
-            glbFileLocation = glbPath,
-            autoScale = true,
-        )
-    val boundingBox = instance?.filamentAsset?.boundingBox
-    val halfExtent = boundingBox?.halfExtent?.maxOrNull()!!
-    // TODO : Determine the scale
-    node.scale(0.5f / halfExtent)
+    node.loadModel(
+        context = context,
+        glbFileLocation = glbPath,
+        autoScale = true,
+    )
     return node
   }
 
@@ -69,9 +64,8 @@ fun ArScreen(modifier: Modifier = Modifier) {
    */
   fun addNode(modelNode: ArModelNode?, view: ArSceneView) {
     val node = modelNode ?: return
-    if (node !in view.children) {
-      view.addChild(node)
-    }
+    view.addChild(node)
+  }
 
   // Keep the screen only for this composable
   DisposableEffect(Unit) {
@@ -81,7 +75,6 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   LaunchedEffect(Unit) {
     pawn1 = loadModel("models/pawn.glb", nodePlacementMode)
-    pawn2 = loadModel("models/pawn.glb", nodePlacementMode, Position(x = 1f))
     board = loadModel("models/board.glb", nodePlacementMode)
 
     val boardBoundingBox = board!!.modelInstance?.filamentAsset?.boundingBox
@@ -91,6 +84,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
       // Double the value to get the total height of the box
       boardYOffset = 2 * boardBoundingBox.halfExtent[1]
     }
+
     // DEBUG
     if (DisplayAxes) {
       white = loadModel("models/white.glb", nodePlacementMode)
@@ -126,6 +120,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
             it.placementPosition = Position(y = 3f + boardYOffset)
           }
         }
+
         pawn1?.let {
           board?.addChild(it)
           it.placementPosition = Position(y = boardYOffset)
