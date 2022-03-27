@@ -5,10 +5,8 @@ import androidx.compose.animation.core.Spring.StiffnessLow
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -29,6 +27,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import kotlin.math.roundToInt
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 /** The width (and height) in number of cells of a ChessBoard */
@@ -63,12 +62,28 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
               positions = state.availableMoves,
               color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.disabled),
           )
+          .selection(
+              position = state.selectedPosition,
+              color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.medium),
+          )
           .semantics { this.contentDescription = strings.boardContentDescription },
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
     val cellPx = minDimension / ChessBoardCells
     val cellDp = with(LocalDensity.current) { cellPx.toDp() }
     val scope = rememberCoroutineScope()
+
+    // Detect the tap gestures on the board. This won't detect tap gestures on the pieces however.
+    Box(
+        Modifier.fillMaxSize().pointerInput(state, enabled) {
+          if (enabled) {
+            detectTapGestures { offset ->
+              val position = offset / cellPx
+              state.onPositionClick(Position(position.x.toInt(), position.y.toInt()))
+            }
+          }
+        },
+    )
 
     for ((position, piece) in state.pieces) {
       key(piece) {
@@ -109,13 +124,18 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
                     }
                     .then(
                         if (enabled)
-                            Modifier.movablePiece(draggingState, currentTarget, cellPx) {
-                                droppedPosition ->
-                              scope.launch {
-                                currentTargetAnimatable.snapTo(draggingState.offset)
-                                state.onDropPiece(piece, droppedPosition)
-                              }
-                            }
+                            Modifier.movablePiece(
+                                state = draggingState,
+                                target = currentTarget,
+                                cellSize = cellPx,
+                                onClick = { state.onPositionClick((position)) },
+                                onDrop = { droppedPosition ->
+                                  scope.launch {
+                                    currentTargetAnimatable.snapTo(draggingState.offset)
+                                    state.onDropPiece(piece, droppedPosition)
+                                  }
+                                },
+                            )
                         else Modifier,
                     )
                     .size(cellDp),
@@ -143,33 +163,41 @@ private class DraggingState(
  * @param state the [DraggingState] for this composable.
  * @param target the [Offset] at which the piece rests.
  * @param cellSize the size of each square / piece of the board.
+ * @param onClick the callback called when the piece is clicked.
  * @param onDrop the callback called when the piece is dropped.
  */
 private fun Modifier.movablePiece(
     state: DraggingState,
     target: Offset,
     cellSize: Float,
+    onClick: () -> Unit,
     onDrop: (Position) -> Unit,
 ): Modifier = composed {
   val currentTarget by rememberUpdatedState(target)
+  val currentOnClick by rememberUpdatedState(onClick)
   val currentOnDrop by rememberUpdatedState(onDrop)
   pointerInput(Unit) {
-    detectDragGestures(
-        onDragStart = {
-          state.offset = currentTarget
-          state.isDragging = true
-        },
-        onDrag = { change, dragAmount ->
-          change.consumeAllChanges()
-          state.offset += dragAmount
-        },
-        onDragEnd = {
-          state.isDragging = false
-          val (x, y) = state.offset / cellSize
-          currentOnDrop(Position(x.roundToInt(), y.roundToInt()))
-        },
-        onDragCancel = { state.isDragging = false },
-    )
+    coroutineScope {
+      launch { detectTapGestures { currentOnClick() } }
+      launch {
+        detectDragGestures(
+            onDragStart = {
+              state.offset = currentTarget
+              state.isDragging = true
+            },
+            onDrag = { change, dragAmount ->
+              change.consumeAllChanges()
+              state.offset += dragAmount
+            },
+            onDragEnd = {
+              state.isDragging = false
+              val (x, y) = state.offset / cellSize
+              currentOnDrop(Position(x.roundToInt(), y.roundToInt()))
+            },
+            onDragCancel = { state.isDragging = false },
+        )
+      }
+    }
   }
 }
 
