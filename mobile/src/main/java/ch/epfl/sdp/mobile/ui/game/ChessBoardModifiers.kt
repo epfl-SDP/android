@@ -1,6 +1,9 @@
 package ch.epfl.sdp.mobile.ui.game
 
+import androidx.compose.animation.core.*
+import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
 import androidx.compose.material.LocalContentColor
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
@@ -8,7 +11,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect.Companion.dashPathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -95,16 +102,87 @@ fun Modifier.actions(
     cells: Int = ChessBoardCells
 ): Modifier = composed {
   val surfaceColor = color.takeOrElse { LocalContentColor.current }
-  drawBehind {
-    val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
-    val squareSize = size.minDimension / cells
-    val halfSquare = Offset(squareSize, squareSize) / 2f
-    for ((x, y) in positions) {
-      drawCircle(
-          color = surfaceColor,
-          radius = diameter.toPx() / 2,
-          center = origin + Offset(x * squareSize, y * squareSize) + halfSquare,
+  cells(positions = positions, cells = cells) {
+    drawCircle(color = surfaceColor, radius = diameter.toPx() / 2)
+  }
+}
+
+/** The duration of a cycle of the selection dashed border animation. */
+private const val SelectionDurationMillis = DefaultDurationMillis * 4
+
+/**
+ * A [Modifier] which draws an animated dashed border for the provide [ChessBoardState.Position].
+ *
+ * @param position the position that should be drawn.
+ * @param color the [Color] of the animated border.
+ * @param width the width of the border stroke.
+ * @param cells the number of cells in the grid.
+ */
+fun Modifier.selection(
+    position: ChessBoardState.Position?,
+    color: Color = Color.Unspecified,
+    width: Dp = 4.dp,
+    cells: Int = ChessBoardCells,
+): Modifier = composed {
+  val lineColor = color.takeOrElse { LocalContentColor.current }
+  val transition = rememberInfiniteTransition()
+  val progress by
+      transition.animateFloat(
+          initialValue = 0f,
+          targetValue = 1f,
+          animationSpec =
+              infiniteRepeatable(
+                  tween(
+                      durationMillis = SelectionDurationMillis,
+                      easing = LinearEasing,
+                  ),
+              ),
       )
-    }
+  cells(
+      positions = position?.let(::setOf) ?: emptySet(),
+      cells = cells,
+  ) {
+    val phase = size.width / 3
+    val style =
+        Stroke(
+            width = width.toPx(),
+            pathEffect =
+                dashPathEffect(
+                    phase = -2 * progress * phase,
+                    intervals = floatArrayOf(phase, phase),
+                ),
+        )
+    drawRect(color = lineColor, style = style)
+  }
+}
+
+/**
+ * A [Modifier] which calls [onDraw] for each cell passed as a [ChessBoardState.Position].
+ *
+ * @param positions the [Set] of position which should be drawn.
+ * @param cells the number of cells which should be displayed per side.
+ * @param onDraw the [DrawScope] in which drawing operations should be performed for each cell.
+ */
+private fun Modifier.cells(
+    positions: Set<ChessBoardState.Position>,
+    cells: Int = ChessBoardCells,
+    onDraw: DrawScope.() -> Unit,
+): Modifier = drawBehind {
+  val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
+  val squareSize = size.minDimension / cells
+  for ((x, y) in positions) {
+    withTransform(
+        transformBlock = {
+          val left = origin.x + x * squareSize
+          val top = origin.y + y * squareSize
+          inset(
+              left = left,
+              top = top,
+              right = size.width - (left + squareSize),
+              bottom = size.height - (top + squareSize),
+          )
+        },
+        drawBlock = onDraw,
+    )
   }
 }
