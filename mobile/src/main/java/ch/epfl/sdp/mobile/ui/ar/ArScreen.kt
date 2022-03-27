@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.ar.core.Anchor
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
@@ -14,6 +15,8 @@ fun ArScreen(modifier: Modifier = Modifier) {
   var pawn1 by remember { mutableStateOf<ArModelNode?>(null) }
   var pawn2 by remember { mutableStateOf<ArModelNode?>(null) }
 
+  var board by remember { mutableStateOf<ArModelNode?>(null) }
+  var boardYOffset by remember { mutableStateOf(0f) }
   val context = LocalContext.current
   val nodePlacementMode = PlacementMode.PLANE_HORIZONTAL
 
@@ -61,13 +64,37 @@ fun ArScreen(modifier: Modifier = Modifier) {
   LaunchedEffect(Unit) {
     pawn1 = loadModel("models/pawn.glb", nodePlacementMode)
     pawn2 = loadModel("models/pawn.glb", nodePlacementMode, Position(x = 1f))
+    board = loadModel("models/board.glb", nodePlacementMode)
+
+    val boardBoundingBox = board!!.modelInstance?.filamentAsset?.boundingBox
+
+    // get Y
+    if (boardBoundingBox != null) {
+      // Double the value to get the total height of the box
+      boardYOffset = 2 * boardBoundingBox.halfExtent[1]
+    }
   }
 
   AndroidView(
       factory = { ArSceneView(it) },
       modifier = modifier,
       update = { view ->
-        addNode(pawn1, view)
-        addNode(pawn2, view)
+        pawn1?.let {
+          board?.addChild(it)
+          it.placementPosition = Position(y = boardYOffset)
+        }
+
+        board?.scale(0.2f)
+
+        fun anchorOrMove(anchor: Anchor) {
+          // Add only one instance of the node
+          if (!view.children.contains(board!!)) {
+            view.addChild(board!!)
+          }
+          board?.anchor = anchor
+        }
+
+        // Place the board on the taped position
+        view.onTouchAr = { hitResult, _ -> anchorOrMove(hitResult.createAnchor()) }
       })
 }
