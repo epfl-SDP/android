@@ -87,7 +87,7 @@ fun StatefulFollowingScreen(
  * @param mode the current [SocialScreenState.Mode] of the social screen.
  * @param searchFieldInteraction the [MutableInteractionSource] of the search field.
  * @param scope the [CoroutineScope] on which requests are performed.
- * @param onPersonElementClick on click of person list element
+ * @param onPersonItemClick on click of person list element
  */
 private class SnapshotSocialScreenState(
     private val user: AuthenticatedUser,
