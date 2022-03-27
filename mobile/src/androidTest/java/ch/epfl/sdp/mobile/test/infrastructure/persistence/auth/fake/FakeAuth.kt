@@ -4,6 +4,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.AuthBuilder
+import java.util.*
 import kotlinx.coroutines.flow.*
 
 /**
@@ -12,8 +13,7 @@ import kotlinx.coroutines.flow.*
  */
 class FakeAuth : Auth, AuthBuilder {
 
-  private val record =
-      MutableStateFlow(FakeAuthRecord(currentUser = null, users = emptySet(), nextUid = 0))
+  private val record = MutableStateFlow(FakeAuthRecord(currentUser = null, users = emptySet()))
 
   override val currentUser: Flow<User?>
     get() = record.map { it.currentUser }.distinctUntilChanged()
@@ -46,17 +46,23 @@ class FakeAuth : Auth, AuthBuilder {
     addUser(email, password)
   }
 
+  override fun user(email: String, password: String, uid: String) {
+    addUser(email, password, uid)
+  }
+
   /**
    * A helper method which automatically adds a new user, if possible, to the [FakeAuth].
    *
    * @param email the email address to use.
    * @param password the password of the added user.
+   * @param uid the unique identifier for this newly added user.
    *
    * @return the result of adding the new user.
    */
   private fun addUser(
       email: String,
       password: String,
+      uid: String = UUID.randomUUID().toString(),
   ): Auth.AuthenticationResult {
 
     // Compare-and-set to handle concurrent updates.
@@ -64,14 +70,13 @@ class FakeAuth : Auth, AuthBuilder {
       val rec = record.value
       val users = rec.users
 
-      // If an account already exists with this email, we must return an authentication failure.
-      val exists = users.any { it.email == email }
+      // If an account already exists with this email or this uid, we must return an authentication
+      // failure.
+      val exists = users.any { it.email == email || it.uid == uid }
       if (exists) return FailureInternal
 
-      // Generate a new UID, and create an updated record.
-      val uid = rec.nextUid
-      val newUser = FakeUser(uid = "$uid", email = email, password = password)
-      val newRec = FakeAuthRecord(currentUser = newUser, users = users + newUser, nextUid = uid + 1)
+      val newUser = FakeUser(uid = uid, email = email, password = password)
+      val newRec = FakeAuthRecord(currentUser = newUser, users = users + newUser)
 
       // Only update if the data is consistent with what we had read. Otherwise, we can safely retry
       // to perform the whole block atomically. A new UID may be generated, and we'll see newly
