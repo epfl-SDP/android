@@ -125,4 +125,35 @@ class StatefulGameScreenTest {
     robot.performInput { click(4, 4) }
     robot.assertHasPiece(4, 4, White, Pawn)
   }
+
+  @Test
+  fun blockingCheck_isSuccessful() {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("id", ProfileDocument()) }
+      collection("games") { document("id", ChessDocument(whiteId = "id", blackId = "id")) }
+    }
+    val authenticationFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val user = mockk<AuthenticatedUser>()
+    every { user.uid } returns "id1"
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+            StatefulGameScreen(user)
+          }
+        }
+    val robot = ChessBoardRobot(rule, strings)
+
+    robot.performInput {
+      drag(ChessBoardState.Position(4, 6), ChessBoardState.Position(4, 5))
+      drag(ChessBoardState.Position(5, 1), ChessBoardState.Position(5, 2))
+      drag(ChessBoardState.Position(3, 7), ChessBoardState.Position(7, 4))
+    }
+    rule.mainClock.advanceTimeByFrame() // Ensures we display the selected state.
+    robot.performInput { drag(ChessBoardState.Position(6, 1), ChessBoardState.Position(6, 2)) }
+    robot.assertHasPiece(6, 2, Black, Pawn)
+  }
 }
