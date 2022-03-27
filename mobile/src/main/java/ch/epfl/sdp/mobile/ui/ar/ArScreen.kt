@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.ar
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,19 +16,21 @@ import io.github.sceneview.math.Position
 // FIXME : Need to remove it when the project finish
 private const val DisplayAxes = false
 
+private const val BoardScale = 0.2f
+// This value cannot be computed, it's selected by test and try
 private const val BoardBorderSize = 2.2f
+
+private const val BoardPath = "models/board.glb"
 
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
+
   var pawn1 by remember { mutableStateOf<ArModelNode?>(null) }
-
   var board by remember { mutableStateOf<ArModelNode?>(null) }
-  var boardYOffset by remember { mutableStateOf(0f) }
-  var boardHalfSize by remember { mutableStateOf(0f) }
-  var caseSize by remember { mutableStateOf(0f) }
-  var caseCenter by remember { mutableStateOf(0f) }
 
-  // FIX ME : Prototype purpose only, need to be replace by the [ChessBoardState]
+  var arBoard by remember { mutableStateOf<ArBoard?>(null) }
+
+  // FIX ME : Prototype purpose only, need to be replace with the [ChessBoardState]
   val piecePosition = remember { ChessBoardState.Position(1, 1) }
 
   // DEBUG
@@ -66,39 +67,26 @@ fun ArScreen(modifier: Modifier = Modifier) {
     return node
   }
 
-  /**
-   * Add the given [ArModelNode] to the scene
-   *
-   * @param modelNode the model that we want to add
-   * @param view Where the model will be added
-   */
-  fun addNode(modelNode: ArModelNode?, view: ArSceneView) {
-    val node = modelNode ?: return
-    view.addChild(node)
-  }
-
   // Keep the screen only for this composable
   DisposableEffect(Unit) {
     view.keepScreenOn = true
     onDispose { view.keepScreenOn = false }
   }
 
+  // Load 3d Model and initialize the [ArBoard]
   LaunchedEffect(Unit) {
+    // TODO : Maybe create a enum with all the pieces that contain the path
     pawn1 = loadModel("models/pawn.glb", nodePlacementMode)
-    board = loadModel("models/board.glb", nodePlacementMode)
+    board = loadModel(BoardPath, nodePlacementMode)
 
-    val boardBoundingBox = board!!.modelInstance?.filamentAsset?.boundingBox
+    val boardBoundingBox = board!!.modelInstance?.filamentAsset?.boundingBox!!
 
-    // get Y
-    if (boardBoundingBox != null) {
-      // Double the value to get the total height of the box
-      boardYOffset = 2 * boardBoundingBox.halfExtent[1]
-      boardHalfSize = boardBoundingBox.halfExtent[0]
-      caseSize = (boardHalfSize - BoardBorderSize) / 4
-      caseCenter = caseSize / 2
+    // get height (on y axe) of the board
+    // Double the value to get the total height of the box
+    val boardYOffset = 2 * boardBoundingBox.halfExtent[1]
+    val boardHalfSize = boardBoundingBox.halfExtent[0]
 
-      Log.d("ARScreen", caseSize.toString())
-    }
+    arBoard = ArBoard(BoardBorderSize, boardYOffset, boardHalfSize)
 
     // DEBUG
     if (DisplayAxes) {
@@ -117,37 +105,53 @@ fun ArScreen(modifier: Modifier = Modifier) {
           white?.let {
             it.scale(2f)
             board?.addChild(it)
-            it.placementPosition = Position(y = boardYOffset)
+            it.placementPosition = Position(y = arBoard!!.boardHeight)
           }
           red?.let {
             it.scale(2f)
             board?.addChild(it)
-            it.placementPosition = Position(x = 3f, y = boardYOffset)
+            it.placementPosition = Position(x = 3f, y = arBoard!!.boardHeight)
           }
           blue?.let {
             it.scale(2f)
             board?.addChild(it)
-            it.placementPosition = Position(z = 3f, y = boardYOffset)
+            it.placementPosition = Position(z = 3f, y = arBoard!!.boardHeight)
           }
           green?.let {
             it.scale(2f)
             board?.addChild(it)
-            it.placementPosition = Position(y = 3f + boardYOffset)
+            it.placementPosition = Position(y = 3f + arBoard!!.boardHeight)
           }
         }
 
-        pawn1?.let {
-          board?.addChild(it)
-          it.placementPosition =
-              Position(
-                  y = boardYOffset,
-                  x = -boardHalfSize + BoardBorderSize + piecePosition.x * caseSize + caseCenter,
-                  z = -boardHalfSize + BoardBorderSize + piecePosition.y * caseSize + caseCenter)
+        /** Add the given [piece] on the board in the correct position */
+        fun addPiece(piece: ArModelNode) {
+          piece.let {
+            board?.addChild(it)
+            it.placementPosition =
+                arBoard?.toArPosition(piecePosition) ?: ArModelNode.DEFAULT_PLACEMENT_POSITION
+          }
         }
 
-        board?.scale(0.05f)
+        /**
+         * TODO : With the [ChessBoardState], iterate over the list of pieces, and do the same that
+         * [pawn1]
+         */
+        if (pawn1 != null) {
+          addPiece(pawn1!!)
+        }
 
-        fun anchorOrMove(anchor: Anchor) {
+        // Scale down the board size
+        // As all the pieces are the board children, they scale as well
+        board?.scale(BoardScale)
+
+        /**
+         * If not already in the scene, the board will be added. Update the board anchor with the
+         * given one and change the displayed position
+         *
+         * @param anchor The (new) board's anchor position
+         */
+        fun anchorOrMoveBoard(anchor: Anchor) {
           // Add only one instance of the node
           if (!view.children.contains(board!!)) {
             view.addChild(board!!)
@@ -156,6 +160,6 @@ fun ArScreen(modifier: Modifier = Modifier) {
         }
 
         // Place the board on the taped position
-        view.onTouchAr = { hitResult, _ -> anchorOrMove(hitResult.createAnchor()) }
+        view.onTouchAr = { hitResult, _ -> anchorOrMoveBoard(hitResult.createAnchor()) }
       })
 }
