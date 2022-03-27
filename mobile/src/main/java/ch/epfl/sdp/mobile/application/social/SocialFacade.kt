@@ -39,7 +39,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   /**
    * Returns a [Flow] of the [Profile] by the given name
    *
-   * @param uid search criteria.
+   * @param uid the unique identifiers of the profile.
    * @param user the [AuthenticationUser] that is performing the get.
    */
   fun profile(
