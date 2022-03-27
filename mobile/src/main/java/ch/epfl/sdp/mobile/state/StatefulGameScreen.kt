@@ -81,9 +81,9 @@ class SnapshotChessBoardState(
       return match
           .game
           .board
-          .firstOrNull { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
-          ?.first
-          ?.toPosition()
+          .first { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
+          .first
+          .toPosition()
     }
 
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
