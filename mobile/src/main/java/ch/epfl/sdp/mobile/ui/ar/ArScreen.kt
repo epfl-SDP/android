@@ -1,10 +1,12 @@
 package ch.epfl.sdp.mobile.ui.ar
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
@@ -13,7 +15,9 @@ import io.github.sceneview.math.Position
 
 // ONLY FOR DEBUGGING
 // FIXME : Need to remove it when the project finish
-private const val DisplayAxes = true
+private const val DisplayAxes = false
+
+private const val BoardBorderSize = 2.2f
 
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
@@ -21,6 +25,12 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   var board by remember { mutableStateOf<ArModelNode?>(null) }
   var boardYOffset by remember { mutableStateOf(0f) }
+  var boardHalfSize by remember { mutableStateOf(0f) }
+  var caseSize by remember { mutableStateOf(0f) }
+  var caseCenter by remember { mutableStateOf(0f) }
+
+  // FIX ME : Prototype purpose only, need to be replace by the [ChessBoardState]
+  val piecePosition = remember { ChessBoardState.Position(1, 1) }
 
   // DEBUG
   var white by remember { mutableStateOf<ArModelNode?>(null) }
@@ -83,6 +93,11 @@ fun ArScreen(modifier: Modifier = Modifier) {
     if (boardBoundingBox != null) {
       // Double the value to get the total height of the box
       boardYOffset = 2 * boardBoundingBox.halfExtent[1]
+      boardHalfSize = boardBoundingBox.halfExtent[0]
+      caseSize = (boardHalfSize - BoardBorderSize) / 4
+      caseCenter = caseSize / 2
+
+      Log.d("ARScreen", caseSize.toString())
     }
 
     // DEBUG
@@ -123,10 +138,14 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
         pawn1?.let {
           board?.addChild(it)
-          it.placementPosition = Position(y = boardYOffset)
+          it.placementPosition =
+              Position(
+                  y = boardYOffset,
+                  x = -boardHalfSize + BoardBorderSize + piecePosition.x * caseSize + caseCenter,
+                  z = -boardHalfSize + BoardBorderSize + piecePosition.y * caseSize + caseCenter)
         }
 
-        board?.scale(0.2f)
+        board?.scale(0.05f)
 
         fun anchorOrMove(anchor: Anchor) {
           // Add only one instance of the node
