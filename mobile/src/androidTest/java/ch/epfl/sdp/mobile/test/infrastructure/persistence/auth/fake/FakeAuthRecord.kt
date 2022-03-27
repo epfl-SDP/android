@@ -6,5 +6,4 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.fake
 data class FakeAuthRecord(
     val currentUser: FakeUser?,
     val users: Set<FakeUser>,
-    val nextUid: Int,
 )

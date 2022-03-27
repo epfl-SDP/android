@@ -66,4 +66,15 @@ class DslTest {
 
     assertThat(result).isEqualTo(FailureInternal)
   }
+
+  @Test
+  fun duplicateUid_keepsFirstAccount() = runTest {
+    val auth = buildAuth {
+      user("alexandre.piveteau@epfl.ch", "password", "uid")
+      user("lars.barmettler@epfl.ch", "password", "uid")
+    }
+    val result = auth.signInWithEmail("alexandre.piveteau@epfl.ch", "password") as Success
+
+    assertThat(auth.currentUser.first()).isEqualTo(result.user)
+  }
 }
