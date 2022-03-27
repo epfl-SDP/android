@@ -2,13 +2,17 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.online.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -115,5 +119,29 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
     rule.onNodeWithText(strings.newGame).assertExists().performClick().assertDoesNotExist()
+  }
+
+  @Test
+  fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("2", ProfileDocument(name = "testName", followers = listOf("1")))
+      }
+    }
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signUpWithEmail("email@example.org", "name", "password")
+    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) { StatefulHome(user) }
+        }
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("testName").assertExists()
+    rule.onNodeWithText("testName").performClick()
+    rule.onNodeWithText(strings.profilePastGames).assertExists()
   }
 }

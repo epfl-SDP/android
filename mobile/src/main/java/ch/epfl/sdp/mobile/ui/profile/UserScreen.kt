@@ -32,7 +32,7 @@ fun UserScreen(
     profileTabBar: @Composable () -> Unit,
     matches: List<ChessMatch>,
     lazyColumnState: LazyListState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
 
