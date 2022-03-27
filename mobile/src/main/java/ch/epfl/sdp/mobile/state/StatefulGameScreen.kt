@@ -74,6 +74,18 @@ class SnapshotChessBoardState(
   override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
     private set
 
+  override val checkPosition: ChessBoardState.Position?
+    get() {
+      val nextStep = match.game.nextStep
+      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
+      return match
+          .game
+          .board
+          .firstOrNull { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
+          ?.first
+          ?.toPosition()
+    }
+
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
         match
