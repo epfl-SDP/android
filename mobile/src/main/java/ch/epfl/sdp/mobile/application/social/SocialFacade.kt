@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.social
 
+import android.util.Log
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
@@ -40,20 +41,19 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   /**
    * Returns a [Flow] of the [Profile] by the given name
    *
-   * @param name text search criteria.
+   * @param uid search criteria.
    * @param user the [AuthenticationUser] that is performing the get.
    */
   fun get(
-      name: String,
+      uid: String,
       user: AuthenticationUser = NotAuthenticatedUser,
-  ): Flow<Profile> {
+  ): Flow<Profile?> {
+    Log.i("info", uid)
     return store
         .collection("users")
-        .whereEquals("name", name)
-        .limit(1)
+        .document(uid)
         .asFlow<ProfileDocument>()
-        .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
-        .map { it.first() }
-        .catch { null }
+        .map { doc -> doc?.toProfile(user) }
+        .catch { emit(null) }
   }
 }

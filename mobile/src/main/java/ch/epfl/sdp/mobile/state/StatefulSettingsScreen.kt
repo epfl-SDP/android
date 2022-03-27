@@ -8,9 +8,8 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
-class AuthenticatedUserProfileScreenState(
-    private val user: AuthenticatedUser,
-) : SettingScreenState {
+class AuthenticatedUserProfileScreenState(private val user: AuthenticatedUser) :
+    SettingScreenState {
   override val email = user.email
   override val pastGamesCount = 0
   override val puzzlesCount = 0
@@ -19,6 +18,7 @@ class AuthenticatedUserProfileScreenState(
   override val name = user.name
   override val emoji = user.emoji
   override val followed = user.followed
+  override val uid = user.uid
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}

@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 private data class ProfileAdapter(
     val profile: Profile,
 ) : Person {
+  override val uid = profile.uid
   override val backgroundColor = profile.backgroundColor
   override val name = profile.name
   override val emoji = profile.emoji
@@ -69,7 +70,7 @@ fun StatefulFollowingScreen(
           mode = mode,
           searchFieldInteraction = searchFieldInteraction,
           scope = scope,
-          onPersonClick = onPersonClick),
+          onPersonElementClick = onPersonClick),
       modifier)
 }
 
@@ -86,6 +87,7 @@ fun StatefulFollowingScreen(
  * @param mode the current [SocialScreenState.Mode] of the social screen.
  * @param searchFieldInteraction the [MutableInteractionSource] of the search field.
  * @param scope the [CoroutineScope] on which requests are performed.
+ * @param onPersonElementClick on click of person list element
  */
 private class SnapshotSocialScreenState(
     private val user: AuthenticatedUser,
@@ -95,7 +97,7 @@ private class SnapshotSocialScreenState(
     override var mode: SocialScreenState.Mode,
     override val searchFieldInteraction: MutableInteractionSource,
     private val scope: CoroutineScope,
-    private val onPersonClick: (Person) -> Unit
+    private val onPersonElementClick: (Person) -> Unit
 ) : SocialScreenState<ProfileAdapter> {
 
   override var following = following
@@ -114,6 +116,6 @@ private class SnapshotSocialScreenState(
   }
 
   override fun onPersonClick(person: ProfileAdapter) {
-    onPersonClick(person)
+    onPersonElementClick(person)
   }
 }

@@ -17,6 +17,7 @@ class FetchedUserProfileScreenState(
   override val name = user.name
   override val emoji = user.emoji
   override val followed = user.followed
+  override val uid = user.uid
 
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {}
@@ -24,16 +25,16 @@ class FetchedUserProfileScreenState(
 /**
  * A stateful composable to visit the profile page of other players
  *
- * @param profileName of the player.
+ * @param uid of the player.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun StatefulProfileScreen(
-    profileName: String,
+    uid: String,
     modifier: Modifier = Modifier,
 ) {
   val socialFacade = LocalSocialFacade.current
-  val profile by socialFacade.get(profileName).collectAsState(null)
+  val profile by socialFacade.get(uid).collectAsState(null)
   val state = profile?.let { FetchedUserProfileScreenState(it) }
   if (state != null) {
     ProfileScreen(state, modifier)

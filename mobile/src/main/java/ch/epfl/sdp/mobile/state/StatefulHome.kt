@@ -54,7 +54,7 @@ fun StatefulHome(
   val section = entry?.toSection() ?: HomeSection.Social
 
   val onPersonClick: (person: Person) -> Unit = { person ->
-    controller.navigate("$ProfileRoute/${person.name}")
+    controller.navigate("$ProfileRoute/${person.uid}")
   }
 
   HomeScaffold(
@@ -71,9 +71,9 @@ fun StatefulHome(
         StatefulFollowingScreen(user, onPersonClick, Modifier.fillMaxSize())
       }
       composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
-      composable("$ProfileRoute/{profileName}") { backStackEntry ->
+      composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulProfileScreen(
-            backStackEntry.arguments?.getString("profileName") ?: "", Modifier.fillMaxSize())
+            backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
