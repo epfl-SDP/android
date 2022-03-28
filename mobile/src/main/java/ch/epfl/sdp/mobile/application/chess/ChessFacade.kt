@@ -2,8 +2,8 @@ package ch.epfl.sdp.mobile.application.chess
 
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.deserialize
-import ch.epfl.sdp.mobile.application.serialize
+import ch.epfl.sdp.mobile.application.chess.notation.deserialize
+import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlinx.coroutines.flow.Flow
