@@ -1,37 +1,33 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
-import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
- * Deserializes and creates a [Match] from a [ChessDocument]
+ * Deserializes and creates a [Game] from a [List] of [String]s in long algebraic notation
  *
- * For a null [ChessDocument], a default [Match] with null value and default [Game] positions will
- * be created
- *
- * @return The deserialized [Match]
+ * @return The deserialized [Game]
  */
-fun ChessDocument?.deserialize(): Match {
+fun List<String>.deserialize(): Game {
   var game = Game.create()
 
-  for (move in this?.moves ?: emptyList()) {
+  for (move in this) {
     val (position, delta) = parseStringToMove(move)
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(position, delta) ?: game
   }
-  return Match(game, this?.uid, this?.whiteId, this?.blackId)
+  return game
 }
 
 /**
- * Serializes a [Match] to a [ChessDocument]
+ * Serializes a [Match] to a [List] of [String]s in long algebraic chess notation
  *
- * @return The serialized [ChessDocument]
+ * @return The serialized [List] of [String]s
  */
-fun Match.serialize(): ChessDocument {
+fun Game.serialize(): List<String> {
   val sequence = sequence {
-    var previous = this@serialize.game.previous
+    var previous = this@serialize.previous
     while (previous != null) {
       val (game, action) = previous
       val str = parseMoveToString(game, action)
@@ -40,8 +36,7 @@ fun Match.serialize(): ChessDocument {
     }
   }
 
-  return ChessDocument(
-      moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
+  return sequence.toList().asReversed()
 }
 
 /** Parsing string to moves */

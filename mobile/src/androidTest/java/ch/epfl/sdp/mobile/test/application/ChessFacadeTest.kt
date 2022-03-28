@@ -5,8 +5,11 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
+import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.test.application.chess.engine.play
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -41,8 +44,11 @@ class ChessFacadeTest {
     val createdMatch = chessFacade.createMatch(user1, user2)
     val fetchedMatch = chessFacade.matches(user1).mapNotNull { it.firstOrNull() }.first()
 
-    assertThat(fetchedMatch.whiteId).isEqualTo(createdMatch.whiteId)
-    assertThat(fetchedMatch.blackId).isEqualTo(createdMatch.blackId)
+    assertThat(createdMatch.white.filterNotNull().first().uid).isEqualTo(user1.uid)
+    assertThat(createdMatch.black.filterNotNull().first().uid).isEqualTo(user2.uid)
+
+    assertThat(fetchedMatch.white.filterNotNull().first().uid).isEqualTo(user1.uid)
+    assertThat(fetchedMatch.black.filterNotNull().first().uid).isEqualTo(user2.uid)
   }
 
   @Test
@@ -55,8 +61,8 @@ class ChessFacadeTest {
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "userIdWhite"
 
-    val match = Match.create()
-    chessFacade.updateMatch(match)
+    val match = Match()
+    match.update(Game.create())
     val fetchedMatch = chessFacade.matches(user).map { it.firstOrNull() }.first()
 
     assertThat(fetchedMatch).isEqualTo(null)
@@ -76,12 +82,14 @@ class ChessFacadeTest {
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "userId1"
 
-    val newMatch =
-        Match(Game.create(), gameId = "gameId", whiteId = "userId1", blackId = "testIdBlack")
-    chessFacade.updateMatch(newMatch)
+    val match = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()
+    val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
+
+    match.update(newGame)
 
     val fetchedMatch = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()
 
-    assertThat(fetchedMatch.blackId).isEqualTo(newMatch.blackId)
+    assertThat(fetchedMatch.game.first().board[Position(0, 4)])
+        .isEqualTo(newGame.board[Position(0, 4)])
   }
 }
