@@ -33,7 +33,7 @@ fun StatefulProfileScreen(
     modifier: Modifier = Modifier,
 ) {
   val socialFacade = LocalSocialFacade.current
-  val profile by socialFacade.profile(uid).collectAsState(null)
+  val profile by remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
   val state = profile?.let { FetchedUserProfileScreenState(it) }
   if (state != null) {
     ProfileScreen(state, modifier)

@@ -126,14 +126,15 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
       collection("users") {
-        document("2", ProfileDocument(name = "testName", followers = listOf("1")))
+        document("1", ProfileDocument())
+        document("2", ProfileDocument(emoji = ":)", name = "testName", followers = listOf("1")))
       }
     }
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    facade.signUpWithEmail("email@example.org", "name", "password")
+    facade.signInWithEmail("email@example.org", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
