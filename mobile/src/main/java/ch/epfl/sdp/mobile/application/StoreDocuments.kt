@@ -2,10 +2,7 @@ package ch.epfl.sdp.mobile.application
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
-import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 import com.google.firebase.firestore.DocumentId
 
 /**

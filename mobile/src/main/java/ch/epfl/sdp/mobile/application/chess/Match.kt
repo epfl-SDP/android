@@ -10,15 +10,11 @@ import ch.epfl.sdp.mobile.application.chess.engine.Game
  * @param whiteId The UID of the player playing white
  * @param blackId The UID of the player playing black
  */
-data class Match(val game: Game, val gameId: String?, val whiteId: String?, val blackId: String?) {
+class Match(val game: Game, val gameId: String?, val whiteId: String?, val blackId: String?) {
 
   companion object {
-    fun create(whiteId: String?, blackId: String?): Match {
-      return Match(Game.create(), null, whiteId, blackId)
-    }
-
     fun create(): Match {
-      return create(null, null)
+      return Match(Game.create(), null, null, null)
     }
   }
 }

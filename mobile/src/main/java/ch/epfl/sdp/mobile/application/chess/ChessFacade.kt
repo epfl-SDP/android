@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.chess
 
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.notation.deserialize
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
@@ -29,7 +30,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @return The created [Match] before storing it in the [Store] (without the GameId)
    */
   suspend fun createMatch(white: Profile, black: Profile): Match {
-    val match = Match.create(white.uid, black.uid)
+    val match = Match(Game.create(), null, white.uid, black.uid)
     val chessDocument = match.serialize()
     store.collection("games").document().set(chessDocument)
 

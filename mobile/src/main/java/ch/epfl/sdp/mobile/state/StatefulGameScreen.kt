@@ -50,9 +50,7 @@ class SnapshotChessBoardState(
   init {
     // TODO: Select correct game if several exist (once we have a screen to display ongoing games)
     scope.launch {
-      chessFacade.matches(user).map { it.firstOrNull() ?: Match.create() }.collect {
-        match = it
-      }
+      chessFacade.matches(user).map { it.firstOrNull() ?: Match.create() }.collect { match = it }
     }
   }
 

@@ -24,7 +24,6 @@ fun ChessDocument?.deserialize(): Match {
   return Match(game, this?.uid, this?.whiteId, this?.blackId)
 }
 
-
 /**
  * Serializes a [Match] to a [ChessDocument]
  *
@@ -42,7 +41,7 @@ fun Match.serialize(): ChessDocument {
   }
 
   return ChessDocument(
-    moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
+      moves = sequence.toList().asReversed(), whiteId = this.whiteId, blackId = this.blackId)
 }
 
 /** Parsing string to moves */

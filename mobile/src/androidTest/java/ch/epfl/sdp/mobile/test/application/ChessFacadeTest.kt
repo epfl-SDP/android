@@ -39,8 +39,7 @@ class ChessFacadeTest {
     every { user2.uid } returns "userId2"
 
     val createdMatch = chessFacade.createMatch(user1, user2)
-    val fetchedMatch =
-        chessFacade.matches(user1).mapNotNull { it.firstOrNull() }.first()
+    val fetchedMatch = chessFacade.matches(user1).mapNotNull { it.firstOrNull() }.first()
 
     assertThat(fetchedMatch.whiteId).isEqualTo(createdMatch.whiteId)
     assertThat(fetchedMatch.blackId).isEqualTo(createdMatch.blackId)
