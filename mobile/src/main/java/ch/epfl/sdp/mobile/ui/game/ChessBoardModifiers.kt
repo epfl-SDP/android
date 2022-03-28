@@ -107,6 +107,25 @@ fun Modifier.actions(
   }
 }
 
+/**
+ * A [Modifier] which draws a position that is currently in check.
+ *
+ * @param position the position that should be drawn.
+ * @param color the [Color] of the background for check.
+ * @param cells the number of cells in the grid.
+ */
+fun Modifier.check(
+    position: ChessBoardState.Position?,
+    color: Color = Color.Unspecified,
+    cells: Int = ChessBoardCells,
+): Modifier = composed {
+  val fillColor = color.takeOrElse { LocalContentColor.current }
+  cells(
+      positions = position?.let(::setOf) ?: emptySet(),
+      cells = cells,
+  ) { drawRect(fillColor) }
+}
+
 /** The duration of a cycle of the selection dashed border animation. */
 private const val SelectionDurationMillis = DefaultDurationMillis * 4
 

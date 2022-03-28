@@ -102,6 +102,9 @@ interface ChessBoardState<Piece : ChessBoardState.Piece> {
   /** Returns the position currently selected by the user, if there's any. */
   val selectedPosition: Position?
 
+  /** Returns the position of the [Rank.King] currently in check, if there's any. */
+  val checkPosition: Position?
+
   /**
    * A [Set] of the positions which are available to the player for actions, depending on the pieces
    * which they are currently holding.
