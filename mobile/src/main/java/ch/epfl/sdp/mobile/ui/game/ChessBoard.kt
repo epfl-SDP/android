@@ -57,6 +57,10 @@ fun <Piece : ChessBoardState.Piece> ChessBoard(
               cells = ChessBoardCells,
               color = MaterialTheme.colors.onPrimary.copy(alpha = ContentAlpha.disabled),
           )
+          .check(
+              position = state.checkPosition,
+              color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.medium),
+          )
           .grid(cells = ChessBoardCells, color = MaterialTheme.colors.primary)
           .actions(
               positions = state.availableMoves,

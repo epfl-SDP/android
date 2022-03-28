@@ -3,9 +3,9 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.*
-import ch.epfl.sdp.mobile.application.chess.online.ChessFacade
-import ch.epfl.sdp.mobile.application.chess.online.Match
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.chess.Match
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
@@ -73,6 +73,18 @@ class SnapshotChessBoardState(
   /** The currently selected [Position] of the board. */
   override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
     private set
+
+  override val checkPosition: ChessBoardState.Position?
+    get() {
+      val nextStep = match.game.nextStep
+      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
+      return match
+          .game
+          .board
+          .first { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
+          .first
+          .toPosition()
+    }
 
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =

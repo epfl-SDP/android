@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.authentication
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode
 
 /**
  * A state which indicates the contents of an [AuthenticationScreen] composable. It will keep track

@@ -19,7 +19,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
-import ch.epfl.sdp.mobile.ui.profile.*
+import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
+import ch.epfl.sdp.mobile.ui.profile.UserScreen
+import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches

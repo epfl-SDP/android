@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Search
-import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
 
 /**
  * This screen displays all registered users of the app.
