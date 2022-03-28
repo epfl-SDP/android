@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.Painter
 import ch.epfl.sdp.mobile.ui.*
-import ch.epfl.sdp.mobile.ui.BlackKing
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -101,6 +101,9 @@ interface ChessBoardState<Piece : ChessBoardState.Piece> {
 
   /** Returns the position currently selected by the user, if there's any. */
   val selectedPosition: Position?
+
+  /** Returns the position of the [Rank.King] currently in check, if there's any. */
+  val checkPosition: Position?
 
   /**
    * A [Set] of the positions which are available to the player for actions, depending on the pieces

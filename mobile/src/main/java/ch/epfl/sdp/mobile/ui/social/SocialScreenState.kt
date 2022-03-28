@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode
 
 /**
  * A state which indicates the content of an [SocialScreen] composable. It will keep track of the
