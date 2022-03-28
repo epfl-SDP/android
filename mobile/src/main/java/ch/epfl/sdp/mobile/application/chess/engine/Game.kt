@@ -45,7 +45,6 @@ interface Game {
           var id = PersistentPieceIdentifier(0)
 
           /** Populates a [row] with all the pieces of a given [color]. */
-          /** Populates a [row] with all the pieces of a given [color]. */
           fun populateSide(row: Int, color: Color) {
             set(Position(0, row), Piece(color, Rook, id++))
             set(Position(1, row), Piece(color, Knight, id++))
