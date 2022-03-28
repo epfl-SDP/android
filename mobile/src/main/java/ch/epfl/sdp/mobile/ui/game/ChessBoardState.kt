@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.Painter
 import ch.epfl.sdp.mobile.ui.*
-import ch.epfl.sdp.mobile.ui.BlackKing
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
