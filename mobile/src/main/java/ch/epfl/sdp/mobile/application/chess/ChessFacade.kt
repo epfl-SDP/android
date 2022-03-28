@@ -52,11 +52,11 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
    * player (or even himself)
    *
-   * @param profile The [Profile] whose [Matches] will be fetched
+   * @param profile The [Profile] whose [Match]s will be fetched
    *
    * @return The [Flow] of [List] of [Match]s for the [Profile]
    */
-  fun fetchMatchesForUser(profile: Profile): Flow<List<Match>> {
+  fun matches(profile: Profile): Flow<List<Match>> {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
     val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
 

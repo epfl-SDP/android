@@ -55,9 +55,9 @@ fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
  * A document which represents a game of chess between two users. All the game documents are stored
  * in the `/games/` collection.
  *
- * @param moves
- * @param whiteId
- * @param blackId
+ * @param moves the list of moves played during the match in long algebraic notation
+ * @param whiteId the UID of the white player
+ * @param blackId The UID of the black player
  */
 data class ChessDocument(
     @DocumentId val uid: String? = null,

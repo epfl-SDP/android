@@ -40,7 +40,7 @@ class ChessFacadeTest {
 
     val createdMatch = chessFacade.createMatch(user1, user2)
     val fetchedMatch =
-        chessFacade.fetchMatchesForUser(user1).mapNotNull { it.firstOrNull() }.first()
+        chessFacade.matches(user1).mapNotNull { it.firstOrNull() }.first()
 
     assertThat(fetchedMatch.whiteId).isEqualTo(createdMatch.whiteId)
     assertThat(fetchedMatch.blackId).isEqualTo(createdMatch.blackId)
@@ -58,7 +58,7 @@ class ChessFacadeTest {
 
     val match = Match.create()
     chessFacade.updateMatch(match)
-    val fetchedMatch = chessFacade.fetchMatchesForUser(user).map { it.firstOrNull() }.first()
+    val fetchedMatch = chessFacade.matches(user).map { it.firstOrNull() }.first()
 
     assertThat(fetchedMatch).isEqualTo(null)
   }
@@ -81,7 +81,7 @@ class ChessFacadeTest {
         Match(Game.create(), gameId = "gameId", whiteId = "userId1", blackId = "testIdBlack")
     chessFacade.updateMatch(newMatch)
 
-    val fetchedMatch = chessFacade.fetchMatchesForUser(user).mapNotNull { it.firstOrNull() }.first()
+    val fetchedMatch = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()
 
     assertThat(fetchedMatch.blackId).isEqualTo(newMatch.blackId)
   }
