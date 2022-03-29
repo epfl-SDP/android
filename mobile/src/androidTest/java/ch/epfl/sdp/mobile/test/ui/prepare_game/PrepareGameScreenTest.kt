@@ -6,11 +6,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.ColorChoice
 import ch.epfl.sdp.mobile.ui.prepare_game.GameType
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
+import org.hamcrest.core.IsEqual
 import org.junit.Rule
 import org.junit.Test
 
@@ -54,9 +56,9 @@ class PrepareGameScreenTest {
   @Test
   fun clickingOnOnlineGameButton_ChangesToChooseOpponentText() {
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
-    assert(state.gameType == GameType.Local)
+    assertThat(state.gameType, IsEqual(GameType.Local))
     rule.onNodeWithText(strings.prepareGamePlayOnline).assertExists().performClick()
-    assert(state.gameType == GameType.Online)
+    assertThat(state.gameType, IsEqual(GameType.Online))
     rule.onNodeWithText(strings.prepareGameChooseGame).assertDoesNotExist()
     rule.onNodeWithText(strings.prepareGameChooseOpponent).assertExists()
   }
@@ -71,27 +73,27 @@ class PrepareGameScreenTest {
   fun clickingOnBlack_ChangesColorToBlack() {
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
     rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
-    assert(state.colorChoice == ColorChoice.Black)
+    assertThat(state.colorChoice, IsEqual(ColorChoice.Black))
   }
 
   @Test
   fun clickingOnWhite_ChangesColorToWhite() {
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
     rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
-    assert(state.colorChoice == ColorChoice.White)
+    assertThat(state.colorChoice, IsEqual(ColorChoice.White))
   }
 
   @Test
   fun clickingLocalGame_ChangesGameTypeToLocal() {
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
     rule.onNodeWithText(strings.prepareGamePlayLocal).assertExists().performClick()
-    assert(state.gameType == GameType.Local)
+    assertThat(state.gameType, IsEqual(GameType.Local))
   }
 
   @Test
   fun clickingOnlineGame_ChangesGameTypeToOnline() {
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
     rule.onNodeWithText(strings.prepareGamePlayOnline).assertExists().performClick()
-    assert(state.gameType == GameType.Online)
+    assertThat(state.gameType, IsEqual(GameType.Online))
   }
 }
