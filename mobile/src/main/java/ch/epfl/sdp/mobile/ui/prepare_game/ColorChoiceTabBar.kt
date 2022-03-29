@@ -19,6 +19,12 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
 
+/**
+ * Composable for choosing a [ColorChoice]
+ * @param colorChoice default or currently chosen color
+ * @param onSelectColor call back when a color is selected
+ * @param modifier [Modifier] for this composable
+ */
 @Composable
 fun ColorChoiceBar(
     colorChoice: ColorChoice,
@@ -41,6 +47,18 @@ fun ColorChoiceBar(
   }
 }
 
+/**
+ * Component for a tab color choice item in [ColorChoiceBar] the component changes color given its
+ * selection state. Showcases a dashed border when it's selected
+ *
+ * @param text text to display for this tab item
+ * @param onClick triggered call back when the tab item is actioned
+ * @param modifier [Modifier] for this composable
+ * @param selected indicates if the tab item is currently selected
+ * @param colors used [ColorChoiceColors] for the tab item depending on its selection states
+ * @param borderWidth width for dashed border
+ * @param shape shape of the tab item
+ */
 @Composable
 fun ColorChoiceTabItem(
     text: String,
@@ -80,6 +98,15 @@ fun ColorChoiceTabItem(
   }
 }
 
+/**
+ * Interface for colors used to customize colors of the [ColorChoiceTabItem]
+ * @property background(selected) returns color of background depending on state of
+ * [ColorChoiceTabItem]
+ * @property content(selected) returns color of content depending on selection state of
+ * [ColorChoiceTabItem]
+ * @property border(selected) returns color of border depending on selection state of
+ * [ColorChoiceTabItem]
+ */
 interface ColorChoiceColors {
   @Composable fun background(selected: Boolean): State<Color>
 
@@ -88,6 +115,7 @@ interface ColorChoiceColors {
   @Composable fun border(selected: Boolean): State<Color>
 }
 
+/** Default implementation of [ColorChoiceColors] */
 private object DefaultColorChoiceColors : ColorChoiceColors {
   @Composable
   override fun background(selected: Boolean): State<Color> {
@@ -104,7 +132,13 @@ private object DefaultColorChoiceColors : ColorChoiceColors {
   }
 }
 
-/* TODO: Create a dashed border modifier */
+/**
+ * Modifier extension function used to decorate border of a [ColorChoiceTabItem] when it's selected
+ * @param width width of the border
+ * @param color color of the border
+ * @param shape shape of the dashed border
+ * @param pattern frequency/pattern of the dashed border
+ */
 private fun Modifier.dashedBorder(
     width: Dp,
     color: Color,

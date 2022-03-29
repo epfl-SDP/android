@@ -8,6 +8,15 @@ import ch.epfl.sdp.mobile.ui.prepare_game.GameType
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 
+/**
+ * An implementation of the [PrepareGameScreenState]
+ * @param user authenticated user
+ * @property onNewLocalGame action for new local games
+ * @property onNewOnlineGame action for new online games
+ * @property colorChoice chosen color side
+ * @property gameType  chosen game type
+ *
+ */
 class PrepareGameScreenStateImpl(
     private val user: AuthenticatedUser,
     override val onNewLocalGame: () -> Unit,
@@ -17,6 +26,11 @@ class PrepareGameScreenStateImpl(
   override var gameType: GameType by mutableStateOf(GameType.LOCAL)
 }
 
+/**
+ * A composable that makes a [PrepareGameScreen] stateful
+ * @param user authenticated user
+ * @param modifier [Modifier] for this composable
+ */
 @Composable
 fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,

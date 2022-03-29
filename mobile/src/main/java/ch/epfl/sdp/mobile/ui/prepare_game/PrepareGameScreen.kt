@@ -9,6 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 
+/**
+ * Composable that implements a complete PrepareGame screen from [ColorChoiceBar] and
+ * [GameTypeChoiceButtons]
+ * @param state current state of the screen
+ * @param modifier [Modifier] for this composable
+ */
 @Composable
 fun PrepareGameScreen(
     state: PrepareGameScreenState,

@@ -13,6 +13,13 @@ import ch.epfl.sdp.mobile.ui.Check
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 
+/**
+ * Composable that implements Local and Online game button choices
+ * @param gameType currently chosen game type
+ * @param onNewLocalGame call back when new local game button is actioned
+ * @param onNewOnlineGame call back when new online game button is actioned
+ * @param modifier [Modifier] for this composable
+ */
 @Composable
 fun GameTypeChoiceButtons(
     gameType: GameType,
@@ -39,12 +46,19 @@ fun GameTypeChoiceButtons(
   }
 }
 
+/**
+ * Composable that implements a choice button for a game type in [GameTypeChoiceButtons]
+ * @param text text to display on button
+ * @param selected indicates if the button is selected
+ * @param onClick button action
+ * @param modifier [Modifier] for this composable
+ */
 @Composable
 fun ChoiceButton(
     text: String,
     selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
 ) {
 
   Button(
@@ -62,6 +76,10 @@ fun ChoiceButton(
   }
 }
 
+/**
+ * Returns colors of the button given its selection state
+ * @param selected True if the button is selected False otherwise
+ */
 @Composable
 private fun buttonColors(selected: Boolean): ButtonColors {
   return if (selected)
