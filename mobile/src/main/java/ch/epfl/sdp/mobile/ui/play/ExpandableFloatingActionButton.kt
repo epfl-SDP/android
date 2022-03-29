@@ -6,7 +6,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -24,7 +23,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.FadeEnterTransition
+import ch.epfl.sdp.mobile.ui.FadeExitTransition
 import ch.epfl.sdp.mobile.ui.PawniesColors.Beige050
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green100
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
@@ -143,12 +143,13 @@ fun ExpandableFloatingActionButtonItem(
 ) {
   Row(
       modifier = modifier.clickable { onClick() }.padding(vertical = 20.dp, horizontal = 24.dp),
-      horizontalArrangement = Arrangement.spacedBy(16.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
       verticalAlignment = Alignment.CenterVertically,
   ) {
     // This box is required for intrinsic measurements to work properly, since icons don't quite
     // support them properly yet.
     Box(Modifier.size(24.dp), Alignment.Center) { icon() }
+    Spacer(Modifier.width(16.dp))
     text()
   }
 }
