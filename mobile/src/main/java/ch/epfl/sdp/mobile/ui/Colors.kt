@@ -22,4 +22,5 @@ object PawniesColors {
   val Green500 = Color(0xFF379665)
   val Green800 = Color(0xFF356859)
   val Orange500 = Color(0xFFFD5523)
+  val Orange200 = Color(0xFFF8A68D)
 }

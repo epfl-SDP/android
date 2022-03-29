@@ -26,8 +26,11 @@ private const val ProfileRoute = "profile"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
-/** The route associated to new game button */
+/** The route associated to new game screen */
 private const val GameRoute = "new_game"
+
+/** The route associated to new game button in play screen */
+private const val PrepareGameRoute = "prepare_game"
 
 /**
  * The route associated to the ar tab. Note : This tab is temporary, use only for the development
@@ -59,7 +62,7 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hiddenBar = entry?.destination?.route == GameRoute,
+      hiddenBar = hideBar(entry?.destination?.route),
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -76,8 +79,9 @@ fun StatefulHome(
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            { controller.navigate(GameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
+      composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
@@ -101,3 +105,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
     }
+
+private fun hideBar(route: String?): Boolean {
+  return route == GameRoute || route == PrepareGameRoute
+}
