@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.ui.social
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Search
-import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
 
 /**
  * This screen displays all registered users of the app.
@@ -66,10 +68,14 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
     )
     transition.AnimatedContent { target ->
       when (target) {
-        Following -> FollowList(state.following)
+        Following -> FollowList(state.following, state::onPersonClick)
         Searching ->
             if (state.input.isEmpty()) EmptySearch()
-            else SearchResultList(players = state.searchResult, onClick = state::onFollowClick)
+            else
+                SearchResultList(
+                    players = state.searchResult,
+                    onClick = state::onFollowClick,
+                    onPersonClick = state::onPersonClick)
       }
     }
   }
@@ -80,10 +86,15 @@ fun <P : Person> SocialScreen(state: SocialScreenState<P>, modifier: Modifier = 
  *
  * @param P the type of the [Person].
  * @param players A list of [Person] that need to be displayed.
+ * @param onPersonClick Callback function for click on Item.
  * @param modifier modifier the [Modifier] for the composable.
  */
 @Composable
-fun <P : Person> FollowList(players: List<P>, modifier: Modifier = Modifier) {
+fun <P : Person> FollowList(
+    players: List<P>,
+    onPersonClick: (P) -> Unit,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
@@ -95,6 +106,7 @@ fun <P : Person> FollowList(players: List<P>, modifier: Modifier = Modifier) {
       items(players) { friend ->
         PersonCard(
             person = friend,
+            modifier = modifier.clickable { onPersonClick(friend) },
             trailingAction = {
               OutlinedButton(
                   onClick = { /*TODO*/},
@@ -143,18 +155,21 @@ fun EmptySearch(modifier: Modifier = Modifier) {
  * @param P the type of the [Person].
  * @param players A list of [P] that will be displayed.
  * @param onClick A function to be executed once a [Person]'s follow button is clicked.
+ * @param onPersonClick A function that is executed if clicked on a result.
  * @param modifier the [Modifier] for the composable.
  */
 @Composable
 fun <P : Person> SearchResultList(
     players: List<P>,
     onClick: (P) -> Unit,
+    onPersonClick: (P) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
       PersonCard(
           person = player,
+          modifier = modifier.clickable { onPersonClick(player) },
           trailingAction = {
             FollowButton(
                 following = player.followed,

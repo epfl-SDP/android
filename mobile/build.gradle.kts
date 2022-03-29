@@ -124,8 +124,8 @@ task<JacocoReport>("jacocoTestReport") {
       )
 
   val debugTree =
-      fileTree(baseDir = "$project.buildDir/tmp/kotlin-classes/debug") { setExcludes(fileFilter) }
-  val mainSrc = "$project.projectDir/src/main/java"
+      fileTree(baseDir = "${project.buildDir}/tmp/kotlin-classes/debug") { setExcludes(fileFilter) }
+  val mainSrc = "${project.projectDir}/src/main/java"
   sourceDirectories.setFrom(files(listOf(mainSrc)))
   classDirectories.setFrom(files(listOf(debugTree)))
   executionData.setFrom(

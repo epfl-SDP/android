@@ -22,6 +22,19 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
   val authenticateOr: String
 
+  val profileMatchTitle: (String) -> String
+  val profileWonByCheckmate: (Int) -> String
+  val profileWonByForfeit: (Int) -> String
+  val profileLostByCheckmate: (Int) -> String
+  val profileLostByForfeit: (Int) -> String
+  val profileTieInfo: (Int) -> String
+  val profilePastGames: String
+  val profilePuzzle: String
+  val profileSettings: String
+  val profileUnfollow: String
+  val profileChallenge: String
+  val profileEditIcon: String
+
   val boardColorBlack: String
   val boardColorWhite: String
   val boardPieceKing: String
@@ -32,16 +45,6 @@ interface LocalizedStrings {
   val boardPiecePawn: String
   val boardPieceContentDescription: (color: String, rank: String) -> String
   val boardContentDescription: String
-
-  val profileMatchTitle: (String) -> String
-  val profileWonByCheckmate: (Int) -> String
-  val profileWonByForfeit: (Int) -> String
-  val profileLostByCheckmate: (Int) -> String
-  val profileLostByForfeit: (Int) -> String
-  val profileTieInfo: (Int) -> String
-  val profilePastGames: String
-  val profilePuzzle: String
-  val profileSettings: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String
