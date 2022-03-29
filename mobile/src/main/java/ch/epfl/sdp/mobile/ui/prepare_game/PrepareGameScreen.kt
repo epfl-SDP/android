@@ -32,21 +32,15 @@ fun PrepareGameScreen(
     Text(
         text =
             when (state.gameType) {
-              GameType.ONLINE -> strings.prepareGameChooseOpponent
-              GameType.LOCAL -> strings.prepareGameChooseGame
+              GameType.Online -> strings.prepareGameChooseOpponent
+              GameType.Local -> strings.prepareGameChooseGame
             },
         style = MaterialTheme.typography.subtitle1)
 
     GameTypeChoiceButtons(
         state.gameType,
-        {
-          state.gameType = GameType.ONLINE
-          state.onNewLocalGame
-        },
-        {
-          state.gameType = GameType.LOCAL
-          state.onNewLocalGame
-        },
+        { state.gameType = GameType.Online },
+        { state.gameType = GameType.Local },
         Modifier.align(Alignment.CenterHorizontally))
   }
 }

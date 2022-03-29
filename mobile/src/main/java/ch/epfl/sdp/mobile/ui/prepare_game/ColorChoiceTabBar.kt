@@ -36,14 +36,16 @@ fun ColorChoiceBar(
   Row(modifier = modifier) {
     ColorChoiceTabItem(
         text = strings.prepareGameWhiteColor,
-        onClick = { onSelectColor(ColorChoice.WHITE) },
-        selected = colorChoice == ColorChoice.WHITE,
-        shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+        onClick = { onSelectColor(ColorChoice.White) },
+        selected = colorChoice == ColorChoice.White,
+        shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp),
+        modifier = Modifier.fillMaxWidth(0.5f))
     ColorChoiceTabItem(
         text = strings.prepareGameBlackColor,
-        onClick = { onSelectColor(ColorChoice.BLACK) },
-        selected = colorChoice == ColorChoice.BLACK,
-        shape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp))
+        onClick = { onSelectColor(ColorChoice.Black) },
+        selected = colorChoice == ColorChoice.Black,
+        shape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
+        modifier = Modifier.fillMaxWidth())
   }
 }
 
@@ -77,23 +79,21 @@ fun ColorChoiceTabItem(
       contentColor = contentColor,
       shape = shape,
       modifier =
-          modifier.size(158.dp, 138.dp).let {
-            if (selected) it.dashedBorder(borderWidth, borderColor, shape) else it
-          }) {
+          modifier.let { if (selected) it.dashedBorder(borderWidth, borderColor, shape) else it }) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-        modifier = modifier.selectable(selected, onClick = onClick).clickable { onClick() }) {
+        modifier = Modifier.selectable(selected, onClick = onClick).clickable { onClick() }) {
       Icon(
           painter = ChessIcons.BlackBishop,
           contentDescription = null,
       )
-      Spacer(modifier.width(4.dp))
+      Spacer(Modifier.width(4.dp))
       Text(
           text = text,
           color = contentColor,
           style = MaterialTheme.typography.h6,
-          modifier = modifier)
+      )
     }
   }
 }
