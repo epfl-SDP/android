@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
@@ -26,16 +27,16 @@ class FetchedUserProfileScreenState(
 /**
  * A stateful composable to visit the profile page of other players
  *
- * @param profileName of the player.
+ * @param uid of the player.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun StatefulProfileScreen(
-    profileName: String,
+    uid: String,
     modifier: Modifier = Modifier,
 ) {
   val socialFacade = LocalSocialFacade.current
-  val profile by socialFacade.get(profileName).collectAsState(null)
+  val profile by remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
   val state = profile?.let { FetchedUserProfileScreenState(it) }
   if (state != null) {
     ProfileScreen(state, modifier)
