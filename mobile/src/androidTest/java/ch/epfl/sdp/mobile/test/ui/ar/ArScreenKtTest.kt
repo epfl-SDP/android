@@ -14,15 +14,14 @@ import ch.epfl.sdp.mobile.ui.ar.ArScreen
 import org.junit.Rule
 import org.junit.Test
 
-class SocialScreenTest {
+class ArScreenKtTest {
 
   @get:Rule val permissionRule: GrantPermissionRule = grant(Manifest.permission.CAMERA)
   @get:Rule val rule = createAndroidComposeRule<HomeActivity>()
 
   @Test
-  fun test() = withCanceledIntents {
+  fun check_thatComposableHasTheTag() = withCanceledIntents {
     rule.setContent { ArScreen() }
-    rule.onRoot().printToLog("ARScreenTest")
     rule.onNode(hasAnyDescendant(hasTestTag("AR"))).assertExists()
   }
 
