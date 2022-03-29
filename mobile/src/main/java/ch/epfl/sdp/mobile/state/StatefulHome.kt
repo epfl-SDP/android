@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
-import ch.epfl.sdp.mobile.ui.social.Person
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -27,8 +26,11 @@ private const val ProfileRoute = "profile"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
-/** The route associated to new game button */
+/** The route associated to new game screen */
 private const val GameRoute = "new_game"
+
+/** The route associated to new game button in play screen */
+private const val PrepareGameRoute = "prepare_game"
 
 /**
  * The route associated to the ar tab. Note : This tab is temporary, use only for the development
@@ -53,14 +55,14 @@ fun StatefulHome(
   val entry by controller.currentBackStackEntryAsState()
   val section = entry?.toSection() ?: HomeSection.Social
 
-  val onPersonClick: (person: Person) -> Unit = { person ->
-    controller.navigate("$ProfileRoute/${person.name}")
+  val onPersonItemClick: (person: ProfileAdapter) -> Unit = { person ->
+    controller.navigate("$ProfileRoute/${person.uid}")
   }
 
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hiddenBar = entry?.destination?.route == GameRoute,
+      hiddenBar = hideBar(entry?.destination?.route),
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -68,17 +70,18 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) {
-        StatefulFollowingScreen(user, onPersonClick, Modifier.fillMaxSize())
+        StatefulFollowingScreen(user, onPersonItemClick, Modifier.fillMaxSize())
       }
       composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
-      composable("$ProfileRoute/{profileName}") { backStackEntry ->
+      composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulProfileScreen(
-            backStackEntry.arguments?.getString("profileName") ?: "", Modifier.fillMaxSize())
+            backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            { controller.navigate(GameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
+      composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
@@ -102,3 +105,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
     }
+
+private fun hideBar(route: String?): Boolean {
+  return route == GameRoute || route == PrepareGameRoute
+}

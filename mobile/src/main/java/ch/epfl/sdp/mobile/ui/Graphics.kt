@@ -42,6 +42,9 @@ val PawniesIcons.Add
 val PawniesIcons.Search
   get() = Icons.Default.Search
 
+val PawniesIcons.Check
+  get() = Icons.Default.Check
+
 /** Chess pieces */
 object ChessIcons
 

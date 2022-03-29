@@ -7,7 +7,6 @@ import ch.epfl.sdp.mobile.ui.social.Person
 /** The view-model of the profile of the currently logged-in user. */
 @Stable
 interface SettingScreenState : Person {
-
   /** The email address of the currently connected user. */
   val email: String
 
