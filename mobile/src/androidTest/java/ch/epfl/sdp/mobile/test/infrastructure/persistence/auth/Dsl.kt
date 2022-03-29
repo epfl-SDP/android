@@ -29,4 +29,13 @@ interface AuthBuilder {
    * @param password the password which will protect authentication with the account.
    */
   fun user(email: String, password: String)
+
+  /**
+   * Adds a new user with the given email, password and unique identifier.
+   *
+   * @param email the email of the added user. Must be unique for this auth.
+   * @param password the password which will protect authentication with the account.
+   * @param uid the unique identifier for this user.
+   */
+  fun user(email: String, password: String, uid: String)
 }

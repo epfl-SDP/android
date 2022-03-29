@@ -14,10 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.R.*
+import ch.epfl.sdp.mobile.R.drawable
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode
-import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.*
+import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.LogIn
+import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.Register
 
 /**
  * The screen which displays the fields which should be used to authenticate in the app, by creating
