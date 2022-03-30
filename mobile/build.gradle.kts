@@ -56,6 +56,8 @@ dependencies {
   // Testing.
   testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
+  testImplementation(libs.androidx.test.runner)
+  testImplementation(libs.androidx.test.rules)
   testImplementation(libs.junit4)
   testImplementation(libs.truth)
   testImplementation(libs.mockk.mockk)
@@ -64,7 +66,8 @@ dependencies {
   androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.test.truth)
-  androidTestImplementation(libs.androidx.test.espresso)
+  androidTestImplementation(libs.androidx.test.espresso.core)
+  androidTestImplementation(libs.androidx.test.espresso.intents)
   androidTestImplementation(libs.compose.ui.test.junit4)
   androidTestImplementation(libs.kotlin.reflect)
   debugImplementation(libs.compose.ui.test.manifest)

@@ -22,6 +22,8 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
   val authenticateOr: String
 
+  val arContentDescription: String
+
   val profileMatchTitle: (String) -> String
   val profileWonByCheckmate: (Int) -> String
   val profileWonByForfeit: (Int) -> String
