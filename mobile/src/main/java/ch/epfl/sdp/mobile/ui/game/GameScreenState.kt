@@ -47,4 +47,7 @@ interface GameScreenState<Piece : ChessBoardState.Piece> : ChessBoardState<Piece
    * be displayed as such.
    */
   val moves: List<Move>
+
+  /** A callback which will be invoked if the user wants to go back in the hierarchy. */
+  fun onBackClick()
 }

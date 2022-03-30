@@ -1,11 +1,13 @@
 package ch.epfl.sdp.mobile.state
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
@@ -19,13 +21,15 @@ import kotlinx.coroutines.launch
  *
  * @param user the currently logged-in user.
  * @param id the identifier for the match.
- * @param modifier the [Modifier] for the composable
+ * @param modifier the [Modifier] for the composable.
+ * @param paddingValues the [PaddingValues] for this composable.
  */
 @Composable
 fun StatefulGameScreen(
     user: AuthenticatedUser,
     id: String,
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(),
 ) {
   val facade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
@@ -33,7 +37,11 @@ fun StatefulGameScreen(
 
   val gameScreenState = remember(user, match, scope) { SnapshotChessBoardState(user, match, scope) }
 
-  GameScreen(gameScreenState, modifier)
+  GameScreen(
+      state = gameScreenState,
+      modifier = modifier,
+      contentPadding = paddingValues,
+  )
 }
 
 /**
@@ -53,6 +61,7 @@ class SnapshotChessBoardState(
   override fun onListenClick() {
     listening = !listening
   }
+  override fun onBackClick() = Unit
 
   private var game by mutableStateOf(Game.create())
   private var whiteProfile by mutableStateOf<Profile?>(null)
@@ -161,13 +170,8 @@ class SnapshotChessBoardState(
     }
   }
 
-  override val moves: List<Move> =
-      listOf(
-          Move("f3"),
-          Move("e5"),
-          Move("g4"),
-          Move("Qh4#"),
-      )
+  override val moves: List<Move>
+    get() = game.serialize().map(::Move)
 }
 
 /** Maps a game engine [Position] to a [ChessBoardState.Position] */

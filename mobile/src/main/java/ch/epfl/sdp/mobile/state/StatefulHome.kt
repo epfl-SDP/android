@@ -82,12 +82,17 @@ fun StatefulHome(
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            { controller.navigate("match/demo") }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
-        StatefulGameScreen(user, id, Modifier.fillMaxSize())
+        StatefulGameScreen(
+            user = user,
+            id = id,
+            modifier = Modifier.fillMaxSize(),
+            paddingValues = paddingValues,
+        )
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }

@@ -38,6 +38,8 @@ class GameScreenTest {
     override fun onListenClick() {
       listening = !listening
     }
+
+    override fun onBackClick() = Unit
   }
 
   @Composable
