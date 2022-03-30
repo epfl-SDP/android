@@ -18,7 +18,7 @@ import ch.epfl.sdp.mobile.test.ui.game.drag
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.Pawn
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -29,25 +29,23 @@ class StatefulGameScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  @Test
-  fun movingTwoPawns_isSuccessful() = runTest {
+  /**
+   * Returns a [ChessBoardRobot] with a store containing a player and an emptyGame with the player
+   * playing against himself
+   */
+  private fun emptyGameAgainstOneselfRobot(): ChessBoardRobot {
     val auth = emptyAuth()
     val store = buildStore {
-      collection("users") {
-        document("userId1", ProfileDocument(uid = "userId1"))
-        document("userId2", ProfileDocument(uid = "userId2"))
-      }
+      collection("users") { document("userId1", ProfileDocument()) }
       collection("games") {
-        document(
-            "gameId",
-            ChessDocument(uid = "uid", moves = null, whiteId = "userId1", blackId = "userId2"))
+        document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId1"))
       }
     }
+
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    // Player 1
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
@@ -56,38 +54,273 @@ class StatefulGameScreenTest {
           ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
         }
 
-    val robot = ChessBoardRobot(rule, strings)
+    return ChessBoardRobot(rule, strings)
+  }
 
+  // @Test TODO: Fix robot dragging
+  fun illegalMoveByDragging_isNotPossible() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    robot.performInput { drag(ChessBoardState.Position(4, 0), ChessBoardState.Position(7, 7)) }
+
+    // White Rook is still here
+    robot.assertHasPiece(7, 7, White, Rook)
+    // Black King did not move
+    robot.assertHasPiece(4, 0, Black, King)
+  }
+
+  @Test
+  fun illegalMoveByClicking_isNotPossible() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    robot.performInput {
+      click(4, 0)
+      click(7, 7)
+    }
+
+    // White Rook is still here
+    robot.assertHasPiece(7, 7, White, Rook)
+    // Black King did not move
+    robot.assertHasPiece(4, 0, Black, King)
+  }
+
+  @Test
+  fun clickMovingPawns_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    robot.performInput {
+      click(4, 6)
+      click(4, 5)
+    }
+    robot.performInput {
+      click(4, 1)
+      click(4, 2)
+    }
+
+    robot.assertHasPiece(4, 5, White, Pawn)
+    robot.assertHasPiece(4, 2, Black, Pawn)
+  }
+
+  @Test
+  fun dragMovingPawns_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    robot.performInput { drag(ChessBoardState.Position(4, 6), ChessBoardState.Position(4, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(4, 1), ChessBoardState.Position(4, 2)) }
+
+    robot.assertHasPiece(4, 5, White, Pawn)
+    robot.assertHasPiece(4, 2, Black, Pawn)
+  }
+
+  @Test
+  fun clickMovingRooks_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput {
+      click(0, 6)
+      click(0, 4)
+    }
+    robot.performInput {
+      click(0, 1)
+      click(0, 3)
+    }
+
+    // Move rooks
+    robot.performInput {
+      click(0, 7)
+      click(0, 5)
+    }
+    robot.performInput {
+      click(0, 0)
+      click(0, 2)
+    }
+
+    robot.assertHasPiece(0, 5, White, Rook)
+    robot.assertHasPiece(0, 2, Black, Rook)
+  }
+
+  @Test
+  fun dragMovingRooks_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
     robot.performInput { drag(ChessBoardState.Position(0, 6), ChessBoardState.Position(0, 4)) }
     robot.performInput { drag(ChessBoardState.Position(0, 1), ChessBoardState.Position(0, 3)) }
 
-    robot.assertHasPiece(0, 4, White, Pawn)
-    robot.assertHasPiece(0, 3, Black, Pawn)
+    // Move rooks
+    robot.performInput { drag(ChessBoardState.Position(0, 7), ChessBoardState.Position(0, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(0, 0), ChessBoardState.Position(0, 2)) }
+
+    robot.assertHasPiece(0, 5, White, Rook)
+    robot.assertHasPiece(0, 2, Black, Rook)
+  }
+
+  @Test
+  fun clickMovingKnights_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move knights
+    robot.performInput {
+      click(1, 7)
+      click(2, 5)
+    }
+    robot.performInput {
+      click(1, 0)
+      click(2, 2)
+    }
+
+    robot.assertHasPiece(2, 5, White, Knight)
+    robot.assertHasPiece(2, 2, Black, Knight)
+  }
+
+  @Test
+  fun dragMovingKnights_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move knights
+    robot.performInput { drag(ChessBoardState.Position(1, 7), ChessBoardState.Position(2, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(1, 0), ChessBoardState.Position(2, 2)) }
+
+    robot.assertHasPiece(2, 5, White, Knight)
+    robot.assertHasPiece(2, 2, Black, Knight)
+  }
+
+  @Test
+  fun clickMovingBishops_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput {
+      click(6, 6)
+      click(6, 5)
+    }
+    robot.performInput {
+      click(6, 1)
+      click(6, 2)
+    }
+
+    // Move bishops
+    robot.performInput {
+      click(5, 7)
+      click(7, 5)
+    }
+    robot.performInput {
+      click(5, 0)
+      click(7, 2)
+    }
+
+    robot.assertHasPiece(7, 5, White, Bishop)
+    robot.assertHasPiece(7, 2, Black, Bishop)
+  }
+
+  @Test
+  fun dragMovingBishops_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput { drag(ChessBoardState.Position(6, 6), ChessBoardState.Position(6, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(6, 1), ChessBoardState.Position(6, 2)) }
+
+    // Move bishops
+    robot.performInput { drag(ChessBoardState.Position(5, 7), ChessBoardState.Position(7, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(5, 0), ChessBoardState.Position(7, 2)) }
+
+    robot.assertHasPiece(7, 5, White, Bishop)
+    robot.assertHasPiece(7, 2, Black, Bishop)
+  }
+
+  @Test
+  fun clickMovingQueens_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput {
+      click(4, 6)
+      click(4, 5)
+    }
+    robot.performInput {
+      click(4, 1)
+      click(4, 2)
+    }
+
+    // Move queens
+    robot.performInput {
+      click(3, 7)
+      click(7, 3)
+    }
+    robot.performInput {
+      click(3, 0)
+      click(7, 4)
+    }
+
+    robot.assertHasPiece(7, 3, White, Queen)
+    robot.assertHasPiece(7, 4, Black, Queen)
+  }
+
+  @Test
+  fun dragMovingQueens_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput { drag(ChessBoardState.Position(4, 6), ChessBoardState.Position(4, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(4, 1), ChessBoardState.Position(4, 2)) }
+
+    // Move queens
+    robot.performInput { drag(ChessBoardState.Position(3, 7), ChessBoardState.Position(7, 3)) }
+    robot.performInput { drag(ChessBoardState.Position(3, 0), ChessBoardState.Position(7, 4)) }
+
+    robot.assertHasPiece(7, 3, White, Queen)
+    robot.assertHasPiece(7, 4, Black, Queen)
+  }
+
+  @Test
+  fun clickMovingKings_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput {
+      click(4, 6)
+      click(4, 5)
+    }
+    robot.performInput {
+      click(4, 1)
+      click(4, 2)
+    }
+
+    // Move kings
+    robot.performInput {
+      click(4, 7)
+      click(4, 6)
+    }
+    robot.performInput {
+      click(4, 0)
+      click(4, 1)
+    }
+
+    robot.assertHasPiece(4, 6, White, King)
+    robot.assertHasPiece(4, 1, Black, King)
+  }
+
+  @Test
+  fun dragMovingKings_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput { drag(ChessBoardState.Position(4, 6), ChessBoardState.Position(4, 5)) }
+    robot.performInput { drag(ChessBoardState.Position(4, 1), ChessBoardState.Position(4, 2)) }
+
+    // Move kings
+    robot.performInput { drag(ChessBoardState.Position(4, 7), ChessBoardState.Position(4, 6)) }
+    robot.performInput { drag(ChessBoardState.Position(4, 0), ChessBoardState.Position(4, 1)) }
+
+    robot.assertHasPiece(4, 6, White, King)
+    robot.assertHasPiece(4, 1, Black, King)
   }
 
   @Test
   fun selectingSameCellTwice_hasNoEffectOnBoard() {
-    val auth = emptyAuth()
-    val store = buildStore {
-      collection("users") {
-        document("id1", ProfileDocument())
-        document("id2", ProfileDocument())
-      }
-      collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
-    }
-    val authenticationFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
-    val user = mockk<AuthenticatedUser>()
-    every { user.uid } returns "id1"
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-            StatefulGameScreen(user)
-          }
-        }
-    val robot = ChessBoardRobot(rule, strings)
+    val robot = emptyGameAgainstOneselfRobot()
 
     robot.performInput {
       click(4, 6)
@@ -98,27 +331,7 @@ class StatefulGameScreenTest {
 
   @Test
   fun selectingDifferentCells_movesPawn() {
-    val auth = emptyAuth()
-    val store = buildStore {
-      collection("users") {
-        document("id1", ProfileDocument())
-        document("id2", ProfileDocument())
-      }
-      collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
-    }
-    val authenticationFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
-    val user = mockk<AuthenticatedUser>()
-    every { user.uid } returns "id1"
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-            StatefulGameScreen(user)
-          }
-        }
-    val robot = ChessBoardRobot(rule, strings)
+    val robot = emptyGameAgainstOneselfRobot()
 
     robot.performInput { click(4, 6) }
     rule.mainClock.advanceTimeByFrame() // Ensures we display the selected state.
@@ -128,24 +341,7 @@ class StatefulGameScreenTest {
 
   @Test
   fun blockingCheck_isSuccessful() {
-    val auth = emptyAuth()
-    val store = buildStore {
-      collection("users") { document("id", ProfileDocument()) }
-      collection("games") { document("id", ChessDocument(whiteId = "id", blackId = "id")) }
-    }
-    val authenticationFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
-    val user = mockk<AuthenticatedUser>()
-    every { user.uid } returns "id"
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-            StatefulGameScreen(user)
-          }
-        }
-    val robot = ChessBoardRobot(rule, strings)
+    val robot = emptyGameAgainstOneselfRobot()
 
     robot.performInput {
       drag(ChessBoardState.Position(4, 6), ChessBoardState.Position(4, 5))
