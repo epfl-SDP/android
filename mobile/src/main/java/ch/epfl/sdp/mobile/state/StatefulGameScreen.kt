@@ -12,27 +12,24 @@ import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 /**
  * The [StatefulGameScreen] to be used for the Navigation
  *
  * @param user the currently logged-in user.
+ * @param id the identifier for the match.
  * @param modifier the [Modifier] for the composable
  */
 @Composable
 fun StatefulGameScreen(
     user: AuthenticatedUser,
+    id: String,
     modifier: Modifier = Modifier,
 ) {
-  val chessFacade = LocalChessFacade.current
+  val facade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
-
-  // TODO: Delegate Match fetching to Prepare Game Screen or Ongoing Games screen
-  val match by
-      remember { chessFacade.matches(user).map { it.firstOrNull() ?: Match() } }
-          .collectAsState(initial = Match())
+  val match = remember(facade, id) { facade.match(id) }
 
   val gameScreenState = remember(user, match, scope) { SnapshotChessBoardState(user, match, scope) }
 

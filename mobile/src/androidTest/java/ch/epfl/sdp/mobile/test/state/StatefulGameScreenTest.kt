@@ -51,7 +51,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId") }
         }
 
     return ChessBoardRobot(rule, strings)
@@ -524,7 +524,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId") }
         }
 
     val robot = ChessBoardRobot(rule, strings)
@@ -555,7 +555,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId") }
         }
 
     val robot = ChessBoardRobot(rule, strings)
