@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -21,6 +22,24 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class ChessFacadeTest {
+
+  @Test
+  fun match_hasRightId() {
+    val facade = ChessFacade(emptyAuth(), emptyStore())
+    val match = facade.match("id")
+
+    assertThat(match.id).isEqualTo("id")
+  }
+
+  @Test
+  fun missingMatch_hasEmptyProfiles() = runTest {
+    val facade = ChessFacade(emptyAuth(), emptyStore())
+    val match = facade.match("id")
+
+    assertThat(match.black.first()).isNull()
+    assertThat(match.white.first()).isNull()
+  }
+
   @Test
   fun creatingAndFetchingAMatch_AreEquivalent() = runTest {
     val auth = mockk<Auth>()

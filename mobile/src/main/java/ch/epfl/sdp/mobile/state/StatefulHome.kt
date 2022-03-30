@@ -29,6 +29,9 @@ private const val PlayRoute = "play"
 /** The route associated to new game screen */
 private const val GameRoute = "match"
 
+/** The default identifier for a game. */
+private const val GameDefaultId = ""
+
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
 
@@ -83,7 +86,7 @@ fun StatefulHome(
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
-        val id = entry.arguments?.getString("id") ?: "" // TODO : Handle missing id case.
+        val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
         StatefulGameScreen(user, id, Modifier.fillMaxSize())
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
