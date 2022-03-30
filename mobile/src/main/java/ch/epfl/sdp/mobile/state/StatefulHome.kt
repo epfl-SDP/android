@@ -81,6 +81,7 @@ fun StatefulHome(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
+        // TODO : Redirect to the dialog route.
         StatefulPlayScreen(
             { controller.navigate("match/demo") }, Modifier.fillMaxSize(), paddingValues)
       }
@@ -118,5 +119,5 @@ private fun HomeSection.toRoute(): String =
     }
 
 private fun hideBar(route: String?): Boolean {
-  return route == GameRoute || route == PrepareGameRoute
+  return route == PrepareGameRoute || route?.startsWith(GameRoute) ?: false
 }
