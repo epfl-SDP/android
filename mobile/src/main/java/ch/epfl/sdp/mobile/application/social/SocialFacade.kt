@@ -9,7 +9,6 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 /**
@@ -37,22 +36,17 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * Returns a [Flow] of the [Profile] by the given name
+   * Returns a [Flow] of the [Profile] corresponding to a given unique identifier.
    *
-   * @param name text search criteria.
+   * @param uid the unique identifiers of the profile.
    * @param user the [AuthenticationUser] that is performing the get.
    */
-  fun get(
-      name: String,
+  fun profile(
+      uid: String,
       user: AuthenticationUser = NotAuthenticatedUser,
-  ): Flow<Profile> {
-    return store
-        .collection("users")
-        .whereEquals("name", name)
-        .limit(1)
-        .asFlow<ProfileDocument>()
-        .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
-        .map { it.first() }
-        .catch { null }
+  ): Flow<Profile?> {
+    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
+      doc?.toProfile(user)
+    }
   }
 }

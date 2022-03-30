@@ -109,8 +109,8 @@ class SocialFacadeTest {
     }
     val facade = SocialFacade(auth, store)
 
-    val user = facade.get("test").first()
-    Truth.assertThat(user.name).isEqualTo("test")
+    val user = facade.profile("uid").firstOrNull()
+    Truth.assertThat(user?.name).isEqualTo("test")
   }
 
   @Test
@@ -119,7 +119,7 @@ class SocialFacadeTest {
     val store = emptyStore()
     val facade = SocialFacade(auth, store)
 
-    val user = facade.get("test").firstOrNull()
+    val user = facade.profile("test").firstOrNull()
 
     Truth.assertThat(user).isEqualTo(null)
   }
