@@ -27,7 +27,7 @@ private const val ProfileRoute = "profile"
 private const val PlayRoute = "play"
 
 /** The route associated to new game screen */
-private const val GameRoute = "new_game"
+private const val GameRoute = "match"
 
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
@@ -82,7 +82,10 @@ fun StatefulHome(
             { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
-      composable(GameRoute) { StatefulGameScreen(user, Modifier.fillMaxSize()) }
+      composable("$GameRoute/{id}") { entry ->
+        val id = entry.arguments?.getString("id") ?: "" // TODO : Handle missing id case.
+        StatefulGameScreen(user, id, Modifier.fillMaxSize())
+      }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
   }
