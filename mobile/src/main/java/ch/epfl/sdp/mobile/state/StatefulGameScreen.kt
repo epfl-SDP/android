@@ -17,10 +17,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
+ * The different navigation actions which may be performed by the [StatefulGameScreen].
+ *
+ * @param onBack the action to perform when going back.
+ * @param onShowAr the action to perform when AR should be started for the match.
+ */
+data class StatefulGameScreenActions(
+    val onBack: () -> Unit,
+    val onShowAr: (Match) -> Unit,
+)
+
+/**
  * The [StatefulGameScreen] to be used for the Navigation
  *
  * @param user the currently logged-in user.
  * @param id the identifier for the match.
+ * @param actions the [StatefulGameScreenActions] to perform.
  * @param modifier the [Modifier] for the composable.
  * @param paddingValues the [PaddingValues] for this composable.
  */
@@ -28,6 +40,7 @@ import kotlinx.coroutines.launch
 fun StatefulGameScreen(
     user: AuthenticatedUser,
     id: String,
+    actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(),
 ) {
@@ -35,7 +48,15 @@ fun StatefulGameScreen(
   val scope = rememberCoroutineScope()
   val match = remember(facade, id) { facade.match(id) }
 
-  val gameScreenState = remember(user, match, scope) { SnapshotChessBoardState(user, match, scope) }
+  val gameScreenState =
+      remember(actions, user, match, scope) {
+        SnapshotChessBoardState(
+            actions = actions,
+            user = user,
+            match = match,
+            scope = scope,
+        )
+      }
 
   GameScreen(
       state = gameScreenState,
@@ -46,22 +67,30 @@ fun StatefulGameScreen(
 
 /**
  * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
- * and has a static move list
+ * and has a static move list.
+ *
+ * @param actions the actions to perform when navigating.
+ * @param user the currently authenticated user.
+ * @param match the match to display.
+ * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
 class SnapshotChessBoardState(
+    private val actions: StatefulGameScreenActions,
     private val user: AuthenticatedUser,
     private val match: Match,
     private val scope: CoroutineScope,
 ) : GameScreenState<SnapshotPiece> {
 
   // TODO : Implement these things.
-  override fun onArClick() = Unit
   override var listening by mutableStateOf(false)
     private set
   override fun onListenClick() {
     listening = !listening
   }
-  override fun onBackClick() = Unit
+
+  override fun onArClick() = actions.onShowAr(match)
+
+  override fun onBackClick() = actions.onBack()
 
   private var game by mutableStateOf(Game.create())
   private var whiteProfile by mutableStateOf<Profile?>(null)

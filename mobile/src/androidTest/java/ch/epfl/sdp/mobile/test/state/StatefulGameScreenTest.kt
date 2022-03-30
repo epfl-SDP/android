@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulGameScreen
+import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -49,9 +50,11 @@ class StatefulGameScreenTest {
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
+    val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
+
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId") }
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
         }
 
     return ChessBoardRobot(rule, strings)
@@ -522,9 +525,11 @@ class StatefulGameScreenTest {
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
+    val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
+
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId") }
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
         }
 
     val robot = ChessBoardRobot(rule, strings)
@@ -553,9 +558,11 @@ class StatefulGameScreenTest {
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
+    val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
+
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId") }
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
         }
 
     val robot = ChessBoardRobot(rule, strings)

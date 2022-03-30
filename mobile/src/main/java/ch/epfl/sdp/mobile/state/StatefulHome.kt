@@ -81,14 +81,20 @@ fun StatefulHome(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
-        // TODO : Redirect to the dialog route.
+        // TODO : Redirect to the game creation dialog route.
         StatefulPlayScreen(
             { controller.navigate("match/demo") }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
+        val actions =
+            StatefulGameScreenActions(
+                onBack = { controller.popBackStack() },
+                onShowAr = { controller.navigate(ArRoute) },
+            )
         StatefulGameScreen(
+            actions = actions,
             user = user,
             id = id,
             modifier = Modifier.fillMaxSize(),
