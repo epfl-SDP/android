@@ -28,8 +28,8 @@ private const val BoardPath = "models/board.glb"
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
 
-  var pawn1 by remember { mutableStateOf<ArModelNode?>(null) }
-  var board by remember { mutableStateOf<ArModelNode?>(null) }
+  var pawnNode by remember { mutableStateOf<ArModelNode?>(null) }
+  var boardNode by remember { mutableStateOf<ArModelNode?>(null) }
 
   var arBoard by remember { mutableStateOf<ArBoard?>(null) }
 
@@ -80,10 +80,10 @@ fun ArScreen(modifier: Modifier = Modifier) {
   // Load 3d Model and initialize the [ArBoard]
   LaunchedEffect(Unit) {
     // TODO : Maybe create a enum with all the pieces that contain the path
-    pawn1 = loadModel("models/pawn.glb", nodePlacementMode)
-    board = loadModel(BoardPath, nodePlacementMode)
+    pawnNode = loadModel("models/pawn.glb", nodePlacementMode)
+    boardNode = loadModel(BoardPath, nodePlacementMode)
 
-    val boardBoundingBox = board!!.modelInstance?.filamentAsset?.boundingBox!!
+    val boardBoundingBox = boardNode!!.modelInstance?.filamentAsset?.boundingBox!!
 
     // get height (on y axe) of the board
     // Double the value to get the total height of the box
@@ -104,10 +104,10 @@ fun ArScreen(modifier: Modifier = Modifier) {
   AndroidView(
       factory = { ArSceneView(it) },
       modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
-      update = { view ->
-        val currentBoard = board ?: return@AndroidView
+      update = { arSceneView ->
+        val currentBoard = boardNode ?: return@AndroidView
         val currentArBoard = arBoard ?: return@AndroidView
-        val currentPawn = pawn1 ?: return@AndroidView
+        val currentPawn = pawnNode ?: return@AndroidView
 
         if (DisplayAxes) {
 
@@ -167,13 +167,13 @@ fun ArScreen(modifier: Modifier = Modifier) {
          */
         fun anchorOrMoveBoard(anchor: Anchor) {
           // Add only one instance of the node
-          if (!view.children.contains(currentBoard)) {
-            view.addChild(currentBoard)
+          if (!arSceneView.children.contains(currentBoard)) {
+            arSceneView.addChild(currentBoard)
           }
           currentBoard.anchor = anchor
         }
 
         // Place the board on the taped position
-        view.onTouchAr = { hitResult, _ -> anchorOrMoveBoard(hitResult.createAnchor()) }
+        arSceneView.onTouchAr = { hitResult, _ -> anchorOrMoveBoard(hitResult.createAnchor()) }
       })
 }
