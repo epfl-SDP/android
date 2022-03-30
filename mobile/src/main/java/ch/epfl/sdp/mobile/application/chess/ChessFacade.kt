@@ -48,6 +48,15 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
+   * Returns the [Match] associated to the given identifier.
+   *
+   * @param id the unique identifier for this [Match].
+   */
+  fun match(id: String): Match {
+    return StoreMatch(id, store)
+  }
+
+  /**
    * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
    * player (or even himself)
    *
