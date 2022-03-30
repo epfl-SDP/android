@@ -81,8 +81,7 @@ fun StatefulHome(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
-        StatefulPlayScreen(
-            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
+        StatefulPlayScreen(user, { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
