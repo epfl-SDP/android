@@ -81,9 +81,8 @@ fun StatefulHome(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
-        // TODO : Redirect to the game creation dialog route.
         StatefulPlayScreen(
-            { controller.navigate("match/demo") }, Modifier.fillMaxSize(), paddingValues)
+            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
