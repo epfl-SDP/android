@@ -319,6 +319,159 @@ class StatefulGameScreenTest {
   }
 
   @Test
+  fun takingAQueen_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput {
+      click(4, 6)
+      click(4, 5)
+    }
+    robot.performInput {
+      click(4, 1)
+      click(4, 2)
+    }
+
+    // Move queens
+    robot.performInput {
+      click(3, 7)
+      click(7, 3)
+    }
+    robot.performInput {
+      click(3, 0)
+      click(7, 4)
+    }
+
+    // White queen takes black queen
+    robot.performInput {
+      click(7, 3)
+      click(7, 4)
+    }
+
+    robot.assertHasPiece(7, 4, White, Queen)
+  }
+
+  @Test
+  fun castlingQueenSide_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move "knight" pawns out of the ways
+    robot.performInput {
+      click(1, 6)
+      click(1, 5)
+    }
+    robot.performInput {
+      click(1, 1)
+      click(1, 2)
+    }
+
+    // Move "queen" pawns out of the ways
+    robot.performInput {
+      click(3, 6)
+      click(3, 5)
+    }
+    robot.performInput {
+      click(3, 1)
+      click(3, 2)
+    }
+
+    // Move bishops
+    robot.performInput {
+      click(2, 7)
+      click(0, 5)
+    }
+    robot.performInput {
+      click(2, 0)
+      click(0, 2)
+    }
+
+    // Move knights
+    robot.performInput {
+      click(1, 7)
+      click(2, 5)
+    }
+    robot.performInput {
+      click(1, 0)
+      click(2, 2)
+    }
+
+    // Move queens
+    robot.performInput {
+      click(3, 7)
+      click(3, 6)
+    }
+    robot.performInput {
+      click(3, 0)
+      click(3, 1)
+    }
+
+    // Castle queen-side
+    robot.performInput {
+      click(4, 7)
+      click(2, 7)
+    }
+    robot.performInput {
+      click(4, 0)
+      click(2, 0)
+    }
+
+    robot.assertHasPiece(2, 7, White, King)
+    robot.assertHasPiece(3, 7, White, Rook)
+    robot.assertHasPiece(2, 0, Black, King)
+    robot.assertHasPiece(3, 0, Black, Rook)
+  }
+
+  @Test
+  fun castlingKingSide_isSuccessful() = runTest {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    // Move pawns out of the ways
+    robot.performInput {
+      click(6, 6)
+      click(6, 5)
+    }
+    robot.performInput {
+      click(6, 1)
+      click(6, 2)
+    }
+
+    // Move bishops
+    robot.performInput {
+      click(5, 7)
+      click(7, 5)
+    }
+    robot.performInput {
+      click(5, 0)
+      click(7, 2)
+    }
+
+    // Move knights
+    robot.performInput {
+      click(6, 7)
+      click(5, 5)
+    }
+    robot.performInput {
+      click(6, 0)
+      click(5, 2)
+    }
+
+    // Castle king-side
+    robot.performInput {
+      click(4, 7)
+      click(6, 7)
+    }
+    robot.performInput {
+      click(4, 0)
+      click(6, 0)
+    }
+
+    robot.assertHasPiece(6, 7, White, King)
+    robot.assertHasPiece(5, 7, White, Rook)
+    robot.assertHasPiece(6, 0, Black, King)
+    robot.assertHasPiece(5, 0, Black, Rook)
+  }
+
+  @Test
   fun selectingSameCellTwice_hasNoEffectOnBoard() {
     val robot = emptyGameAgainstOneselfRobot()
 
