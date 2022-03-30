@@ -1,7 +1,10 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -144,5 +147,34 @@ class StatefulHomeTest {
     rule.onNodeWithText("testName").assertExists()
     rule.onNodeWithText("testName").performClick()
     rule.onNodeWithText(strings.profilePastGames).assertExists()
+  }
+
+  @Test
+  fun gameRoute_displaysAChessGame() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+
+    authFacade.signUpWithEmail("email", "name", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade) {
+            StatefulHome(
+                user = user,
+                // We must call controller.navigate() after the first composition (so the
+                // NavController has all the routes set up), and a Modifier which has the property
+                // of being called after composition is onGloballyPositioned.
+                modifier = Modifier.onGloballyPositioned { controller.navigate("match/123") },
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
   }
 }
