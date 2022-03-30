@@ -57,18 +57,6 @@ class StatefulGameScreenTest {
     return ChessBoardRobot(rule, strings)
   }
 
-  // @Test TODO: Fix robot dragging
-  fun illegalMoveByDragging_isNotPossible() = runTest {
-    val robot = emptyGameAgainstOneselfRobot()
-
-    robot.performInput { drag(ChessBoardState.Position(4, 0), ChessBoardState.Position(7, 7)) }
-
-    // White Rook is still here
-    robot.assertHasPiece(7, 7, White, Rook)
-    // Black King did not move
-    robot.assertHasPiece(4, 0, Black, King)
-  }
-
   @Test
   fun illegalMoveByClicking_isNotPossible() = runTest {
     val robot = emptyGameAgainstOneselfRobot()
