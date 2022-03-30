@@ -28,8 +28,8 @@ class GameScreenTest {
               Move("g4"),
               Move("Qh4#"),
           )
-    override val white = GameScreenState.Player("Alex", null)
-    override val black = GameScreenState.Player("Matt", null)
+    override val white = GameScreenState.Player("Alex", GameScreenState.Message.None)
+    override val black = GameScreenState.Player("Matt", GameScreenState.Message.None)
 
     override fun onArClick() = Unit
 

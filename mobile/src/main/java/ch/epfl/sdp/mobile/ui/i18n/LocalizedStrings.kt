@@ -53,6 +53,10 @@ interface LocalizedStrings {
   val gameMicOffContentDescription: String
   val gameMicOnContentDescription: String
   val gameListening: String
+  val gameMessageYourTurn: String
+  val gameMessageCheck: String
+  val gameMessageStalemate: String
+  val gameMessageCheckmate: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String

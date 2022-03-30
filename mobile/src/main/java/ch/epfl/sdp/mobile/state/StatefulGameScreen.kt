@@ -7,11 +7,15 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
+import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -97,10 +101,24 @@ class SnapshotChessBoardState(
   private var blackProfile by mutableStateOf<Profile?>(null)
 
   override val white: GameScreenState.Player
-    get() = GameScreenState.Player(whiteProfile?.name, "Check !")
+    get() = GameScreenState.Player(whiteProfile?.name, message(White))
 
   override val black: GameScreenState.Player
-    get() = GameScreenState.Player(blackProfile?.name, null)
+    get() = GameScreenState.Player(blackProfile?.name, message(Black))
+
+  /**
+   * Computes the [Message] to display depending on the player color.
+   *
+   * @param color the [Color] of the player in the engine.
+   */
+  private fun message(color: Color): Message {
+    return when (val step = game.nextStep) {
+      is NextStep.Checkmate -> if (step.winner == color) None else Checkmate
+      is NextStep.MovePiece ->
+          if (step.turn == color) if (step.inCheck) InCheck else YourTurn else None
+      NextStep.Stalemate -> if (color == White) Stalemate else None
+    }
+  }
 
   init {
     scope.launch { match.game.collect { game = it } }
@@ -183,7 +201,7 @@ class SnapshotChessBoardState(
     val currentPlayingId =
         when (step.turn) {
           Color.Black -> blackProfile?.uid
-          Color.White -> whiteProfile?.uid
+          White -> whiteProfile?.uid
         }
 
     if (currentPlayingId == user.uid) {
@@ -222,7 +240,7 @@ private fun Piece<Color>.toPiece(): SnapshotPiece {
   val color =
       when (this.color) {
         Color.Black -> ChessBoardState.Color.Black
-        Color.White -> ChessBoardState.Color.White
+        White -> ChessBoardState.Color.White
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)

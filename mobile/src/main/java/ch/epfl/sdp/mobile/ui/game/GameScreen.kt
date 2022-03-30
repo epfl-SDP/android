@@ -12,6 +12,7 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
 import ch.epfl.sdp.mobile.ui.ChessIcons
 import ch.epfl.sdp.mobile.ui.PawniesColors
@@ -20,6 +21,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
 import ch.epfl.sdp.mobile.ui.WhiteKing
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import com.google.accompanist.flowlayout.FlowRow
 
@@ -81,7 +83,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
 private fun Player(
     color: ChessBoardState.Color,
     name: String?,
-    message: String?,
+    message: Message,
     modifier: Modifier = Modifier,
 ) {
   val green = if (color == White) Green500 else Green800
@@ -93,10 +95,22 @@ private fun Player(
         Text(name ?: "")
       }
       Spacer(Modifier.weight(1f, fill = true))
-      CompositionLocalProvider(LocalContentColor provides Orange200) { Text(message ?: "") }
+      CompositionLocalProvider(LocalContentColor provides Orange200) { Text(message.text) }
     }
   }
 }
+
+/** Retrieves the text associated with a [GameScreenState.Message]. */
+private val Message.text: String
+  @Composable
+  get() =
+      when (this) {
+        Message.None -> ""
+        Message.YourTurn -> LocalLocalizedStrings.current.gameMessageYourTurn
+        Message.InCheck -> LocalLocalizedStrings.current.gameMessageCheck
+        Message.Checkmate -> LocalLocalizedStrings.current.gameMessageCheckmate
+        Message.Stalemate -> LocalLocalizedStrings.current.gameMessageStalemate
+      }
 
 /**
  * Displays the list of moves that have been played.

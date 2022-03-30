@@ -34,6 +34,10 @@ object English : LocalizedStrings {
   override val gameMicOffContentDescription = "Microphone off"
   override val gameMicOnContentDescription = "Microphone on"
   override val gameListening = "Listening"
+  override val gameMessageYourTurn = "Your turn"
+  override val gameMessageCheck = "Check !"
+  override val gameMessageStalemate = "Stalemate !"
+  override val gameMessageCheckmate = "Checkmate !"
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
