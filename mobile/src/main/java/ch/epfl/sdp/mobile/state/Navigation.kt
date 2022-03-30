@@ -1,10 +1,14 @@
 package ch.epfl.sdp.mobile.state
 
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.with
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
+import ch.epfl.sdp.mobile.ui.FadeEnterTransition
+import ch.epfl.sdp.mobile.ui.FadeExitTransition
 import kotlinx.coroutines.flow.map
 
 /**
@@ -15,9 +19,13 @@ import kotlinx.coroutines.flow.map
 @Composable
 fun Navigation() {
   val state by rememberUserState()
-  Crossfade(state) {
-    when (it) {
-      is UserState.Authenticated -> StatefulHome(it.user)
+  val transition = updateTransition(state, null)
+  transition.AnimatedContent(
+      contentKey = { it.key },
+      transitionSpec = { FadeEnterTransition with FadeExitTransition },
+  ) { current ->
+    when (current) {
+      is UserState.Authenticated -> StatefulHome(current.user)
       UserState.NotAuthenticated -> StatefulAuthenticationScreen()
       UserState.Loading -> Unit
     }
@@ -27,18 +35,29 @@ fun Navigation() {
 /** An interface representing the current state of the user. */
 private sealed interface UserState {
 
+  /**
+   * A unique key for this [UserState], which indicates that a full-screen transition should occur.
+   */
+  val key: Any
+
   /** The current user is still loading. */
-  object Loading : UserState
+  object Loading : UserState {
+    override val key = "Loading"
+  }
 
   /** The user is not connected, and the authentication screen should be displayed. */
-  object NotAuthenticated : UserState
+  object NotAuthenticated : UserState {
+    override val key = "NotAuthenticated"
+  }
 
   /**
    * The user is authenticated, and the root navigation should be displayed.
    *
    * @param user the [AuthenticationUser] information.
    */
-  data class Authenticated(val user: AuthenticatedUser) : UserState
+  data class Authenticated(val user: AuthenticatedUser) : UserState {
+    override val key = "Authenticated"
+  }
 }
 
 /** Returns the current [UserState] in the composition. */
