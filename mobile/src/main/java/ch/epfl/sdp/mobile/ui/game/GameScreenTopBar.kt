@@ -107,11 +107,11 @@ private fun ListeningButton(
     ) { on ->
       if (on) {
         Row(Modifier.padding(horizontal = 16.dp), spacedBy(8.dp), CenterVertically) {
-          Icon(Icons.Branded.GameMicOn, null)
+          Icon(Icons.Branded.GameMicOn, LocalLocalizedStrings.current.gameMicOnContentDescription)
           Text(LocalLocalizedStrings.current.gameListening)
         }
       } else {
-        Icon(Icons.Branded.GameMicOff, null)
+        Icon(Icons.Branded.GameMicOff, LocalLocalizedStrings.current.gameMicOffContentDescription)
       }
     }
   }

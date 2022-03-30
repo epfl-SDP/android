@@ -4,6 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
@@ -68,5 +69,14 @@ class GameScreenTest {
             strings.boardPieceContentDescription(strings.boardColorWhite, strings.boardPiecePawn),
         )
         .assertExists()
+  }
+
+  @Test
+  fun clickingListening_togglesListeningMode() {
+    val strings =
+        rule.setContentWithLocalizedStrings { GameScreen(rememberSnapshotGameScreenState()) }
+
+    rule.onNodeWithContentDescription(strings.gameMicOffContentDescription).performClick()
+    rule.onNodeWithContentDescription(strings.gameMicOnContentDescription).assertExists()
   }
 }
