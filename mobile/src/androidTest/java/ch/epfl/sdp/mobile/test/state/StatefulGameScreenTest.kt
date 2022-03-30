@@ -505,4 +505,53 @@ class StatefulGameScreenTest {
     robot.performInput { drag(ChessBoardState.Position(6, 1), ChessBoardState.Position(6, 2)) }
     robot.assertHasPiece(6, 2, Black, Pawn)
   }
+
+  @Test
+  fun clickingOutOfBounds_doesNothing() {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    robot.performInput {
+      click(7, 7)
+      click(7, 10)
+    }
+
+    // Rook did not move
+    robot.assertHasPiece(7, 7, White, Rook)
+  }
+
+  @Test
+  fun playingGameWithNoPlayerId_isUnsuccessful() {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId1", ProfileDocument()) }
+      collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = null)) }
+    }
+
+    val authApi = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    val user1 = mockk<AuthenticatedUser>()
+    every { user1.uid } returns "userId1"
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
+        }
+
+    val robot = ChessBoardRobot(rule, strings)
+
+    robot.performInput {
+      click(4, 6)
+      click(4, 5)
+    }
+    robot.performInput {
+      click(4, 1)
+      click(4, 2)
+    }
+
+    // Pawns did not move
+    robot.assertHasPiece(4, 6, White, Pawn)
+    robot.assertHasPiece(4, 1, Black, Pawn)
+  }
 }
