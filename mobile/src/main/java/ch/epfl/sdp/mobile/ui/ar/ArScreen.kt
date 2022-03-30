@@ -4,8 +4,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
 import io.github.sceneview.ar.ArSceneView
@@ -42,6 +44,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   val context = LocalContext.current
   val view = LocalView.current
+  val strings = LocalLocalizedStrings.current
 
   val nodePlacementMode = PlacementMode.PLANE_HORIZONTAL
 
@@ -100,7 +103,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   AndroidView(
       factory = { ArSceneView(it) },
-      modifier = modifier.testTag("AR"),
+      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
       update = { view ->
         if (DisplayAxes) {
           white?.let {

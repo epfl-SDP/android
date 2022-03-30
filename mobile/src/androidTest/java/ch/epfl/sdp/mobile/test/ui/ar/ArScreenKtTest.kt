@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.rule.GrantPermissionRule.grant
 import ch.epfl.sdp.mobile.state.HomeActivity
+import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.ar.ArScreen
 import org.junit.Rule
 import org.junit.Test
@@ -21,8 +22,8 @@ class ArScreenKtTest {
 
   @Test
   fun check_thatComposableHasTheTag() = withCanceledIntents {
-    rule.setContent { ArScreen() }
-    rule.onNode(hasAnyDescendant(hasTestTag("AR"))).assertExists()
+    val strings = rule.setContentWithLocalizedStrings { ArScreen() }
+    rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
   }
 
   /**
