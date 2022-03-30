@@ -105,35 +105,47 @@ fun ArScreen(modifier: Modifier = Modifier) {
       factory = { ArSceneView(it) },
       modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
       update = { view ->
+        val currentBoard = board ?: return@AndroidView
+        val currentArBoard = arBoard ?: return@AndroidView
+        val currentPawn = pawn1 ?: return@AndroidView
+
         if (DisplayAxes) {
-          white?.let {
-            it.scale(2f)
-            board?.addChild(it)
-            it.placementPosition = Position(y = arBoard!!.boardHeight)
+
+          val currentWhite = white ?: return@AndroidView
+          val currentRed = red ?: return@AndroidView
+          val currentBlue = blue ?: return@AndroidView
+          val currentGreen = green ?: return@AndroidView
+
+          currentWhite.apply {
+            scale(2f)
+            currentBoard.addChild(this)
+            placementPosition = Position(y = currentArBoard.boardHeight)
           }
-          red?.let {
-            it.scale(2f)
-            board?.addChild(it)
-            it.placementPosition = Position(x = 3f, y = arBoard!!.boardHeight)
+
+          currentRed.apply {
+            scale(2f)
+            currentBoard.addChild(this)
+            placementPosition = Position(x = 3f, y = currentArBoard.boardHeight)
           }
-          blue?.let {
-            it.scale(2f)
-            board?.addChild(it)
-            it.placementPosition = Position(z = 3f, y = arBoard!!.boardHeight)
+
+          currentBlue.apply {
+            scale(2f)
+            currentBoard.addChild(this)
+            placementPosition = Position(z = 3f, y = currentArBoard.boardHeight)
           }
-          green?.let {
-            it.scale(2f)
-            board?.addChild(it)
-            it.placementPosition = Position(y = 3f + arBoard!!.boardHeight)
+
+          currentGreen.apply {
+            scale(2f)
+            currentBoard.addChild(this)
+            placementPosition = Position(y = 3f + currentArBoard.boardHeight)
           }
         }
 
         /** Add the given [piece] on the board in the correct position */
         fun addPiece(piece: ArModelNode) {
           piece.let {
-            board?.addChild(it)
-            it.placementPosition =
-                arBoard?.toArPosition(piecePosition) ?: ArModelNode.DEFAULT_PLACEMENT_POSITION
+            currentBoard.addChild(it)
+            it.placementPosition = currentArBoard.toArPosition(piecePosition)
           }
         }
 
@@ -141,13 +153,11 @@ fun ArScreen(modifier: Modifier = Modifier) {
          * TODO : With the [ChessBoardState], iterate over the list of pieces, and do the same that
          * [pawn1]
          */
-        if (pawn1 != null) {
-          addPiece(pawn1!!)
-        }
+        addPiece(currentPawn)
 
         // Scale down the board size
         // As all the pieces are the board children, they scale as well
-        board?.scale(BoardScale)
+        currentBoard.scale(BoardScale)
 
         /**
          * If not already in the scene, the board will be added. Update the board anchor with the
@@ -157,10 +167,10 @@ fun ArScreen(modifier: Modifier = Modifier) {
          */
         fun anchorOrMoveBoard(anchor: Anchor) {
           // Add only one instance of the node
-          if (!view.children.contains(board!!)) {
-            view.addChild(board!!)
+          if (!view.children.contains(currentBoard)) {
+            view.addChild(currentBoard)
           }
-          board?.anchor = anchor
+          currentBoard.anchor = anchor
         }
 
         // Place the board on the taped position
