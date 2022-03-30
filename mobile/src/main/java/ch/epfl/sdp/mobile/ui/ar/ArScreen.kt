@@ -72,7 +72,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
   }
 
   // Keep the screen only for this composable
-  DisposableEffect(Unit) {
+  DisposableEffect(view) {
     view.keepScreenOn = true
     onDispose { view.keepScreenOn = false }
   }
