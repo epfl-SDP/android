@@ -25,6 +25,6 @@ data class ArBoard(
     fun transform(value: Int): Float {
       return -boardHalfSize + boardBorderSize + value * cellSize + cellCenter
     }
-    return Position(y = boardHeight, x = transform(position.x), z = transform(position.y))
+    return Position(x = transform(position.x), y = boardHeight, z = transform(position.y))
   }
 }
