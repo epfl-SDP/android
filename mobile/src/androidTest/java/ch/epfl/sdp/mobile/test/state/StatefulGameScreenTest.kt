@@ -508,11 +508,42 @@ class StatefulGameScreenTest {
   }
 
   @Test
-  fun playingGameWithNoPlayerId_isUnsuccessful() {
+  fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = null)) }
+      collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
+    }
+
+    val authApi = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    val user1 = mockk<AuthenticatedUser>()
+    every { user1.uid } returns "userId1"
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1) }
+        }
+
+    val robot = ChessBoardRobot(rule, strings)
+
+    robot.performInput {
+      click(4, 6)
+      click(4, 5)
+    }
+
+    // Pawn did not move
+    robot.assertHasPiece(4, 6, White, Pawn)
+  }
+
+  @Test
+  fun playingGameWithNoBlackId_isUnsuccessful() {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId1", ProfileDocument()) }
+      collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
     }
 
     val authApi = AuthenticationFacade(auth, store)
@@ -538,8 +569,7 @@ class StatefulGameScreenTest {
       click(4, 2)
     }
 
-    // Pawns did not move
-    robot.assertHasPiece(4, 6, White, Pawn)
+    // Pawn did not move
     robot.assertHasPiece(4, 1, Black, Pawn)
   }
 }
