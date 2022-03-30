@@ -1,18 +1,24 @@
 package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.ui.BlackKing
+import ch.epfl.sdp.mobile.ui.ChessIcons
+import ch.epfl.sdp.mobile.ui.PawniesColors.Green500
+import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
+import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
+import ch.epfl.sdp.mobile.ui.WhiteKing
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 
 /**
  * This screen display an ongoing game of chest
@@ -26,20 +32,42 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
     modifier: Modifier = Modifier,
 ) {
   Column(modifier) {
-    TitleText(text = "Chess game")
-    MoveList(state.moves)
-    ChessBoard(state, modifier = Modifier.padding(16.dp))
-    TitleText(text = "VR / Voice Recognition")
+    Player(White, state.white.name, state.white.message)
+    Player(ChessBoardState.Color.Black, state.black.name, state.black.message)
+    ChessBoard(state)
+    Moves(state.moves)
+  }
+}
+
+@Composable
+fun Player(
+    color: ChessBoardState.Color,
+    name: String?,
+    message: String?,
+    modifier: Modifier = Modifier,
+) {
+  val green = if (color == White) Green500 else Green800
+  val icon = if (color == White) ChessIcons.WhiteKing else ChessIcons.BlackKing
+  Row(modifier, Arrangement.spacedBy(16.dp), Alignment.CenterVertically) {
+    ProvideTextStyle(MaterialTheme.typography.subtitle1) {
+      CompositionLocalProvider(LocalContentColor provides green) {
+        Icon(icon, null, Modifier.size(24.dp))
+        Text(name ?: "")
+      }
+      Spacer(Modifier.weight(1f, fill = true))
+      CompositionLocalProvider(LocalContentColor provides Orange200) { Text(message ?: "") }
+    }
   }
 }
 
 /**
- * Display the list of moves that have been played
- * @param moves A list of [Move] that need to be displayed
- * @param modifier modifier the [Modifier] for the composable
+ * Displays the list of moves that have been played.
+ *
+ * @param moves A list of [Move] that needs to be displayed
+ * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-fun MoveList(moves: List<Move>, modifier: Modifier = Modifier) {
+fun Moves(moves: List<Move>, modifier: Modifier = Modifier) {
   LazyRow(
       horizontalArrangement = Arrangement.Start,
       verticalAlignment = Alignment.CenterVertically,
@@ -51,29 +79,14 @@ fun MoveList(moves: List<Move>, modifier: Modifier = Modifier) {
                   color = MaterialTheme.colors.onPrimary,
                   shape = RoundedCornerShape(16.dp)),
   ) {
-    items(moves) { move ->
-      val color =
-          if (move.number % 2 == 1) MaterialTheme.colors.primary
-          else MaterialTheme.colors.primaryVariant
+    itemsIndexed(moves) { index, move ->
+      val color = if (index % 2 == 0) Green500 else Green800
       Text(
-          text = move.number.toString() + ". " + move.name,
+          text = "$index. ${move.text}",
           color = color,
           style = MaterialTheme.typography.subtitle1,
-          modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp))
+          modifier = Modifier.padding(8.dp),
+      )
     }
   }
-}
-
-/**
- * A temporary text composable to give some life to the [GameScreen]
- * @param text The [String] to be displayed
- * @param modifier modifier the [Modifier] for the composable
- */
-@Composable
-fun TitleText(text: String, modifier: Modifier = Modifier) {
-  Text(
-      text = text,
-      color = MaterialTheme.colors.primary,
-      style = MaterialTheme.typography.h4,
-      modifier = modifier.padding(horizontal = 16.dp, vertical = 16.dp))
 }

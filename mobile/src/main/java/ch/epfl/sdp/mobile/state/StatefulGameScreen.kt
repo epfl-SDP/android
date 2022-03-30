@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
-import ch.epfl.sdp.mobile.ui.game.Move
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -44,6 +44,16 @@ class SnapshotChessBoardState(
     private val scope: CoroutineScope,
     private val chessFacade: ChessFacade,
 ) : GameScreenState<SnapshotPiece> {
+
+  // TODO : Implement these things.
+  override val white: GameScreenState.Player = GameScreenState.Player("Alex", "Check !")
+  override val black: GameScreenState.Player = GameScreenState.Player("Matthieu", null)
+  override fun onArClick() = Unit
+  override var listening by mutableStateOf(false)
+    private set
+  override fun onListenClick() {
+    listening = !listening
+  }
 
   var match by mutableStateOf(Match.create())
 
@@ -159,19 +169,12 @@ class SnapshotChessBoardState(
 
   override val moves: List<Move> =
       listOf(
-          ChessMove(1, "f3"),
-          ChessMove(2, "e5"),
-          ChessMove(3, "g4"),
-          ChessMove(4, "Qh4#"),
+          Move("f3"),
+          Move("e5"),
+          Move("g4"),
+          Move("Qh4#"),
       )
 }
-
-/**
- * Represents a [ChessBoardState]'s Move
- * @property number The move's number in the game's history
- * @property name The move's name in chess notation
- */
-data class ChessMove(override val number: Int, override val name: String) : Move
 
 /** Maps a game engine [Position] to a [ChessBoardState.Position] */
 private fun Position.toPosition(): ChessBoardState.Position {
