@@ -82,7 +82,7 @@ fun Moves(moves: List<Move>, modifier: Modifier = Modifier) {
     itemsIndexed(moves) { index, move ->
       val color = if (index % 2 == 0) Green500 else Green800
       Text(
-          text = "$index. ${move.text}",
+          text = "${index + 1}. ${move.text}",
           color = color,
           style = MaterialTheme.typography.subtitle1,
           modifier = Modifier.padding(8.dp),
