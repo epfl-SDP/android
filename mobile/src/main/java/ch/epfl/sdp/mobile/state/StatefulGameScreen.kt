@@ -2,8 +2,8 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
@@ -29,8 +29,12 @@ fun StatefulGameScreen(
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
 
-  val gameScreenState =
-      remember(user, scope, chessFacade) { SnapshotChessBoardState(user, scope, chessFacade) }
+  // TODO: Delegate Match fetching to Prepare Game Screen or Ongoing Games screen
+  val match by
+      remember { chessFacade.matches(user).map { it.firstOrNull() ?: Match() } }
+          .collectAsState(initial = Match())
+
+  val gameScreenState = remember(user, match, scope) { SnapshotChessBoardState(user, match, scope) }
 
   GameScreen(gameScreenState, modifier)
 }
@@ -41,13 +45,11 @@ fun StatefulGameScreen(
  */
 class SnapshotChessBoardState(
     private val user: AuthenticatedUser,
+    private val match: Match,
     private val scope: CoroutineScope,
-    private val chessFacade: ChessFacade,
 ) : GameScreenState<SnapshotPiece> {
 
   // TODO : Implement these things.
-  override val white: GameScreenState.Player = GameScreenState.Player("Alex", "Check !")
-  override val black: GameScreenState.Player = GameScreenState.Player("Matthieu", null)
   override fun onArClick() = Unit
   override var listening by mutableStateOf(false)
     private set
@@ -55,15 +57,20 @@ class SnapshotChessBoardState(
     listening = !listening
   }
 
-  var match by mutableStateOf(Match.create())
+  private var game by mutableStateOf(Game.create())
+  private var whiteProfile by mutableStateOf<Profile?>(null)
+  private var blackProfile by mutableStateOf<Profile?>(null)
+
+  override val white: GameScreenState.Player
+    get() = GameScreenState.Player(whiteProfile?.name, "Check !")
+
+  override val black: GameScreenState.Player
+    get() = GameScreenState.Player(blackProfile?.name, null)
 
   init {
-    // TODO: Select correct game if several exist (once we have a screen to display ongoing games)
-    scope.launch {
-      chessFacade.fetchMatchesForUser(user).map { it.firstOrNull() ?: Match.create() }.collect {
-        match = it
-      }
-    }
+    scope.launch { match.game.collect { game = it } }
+    scope.launch { match.white.collect { whiteProfile = it } }
+    scope.launch { match.black.collect { blackProfile = it } }
   }
 
   /**
@@ -86,11 +93,9 @@ class SnapshotChessBoardState(
 
   override val checkPosition: ChessBoardState.Position?
     get() {
-      val nextStep = match.game.nextStep
+      val nextStep = game.nextStep
       if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
-      return match
-          .game
-          .board
+      return game.board
           .first { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
           .first
           .toPosition()
@@ -98,20 +103,13 @@ class SnapshotChessBoardState(
 
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
-        match
-            .game
-            .board
-            .asSequence()
-            .map { (pos, piece) -> pos.toPosition() to piece.toPiece() }
-            .toMap()
+        game.board.asSequence().map { (pos, piece) -> pos.toPosition() to piece.toPiece() }.toMap()
 
   override val availableMoves: Set<ChessBoardState.Position>
     // Display all the possible moves for all the pieces on the board.
     get() {
       val position = selectedPosition ?: return emptySet()
-      return match
-          .game
-          .actions(Position(position.x, position.y))
+      return game.actions(Position(position.x, position.y))
           .mapNotNull { it.from + it.delta }
           .map { it.toPosition() }
           .toSet()
@@ -145,12 +143,12 @@ class SnapshotChessBoardState(
     // Hide the current selection.
     selectedPosition = null
 
-    val step = match.game.nextStep as? NextStep.MovePiece ?: return
+    val step = game.nextStep as? NextStep.MovePiece ?: return
 
     val currentPlayingId =
         when (step.turn) {
-          Color.Black -> match.blackId
-          Color.White -> match.whiteId
+          Color.Black -> blackProfile?.uid
+          Color.White -> whiteProfile?.uid
         }
 
     if (currentPlayingId == user.uid) {
@@ -161,8 +159,7 @@ class SnapshotChessBoardState(
                 Position(from.x, from.y),
                 Delta(to.x - from.x, to.y - from.y),
             )
-
-        chessFacade.updateMatch(Match(newGame, match.gameId, match.whiteId, match.blackId))
+        match.update(newGame)
       }
     }
   }

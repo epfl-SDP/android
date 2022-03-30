@@ -14,12 +14,13 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class ChessBoardStateTest {
 
   @Test
-  fun selectingPiece_displaysAvailableMoves() {
+  fun selectingPiece_displaysAvailableMoves() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") {
@@ -35,7 +36,9 @@ class ChessBoardStateTest {
     val job = Job()
     val scope = CoroutineScope(job)
 
-    val state = SnapshotChessBoardState(user, scope, facade)
+    val match = facade.createMatch(user, user)
+
+    val state = SnapshotChessBoardState(user, match, scope)
 
     state.onPositionClick(ChessBoardState.Position(4, 6))
     assertThat(state.availableMoves)

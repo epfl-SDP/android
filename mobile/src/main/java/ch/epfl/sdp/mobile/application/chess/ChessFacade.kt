@@ -2,14 +2,16 @@ package ch.epfl.sdp.mobile.application.chess
 
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.deserialize
-import ch.epfl.sdp.mobile.application.serialize
+import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.notation.deserialize
+import ch.epfl.sdp.mobile.application.chess.notation.serialize
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
+import java.util.*
+import kotlinx.coroutines.flow.*
 
 /**
  * An interface which represents all the endpoints and available features for online chess
@@ -29,34 +31,31 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @return The created [Match] before storing it in the [Store] (without the GameId)
    */
   suspend fun createMatch(white: Profile, black: Profile): Match {
-    val match = Match.create(white.uid, black.uid)
-    val chessDocument = match.serialize()
-    store.collection("games").document().set(chessDocument)
+    val id = UUID.randomUUID().toString()
+    val match = StoreMatch(id, store)
+    store
+        .collection("games")
+        .document(id)
+        .set(
+            ChessDocument(
+                moves = emptyList(),
+                whiteId = white.uid,
+                blackId = black.uid,
+            ),
+        )
 
     return match
-  }
-
-  /**
-   * Updates a [Match] in the [Store] Should only be called with a [Match] whose gameId is not null
-   * in order to target the correct document in the [Store]
-   *
-   * @param match The new [Match] to be stores.
-   */
-  suspend fun updateMatch(match: Match) {
-    match.gameId ?: return
-    val chessDocument = match.serialize()
-    store.collection("games").document(match.gameId).set(chessDocument)
   }
 
   /**
    * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
    * player (or even himself)
    *
-   * @param profile The [Profile] whose [Matches] will be fetched
+   * @param profile The [Profile] whose [Match]s will be fetched
    *
    * @return The [Flow] of [List] of [Match]s for the [Profile]
    */
-  fun fetchMatchesForUser(profile: Profile): Flow<List<Match>> {
+  fun matches(profile: Profile): Flow<List<Match>> {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
     val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
 
@@ -70,6 +69,40 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   private fun Query.asMatchListFlow(): Flow<List<Match>> {
-    return this.asFlow<ChessDocument>().map { it.map { doc -> doc.deserialize() } }
+    return this.asFlow<ChessDocument>().map {
+      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
+    }
+  }
+}
+
+private data class StoreMatch(
+    override val id: String,
+    private val store: Store,
+) : Match {
+
+  fun profile(
+      uid: String,
+  ): Flow<Profile?> {
+
+    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
+      doc?.toProfile(NotAuthenticatedUser)
+    }
+  }
+
+  private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
+
+  override val game = documentFlow.map { it?.moves ?: emptyList() }.map { it.deserialize() }
+
+  override val white =
+      documentFlow.map { it?.whiteId }.flatMapLatest {
+        it?.let(this@StoreMatch::profile) ?: flowOf(null)
+      }
+  override val black =
+      documentFlow.map { it?.blackId }.flatMapLatest {
+        it?.let(this@StoreMatch::profile) ?: flowOf(null)
+      }
+
+  override suspend fun update(game: Game) {
+    store.collection("games").document(id).update { this["moves"] = game.serialize() }
   }
 }
