@@ -44,7 +44,11 @@ fun GameScreenTopBar(
       modifier = modifier,
       title = {},
       elevation = 0.dp,
-      navigationIcon = { IconButton(onBackClick) { Icon(Icons.Branded.GameClose, null) } },
+      navigationIcon = {
+        IconButton(onBackClick) {
+          Icon(Icons.Branded.GameClose, LocalLocalizedStrings.current.gameBack)
+        }
+      },
       actions = {
         ArButton(onClick = onArClick)
         Spacer(Modifier.width(8.dp))
@@ -72,7 +76,7 @@ private fun ArButton(
       modifier = modifier.height(48.dp).widthIn(min = 48.dp),
       contentPadding = PaddingValues(),
       border = BorderStroke(Dp.Hairline, Green100),
-  ) { Icon(PawniesIcons.ArView, null) }
+  ) { Icon(PawniesIcons.ArView, LocalLocalizedStrings.current.gameShowAr) }
 }
 
 /**

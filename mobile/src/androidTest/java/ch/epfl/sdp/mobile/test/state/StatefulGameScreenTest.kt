@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -20,6 +21,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -33,8 +35,12 @@ class StatefulGameScreenTest {
   /**
    * Returns a [ChessBoardRobot] with a store containing a player and an emptyGame with the player
    * playing against himself
+   *
+   * @param actions the [StatefulGameScreenActions] for this composable.
    */
-  private fun emptyGameAgainstOneselfRobot(): ChessBoardRobot {
+  private fun emptyGameAgainstOneselfRobot(
+      actions: StatefulGameScreenActions = StatefulGameScreenActions(onBack = {}, onShowAr = {}),
+  ): ChessBoardRobot {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
@@ -49,8 +55,6 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
-
-    val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
 
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -578,5 +582,44 @@ class StatefulGameScreenTest {
 
     // Pawn did not move
     robot.assertHasPiece(4, 1, Black, Pawn)
+  }
+
+  @Test
+  fun clickingListening_showsListeningText() {
+    val robot = emptyGameAgainstOneselfRobot()
+
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithLocalizedText { gameListening }.assertExists()
+    robot.onNodeWithLocalizedContentDescription { gameMicOnContentDescription }.assertExists()
+  }
+
+  @Test
+  fun clickingBack_callsBackAction() {
+    var called = false
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            StatefulGameScreenActions(
+                onBack = { called = true },
+                onShowAr = {},
+            ),
+        )
+
+    robot.onNodeWithLocalizedContentDescription { gameBack }.performClick()
+    assertThat(called).isTrue()
+  }
+
+  @Test
+  fun clickingAr_callsArAction() {
+    var called = false
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            StatefulGameScreenActions(
+                onBack = {},
+                onShowAr = { called = true },
+            ),
+        )
+
+    robot.onNodeWithLocalizedContentDescription { gameShowAr }.performClick()
+    assertThat(called).isTrue()
   }
 }
