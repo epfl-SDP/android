@@ -16,6 +16,8 @@ object English : LocalizedStrings {
   override val authenticateErrorFailure = "Something went wrong when authenticating"
   override val authenticateOr = "or"
 
+  override val arContentDescription: String = "ArComposable"
+
   override val boardColorBlack = "black"
   override val boardColorWhite = "white"
   override val boardPieceKing = "king"
