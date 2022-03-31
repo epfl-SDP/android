@@ -94,7 +94,7 @@ class GameTest {
 
   @Test
   fun foolsMate_isMate() {
-    val game = Game.create().play { FoolsMate() }
+    val game = Game.create().play(FoolsMate)
     assertThat(game.nextStep).isEqualTo(NextStep.Checkmate(winner = Black))
   }
 
