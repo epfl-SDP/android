@@ -22,6 +22,8 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
   val authenticateOr: String
 
+  val arContentDescription: String
+
   val profileMatchTitle: (String) -> String
   val profileWonByCheckmate: (Int) -> String
   val profileWonByForfeit: (Int) -> String
@@ -31,6 +33,9 @@ interface LocalizedStrings {
   val profilePastGames: String
   val profilePuzzle: String
   val profileSettings: String
+  val profileUnfollow: String
+  val profileChallenge: String
+  val profileEditIcon: String
 
   val boardColorBlack: String
   val boardColorWhite: String
@@ -41,17 +46,30 @@ interface LocalizedStrings {
   val boardPieceKnight: String
   val boardPiecePawn: String
   val boardPieceContentDescription: (color: String, rank: String) -> String
+  val boardContentDescription: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String
-  val socialFollow: String
+  val socialPerformFollow: String
+  val socialPerformUnfollow: String
   val socialSearchBarPlaceHolder: String
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
 
+  val sectionAr: String
   val sectionSocial: String
   val sectionSettings: String
   val sectionPlay: String
-
   val newGame: String
+
+  val prepareGameChooseColor: String
+  val prepareGameChooseOpponent: String
+  val prepareGameChooseGame: String
+  val prepareGameWhiteColor: String
+  val prepareGameBlackColor: String
+  val prepareGameStart: String
+  val prepareGameSelectOpponent: String
+  val prepareGameSelectedOpponent: String
+  val prepareGamePlayLocal: String
+  val prepareGamePlayOnline: String
 }

@@ -13,7 +13,7 @@ android {
 
   defaultConfig {
     applicationId = "ch.epfl.sdp.mobile"
-    minSdk = 23
+    minSdk = 24
     targetSdk = 31
     versionCode = 1
     versionName = "0.1.0"
@@ -53,10 +53,11 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-
   // Testing.
   testImplementation(libs.coroutines.test)
   testImplementation(libs.androidx.test.core)
+  testImplementation(libs.androidx.test.runner)
+  testImplementation(libs.androidx.test.rules)
   testImplementation(libs.junit4)
   testImplementation(libs.truth)
   testImplementation(libs.mockk.mockk)
@@ -65,7 +66,8 @@ dependencies {
   androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)
   androidTestImplementation(libs.androidx.test.truth)
-  androidTestImplementation(libs.androidx.test.espresso)
+  androidTestImplementation(libs.androidx.test.espresso.core)
+  androidTestImplementation(libs.androidx.test.espresso.intents)
   androidTestImplementation(libs.compose.ui.test.junit4)
   androidTestImplementation(libs.kotlin.reflect)
   debugImplementation(libs.compose.ui.test.manifest)
@@ -84,6 +86,8 @@ dependencies {
 
   // Jetpack Compose
   implementation(libs.bundles.compose.android)
+
+  implementation(libs.arsceneview)
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }
@@ -123,8 +127,8 @@ task<JacocoReport>("jacocoTestReport") {
       )
 
   val debugTree =
-      fileTree(baseDir = "$project.buildDir/tmp/kotlin-classes/debug") { setExcludes(fileFilter) }
-  val mainSrc = "$project.projectDir/src/main/java"
+      fileTree(baseDir = "${project.buildDir}/tmp/kotlin-classes/debug") { setExcludes(fileFilter) }
+  val mainSrc = "${project.projectDir}/src/main/java"
   sourceDirectories.setFrom(files(listOf(mainSrc)))
   classDirectories.setFrom(files(listOf(debugTree)))
   executionData.setFrom(
@@ -132,8 +136,7 @@ task<JacocoReport>("jacocoTestReport") {
         setIncludes(
             listOf(
                 "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-                "outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec"
-            ),
+                "outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec"),
         )
       },
   )

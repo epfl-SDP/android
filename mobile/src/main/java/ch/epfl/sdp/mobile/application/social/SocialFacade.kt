@@ -2,6 +2,8 @@ package ch.epfl.sdp.mobile.application.social
 
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
+import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
@@ -22,10 +24,29 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
    * Searches user by exact match on name
    *
    * @param text search criteria.
+   * @param user the [AuthenticationUser] that is performing the search.
    */
-  fun search(text: String): Flow<List<Profile>> {
+  fun search(
+      text: String,
+      user: AuthenticationUser = NotAuthenticatedUser,
+  ): Flow<List<Profile>> {
     return store.collection("users").whereEquals("name", text).asFlow<ProfileDocument>().map {
-      it.mapNotNull { doc -> doc?.toProfile() }
+      it.mapNotNull { doc -> doc?.toProfile(user) }
+    }
+  }
+
+  /**
+   * Returns a [Flow] of the [Profile] corresponding to a given unique identifier.
+   *
+   * @param uid the unique identifiers of the profile.
+   * @param user the [AuthenticationUser] that is performing the get.
+   */
+  fun profile(
+      uid: String,
+      user: AuthenticationUser = NotAuthenticatedUser,
+  ): Flow<Profile?> {
+    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
+      doc?.toProfile(user)
     }
   }
 }

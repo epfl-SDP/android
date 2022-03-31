@@ -1,5 +1,8 @@
 package ch.epfl.sdp.mobile.application
 
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import com.google.firebase.firestore.DocumentId
 
 /**
@@ -20,12 +23,42 @@ data class ProfileDocument(
     val followers: List<String>? = null,
 )
 
-fun ProfileDocument?.toProfile(): Profile {
+/**
+ * Transforms a given unique identifier to a [Profile].
+ *
+ * @param currentUserUid the unique identifier [String] of the [ProfileDocument] to transform.
+ */
+fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
   return object : Profile {
     override val emoji: String = this@toProfile?.emoji ?: "😎"
     override val name: String = this@toProfile?.name ?: ""
     override val backgroundColor: Profile.Color =
         this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
     override val uid: String = this@toProfile?.uid ?: ""
+    override val followed: Boolean = currentUserUid in (this@toProfile?.followers ?: emptyList())
   }
 }
+
+/**
+ * Transforms a given [AuthenticationUser] to a [Profile].
+ *
+ * @param currentUser the [AuthenticationUser] to transform.
+ */
+fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
+  return toProfile((currentUser as? AuthenticatedUser)?.uid)
+}
+
+/**
+ * A document which represents a game of chess between two users. All the game documents are stored
+ * in the `/games/` collection.
+ *
+ * @param moves the list of moves played during the match in long algebraic notation
+ * @param whiteId the UID of the white player
+ * @param blackId The UID of the black player
+ */
+data class ChessDocument(
+    @DocumentId val uid: String? = null,
+    val moves: List<String>? = null,
+    val whiteId: String? = null,
+    val blackId: String? = null,
+)

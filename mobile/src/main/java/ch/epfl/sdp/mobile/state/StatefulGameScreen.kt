@@ -2,20 +2,59 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.*
+import ch.epfl.sdp.mobile.application.chess.Match
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.Move
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+/**
+ * The [StatefulGameScreen] to be used for the Navigation
+ *
+ * @param user the currently logged-in user.
+ * @param id the identifier for the match.
+ * @param modifier the [Modifier] for the composable
+ */
+@Composable
+fun StatefulGameScreen(
+    user: AuthenticatedUser,
+    id: String,
+    modifier: Modifier = Modifier,
+) {
+  val facade = LocalChessFacade.current
+  val scope = rememberCoroutineScope()
+  val match = remember(facade, id) { facade.match(id) }
+
+  val gameScreenState = remember(user, match, scope) { SnapshotChessBoardState(user, match, scope) }
+
+  GameScreen(gameScreenState, modifier)
+}
 
 /**
  * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
  * and has a static move list
  */
-class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
+class SnapshotChessBoardState(
+    private val user: AuthenticatedUser,
+    private val match: Match,
+    private val scope: CoroutineScope,
+) : GameScreenState<SnapshotPiece> {
+
   private var game by mutableStateOf(Game.create())
+  private var white by mutableStateOf<Profile?>(null)
+  private var black by mutableStateOf<Profile?>(null)
+
+  init {
+    scope.launch { match.game.collect { game = it } }
+    scope.launch { match.white.collect { white = it } }
+    scope.launch { match.black.collect { black = it } }
+  }
 
   /**
    * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
@@ -31,32 +70,81 @@ class SnapshotChessBoardState : GameScreenState<SnapshotPiece> {
       override val rank: ChessBoardState.Rank,
   ) : ChessBoardState.Piece
 
+  /** The currently selected [Position] of the board. */
+  override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
+    private set
+
+  override val checkPosition: ChessBoardState.Position?
+    get() {
+      val nextStep = game.nextStep
+      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
+      return game.board
+          .first { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
+          .first
+          .toPosition()
+    }
+
   override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
     get() =
-        Position.all()
-            .map { game.board[it]?.let { p -> it to p } }
-            .filterNotNull()
-            .map { (a, b) -> a.toPosition() to b.toPiece() }
-            .toMap()
+        game.board.asSequence().map { (pos, piece) -> pos.toPosition() to piece.toPiece() }.toMap()
 
   override val availableMoves: Set<ChessBoardState.Position>
     // Display all the possible moves for all the pieces on the board.
-    get() =
-        Position.all()
-            .flatMap { game.actions(it) }
-            .mapNotNull { it.from + it.delta }
-            .map { it.toPosition() }
-            .toSet()
+    get() {
+      val position = selectedPosition ?: return emptySet()
+      return game.actions(Position(position.x, position.y))
+          .mapNotNull { it.from + it.delta }
+          .map { it.toPosition() }
+          .toSet()
+    }
 
   override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
-    val step = game.nextStep as NextStep.MovePiece
+    tryPerformMove(startPosition, endPosition)
+  }
 
-    game =
-        step.move(
-            Position(startPosition.x, startPosition.y),
-            Delta(endPosition.x - startPosition.x, endPosition.y - startPosition.y),
-        )
+  override fun onPositionClick(position: ChessBoardState.Position) {
+    val from = selectedPosition
+    if (from == null) {
+      selectedPosition = position
+    } else {
+      tryPerformMove(from, position)
+    }
+  }
+
+  /**
+   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
+   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
+   *
+   * @param from the start [ChessBoardState.Position].
+   * @param to the end [ChessBoardState.Position].
+   */
+  private fun tryPerformMove(
+      from: ChessBoardState.Position,
+      to: ChessBoardState.Position,
+  ) {
+    // Hide the current selection.
+    selectedPosition = null
+
+    val step = game.nextStep as? NextStep.MovePiece ?: return
+
+    val currentPlayingId =
+        when (step.turn) {
+          Color.Black -> black?.uid
+          Color.White -> white?.uid
+        }
+
+    if (currentPlayingId == user.uid) {
+      // TODO: Update game locally first, then verify upload was successful?
+      scope.launch {
+        val newGame =
+            step.move(
+                Position(from.x, from.y),
+                Delta(to.x - from.x, to.y - from.y),
+            )
+        match.update(newGame)
+      }
+    }
   }
 
   override val moves: List<Move> =
@@ -98,28 +186,4 @@ private fun Piece<Color>.toPiece(): SnapshotPiece {
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)
-}
-
-/**
- * A remember with a [GameScreenState] implementation
- *
- * @return The remember of the [SnapshotChessBoardState]
- */
-@Composable
-fun rememberGameScreenState(): GameScreenState<SnapshotPiece> {
-  return remember { SnapshotChessBoardState() }
-}
-
-/**
- * The [StatefulGameScreen] to be used for the Navigation
- *
- * @param user the currently logged-in user.
- * @param modifier the [Modifier] for the composable
- */
-@Composable
-fun StatefulGameScreen(
-    user: AuthenticatedUser,
-    modifier: Modifier = Modifier,
-) {
-  GameScreen(rememberGameScreenState(), modifier)
 }

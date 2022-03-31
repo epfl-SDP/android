@@ -12,7 +12,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -20,12 +20,14 @@ import kotlinx.coroutines.launch
  *
  * @param profile the [Profile] to turn into a [Person].
  */
-private data class ProfileAdapter(
+data class ProfileAdapter(
     val profile: Profile,
 ) : Person {
+  val uid = profile.uid
   override val backgroundColor = profile.backgroundColor
   override val name = profile.name
   override val emoji = profile.emoji
+  override val followed = profile.followed
 }
 
 /**
@@ -38,7 +40,8 @@ private data class ProfileAdapter(
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
-    modifier: Modifier = Modifier,
+    onPersonItemClick: (ProfileAdapter) -> Unit,
+    modifier: Modifier = Modifier
 ) {
   val following =
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
@@ -46,7 +49,9 @@ fun StatefulFollowingScreen(
   val socialFacade = LocalSocialFacade.current
   val input = remember { mutableStateOf("") }
   val searchResults =
-      remember { snapshotFlow { input.value }.flatMapLatest { s -> socialFacade.search(s) } }
+      remember(user) {
+        snapshotFlow { input.value }.flatMapLatest { s -> socialFacade.search(s, user) }
+      }
           .collectAsState(emptyList())
           .value
           .map { ProfileAdapter(it) }
@@ -65,7 +70,7 @@ fun StatefulFollowingScreen(
           mode = mode,
           searchFieldInteraction = searchFieldInteraction,
           scope = scope,
-      ),
+          onPersonItemClick = onPersonItemClick),
       modifier)
 }
 
@@ -82,26 +87,35 @@ fun StatefulFollowingScreen(
  * @param mode the current [SocialScreenState.Mode] of the social screen.
  * @param searchFieldInteraction the [MutableInteractionSource] of the search field.
  * @param scope the [CoroutineScope] on which requests are performed.
+ * @param onPersonItemClick on click of person list element
  */
 private class SnapshotSocialScreenState(
     private val user: AuthenticatedUser,
     following: List<ProfileAdapter>,
     input: MutableState<String>,
-    searchResult: List<ProfileAdapter>,
-    mode: SocialScreenState.Mode,
-    searchFieldInteraction: MutableInteractionSource,
+    override val searchResult: List<ProfileAdapter>,
+    override var mode: SocialScreenState.Mode,
+    override val searchFieldInteraction: MutableInteractionSource,
     private val scope: CoroutineScope,
+    private val onPersonItemClick: (ProfileAdapter) -> Unit
 ) : SocialScreenState<ProfileAdapter> {
 
   override var following = following
   override var input by input
-  override var searchResult = searchResult
-  override var mode = mode
-  override var searchFieldInteraction = searchFieldInteraction
 
   override fun onValueChange() {}
 
   override fun onFollowClick(followed: ProfileAdapter) {
-    scope.launch { user.follow(followed.profile) }
+    scope.launch {
+      if (!followed.followed) {
+        user.follow(followed.profile)
+      } else {
+        user.unfollow(followed.profile)
+      }
+    }
+  }
+
+  override fun onPersonClick(person: ProfileAdapter) {
+    onPersonItemClick(person)
   }
 }

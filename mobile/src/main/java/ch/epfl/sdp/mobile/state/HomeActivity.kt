@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
@@ -24,11 +25,13 @@ class HomeActivity : ComponentActivity() {
     // The different facades from the application.
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
 
     setContent {
       PawniesTheme {
         ProvideLocalizedStrings {
-          ProvideFacades(authentication = authenticationFacade, social = socialFacade) {
+          ProvideFacades(
+              authentication = authenticationFacade, social = socialFacade, chess = chessFacade) {
             Navigation()
           }
         }

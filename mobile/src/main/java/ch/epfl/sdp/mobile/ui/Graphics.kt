@@ -13,6 +13,9 @@ val Icons.Branded: PawniesIcons
 /** An object that contains all the icons that will be used in Pawnies. */
 object PawniesIcons
 
+val PawniesIcons.ArView
+  get() = Icons.Default.ViewInAr
+
 /** An icon to show a password. */
 val PawniesIcons.PasswordShow
   get() = Icons.Default.Visibility
@@ -38,6 +41,9 @@ val PawniesIcons.Add
 
 val PawniesIcons.Search
   get() = Icons.Default.Search
+
+val PawniesIcons.Check
+  get() = Icons.Default.Check
 
 /** Chess pieces */
 object ChessIcons

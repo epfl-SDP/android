@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode
 
 /**
  * A state which indicates the content of an [SocialScreen] composable. It will keep track of the
@@ -39,6 +40,12 @@ interface SocialScreenState<P : Person> {
 
   /** Flow for interaction on search field */
   val searchFieldInteraction: MutableInteractionSource
+
+  /**
+   * Callback function to open profile of person
+   * @param person the type of the [Person] which open the Profile.
+   */
+  fun onPersonClick(person: P)
 
   /** A callback invoked when the user type in the search text field */
   fun onValueChange()

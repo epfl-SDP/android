@@ -1,20 +1,10 @@
 package ch.epfl.sdp.mobile.test.ui.game
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.test.ui.contains
-import ch.epfl.sdp.mobile.test.ui.getBoundsInRoot
 import ch.epfl.sdp.mobile.ui.game.ChessBoard
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
@@ -29,29 +19,6 @@ import org.junit.Test
 class ChessBoardTest {
 
   @get:Rule val rule = createComposeRule()
-
-  @Test
-  fun draggingPawnAroundIsSuccessful() = runTest {
-    val state = SnapshotChessBoardState()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
-        }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(90.dp.toPx(), 130.dp.toPx()))
-      moveBy(Offset(0.dp.toPx(), -40.dp.toPx()))
-      up()
-    }
-    rule.awaitIdle()
-    val inBounds =
-        rule.onAllNodesWithContentDescription(
-                strings.boardPieceContentDescription(
-                    strings.boardColorWhite, strings.boardPiecePawn),
-            )
-            .fetchSemanticsNodes()
-            .any { DpOffset(90.dp, 90.dp) in it.getBoundsInRoot() }
-    assertThat(inBounds).isTrue()
-  }
 
   /**
    * An implementation of [ChessBoardState] which moves a single piece around the chessboard on drag
@@ -69,6 +36,9 @@ class ChessBoardTest {
 
     var position: Position by mutableStateOf(Position(0, 0))
 
+    override val selectedPosition: Position? = null
+    override val checkPosition: Position? = null
+
     override val pieces: Map<Position, Piece>
       get() = mapOf(position to piece)
 
@@ -81,17 +51,32 @@ class ChessBoardTest {
     ) {
       position = endPosition
     }
+
+    override fun onPositionClick(position: Position) = Unit
+  }
+
+  @Test
+  fun draggingPawnAroundIsSuccessful() = runTest {
+    val state = SinglePieceSnapshotChessBoardState()
+    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val robot = ChessBoardRobot(rule, strings)
+    robot.performInput {
+      down(0, 0)
+      moveBy(0, 2)
+      up()
+    }
+    rule.awaitIdle()
+    robot.assertHasPiece(0, 2, White, Pawn)
   }
 
   @Test
   fun draggingPawnOutsideBoard_works() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    rule.setContentWithLocalizedStrings {
-      ChessBoard(state, Modifier.size(160.dp).testTag("board"))
-    }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(10.dp.toPx(), 10.dp.toPx()))
-      moveBy(Offset(-20.dp.toPx(), -20.dp.toPx()))
+    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val robot = ChessBoardRobot(rule, strings)
+    robot.performInput {
+      down(0, 0)
+      moveBy(-1, -1)
       up()
     }
     assertThat(state.position).isEqualTo(Position(-1, -1))
@@ -100,93 +85,60 @@ class ChessBoardTest {
   @Test
   fun draggingPawnAround_withDisabledBoard_movesNothing() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ChessBoard(state, Modifier.size(160.dp).testTag("board"), enabled = false)
-        }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(10.dp.toPx(), 10.dp.toPx()))
-      moveBy(Offset(0.dp.toPx(), 40.dp.toPx()))
+    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state, enabled = false) }
+    val robot = ChessBoardRobot(rule, strings)
+    robot.performInput {
+      down(0, 0)
+      moveBy(0, 2)
       up()
     }
-    val bounds =
-        rule.onNodeWithContentDescription(
-                strings.boardPieceContentDescription(
-                    strings.boardColorWhite, strings.boardPiecePawn),
-            )
-            .getBoundsInRoot()
-    assertThat(DpOffset(10.dp, 10.dp) in bounds).isTrue()
+    robot.assertHasPiece(0, 0, White, Pawn)
   }
 
   @Test
   fun draggingPawnAround_whileBoardIsEnabled_dropsOnRightTarget() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
-        }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(10.dp.toPx(), 10.dp.toPx()))
-      moveBy(Offset(0.dp.toPx(), 20.dp.toPx()))
+    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val robot = ChessBoardRobot(rule, strings)
+    robot.performInput {
+      down(0, 0)
+      moveBy(0, 1)
     }
     state.position = Position(1, 1)
-    rule.onNodeWithTag("board").performTouchInput {
-      moveBy(Offset(0.dp.toPx(), 20.dp.toPx())) // Still drop at (0, 3)
+    robot.performInput {
+      moveBy(0, 1) // Still drop at (0, 2)
       up()
     }
-    val bounds =
-        rule.onNodeWithContentDescription(
-                strings.boardPieceContentDescription(
-                    strings.boardColorWhite, strings.boardPiecePawn),
-            )
-            .getBoundsInRoot()
-    assertThat(DpOffset(10.dp, 50.dp) in bounds).isTrue()
+    robot.assertHasPiece(0, 2, White, Pawn)
   }
 
   @Test
   fun emptyDragGesture_doesNotMovePawn() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ChessBoard(state, Modifier.size(160.dp).testTag("board"))
-        }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(10.dp.toPx(), 10.dp.toPx()))
-      cancel() // Cancel the gesture, so we should not drop the pawn.
+    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val robot = ChessBoardRobot(rule, strings)
+    robot.performInput {
+      down(0, 0)
+      up()
     }
-    rule.awaitIdle()
-    val bounds =
-        rule.onNodeWithContentDescription(
-                strings.boardPieceContentDescription(
-                    strings.boardColorWhite, strings.boardPiecePawn),
-            )
-            .getBoundsInRoot()
-    assertThat(DpOffset(10.dp, 10.dp) in bounds).isTrue()
+    robot.assertHasPiece(0, 0, White, Pawn)
   }
 
   @Test
   fun disablingBoardDuringDrag_dropsPiece() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
     var enabled by mutableStateOf(true)
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ChessBoard(state, Modifier.size(160.dp).testTag("board"), enabled = enabled)
-        }
-    rule.onNodeWithTag("board").performTouchInput {
-      down(Offset(10.dp.toPx(), 10.dp.toPx()))
-      moveBy(Offset(0.dp.toPx(), 20.dp.toPx()))
+    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state, enabled = enabled) }
+    val robot = ChessBoardRobot(rule, strings)
+    robot.performInput {
+      down(0, 0)
+      moveBy(0, 1)
     }
     enabled = false // We expect the piece to be dropped mid-gesture.
-    rule.onNodeWithTag("board").performTouchInput {
-      moveBy(Offset(0.dp.toPx(), 20.dp.toPx()))
+    robot.performInput {
+      moveBy(0, 1)
       up()
     }
-    val bounds =
-        rule.onNodeWithContentDescription(
-                strings.boardPieceContentDescription(
-                    strings.boardColorWhite, strings.boardPiecePawn),
-            )
-            .getBoundsInRoot()
-    assertThat(DpOffset(10.dp, 30.dp) in bounds).isTrue()
+    robot.assertHasPiece(0, 1, White, Pawn)
   }
 }
