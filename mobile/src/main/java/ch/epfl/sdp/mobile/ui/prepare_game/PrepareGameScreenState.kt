@@ -1,23 +1,19 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
+import ch.epfl.sdp.mobile.application.Profile
+
 /**
  * State interface of the [PrepareGameScreen]
  * @property colorChoice chosen color
- * @property gameType chosen game type
+ * @property selectedOpponent the selected opponent whom to create a game with
  */
 interface PrepareGameScreenState {
   var colorChoice: ColorChoice
-  var gameType: GameType
+  var selectedOpponent: Profile?
 }
 
 /** Color choices for a chess game */
 enum class ColorChoice {
   White,
   Black
-}
-
-/** Game types for local and online chess games */
-enum class GameType {
-  Local,
-  Online
 }

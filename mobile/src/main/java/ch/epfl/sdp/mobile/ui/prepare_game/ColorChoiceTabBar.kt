@@ -68,7 +68,7 @@ fun ColorChoiceTabItem(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     colors: ColorChoiceColors = DefaultColorChoiceColors,
-    borderWidth: Dp = 4.dp,
+    borderWidth: Dp = 2.dp,
     shape: Shape = RectangleShape,
 ) {
   val contentColor by colors.content(selected)
@@ -80,15 +80,15 @@ fun ColorChoiceTabItem(
       shape = shape,
       modifier =
           modifier.let { if (selected) it.dashedBorder(borderWidth, borderColor, shape) else it }) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.selectable(selected, onClick = onClick).clickable { onClick() }) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp).selectable(selected, onClick = onClick).clickable { onClick() }) {
       Icon(
           painter = ChessIcons.BlackBishop,
           contentDescription = null,
       )
-      Spacer(Modifier.width(4.dp))
+      Spacer(Modifier.width(8.dp))
       Text(
           text = text,
           color = contentColor,

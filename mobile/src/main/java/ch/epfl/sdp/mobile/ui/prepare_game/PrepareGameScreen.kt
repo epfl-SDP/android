@@ -4,14 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 
 /**
- * Composable that implements a complete PrepareGame screen from [ColorChoiceBar] and
- * [GameTypeChoiceButtons]
+ * Composable that implements a complete PrepareGame screen
  * @param state current state of the screen
  * @param modifier [Modifier] for this composable
  */
@@ -20,6 +19,14 @@ fun PrepareGameScreen(
     state: PrepareGameScreenState,
     modifier: Modifier = Modifier,
 ) {
+  class CompareSelectedProfiles : Comparator<Profile?> {
+    override fun compare(a: Profile?, b: Profile?): Int =
+      when (state.selectedOpponent?.uid) {
+        a?.uid -> -1 // The selected element is "smaller" than every other element
+        else -> 0 // Otherwise, order as-is or something
+      }
+  }
+
   val strings = LocalLocalizedStrings.current
   Column(
       verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -29,18 +36,29 @@ fun PrepareGameScreen(
         colorChoice = state.colorChoice,
         onSelectColor = { state.colorChoice = it },
     )
-    Text(
-        text =
-            when (state.gameType) {
-              GameType.Online -> strings.prepareGameChooseOpponent
-              GameType.Local -> strings.prepareGameChooseGame
-            },
-        style = MaterialTheme.typography.subtitle1)
+    Text(text = strings.prepareGameChooseOpponent, style = MaterialTheme.typography.subtitle1)
 
-    GameTypeChoiceButtons(
-        state.gameType,
-        { state.gameType = GameType.Online },
-        { state.gameType = GameType.Local },
-        Modifier.align(Alignment.CenterHorizontally))
+    OpponentList(
+        opponents =
+            List(20) { i ->
+                  if (i == 0) {
+                    FakeProfile(
+                        name = "The real Ronald Weasley", uid = i.toString(), selected = true)
+                  } else {
+                    FakeProfile(name = "Ronald Weasley n° $i", uid = i.toString())
+                  }
+                }
+                .sortedWith(CompareSelectedProfiles()),
+        state = state,
+    )
   }
 }
+
+private data class FakeProfile(
+    override val emoji: String = "🐀",
+    override val name: String,
+    override val backgroundColor: Profile.Color = Profile.Color.Default,
+    override val uid: String,
+    override val followed: Boolean = false,
+    val selected: Boolean = false,
+) : Profile
