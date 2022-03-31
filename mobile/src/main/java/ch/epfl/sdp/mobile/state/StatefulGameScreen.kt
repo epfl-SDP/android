@@ -200,7 +200,7 @@ class SnapshotChessBoardState(
 
     val currentPlayingId =
         when (step.turn) {
-          Color.Black -> blackProfile?.uid
+          Black -> blackProfile?.uid
           White -> whiteProfile?.uid
         }
 
@@ -239,7 +239,7 @@ private fun Piece<Color>.toPiece(): SnapshotPiece {
 
   val color =
       when (this.color) {
-        Color.Black -> ChessBoardState.Color.Black
+        Black -> ChessBoardState.Color.Black
         White -> ChessBoardState.Color.White
       }
 

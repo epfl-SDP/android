@@ -2,6 +2,9 @@ package ch.epfl.sdp.mobile.test.application.chess.engine
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
+import ch.epfl.sdp.mobile.application.chess.engine.Color.White
+import ch.epfl.sdp.mobile.application.chess.engine.Rank.King
+import ch.epfl.sdp.mobile.application.chess.engine.Rank.Rook
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
@@ -14,7 +17,7 @@ class GameTest {
   fun emptyGame_startsWithWhitePlayer() {
     val game = Game.create()
     val step = game.nextStep as NextStep.MovePiece
-    assertThat(step.turn).isEqualTo(Color.White)
+    assertThat(step.turn).isEqualTo(White)
   }
 
   @Test
@@ -28,7 +31,7 @@ class GameTest {
   fun emptyGame_outOfBoundsMove_preservesPlayer() {
     val game = Game.create().play { Position(0, 0) += Delta(0, -1) }
     val step = game.nextStep as NextStep.MovePiece
-    assertThat(step.turn).isEqualTo(Color.White)
+    assertThat(step.turn).isEqualTo(White)
   }
 
   @Test
@@ -39,7 +42,7 @@ class GameTest {
           Position(0, 1) += Delta(0, 1)
         }
     val step = game.nextStep as NextStep.MovePiece
-    assertThat(step.turn).isEqualTo(Color.White)
+    assertThat(step.turn).isEqualTo(White)
   }
 
   @Test
@@ -48,9 +51,9 @@ class GameTest {
     val black = game.board[Position(4, 0)]
     val white = game.board[Position(4, 7)]
     assertThat(black?.color).isEqualTo(Black)
-    assertThat(black?.rank).isEqualTo(Rank.King)
-    assertThat(white?.color).isEqualTo(Color.White)
-    assertThat(white?.rank).isEqualTo(Rank.King)
+    assertThat(black?.rank).isEqualTo(King)
+    assertThat(white?.color).isEqualTo(White)
+    assertThat(white?.rank).isEqualTo(King)
   }
 
   @Test
@@ -73,8 +76,8 @@ class GameTest {
           Position(1, 0) += Delta(1, 2) // Black moves knight
           Position(4, 7) += Delta(2, 0) // White castles !
         }
-    assertThat(game.board[Position(5, 7)]?.rank).isEqualTo(Rank.Rook)
-    assertThat(game.board[Position(6, 7)]?.rank).isEqualTo(Rank.King)
+    assertThat(game.board[Position(5, 7)]?.rank).isEqualTo(Rook)
+    assertThat(game.board[Position(6, 7)]?.rank).isEqualTo(King)
   }
 
   @Test
