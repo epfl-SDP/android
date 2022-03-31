@@ -4,6 +4,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -95,5 +96,11 @@ class GameTest {
   fun foolsMate_isMate() {
     val game = Game.create().play { FoolsMate() }
     assertThat(game.nextStep).isEqualTo(NextStep.Checkmate(winner = Black))
+  }
+
+  @Test
+  fun stalemate_isStalemate() {
+    val game = Game.create().play(Stalemate)
+    assertThat(game.nextStep).isEqualTo(NextStep.Stalemate)
   }
 }
