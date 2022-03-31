@@ -36,6 +36,4 @@ object Games {
     Position(5, 1) += Delta(1, 1)
     Position(2, 0) += Delta(2, 2)
   }
-
-  // TODO : Add some stalemates.
 }
