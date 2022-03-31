@@ -57,7 +57,7 @@ private fun Profile.AsOpponent(
 ) {
   Button(
       modifier = modifier.fillMaxWidth(),
-      shape = RoundedCornerShape(64.dp),
+      shape = CircleShape,
       colors = opponentColor(selected),
       onClick = onClick,
       elevation =

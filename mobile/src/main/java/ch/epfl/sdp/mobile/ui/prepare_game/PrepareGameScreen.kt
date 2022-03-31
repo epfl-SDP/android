@@ -19,12 +19,12 @@ fun PrepareGameScreen(
     state: PrepareGameScreenState,
     modifier: Modifier = Modifier,
 ) {
-  class CompareSelectedProfiles : Comparator<Profile?> {
+  class SelectedProfileComparator : Comparator<Profile?> {
     override fun compare(a: Profile?, b: Profile?): Int =
-      when (state.selectedOpponent?.uid) {
-        a?.uid -> -1 // The selected element is "smaller" than every other element
-        else -> 0 // Otherwise, order as-is or something
-      }
+        when (state.selectedOpponent?.uid) {
+          a?.uid -> -1 // The selected element is "smaller" than every other element
+          else -> 0 // Otherwise, order as-is or something
+        }
   }
 
   val strings = LocalLocalizedStrings.current
@@ -39,16 +39,7 @@ fun PrepareGameScreen(
     Text(text = strings.prepareGameChooseOpponent, style = MaterialTheme.typography.subtitle1)
 
     OpponentList(
-        opponents =
-            List(20) { i ->
-                  if (i == 0) {
-                    FakeProfile(
-                        name = "The real Ronald Weasley", uid = i.toString(), selected = true)
-                  } else {
-                    FakeProfile(name = "Ronald Weasley n° $i", uid = i.toString())
-                  }
-                }
-                .sortedWith(CompareSelectedProfiles()),
+        opponents = state.opponents.sortedWith(SelectedProfileComparator()),
         state = state,
     )
   }

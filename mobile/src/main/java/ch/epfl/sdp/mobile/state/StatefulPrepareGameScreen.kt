@@ -14,7 +14,10 @@ import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
  * @property colorChoice chosen color side
  * @property selectedOpponent The selected opponent's [Profile], if any
  */
-class PrepareGameScreenStateImpl(private val user: AuthenticatedUser) : PrepareGameScreenState {
+class PrepareGameScreenStateImpl(
+    private val user: AuthenticatedUser,
+    override val opponents: List<Profile>,
+) : PrepareGameScreenState {
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
   override var selectedOpponent: Profile? by mutableStateOf(null)
 }
@@ -29,6 +32,7 @@ fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
 ) {
-  val state = remember(user) { PrepareGameScreenStateImpl(user) }
+  val opponents = remember(user) { user.following }.collectAsState(emptyList()).value
+  val state = remember(user) { PrepareGameScreenStateImpl(user, opponents) }
   PrepareGameScreen(state, modifier)
 }

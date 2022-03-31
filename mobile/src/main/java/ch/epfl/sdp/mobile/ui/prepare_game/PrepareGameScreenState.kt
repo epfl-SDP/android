@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.Profile
 interface PrepareGameScreenState {
   var colorChoice: ColorChoice
   var selectedOpponent: Profile?
+  val opponents: List<Profile>
 }
 
 /** Color choices for a chess game */
