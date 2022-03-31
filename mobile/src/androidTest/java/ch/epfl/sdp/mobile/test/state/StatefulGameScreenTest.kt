@@ -11,12 +11,15 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulGameScreen
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
+import ch.epfl.sdp.mobile.test.ui.game.play
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
@@ -621,5 +624,19 @@ class StatefulGameScreenTest {
 
     robot.onNodeWithLocalizedContentDescription { gameShowAr }.performClick()
     assertThat(called).isTrue()
+  }
+
+  @Test
+  fun playingUntilCheckmate_displaysCheckmate() {
+    val robot = emptyGameAgainstOneselfRobot()
+    robot.play(FoolsMate)
+    robot.onNodeWithLocalizedText { gameMessageCheckmate }.assertExists()
+  }
+
+  @Test
+  fun playingUntilStalemate_displaysStalemate() {
+    val robot = emptyGameAgainstOneselfRobot()
+    robot.play(Stalemate)
+    robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
   }
 }

@@ -1,7 +1,9 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -18,7 +20,7 @@ class GameTest {
   fun emptyGame_validMove_switchesNextPlayer() {
     val game = Game.create().play { Position(0, 6) += Delta(0, -1) }
     val step = game.nextStep as NextStep.MovePiece
-    assertThat(step.turn).isEqualTo(Color.Black)
+    assertThat(step.turn).isEqualTo(Black)
   }
 
   @Test
@@ -44,7 +46,7 @@ class GameTest {
     val game = Game.create()
     val black = game.board[Position(4, 0)]
     val white = game.board[Position(4, 7)]
-    assertThat(black?.color).isEqualTo(Color.Black)
+    assertThat(black?.color).isEqualTo(Black)
     assertThat(black?.rank).isEqualTo(Rank.King)
     assertThat(white?.color).isEqualTo(Color.White)
     assertThat(white?.rank).isEqualTo(Rank.King)
@@ -87,5 +89,11 @@ class GameTest {
 
     assertThat(first?.second).isEqualTo(Action(Position(6, 7), Delta(-1, -2)))
     assertThat(second?.second).isEqualTo(Action(Position(6, 0), Delta(-1, 2)))
+  }
+
+  @Test
+  fun foolsMate_isMate() {
+    val game = Game.create().play { FoolsMate() }
+    assertThat(game.nextStep).isEqualTo(NextStep.Checkmate(winner = Black))
   }
 }
