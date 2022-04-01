@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,18 +23,31 @@ fun OpponentList(
     state: PrepareGameScreenState,
     modifier: Modifier = Modifier,
 ) {
-  LazyColumn(
-      verticalArrangement = Arrangement.Center,
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier,
-  ) {
-    opponents.map {
-      item {
-        it.AsOpponent(
-            selected = state.selectedOpponent?.uid == it.uid,
-            onClick = { state.selectedOpponent = it },
-            modifier = Modifier,
-        )
+  Column() {
+    state.selectedOpponent?.AsOpponent(
+        selected = true,
+        onClick = { state.selectedOpponent = null },
+        modifier = Modifier,
+    )
+    LazyColumn(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.height(512.dp), // TODO: How to fill available space properly?
+    ) {
+      val unselectedOpponents =
+          if (state.selectedOpponent == null) {
+            opponents
+          } else {
+            opponents.drop(1)
+          }
+      unselectedOpponents.map {
+        item {
+          it.AsOpponent(
+              selected = state.selectedOpponent?.uid == it.uid,
+              onClick = { state.selectedOpponent = it },
+              modifier = Modifier,
+          )
+        }
       }
     }
   }

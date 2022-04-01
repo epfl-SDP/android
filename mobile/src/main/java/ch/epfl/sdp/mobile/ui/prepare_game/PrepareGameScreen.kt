@@ -1,13 +1,14 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.*
 
 /**
  * Composable that implements a complete PrepareGame screen
@@ -28,20 +29,48 @@ fun PrepareGameScreen(
   }
 
   val strings = LocalLocalizedStrings.current
-  Column(
-      verticalArrangement = Arrangement.spacedBy(16.dp),
-      modifier = modifier.padding(16.dp, 16.dp)) {
+  Column(modifier = modifier) {
+    // TODO: How to space items evenly without doing by hand (and have the divider right next to its
+    // neighbours)
     Text(text = strings.prepareGameChooseColor, style = MaterialTheme.typography.subtitle1)
     ColorChoiceBar(
         colorChoice = state.colorChoice,
         onSelectColor = { state.colorChoice = it },
     )
-    Text(text = strings.prepareGameChooseOpponent, style = MaterialTheme.typography.subtitle1)
 
+    Text(text = strings.prepareGameChooseOpponent, style = MaterialTheme.typography.subtitle1)
     OpponentList(
-        opponents = state.opponents.sortedWith(SelectedProfileComparator()),
+        opponents = // state.opponents
+        List(11) { i ->
+                  if (i == 0) {
+                    FakeProfile(
+                        name = "The real Ronald Weasley", uid = i.toString(), selected = true)
+                  } else {
+                    FakeProfile(name = "Ronald Weasley n° $i", uid = i.toString())
+                  }
+                }
+                .sortedWith(SelectedProfileComparator()),
         state = state,
     )
+
+    Divider(color = MaterialTheme.colors.onPrimary, thickness = 1.dp)
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        horizontalArrangement = Arrangement.End,
+    ) {
+      OutlinedButton(
+          onClick = {},
+          shape = CircleShape,
+          contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+      ) { Text("CANCEL") }
+      Spacer(Modifier.padding(8.dp))
+      Button(
+          onClick = {},
+          shape = CircleShape,
+          contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+      ) { Text("PLAY !") }
+    }
+    Spacer(modifier = Modifier.padding(16.dp))
   }
 }
 
