@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
@@ -18,7 +17,9 @@ import kotlinx.coroutines.launch
 /**
  * Transforms a given [Match] to a [ChessMatch].
  *
- * @param currentUserUid the unique identifier [String] of the [ProfileDocument] to transform.
+ * @param currentUid the uid of the current user.
+ * @param match the given [Match]
+ * @param facade the used [ChessFacade]
  */
 suspend fun Match.toChessMatch(currentUid: String, match: Match, facade: ChessFacade): ChessMatch? {
   val blackID = match.black.filterNotNull().first().uid
