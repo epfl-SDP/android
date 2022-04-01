@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Density
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -33,23 +34,20 @@ fun Dialog(
     cancelContent: @Composable RowScope.() -> Unit,
     confirmContent: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(8.dp),
+    shape: Shape = RoundedCornerShape(16.dp),
     elevation: Dp = 24.dp,
     content: @Composable () -> Unit,
 ) {
   Surface(
-      modifier = modifier,
+      modifier = modifier.sizeIn(maxHeight = 560.dp, maxWidth = 560.dp),
       shape = shape,
       elevation = elevation,
   ) {
-    Column(
-        modifier = Modifier.width(IntrinsicSize.Min),
-        verticalArrangement = KeepDividerAndButtonsVisible,
-    ) {
+    DialogLayout {
       Box { content() }
       Divider()
       Row(
-          modifier = Modifier.padding(8.dp).align(Alignment.End),
+          modifier = Modifier.padding(8.dp).fillMaxWidth(),
           horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
       ) {
         OutlinedButton(onCancelClick) { cancelContent() }
@@ -59,25 +57,59 @@ fun Dialog(
   }
 }
 
-/** A custom [Arrangement] which keeps the last two elements visible. */
-private object KeepDividerAndButtonsVisible : Arrangement.Vertical {
+/**
+ * A custom [Layout] which places the buttons and the divider of a [Dialog] first.
+ *
+ * @param modifier the [Modifier] of the composable.
+ * @param content the contents of the layout.
+ */
+@Composable
+private fun DialogLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+  Layout(
+      content = content,
+      modifier = modifier,
+  ) { measurables, constraints ->
+    val contentMeasurable = measurables[0]
+    val dividerMeasurable = measurables[1]
+    val buttonsMeasurable = measurables[2]
 
-  override fun Density.arrange(
-      totalSize: Int,
-      sizes: IntArray,
-      outPositions: IntArray,
-  ) {
-    val contentSize = sizes[0]
-    val dividerSize = sizes[1]
-    val buttonsSize = sizes[2]
-    if (contentSize + dividerSize + buttonsSize <= totalSize) {
-      outPositions[0] = 0
-      outPositions[1] = contentSize
-      outPositions[2] = contentSize + dividerSize
-    } else {
-      outPositions[0] = 0
-      outPositions[1] = totalSize - buttonsSize - dividerSize
-      outPositions[2] = totalSize - buttonsSize
+    val dividerPlaceable =
+        dividerMeasurable.measure(
+            Constraints(
+                minWidth = constraints.minWidth,
+                maxWidth = constraints.maxWidth,
+                minHeight = 1.dp.roundToPx(),
+                maxHeight = 1.dp.roundToPx(),
+            ),
+        )
+    val buttonsPlaceable =
+        buttonsMeasurable.measure(
+            Constraints(
+                minWidth = constraints.minWidth,
+                maxWidth = constraints.maxWidth,
+            ),
+        )
+    val contentPlaceable =
+        contentMeasurable.measure(
+            Constraints(
+                minWidth = constraints.minWidth,
+                maxWidth = constraints.maxWidth,
+                minHeight = 0,
+                maxHeight =
+                    (constraints.maxHeight - dividerPlaceable.height - buttonsPlaceable.height)
+                        .coerceAtLeast(0),
+            ),
+        )
+    layout(
+        width = maxOf(dividerPlaceable.width, buttonsPlaceable.width, contentPlaceable.width),
+        height = dividerPlaceable.height + buttonsPlaceable.height + contentPlaceable.height,
+    ) {
+      contentPlaceable.place(0, 0)
+      dividerPlaceable.place(0, contentPlaceable.height)
+      buttonsPlaceable.place(0, contentPlaceable.height + dividerPlaceable.height)
     }
   }
 }

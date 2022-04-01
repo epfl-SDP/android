@@ -84,11 +84,8 @@ fun StatefulHome(
       dialog(PrepareGameRoute) {
         StatefulPrepareGameScreen(
             user,
-            Modifier.fillMaxSize(),
-            { match ->
-              controller.navigate("$GameRoute/${match.id}")
-            },
-            { controller.popBackStack() },
+            navigateToGame = { match -> controller.navigate("$GameRoute/${match.id}") },
+            onCancelClick = { controller.popBackStack() },
         )
       }
       composable("$GameRoute/{id}") { entry ->
@@ -130,5 +127,5 @@ private fun HomeSection.toRoute(): String =
     }
 
 private fun hideBar(route: String?): Boolean {
-  return route == PrepareGameRoute || route?.startsWith(GameRoute) ?: false
+  return route?.startsWith(GameRoute) ?: false
 }
