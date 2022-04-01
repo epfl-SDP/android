@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
-import java.util.*
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 const val Lang = "en-US"
+const val Max_results = 10
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
@@ -71,7 +71,7 @@ fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
   if (activeSpeech.value) {
     LaunchedEffect(key1 = activeSpeech) {
       val txt = recognition(context)
-      text = txt
+      text = txt.joinToString(separator = "\n")
       activeSpeech.value = false
     }
   }
@@ -84,12 +84,12 @@ private fun PermissionText(modifier: Modifier = Modifier, hasPermission: Boolean
 }
 
 // Returns speech result from the recognizer
-suspend fun recognition(context: Context): String = suspendCancellableCoroutine { cont ->
+suspend fun recognition(context: Context): List<String> = suspendCancellableCoroutine { cont ->
   val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
   val speechRecognizerIntent =
       Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) // Speech action
           .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Lang) // Speech language
-          .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1) // Number of results
+          .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Max_results) // Number of results
 
   // Listener for results
   val listener =
@@ -97,10 +97,10 @@ suspend fun recognition(context: Context): String = suspendCancellableCoroutine 
         override fun onResults(results: Bundle?) {
           super.onResults(results)
           if (results == null) {
-            cont.resume("")
+            cont.resume(emptyList())
             return
           }
-          cont.resume(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!![0])
+          cont.resume(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!!)
         }
       }
   recognizer.setRecognitionListener(listener)
