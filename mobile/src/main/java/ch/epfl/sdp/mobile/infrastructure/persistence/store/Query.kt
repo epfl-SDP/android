@@ -18,6 +18,26 @@ interface Query {
    */
   fun limit(count: Long): Query
 
+  /** An enumeration representing the ordering of some values. */
+  enum class Direction {
+
+    /** A direction which returns the smallest item first. */
+    Ascending,
+
+    /** A direction which returns the greater item first. */
+    Descending,
+  }
+
+  /**
+   * Orders the result according to the values of the document for the given field.
+   *
+   * @param field the field for which the ordering is performed.
+   * @param direction the direction in which the ordering is performed.
+   *
+   * @return the updated [Query].
+   */
+  fun orderBy(field: String, direction: Direction = Direction.Ascending): Query
+
   /**
    * Filters the results by keeping only the documents which contain the given [value] for the given
    * [field].

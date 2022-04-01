@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.Flow
 interface FakeQuery : Query {
   override fun limit(count: Long): FakeQuery = LimitFakeQueryDecorator(this, count)
 
+  override fun orderBy(field: String, direction: Query.Direction): FakeQuery =
+      OrderByQueryDecorator(this, field, direction)
+
   override fun whereEquals(field: String, value: Any?): FakeQuery =
       WhereFakeQueryDecorator(this, where(field) { it == value })
 
