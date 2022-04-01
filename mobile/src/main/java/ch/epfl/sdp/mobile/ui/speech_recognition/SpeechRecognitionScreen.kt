@@ -64,7 +64,7 @@ fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
           } else {
             microPermissionState.launchPermissionRequest()
           }
-          if(startSpeech){
+          if (startSpeech) {
             startSpeech = false
             speechRecognizer?.stopListening()
           }
