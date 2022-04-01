@@ -4,6 +4,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
+import ch.epfl.sdp.mobile.ui.social.*
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
@@ -172,6 +175,27 @@ fun ProfileTabBar(
             modifier = Modifier.borderBottom(2.dp, Color.Transparent),
         )
       }
+    }
+  }
+}
+
+/**
+ * This composable displays all the past played games.
+ *
+ * @param chessMatches a list of all the [ChessMatch]es played by the profile .
+ * @param modifier the [Modifier] for the composable.
+ */
+@Composable
+fun PastGameList(
+    chessMatches: List<ChessMatch>,
+    modifier: Modifier = Modifier,
+) {
+  LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    items(chessMatches) { chessMatch ->
+      PastGame(
+          chessMatch = chessMatch,
+          modifier = modifier,
+      )
     }
   }
 }

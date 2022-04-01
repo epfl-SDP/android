@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import ch.epfl.sdp.mobile.ui.social.MatchResult
 import java.util.*
 import kotlinx.coroutines.flow.*
 
@@ -81,6 +82,10 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     return this.asFlow<ChessDocument>().map {
       it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
     }
+  }
+
+  fun determineMatchOutcome(match: Match): MatchResult? {
+    return null
   }
 }
 
