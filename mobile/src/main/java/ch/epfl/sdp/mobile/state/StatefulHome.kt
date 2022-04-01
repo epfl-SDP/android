@@ -81,7 +81,7 @@ fun StatefulHome(
         StatefulPlayScreen(
             { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
-      composable(PrepareGameRoute) {
+      dialog(PrepareGameRoute) {
         StatefulPrepareGameScreen(
             user,
             Modifier.fillMaxSize(),

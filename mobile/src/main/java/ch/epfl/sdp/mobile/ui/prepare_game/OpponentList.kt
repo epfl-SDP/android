@@ -1,8 +1,10 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -17,39 +19,28 @@ import ch.epfl.sdp.mobile.state.toColor
  * Composable that represents a list of potential opponents, with one potentially selected
  * @param modifier [Modifier] for this composable
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OpponentList(
     opponents: List<Profile>,
     state: PrepareGameScreenState,
     modifier: Modifier = Modifier,
 ) {
-  Column(modifier = modifier) {
-    state.selectedOpponent?.AsOpponent(
-        selected = true,
-        onClick = { state.selectedOpponent = null },
-        modifier = Modifier,
-    )
-    LazyColumn(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier, // TODO: How to fill available space properly?
-    ) {
-      val unselectedOpponents =
-          if (state.selectedOpponent == null) {
-            opponents
-          } else {
-            opponents.drop(1)
-          }
-      unselectedOpponents.map {
-        item {
-          it.AsOpponent(
-              selected = state.selectedOpponent?.uid == it.uid,
-              onClick = { state.selectedOpponent = it },
-              modifier = Modifier,
-          )
-        }
-      }
+  LazyColumn(
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = modifier,
+  ) {
+    stickyHeader {
+      state.selectedOpponent?.AsOpponent(
+          onClick = { state.selectedOpponent = null },
+          selected = true,
+      )
     }
+    // TODO: When selecting an opponent, do not let the first one in the list be "hidden"
+    items(
+        items = opponents.filter { it.uid != state.selectedOpponent?.uid },
+        itemContent = { it.AsOpponent(onClick = { state.selectedOpponent = it }) })
   }
 }
 
@@ -63,9 +54,9 @@ fun OpponentList(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun Profile.AsOpponent(
-    selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
+    selected: Boolean = false,
 ) {
   Button(
       modifier = modifier.fillMaxWidth(),
