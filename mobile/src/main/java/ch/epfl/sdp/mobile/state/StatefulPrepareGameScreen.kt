@@ -31,7 +31,12 @@ class PrepareGameScreenStateImpl(
 
   override val onPlayClick: (Profile) -> Unit = {
     scope.launch {
-      val match = chessFacade.createMatch(user, it)
+      val (whiteProfile, blackProfile) =
+          when (colorChoice) {
+            ColorChoice.White -> user to it
+            ColorChoice.Black -> it to user
+          }
+      val match = chessFacade.createMatch(white = whiteProfile, black = blackProfile)
       navigateToGame(match)
     }
   }
