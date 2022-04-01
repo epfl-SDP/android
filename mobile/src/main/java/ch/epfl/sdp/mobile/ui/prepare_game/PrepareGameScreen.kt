@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.*
 
 /**
  * Composable that implements a complete PrepareGame screen
@@ -29,6 +28,7 @@ fun PrepareGameScreen(
   }
 
   val strings = LocalLocalizedStrings.current
+
   Column(modifier = modifier) {
     // TODO: How to space items evenly without doing by hand (and have the divider right next to its
     // neighbours)
@@ -40,18 +40,9 @@ fun PrepareGameScreen(
 
     Text(text = strings.prepareGameChooseOpponent, style = MaterialTheme.typography.subtitle1)
     OpponentList(
-        opponents = // state.opponents
-        List(11) { i ->
-                  if (i == 0) {
-                    FakeProfile(
-                        name = "The real Ronald Weasley", uid = i.toString(), selected = true)
-                  } else {
-                    FakeProfile(name = "Ronald Weasley n° $i", uid = i.toString())
-                  }
-                }
-                .sortedWith(SelectedProfileComparator()),
+        opponents = fakeOpponentList(20).sortedWith(SelectedProfileComparator()),
         state = state,
-    )
+        modifier = Modifier.weight(1f, fill = true))
 
     Divider(color = MaterialTheme.colors.onPrimary, thickness = 1.dp)
     Row(
@@ -59,18 +50,17 @@ fun PrepareGameScreen(
         horizontalArrangement = Arrangement.End,
     ) {
       OutlinedButton(
-          onClick = {},
+          onClick = { state.onCancelClick() },
           shape = CircleShape,
           contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
       ) { Text("CANCEL") }
       Spacer(Modifier.padding(8.dp))
       Button(
-          onClick = {},
+          onClick = { state.selectedOpponent?.let { state.onPlayClick(it) } },
           shape = CircleShape,
           contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
       ) { Text("PLAY !") }
     }
-    Spacer(modifier = Modifier.padding(16.dp))
   }
 }
 
@@ -82,3 +72,16 @@ private data class FakeProfile(
     override val followed: Boolean = false,
     val selected: Boolean = false,
 ) : Profile
+
+private fun fakeOpponentList(n: Int): List<Profile> {
+  return List(20) { i ->
+    if (i == 0) {
+      FakeProfile(
+        name = "The real Ronald Weasley",
+        uid = "bbRzHbCYs7abfdq8ZjC86WtRvXJ3",
+        selected = true)
+    } else {
+      FakeProfile(name = "Ronald Weasley n° $i", uid = i.toString())
+    }
+  }
+}

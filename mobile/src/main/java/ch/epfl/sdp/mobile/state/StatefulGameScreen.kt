@@ -52,7 +52,10 @@ class SnapshotChessBoardState(
 
   init {
     scope.launch { match.game.collect { game = it } }
-    scope.launch { match.white.collect { white = it } }
+    scope.launch { match.white.collect {
+      white = it
+      println("DEBUGG: Got white id ${white?.uid}")
+    } }
     scope.launch { match.black.collect { black = it } }
   }
 
@@ -133,6 +136,9 @@ class SnapshotChessBoardState(
           Color.Black -> black?.uid
           Color.White -> white?.uid
         }
+
+    println("DEBUGG: currentId=${currentPlayingId}")
+    println("DEBUGG: userId=${user.uid}")
 
     if (currentPlayingId == user.uid) {
       // TODO: Update game locally first, then verify upload was successful?

@@ -23,7 +23,7 @@ fun OpponentList(
     state: PrepareGameScreenState,
     modifier: Modifier = Modifier,
 ) {
-  Column() {
+  Column(modifier = modifier) {
     state.selectedOpponent?.AsOpponent(
         selected = true,
         onClick = { state.selectedOpponent = null },
@@ -32,7 +32,7 @@ fun OpponentList(
     LazyColumn(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.height(512.dp), // TODO: How to fill available space properly?
+        modifier = Modifier, // TODO: How to fill available space properly?
     ) {
       val unselectedOpponents =
           if (state.selectedOpponent == null) {

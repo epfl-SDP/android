@@ -6,10 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
@@ -84,7 +81,16 @@ fun StatefulHome(
         StatefulPlayScreen(
             { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
       }
-      composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
+      composable(PrepareGameRoute) {
+        StatefulPrepareGameScreen(
+            user,
+            Modifier.fillMaxSize(),
+            { match ->
+              controller.navigate("$GameRoute/${match.id}")
+            },
+            { controller.popBackStack() },
+        )
+      }
       composable("$GameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
         StatefulGameScreen(user, id, Modifier.fillMaxSize())
