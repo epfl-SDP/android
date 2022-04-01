@@ -83,7 +83,9 @@ fun ColorChoiceTabItem(
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(16.dp).selectable(selected, onClick = onClick).clickable { onClick() }) {
+        modifier =
+            Modifier.selectable(selected, onClick = onClick).clickable { onClick() }.padding(16.dp),
+    ) {
       Icon(
           painter = ChessIcons.BlackBishop,
           contentDescription = null,

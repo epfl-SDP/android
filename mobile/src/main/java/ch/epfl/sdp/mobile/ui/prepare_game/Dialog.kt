@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -50,8 +51,8 @@ fun Dialog(
           modifier = Modifier.padding(8.dp).fillMaxWidth(),
           horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
       ) {
-        OutlinedButton(onCancelClick) { cancelContent() }
-        Button(onConfirmClick) { confirmContent() }
+        OutlinedButton(onCancelClick, shape = CircleShape) { cancelContent() }
+        Button(onConfirmClick, shape = CircleShape) { confirmContent() }
       }
     }
   }
