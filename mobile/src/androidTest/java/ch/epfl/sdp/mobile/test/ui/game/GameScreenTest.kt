@@ -1,17 +1,16 @@
 package ch.epfl.sdp.mobile.test.ui.game
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import ch.epfl.sdp.mobile.state.ChessMove
+import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
-import ch.epfl.sdp.mobile.ui.game.Move
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import org.junit.Rule
 import org.junit.Test
 
@@ -24,11 +23,24 @@ class GameScreenTest {
     override val moves: List<Move>
       get() =
           listOf(
-              ChessMove(1, "f3"),
-              ChessMove(2, "e5"),
-              ChessMove(3, "g4"),
-              ChessMove(4, "Qh4#"),
+              Move("f3"),
+              Move("e5"),
+              Move("g4"),
+              Move("Qh4#"),
           )
+    override val white = GameScreenState.Player("Alex", GameScreenState.Message.None)
+    override val black = GameScreenState.Player("Matt", GameScreenState.Message.None)
+
+    override fun onArClick() = Unit
+
+    override var listening by mutableStateOf(false)
+      private set
+
+    override fun onListenClick() {
+      listening = !listening
+    }
+
+    override fun onBackClick() = Unit
   }
 
   @Composable
@@ -57,5 +69,14 @@ class GameScreenTest {
             strings.boardPieceContentDescription(strings.boardColorWhite, strings.boardPiecePawn),
         )
         .assertExists()
+  }
+
+  @Test
+  fun clickingListening_togglesListeningMode() {
+    val strings =
+        rule.setContentWithLocalizedStrings { GameScreen(rememberSnapshotGameScreenState()) }
+
+    rule.onNodeWithContentDescription(strings.gameMicOffContentDescription).performClick()
+    rule.onNodeWithContentDescription(strings.gameMicOnContentDescription).assertExists()
   }
 }
