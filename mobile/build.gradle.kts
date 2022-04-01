@@ -29,6 +29,13 @@ android {
     release { isMinifyEnabled = false }
   }
 
+  sourceSets {
+    // Share some code between the test and androidTest source sets.
+    val sharedTestDir = "src/sharedTest/java"
+    maybeCreate("test").java { srcDir(sharedTestDir) }
+    maybeCreate("androidTest").java { srcDir(sharedTestDir) }
+  }
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -62,6 +69,7 @@ dependencies {
   testImplementation(libs.truth)
   testImplementation(libs.mockk.mockk)
   testImplementation(libs.mockk.agent.jvm)
+  testImplementation(libs.kotlin.reflect) // TODO : Fix this duplicate dependency.
   androidTestImplementation(libs.junit4)
   androidTestImplementation(libs.mockk.android)
   androidTestImplementation(libs.androidx.test.junit)

@@ -7,10 +7,10 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPrepareGameScreen
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

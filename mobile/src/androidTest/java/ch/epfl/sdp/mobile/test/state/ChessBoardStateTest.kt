@@ -4,10 +4,10 @@ import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
