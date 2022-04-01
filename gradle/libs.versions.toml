@@ -4,6 +4,7 @@ compose = "1.1.1"
 coroutines = "1.6.0"
 jacoco = "0.8.8-SNAPSHOT" # Custom JaCoCo release with Jetpack Compose support.
 mockk = "1.12.3"
+accompanist = "0.23.1"
 
 [libraries]
 
@@ -30,6 +31,7 @@ compose-material-material = { module = "androidx.compose.material:material", ver
 compose-material-ripple = { module = "androidx.compose.material:material-ripple", version.ref = "compose" }
 compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "compose" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "compose" }
+compose-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -67,6 +69,7 @@ compose-android = [
     "compose-material-ripple",
     "compose-material-icons-core",
     "compose-material-icons-extended",
+    "compose-accompanist-permissions",
 ]
 
 coroutines-android = [

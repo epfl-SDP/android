@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
+import ch.epfl.sdp.mobile.ui.speech_recognition.SpeechRecognitionScreen
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -34,6 +35,8 @@ private const val GameDefaultId = ""
 
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
+
+private const val SpeechRecognitionRoute = "speech"
 
 /**
  * The route associated to the ar tab. Note : This tab is temporary, use only for the development
@@ -90,6 +93,7 @@ fun StatefulHome(
         StatefulGameScreen(user, id, Modifier.fillMaxSize())
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
+      composable(SpeechRecognitionRoute) { SpeechRecognitionScreen(Modifier.fillMaxSize()) }
     }
   }
 }
@@ -100,6 +104,7 @@ private fun NavBackStackEntry.toSection(): HomeSection =
       SettingsRoute -> HomeSection.Settings
       ArRoute -> HomeSection.Ar
       PlayRoute -> HomeSection.Play
+      SpeechRecognitionRoute -> HomeSection.SpeechRecognition
       else -> HomeSection.Social
     }
 
@@ -110,6 +115,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Settings -> SettingsRoute
       HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
+      HomeSection.SpeechRecognition -> SpeechRecognitionRoute
     }
 
 private fun hideBar(route: String?): Boolean {
