@@ -5,7 +5,6 @@ compose = "1.1.1"
 coroutines = "1.6.0"
 jacoco = "0.8.8-SNAPSHOT" # Custom JaCoCo release with Jetpack Compose support.
 mockk = "1.12.3"
-accompanist = "0.23.1"
 
 [libraries]
 
