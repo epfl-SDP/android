@@ -93,7 +93,18 @@ fun StatefulHome(
       }
       composable("$GameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
-        StatefulGameScreen(user, id, Modifier.fillMaxSize())
+        val actions =
+            StatefulGameScreenActions(
+                onBack = { controller.popBackStack() },
+                onShowAr = { controller.navigate(ArRoute) },
+            )
+        StatefulGameScreen(
+            actions = actions,
+            user = user,
+            id = id,
+            modifier = Modifier.fillMaxSize(),
+            paddingValues = paddingValues,
+        )
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
@@ -119,5 +130,5 @@ private fun HomeSection.toRoute(): String =
     }
 
 private fun hideBar(route: String?): Boolean {
-  return route == GameRoute || route == PrepareGameRoute
+  return route == PrepareGameRoute || route?.startsWith(GameRoute) ?: false
 }

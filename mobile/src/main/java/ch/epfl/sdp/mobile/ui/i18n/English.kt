@@ -29,6 +29,16 @@ object English : LocalizedStrings {
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
   override val boardContentDescription = "chessboard"
 
+  override val gameBack = "Back"
+  override val gameShowAr = "Start AR mode"
+  override val gameMicOffContentDescription = "Microphone off"
+  override val gameMicOnContentDescription = "Microphone on"
+  override val gameListening = "Listening"
+  override val gameMessageYourTurn = "Your turn"
+  override val gameMessageCheck = "Check !"
+  override val gameMessageStalemate = "Stalemate !"
+  override val gameMessageCheckmate = "Checkmate !"
+
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
   override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
