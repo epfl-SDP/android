@@ -113,12 +113,7 @@ private inline fun <T> Array<out T>.indexOfFirstOrNull(predicate: (T) -> Boolean
 private fun compareBoolean(a: Any, b: Any): Int {
   a as Boolean
   b as Boolean
-  return when {
-    a == b -> Equal
-    a -> SmallestFirst
-    b -> GreatestFirst
-    else -> error("unreachable")
-  }
+  return a.compareTo(b)
 }
 
 /** Compares the values [a] and [b] as numbers. */
