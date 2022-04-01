@@ -48,7 +48,7 @@ mockk-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
 
-arsceneview = "io.github.sceneview:arsceneview:0.2.0"
+arsceneview = "io.github.sceneview:arsceneview:0.2.1"
 
 truth = "com.google.truth:truth:1.1.3"
 
