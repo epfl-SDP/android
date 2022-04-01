@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier

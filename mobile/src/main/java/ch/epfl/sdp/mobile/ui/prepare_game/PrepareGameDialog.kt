@@ -13,7 +13,6 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 @Composable
 fun PrepareGameDialog(state: PrepareGameScreenState, modifier: Modifier = Modifier) {
-
   val strings = LocalLocalizedStrings.current
 
   Surface(modifier = modifier, shape = RoundedCornerShape(16.dp)) {
@@ -54,7 +53,7 @@ fun ColorChoiceBar(state: PrepareGameScreenState, modifier: Modifier = Modifier)
 @Composable
 fun OpponentList(state: PrepareGameScreenState, modifier: Modifier = Modifier) {
   OpponentList(
-      opponents = fakeProfileList(20),
+      opponents = state.opponents,
       state = state,
       modifier = modifier,
   )
