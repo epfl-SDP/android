@@ -7,13 +7,18 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.viewinterop.AndroidView
+import ch.epfl.sdp.mobile.application.chess.engine.Color
+import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
+import com.google.ar.sceneform.math.Vector3
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.math.Position
+import io.github.sceneview.math.Rotation
+import io.github.sceneview.node.ModelNode
 
 // ONLY FOR DEBUGGING
 // FIXME : Need to remove it when the project finish
@@ -28,13 +33,15 @@ private const val BoardPath = "models/board.glb"
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
 
-  var pawnNode by remember { mutableStateOf<ArModelNode?>(null) }
   var boardNode by remember { mutableStateOf<ArModelNode?>(null) }
 
-  var arBoard by remember { mutableStateOf<ArBoard?>(null) }
+  // TODO : Set the list size at initialization
+  var pieceNodes by remember {
+    mutableStateOf<List<Pair<ModelNode, ch.epfl.sdp.mobile.application.chess.engine.Position>>>(
+        listOf())
+  }
 
-  // FIX ME : Prototype purpose only, need to be replace with the [ChessBoardState]
-  val piecePosition = remember { ChessBoardState.Position(1, 1) }
+  var arBoard by remember { mutableStateOf<ArBoard?>(null) }
 
   // DEBUG
   var white by remember { mutableStateOf<ArModelNode?>(null) }
@@ -105,6 +112,40 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
     arBoard = ArBoard(BoardBorderSize, boardYOffset, boardHalfSize)
 
+    // FIX ME : Only to simplify the dev process
+    val currentBoardState = Game.create().board
+
+    // TODO : Create a object like the icon to store all path
+    for (p in currentBoardState) {
+      val path =
+          when (p.second.rank) {
+            Rank.King -> "models/king.glb"
+            Rank.Bishop -> "models/bishop.glb"
+            Rank.Pawn -> "models/pawn.glb"
+            Rank.Knight -> "models/knight.glb"
+            Rank.Queen -> "models/queen.glb"
+            Rank.Rook -> "models/rock.glb"
+          }
+
+      val model = loadModelAsModelNode(path)
+
+      val color =
+          when (p.second.color) {
+            Color.Black -> Vector3(53 / 255f, 56 / 255f, 57 / 255f)
+            Color.White -> Vector3(1f, 0.99f, 0.94f)
+          }
+
+      val instance = model.modelInstance ?: return@LaunchedEffect
+      val mat = instance.material ?: return@LaunchedEffect
+      mat.setFloat3("baseColorFactor", color)
+
+      if (p.second.rank == Rank.Knight && p.second.color == Color.Black) {
+        model.modelRotation = Rotation(0f, 180f, 0f)
+      }
+
+      pieceNodes = pieceNodes.toMutableList().apply { add(Pair(model, p.first)) }
+    }
+
     // DEBUG
     if (DisplayAxes) {
       white = loadModelAsArNode("models/white.glb", nodePlacementMode)
@@ -120,7 +161,6 @@ fun ArScreen(modifier: Modifier = Modifier) {
       update = { arSceneView ->
         val currentBoard = boardNode ?: return@AndroidView
         val currentArBoard = arBoard ?: return@AndroidView
-        val currentPawn = pawnNode ?: return@AndroidView
 
         if (DisplayAxes) {
 
