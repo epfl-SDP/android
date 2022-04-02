@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import ch.epfl.sdp.mobile.R
@@ -15,6 +16,18 @@ object PawniesIcons
 
 val PawniesIcons.ArView
   get() = Icons.Default.ViewInAr
+
+/** An icon to close the game screen. */
+val PawniesIcons.GameClose
+  get() = Icons.Rounded.Close
+
+/** An icon that indicates that the mic if on. */
+val PawniesIcons.GameMicOn
+  get() = Icons.Default.Mic
+
+/** An icon that indicates that the mic is off. */
+val PawniesIcons.GameMicOff
+  get() = Icons.Default.MicOff
 
 /** An icon to show a password. */
 val PawniesIcons.PasswordShow
