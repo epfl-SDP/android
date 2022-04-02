@@ -4,11 +4,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeDocumentSnapshot
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
 import kotlin.Comparator
-import kotlin.reflect.KType
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.isSupertypeOf
-import kotlin.reflect.typeOf
+import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -55,8 +51,13 @@ class OrderByQueryDecorator(
 //
 // [1] : https://firebase.google.com/docs/firestore/manage-data/data-types
 
-/** The array of KType, sorted by their relative importance. */
-private val TypesAscending = arrayOf(typeOf<Boolean>(), typeOf<Number>(), typeOf<String>())
+/** The array of groups of KClass, sorted by their relative importance. */
+private val TypesAscending =
+    arrayOf(
+        arrayOf(Boolean::class),
+        arrayOf(Number::class, Int::class, Long::class, Short::class, Float::class, Double::class),
+        arrayOf(String::class),
+    )
 
 // Ordering values.
 private const val SmallestFirst = -1
@@ -73,17 +74,15 @@ private val Comparator: Comparator<Any?> = Comparator { a, b ->
 
   // Retrieve the type indices of both a and b. If either of them is a null value, throw an
   // exception, since we don't support matching on these types yet.
-  val aType = a::class.createType()
-  val bType = b::class.createType()
-  val aTypeIndex = TypesAscending.indexOfFirstOrNull { it.isSupertypeOf(aType) } ?: badType(aType)
-  val bTypeIndex = TypesAscending.indexOfFirstOrNull { it.isSupertypeOf(bType) } ?: badType(bType)
+  val aTypeIndex = TypesAscending.indexOfFirstOrNull { a::class in it } ?: badType(a::class)
+  val bTypeIndex = TypesAscending.indexOfFirstOrNull { b::class in it } ?: badType(b::class)
 
   // Ensure both indices are well-defined and in the table.
   return@Comparator when {
-    aTypeIndex == bTypeIndex && aType.isSubtypeOf(TypesAscending[0]) -> compareBoolean(a, b)
-    aTypeIndex == bTypeIndex && aType.isSubtypeOf(TypesAscending[1]) -> compareNumber(a, b)
-    aTypeIndex == bTypeIndex && bType.isSubtypeOf(TypesAscending[2]) -> compareString(a, b)
-    else -> bTypeIndex - aTypeIndex // Both indices are different
+    aTypeIndex == bTypeIndex && a::class in TypesAscending[0] -> compareBoolean(a, b)
+    aTypeIndex == bTypeIndex && a::class in TypesAscending[1] -> compareNumber(a, b)
+    aTypeIndex == bTypeIndex && a::class in TypesAscending[2] -> compareString(a, b)
+    else -> aTypeIndex - bTypeIndex // Both indices are different
   }
 }
 
@@ -93,7 +92,7 @@ private val Comparator: Comparator<Any?> = Comparator { a, b ->
  * @param type the unsupported type.
  */
 private fun badType(
-    type: KType?,
+    type: KClass<*>?,
 ): Nothing = error("Type $type is not supported in FakeQuery.orderBy yet.")
 
 /**
@@ -113,7 +112,13 @@ private inline fun <T> Array<out T>.indexOfFirstOrNull(predicate: (T) -> Boolean
 private fun compareBoolean(a: Any, b: Any): Int {
   a as Boolean
   b as Boolean
-  return a.compareTo(b)
+  // Boolean.compareTo(Boolean) seems to have some issues on some devices, and fails with a
+  // ClassCastException on my phone. However, manually checking the ordering works fine.
+  return when (a) {
+    b -> Equal
+    false -> SmallestFirst
+    else -> GreatestFirst
+  }
 }
 
 /** Compares the values [a] and [b] as numbers. */

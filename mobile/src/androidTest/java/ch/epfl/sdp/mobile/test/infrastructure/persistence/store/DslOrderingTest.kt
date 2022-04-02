@@ -35,4 +35,35 @@ class DslOrderingTest {
         }
     assertThat(list).isEqualTo(numbers)
   }
+
+  @Test
+  fun numericalValues_areReadInOrder() = runTest {
+    val store = emptyStore()
+    val floats = List(100) { it * 2f } // 0, ..., 200
+    val ints = List(100) { it * 2 + 1 } // 1, ..., 201
+    val sortedAsDouble = (floats + ints).map { it.toDouble() }.sorted()
+    val shuffled = (floats + ints).shuffled()
+
+    shuffled.forEach { store.collection("docs").document().set(NumberDocument(it)) }
+    val list = store.collection("docs").orderBy("value").asFlow<NumberDocument>().first()
+
+    assertThat(list.mapNotNull { it?.value?.toDouble() }).isEqualTo(sortedAsDouble)
+  }
+
+  @Test
+  fun mixedTypes_areReadInOrder() = runTest {
+    val store = emptyStore()
+    val nullList = List(50) { AnyDocument(null) }
+    val falseList = List(25) { AnyDocument(false) }
+    val trueList = List(25) { AnyDocument(true) }
+    val intList = List(25) { AnyDocument(it) }
+    val stringList = List(25) { AnyDocument(('a' + it).toString()) }
+    val sorted = nullList + falseList + trueList + intList + stringList
+    val mixed = sorted.shuffled()
+
+    mixed.forEach { store.collection("docs").document().set(it) }
+    val list = store.collection("docs").orderBy("value").asFlow<AnyDocument>().first()
+
+    assertThat(list.map { it?.value }).isEqualTo(sorted.map { it.value })
+  }
 }
