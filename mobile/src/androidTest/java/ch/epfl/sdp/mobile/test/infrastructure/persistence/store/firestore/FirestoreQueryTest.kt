@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.firestore
 
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.Ascending
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.Descending
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreQuery
 import com.google.common.truth.Truth
@@ -22,6 +24,39 @@ class FirestoreQueryTest {
     every { query.limit(2) } returns result
     reference.limit(2)
     verify { query.limit(2) }
+  }
+
+  @Test
+  fun orderBy_delegatesToOrderByAscending() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.orderBy("field", Query.Direction.ASCENDING) } returns result
+    reference.orderBy("field")
+    verify { query.orderBy(any<String>(), Query.Direction.ASCENDING) }
+  }
+
+  @Test
+  fun orderByAscending_delegatesToOrderByAscending() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.orderBy("field", Query.Direction.ASCENDING) } returns result
+    reference.orderBy("field", Ascending)
+    verify { query.orderBy(any<String>(), Query.Direction.ASCENDING) }
+  }
+
+  @Test
+  fun orderByDescending_delegatesToOrderByAscending() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.orderBy("field", Query.Direction.DESCENDING) } returns result
+    reference.orderBy("field", Descending)
+    verify { query.orderBy(any<String>(), Query.Direction.DESCENDING) }
   }
 
   @Test
