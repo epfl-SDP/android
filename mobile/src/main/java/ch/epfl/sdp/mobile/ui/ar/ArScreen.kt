@@ -54,9 +54,9 @@ fun ArScreen(modifier: Modifier = Modifier) {
    * @param glbPath The string indicating the model location
    * @param placementMode Indicate how to position the model in the world. See documentation
    * [PlacementMode] to see the possible value
-   * @param position The model position in to world relative to the center
+   * @param position The model position relative to the center of the world
    */
-  suspend fun loadModel(
+  suspend fun loadModelAsArNode(
       glbPath: String,
       placementMode: PlacementMode = ArModelNode.DEFAULT_PLACEMENT_MODE,
       position: Position = ArModelNode.DEFAULT_PLACEMENT_POSITION
@@ -71,6 +71,21 @@ fun ArScreen(modifier: Modifier = Modifier) {
     return node
   }
 
+  /**
+   * Load the given model, scale it and store it as a [ModelNode]
+   *
+   * @param glbPath The string indicating the model location
+   * @param position The model position relative to the center of the parent
+   */
+  suspend fun loadModelAsModelNode(
+      glbPath: String,
+      position: Position = ModelNode.DEFAULT_MODEL_POSITION
+  ): ModelNode {
+    val node = ModelNode(position = position)
+    node.loadModel(context = context, glbFileLocation = glbPath)
+    return node
+  }
+
   // Keep the screen only for this composable
   DisposableEffect(view) {
     view.keepScreenOn = true
@@ -79,9 +94,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   // Load 3d Model and initialize the [ArBoard]
   LaunchedEffect(Unit) {
-    // TODO : Maybe create a enum with all the pieces that contain the path
-    pawnNode = loadModel("models/pawn.glb", nodePlacementMode)
-    boardNode = loadModel(BoardPath, nodePlacementMode)
+    boardNode = loadModelAsArNode(BoardPath, nodePlacementMode)
 
     val boardBoundingBox = boardNode!!.modelInstance?.filamentAsset?.boundingBox!!
 
@@ -94,10 +107,10 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
     // DEBUG
     if (DisplayAxes) {
-      white = loadModel("models/white.glb", nodePlacementMode)
-      red = loadModel("models/red.glb", nodePlacementMode)
-      blue = loadModel("models/blue.glb", nodePlacementMode)
-      green = loadModel("models/green.glb", nodePlacementMode)
+      white = loadModelAsArNode("models/white.glb", nodePlacementMode)
+      red = loadModelAsArNode("models/red.glb", nodePlacementMode)
+      blue = loadModelAsArNode("models/blue.glb", nodePlacementMode)
+      green = loadModelAsArNode("models/green.glb", nodePlacementMode)
     }
   }
 
@@ -142,10 +155,10 @@ fun ArScreen(modifier: Modifier = Modifier) {
         }
 
         /** Add the given [piece] on the board in the correct position */
-        fun addPiece(piece: ArModelNode) {
+        fun addPiece(piece: ModelNode) {
           piece.let {
             currentBoard.addChild(it)
-            it.placementPosition = currentArBoard.toArPosition(piecePosition)
+            it.modelPosition = currentArBoard.toArPosition(position)
           }
         }
 
