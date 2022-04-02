@@ -155,18 +155,19 @@ fun ArScreen(modifier: Modifier = Modifier) {
         }
 
         /** Add the given [piece] on the board in the correct position */
-        fun addPiece(piece: ModelNode) {
+        fun addPiece(
+            piece: ModelNode,
+            position: ch.epfl.sdp.mobile.application.chess.engine.Position
+        ) {
           piece.let {
             currentBoard.addChild(it)
             it.modelPosition = currentArBoard.toArPosition(position)
           }
         }
 
-        /**
-         * TODO : With the [ChessBoardState], iterate over the list of pieces, and do the same that
-         * [pawn1]
-         */
-        addPiece(currentPawn)
+        for ((node, p) in pieceNodes) {
+          addPiece(node, p)
+        }
 
         // Scale down the board size
         // As all the pieces are the board children, they scale as well

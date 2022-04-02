@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.ar
 
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import io.github.sceneview.math.Position
 
 /**
@@ -20,7 +19,7 @@ data class ArBoard(
   private val cellCenter = cellSize / 2
 
   /** For the given [ChessBoardState.Position] and transform it into AR board [Position] */
-  fun toArPosition(position: ChessBoardState.Position): Position {
+  fun toArPosition(position: ch.epfl.sdp.mobile.application.chess.engine.Position): Position {
 
     fun transform(value: Int): Float {
       return -boardHalfSize + boardBorderSize + value * cellSize + cellCenter
