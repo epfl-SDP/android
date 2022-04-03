@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.MatchResult
 import java.util.*
 import kotlinx.coroutines.flow.*
@@ -85,6 +86,33 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   fun determineMatchOutcome(match: Match): MatchResult? {
+    return null
+  }
+
+  fun chessMatches(profile: Profile): Flow<List<ChessMatch>> {
+    val matches = matches(profile)
+    return matches.mapNotNull { list ->
+      list.mapNotNull { match -> match.toChessMatch(profile.uid) }
+    }
+  }
+
+  /**
+   * Transforms a given [Match] to a [ChessMatch].
+   *
+   * @param currentUid the uid of the current user.
+   * @param match the given [Match]
+   * @param facade the used [ChessFacade]
+   */
+  suspend fun Match.toChessMatch(
+      currentUid: String,
+  ): ChessMatch? {
+    val blackID = this.black.filterNotNull().first().uid
+    val whiteID = this.white.filterNotNull().first().uid
+    val adversary = if (blackID == currentUid) whiteID else blackID
+    val result = determineMatchOutcome(this)
+    val game = this.game.first()
+    val moveNum = game.serialize().size
+    result?.let { ChessMatch(adversary, result, moveNum) }
     return null
   }
 }
