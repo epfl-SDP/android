@@ -9,11 +9,6 @@ sealed interface MatchResult {
   }
 }
 
-enum class PlayColor {
-  WHITE,
-  BLACK
-}
-
 data class Win(val reason: MatchResult.Reason) : MatchResult
 
 data class Loss(val reason: MatchResult.Reason) : MatchResult
