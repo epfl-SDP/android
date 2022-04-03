@@ -6,12 +6,11 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.PawniesIcons
+import ch.epfl.sdp.mobile.ui.SectionSocial
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
-import ch.epfl.sdp.mobile.ui.social.Loss
-import ch.epfl.sdp.mobile.ui.social.MatchResult
-import ch.epfl.sdp.mobile.ui.social.Tie
-import ch.epfl.sdp.mobile.ui.social.Win
+import ch.epfl.sdp.mobile.ui.social.*
 
 /**
  * Composes a Match log using a match [title], [subtitle] and an [icon]
@@ -23,14 +22,16 @@ import ch.epfl.sdp.mobile.ui.social.Win
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Match(
-    title: String,
-    subtitle: String,
-    icon: ImageVector,
+    match: ChessMatch,
     modifier: Modifier = Modifier,
 ) {
+  val strings = LocalLocalizedStrings.current
+  val title = strings.profileMatchTitle(match.adversary)
+  val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
+
   ListItem(
       modifier = modifier,
-      icon = { Icon(icon, null) },
+      icon = { Icon(PawniesIcons.SectionSocial, null) },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },
   )
@@ -41,7 +42,11 @@ fun Match(
  * @param matchResult result of the match
  * @param nMoves number of moves
  */
-fun chooseSubtitle(strings: LocalizedStrings, matchResult: MatchResult, nMoves: Int): String {
+private fun chooseSubtitle(
+    strings: LocalizedStrings,
+    matchResult: MatchResult,
+    nMoves: Int
+): String {
   val text =
       when (matchResult) {
         Tie -> strings.profileTieInfo

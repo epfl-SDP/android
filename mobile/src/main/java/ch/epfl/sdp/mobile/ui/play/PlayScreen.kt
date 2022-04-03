@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.ui.play
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
@@ -17,9 +16,7 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.SectionSocial
 import ch.epfl.sdp.mobile.ui.profile.Match
-import ch.epfl.sdp.mobile.ui.profile.chooseSubtitle
 
 /**
  * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
@@ -33,7 +30,6 @@ fun PlayScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues()
 ) {
-  val lazyColumnState = rememberLazyListState()
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
@@ -42,17 +38,10 @@ fun PlayScreen(
         style = MaterialTheme.typography.h4,
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
     LazyColumn(
-        state = lazyColumnState,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
-    ) {
-      items(state.matches) { match ->
-        val title = strings.profileMatchTitle(match.adversary)
-        val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
-        Match(title, subtitle, PawniesIcons.SectionSocial)
-      }
-    }
+        modifier = Modifier,
+    ) { items(state.matches) { match -> Match(match) } }
   }
 
   Box(modifier = modifier.fillMaxSize().padding(contentPadding)) {

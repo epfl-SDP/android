@@ -9,9 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.SectionSocial
 import ch.epfl.sdp.mobile.ui.social.*
 
 /**
@@ -31,8 +28,6 @@ fun UserScreen(
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
 ) {
-  val strings = LocalLocalizedStrings.current
-
   LazyColumn(
       state = lazyColumnState,
       verticalArrangement = Arrangement.Top,
@@ -41,10 +36,6 @@ fun UserScreen(
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
-    items(matches) { match ->
-      val title = strings.profileMatchTitle(match.adversary)
-      val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
-      Match(title, subtitle, PawniesIcons.SectionSocial)
-    }
+    items(matches) { match -> Match(match) }
   }
 }

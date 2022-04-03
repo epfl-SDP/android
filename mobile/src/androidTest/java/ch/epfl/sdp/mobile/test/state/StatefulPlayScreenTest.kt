@@ -8,15 +8,13 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.state.*
-import ch.epfl.sdp.mobile.state.Loadable.Companion.loaded
-import ch.epfl.sdp.mobile.state.Loadable.Companion.loading
+import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.state.StatefulPlayScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -38,6 +36,7 @@ class StatefulPlayScreenTest {
         document("id", ChessDocument(uid = "786", whiteId = "1", blackId = "2"))
       }
     }
+
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
@@ -68,27 +67,5 @@ class StatefulPlayScreenTest {
         }
 
     rule.onNodeWithText(strings.profileMatchTitle("test")).assertDoesNotExist()
-  }
-
-  @Test
-  fun loadable_shouldMapValue() = runTest {
-    val elem = loaded("test").map { "$it 2" }
-    assertThat((elem as Loadable.Loaded<String>).value).isEqualTo("test 2")
-  }
-
-  @Test
-  fun loadable_map_shouldMapNothing() = runTest {
-    val elem = loading().map { "$it 2" }
-    assertThat((elem as Loadable.Loading)).isEqualTo(loading())
-  }
-
-  @Test
-  fun loadable_orElse_shouldReturnValue() = runTest {
-    assertThat(loaded("test").orElse { "" }).isEqualTo("test")
-  }
-
-  @Test
-  fun loadable_orElse_shouldReturnNothing() = runTest {
-    assertThat(loading().orElse { "nothing" }).isEqualTo("nothing")
   }
 }

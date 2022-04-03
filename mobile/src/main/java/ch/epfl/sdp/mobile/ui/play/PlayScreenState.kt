@@ -8,5 +8,6 @@ interface PlayScreenState {
   /* Callable upon actioning button */
   val onNewGameClick: () -> Unit
 
+  /** List of matches of current user */
   val matches: List<ChessMatch>
 }

@@ -31,7 +31,7 @@ sealed interface Loadable<out T> {
  * A map for the Loadable type
  * @param f callback function for map
  */
-inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
+private inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
     when (this) {
       is Loadable.Loaded -> loaded(f(value))
       Loadable.Loading -> loading()
@@ -41,12 +41,13 @@ inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
  * Extract the value out of the Loadable type
  * @param lazyBlock function which returns alternative value
  */
-inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
+private inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     when (this) {
       is Loadable.Loaded -> value
       Loadable.Loading -> lazyBlock()
     }
 
+/** Intermediate State to simplify the data handling */
 private data class MatchInfo(
     val id: String?,
     val movesCount: Int,
@@ -56,6 +57,11 @@ private data class MatchInfo(
     val blackName: String,
 )
 
+/**
+ * Fetches the matches from the facade and convert it to a list of MatchInfos
+ * @param currentUser the current authenticated user
+ * @param facade the faced we fetch the matches
+ */
 private fun fetchForUser(
     currentUser: AuthenticatedUser,
     facade: ChessFacade,
@@ -64,6 +70,11 @@ private fun fetchForUser(
       combine(matches) { it.toList() }
     }
 
+/**
+ * Extract the data from the subflows of black and white and combine all the information in
+ * MatchInfo
+ * @param match a [Match] to extract the informations
+ */
 private fun info(match: Match): Flow<MatchInfo> {
   val black = match.black
   val white = match.white
@@ -85,6 +96,13 @@ private fun info(match: Match): Flow<MatchInfo> {
   }
 }
 
+/**
+ * Implementation of the PlayscreenState
+ * @param onNewGameClick callback function for the new game button
+ * @param user authenticated user
+ * @param facade [ChessFacade] to fetch the matches
+ * @param scope for coroutines
+ */
 private class PlayScreenStateImpl(
     onNewGameClick: State<() -> Unit>,
     user: AuthenticatedUser,

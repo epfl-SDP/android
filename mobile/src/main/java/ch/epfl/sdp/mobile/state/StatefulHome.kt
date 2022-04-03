@@ -82,7 +82,10 @@ fun StatefulHome(
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            user, { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            user = user,
+            navigateToGame = { controller.navigate(PrepareGameRoute) },
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
