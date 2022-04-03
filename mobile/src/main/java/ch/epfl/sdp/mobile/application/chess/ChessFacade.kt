@@ -68,12 +68,6 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   fun matches(profile: Profile): Flow<List<Match>> {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
     val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
-    Log.i("myinfo", "${profile.uid} profile")
-
-    gamesAsWhite.map {
-      Log.i("myinfo", it.toString())
-      it
-    }
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
   }

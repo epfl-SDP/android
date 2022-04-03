@@ -11,13 +11,17 @@ import ch.epfl.sdp.mobile.state.Loadable.Companion.loaded
 import ch.epfl.sdp.mobile.state.Loadable.Companion.loading
 import ch.epfl.sdp.mobile.ui.play.PlayScreen
 import ch.epfl.sdp.mobile.ui.play.PlayScreenState
+import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Tie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-sealed interface Loadable<out T> {
+/**
+ * An Loadable Union Type to differentiate between loaded and state
+ */
+private sealed interface Loadable<out T> {
   object Loading : Loadable<Nothing>
   data class Loaded<out T>(val value: T) : Loadable<T>
 
@@ -27,19 +31,19 @@ sealed interface Loadable<out T> {
   }
 }
 
-inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
+private inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
     when (this) {
       is Loadable.Loaded -> loaded(f(value))
       Loadable.Loading -> loading()
     }
 
-inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
+private inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     when (this) {
       is Loadable.Loaded -> value
       Loadable.Loading -> lazyBlock()
     }
 
-data class MatchInfo(
+private data class MatchInfo(
     val id: String?,
     val movesCount: Int,
     val whiteId: String,
@@ -48,7 +52,7 @@ data class MatchInfo(
     val blackName: String,
 )
 
-fun fetchForUser(
+private fun fetchForUser(
     currentUser: AuthenticatedUser,
     facade: ChessFacade,
 ): Flow<List<MatchInfo>> =
@@ -77,7 +81,7 @@ private fun info(match: Match): Flow<MatchInfo> {
   }
 }
 
-class PlayScreenStateImpl(
+private class PlayScreenStateImpl(
     onNewGameClick: State<() -> Unit>,
     user: AuthenticatedUser,
     facade: ChessFacade,
@@ -105,8 +109,11 @@ class PlayScreenStateImpl(
 
 /**
  * A stateful implementation of the PlayScreen
+ * @param user the Authenticated user
  * @param navigateToGame Callable lambda to navigate to game screen
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this composable.
+
  */
 @Composable
 fun StatefulPlayScreen(
