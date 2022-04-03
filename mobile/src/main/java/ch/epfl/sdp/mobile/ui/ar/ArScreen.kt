@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
 import com.google.ar.core.Anchor
-import com.google.ar.sceneform.math.Vector3
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
@@ -91,8 +90,8 @@ fun ArScreen(modifier: Modifier = Modifier) {
                         ) { renderableInstance ->
                           val color =
                               when (p.second.color) {
-                                Color.Black -> Vector3(53 / 255f, 56 / 255f, 57 / 255f)
-                                Color.White -> Vector3(1f, 0.99f, 0.94f)
+                                Color.Black -> PawniesColors.Black
+                                Color.White -> PawniesColors.White
                               }
 
                           val mat = renderableInstance.material
