@@ -9,8 +9,6 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedButton
@@ -23,12 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlin.coroutines.resume
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 const val Lang = "en-US"
-const val Max_results = 10
+const val MaxResultsCount = 10
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
@@ -37,43 +37,47 @@ fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
   val context = LocalContext.current
   var text by remember { mutableStateOf("---") }
   val microPermissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
-  val activeSpeech = remember { mutableStateOf(false) }
+  var activeSpeech by remember { mutableStateOf(false) }
+  val scope = rememberCoroutineScope()
 
-  val microIcon = if (activeSpeech.value) PawniesIcons.Mic else PawniesIcons.MicOff
+  val microIcon = if (activeSpeech) PawniesIcons.Mic else PawniesIcons.MicOff
 
   Column(
-      verticalArrangement = Arrangement.Center,
+      verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = modifier) {
 
     // Speech Text
     Text(text, textAlign = TextAlign.Center)
-    Spacer(modifier = Modifier.height(32.dp))
 
     // Microphone Button
     OutlinedButton(
         shape = CircleShape,
         onClick = {
-          if (!microPermissionState.hasPermission) {
-            microPermissionState.launchPermissionRequest()
+          askForPermission(microPermissionState)
+          activeSpeech = !activeSpeech && microPermissionState.hasPermission
+          scope.launch {
+            if (activeSpeech) {
+              text = "Listening..."
+              text = recognition(context).joinToString(separator = "\n")
+              activeSpeech = false
+            } else {
+              text = "---"
+            }
           }
-          activeSpeech.value = !activeSpeech.value && microPermissionState.hasPermission
-          text = if (activeSpeech.value) "Listening" else "---"
         }) { Icon(microIcon, null) }
-
-    Spacer(modifier = Modifier.height(32.dp))
 
     // Display information about vocal permission
     PermissionText(
         hasPermission = microPermissionState.hasPermission,
     )
   }
-  if (activeSpeech.value) {
-    LaunchedEffect(key1 = activeSpeech) {
-      val txt = recognition(context)
-      text = txt.joinToString(separator = "\n")
-      activeSpeech.value = false
-    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+private fun askForPermission(microPermissionState: PermissionState) {
+  if (!microPermissionState.hasPermission) {
+    microPermissionState.launchPermissionRequest()
   }
 }
 
@@ -89,18 +93,16 @@ suspend fun recognition(context: Context): List<String> = suspendCancellableCoro
   val speechRecognizerIntent =
       Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) // Speech action
           .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Lang) // Speech language
-          .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Max_results) // Number of results
+          .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MaxResultsCount) // Number of results
 
   // Listener for results
   val listener =
       object : RecognitionListenerAdapter() {
         override fun onResults(results: Bundle?) {
           super.onResults(results)
-          if (results == null) {
-            cont.resume(emptyList())
-            return
-          }
-          cont.resume(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)!!)
+          cont.resume(
+              // results cannot br null
+              results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: emptyList())
         }
       }
   recognizer.setRecognitionListener(listener)

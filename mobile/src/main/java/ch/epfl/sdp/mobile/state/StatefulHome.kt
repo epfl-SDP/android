@@ -36,6 +36,7 @@ private const val GameDefaultId = ""
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
 
+/** Temporal route associated with speech recognition demo screen */
 private const val SpeechRecognitionRoute = "speech"
 
 /**
