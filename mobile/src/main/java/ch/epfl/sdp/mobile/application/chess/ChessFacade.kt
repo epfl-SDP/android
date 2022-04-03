@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.application.chess
 
-import android.util.Log
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument

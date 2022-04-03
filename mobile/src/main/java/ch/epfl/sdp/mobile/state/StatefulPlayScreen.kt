@@ -11,17 +11,14 @@ import ch.epfl.sdp.mobile.state.Loadable.Companion.loaded
 import ch.epfl.sdp.mobile.state.Loadable.Companion.loading
 import ch.epfl.sdp.mobile.ui.play.PlayScreen
 import ch.epfl.sdp.mobile.ui.play.PlayScreenState
-import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Tie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-/**
- * An Loadable Union Type to differentiate between loaded and state
- */
-private sealed interface Loadable<out T> {
+/** An Loadable Union Type to differentiate between loaded and state */
+sealed interface Loadable<out T> {
   object Loading : Loadable<Nothing>
   data class Loaded<out T>(val value: T) : Loadable<T>
 
@@ -30,14 +27,21 @@ private sealed interface Loadable<out T> {
     fun <T> loaded(value: T): Loadable<T> = Loaded(value)
   }
 }
-
-private inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
+/**
+ * A map for the Loadable type
+ * @param f callback function for map
+ */
+inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
     when (this) {
       is Loadable.Loaded -> loaded(f(value))
       Loadable.Loading -> loading()
     }
 
-private inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
+/**
+ * Extract the value out of the Loadable type
+ * @param lazyBlock function which returns alternative value
+ */
+inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     when (this) {
       is Loadable.Loaded -> value
       Loadable.Loading -> lazyBlock()
@@ -113,7 +117,6 @@ private class PlayScreenStateImpl(
  * @param navigateToGame Callable lambda to navigate to game screen
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
-
  */
 @Composable
 fun StatefulPlayScreen(
