@@ -37,15 +37,15 @@ fun PlayScreen(
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
     Text(
-      text = strings.playOnlineGames,
-      color = MaterialTheme.colors.primary,
-      style = MaterialTheme.typography.h4,
-      modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
+        text = strings.playOnlineGames,
+        color = MaterialTheme.colors.primary,
+        style = MaterialTheme.typography.h4,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
     LazyColumn(
-      state = lazyColumnState,
-      verticalArrangement = Arrangement.Top,
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier,
+        state = lazyColumnState,
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier,
     ) {
       items(state.matches) { match ->
         val title = strings.profileMatchTitle(match.adversary)
