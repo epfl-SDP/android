@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.*
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.math.Vector3
 import io.github.sceneview.ar.ArSceneView
@@ -27,8 +28,6 @@ private const val DisplayAxes = false
 private const val BoardScale = 0.2f
 // This value cannot be computed, it's selected by test and try
 private const val BoardBorderSize = 2.2f
-
-private const val BoardPath = "models/board.glb"
 
 @Composable
 fun ArScreen(modifier: Modifier = Modifier) {
@@ -101,7 +100,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   // Load 3d Model and initialize the [ArBoard]
   LaunchedEffect(Unit) {
-    boardNode = loadModelAsArNode(BoardPath, nodePlacementMode)
+    boardNode = loadModelAsArNode(ChessModels.Board, nodePlacementMode)
 
     val boardBoundingBox = boardNode!!.modelInstance?.filamentAsset?.boundingBox!!
 
@@ -115,16 +114,15 @@ fun ArScreen(modifier: Modifier = Modifier) {
     // FIX ME : Only to simplify the dev process
     val currentBoardState = Game.create().board
 
-    // TODO : Create a object like the icon to store all path
     for (p in currentBoardState) {
       val path =
           when (p.second.rank) {
-            Rank.King -> "models/king.glb"
-            Rank.Bishop -> "models/bishop.glb"
-            Rank.Pawn -> "models/pawn.glb"
-            Rank.Knight -> "models/knight.glb"
-            Rank.Queen -> "models/queen.glb"
-            Rank.Rook -> "models/rock.glb"
+            Rank.King -> ChessModels.King
+            Rank.Bishop -> ChessModels.Bishop
+            Rank.Pawn -> ChessModels.Pawn
+            Rank.Knight -> ChessModels.Knight
+            Rank.Queen -> ChessModels.Queen
+            Rank.Rook -> ChessModels.Rook
           }
 
       val model = loadModelAsModelNode(path)
