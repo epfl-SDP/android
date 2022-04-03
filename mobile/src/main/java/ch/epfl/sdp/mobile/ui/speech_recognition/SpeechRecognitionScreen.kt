@@ -40,7 +40,7 @@ fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
   var activeSpeech by remember { mutableStateOf(false) }
   val scope = rememberCoroutineScope()
 
-  val microIcon = if (activeSpeech) PawniesIcons.Mic else PawniesIcons.MicOff
+  val microIcon = if (activeSpeech) PawniesIcons.GameMicOn else PawniesIcons.GameMicOff
 
   Column(
       verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),

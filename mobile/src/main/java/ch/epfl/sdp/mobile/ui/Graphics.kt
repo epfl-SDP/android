@@ -58,12 +58,6 @@ val PawniesIcons.Search
 val PawniesIcons.Check
   get() = Icons.Default.Check
 
-val PawniesIcons.Mic
-  get() = Icons.Default.Mic
-
-val PawniesIcons.MicOff
-  get() = Icons.Default.MicOff
-
 /** Chess pieces */
 object ChessIcons
 
