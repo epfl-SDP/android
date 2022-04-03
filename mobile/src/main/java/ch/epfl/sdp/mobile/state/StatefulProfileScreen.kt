@@ -12,7 +12,7 @@ class FetchedUserProfileScreenState(
     matches: List<ChessMatch>,
 ) : ProfileScreenState {
   override val email = ""
-  override val pastGamesCount = 0
+  override val pastGamesCount = matches.size
   override val matches = matches
   override val backgroundColor = user.backgroundColor
   override val name = user.name

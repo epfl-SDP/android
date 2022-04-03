@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.notation.deserialize
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
@@ -12,6 +13,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.MatchResult
+import ch.epfl.sdp.mobile.ui.social.Tie
 import java.util.*
 import kotlinx.coroutines.flow.*
 
@@ -85,7 +87,12 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     }
   }
 
-  fun determineMatchOutcome(match: Match): MatchResult? {
+  suspend fun determineMatchOutcome(match: Match): MatchResult? {
+    val game = match.game.filterNotNull().first()
+    when (game.nextStep) {
+      is NextStep.Checkmate -> MatchResult.Reason.CHECKMATE
+      is NextStep.Stalemate -> Tie
+    }
     return null
   }
 
