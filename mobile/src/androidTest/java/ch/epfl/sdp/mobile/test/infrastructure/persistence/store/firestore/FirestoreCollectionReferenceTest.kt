@@ -21,4 +21,16 @@ class FirestoreCollectionReferenceTest {
 
     verify { collection.document("path") }
   }
+
+  @Test
+  fun documentAutoId_callsDocument() {
+    val collection = mockk<CollectionReference>()
+    val document = mockk<DocumentReference>()
+    val reference = FirestoreCollectionReference(collection)
+
+    every { collection.document() } returns document
+    reference.document()
+
+    verify { collection.document() }
+  }
 }

@@ -1,7 +1,9 @@
 package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,20 +16,24 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Search
-import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.*
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
+import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
 
 /**
- * This screen display all register user of the app
+ * This screen displays all registered users of the app.
  *
- * @param state the [SocialScreenState], manage the composable contents
- * @param modifier the [Modifier] for the composable
+ * @param P the type of the [Person].
+ * @param state the [SocialScreenState], manage the composable contents.
+ * @param modifier the [Modifier] for the composable.
  */
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
-
+fun <P : Person> SocialScreen(
+    state: SocialScreenState<P>,
+    modifier: Modifier = Modifier,
+) {
   val transition = updateTransition(state.mode, "Social state")
 
   Scaffold(
@@ -38,16 +44,26 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
               modifier = Modifier.fillMaxWidth().padding(16.dp),
               value = state.input,
               onValueChange = { state.input = it },
+              interactionSource = state.searchFieldInteraction,
           )
         }
       },
       content = {
         transition.AnimatedContent { target ->
           when (target) {
-            Following -> FollowList(state.players)
+            Following ->
+                FollowList(
+                    players = state.following,
+                    onPersonClick = state::onPersonClick,
+                )
             Searching ->
                 if (state.input.isEmpty()) EmptySearch()
-                else SearchResultList(players = state.players)
+                else
+                    SearchResultList(
+                        players = state.searchResult,
+                        onClick = state::onFollowClick,
+                        onPersonClick = state::onPersonClick,
+                    )
           }
         }
       },
@@ -55,12 +71,19 @@ fun SocialScreen(state: SocialScreenState, modifier: Modifier = Modifier) {
 }
 
 /**
- * Display the list of followed player
- * @param players A list of [Person] that need to be displayed
- * @param modifier modifier the [Modifier] for the composable
+ * Display the list of followed player.
+ *
+ * @param P the type of the [Person].
+ * @param players A list of [Person] that need to be displayed.
+ * @param onPersonClick Callback function for click on Item.
+ * @param modifier modifier the [Modifier] for the composable.
  */
 @Composable
-fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
+fun <P : Person> FollowList(
+    players: List<P>,
+    onPersonClick: (P) -> Unit,
+    modifier: Modifier = Modifier,
+) {
   val strings = LocalLocalizedStrings.current
   LazyColumn(
       modifier = modifier.testTag("friendList"),
@@ -75,6 +98,7 @@ fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
     }
     items(players) { friend ->
       PersonCard(
+          modifier = Modifier.clickable { onPersonClick(friend) },
           person = friend,
           trailingAction = {
             OutlinedButton(
@@ -93,12 +117,14 @@ fun FollowList(players: List<Person>, modifier: Modifier = Modifier) {
 }
 
 /**
- * This composable display the screen when the user is [Searching] mode but the input is empty
+ * This composable display the screen when the user is [Searching] mode but the input is empty.
  *
- * @param modifier the [Modifier] for the composable
+ * @param modifier the [Modifier] for the composable.
  */
 @Composable
-fun EmptySearch(modifier: Modifier = Modifier) {
+fun EmptySearch(
+    modifier: Modifier = Modifier,
+) {
   val strings = LocalLocalizedStrings.current
 
   val color = MaterialTheme.colors.primaryVariant.copy(0.4f)
@@ -119,31 +145,33 @@ fun EmptySearch(modifier: Modifier = Modifier) {
 
 /**
  * This composable display all the players that are in the [SocialScreenState]. This composable also
- * allow user to follow another player
+ * allow user to follow another player.
  *
- * @param players A list of [Person] that will be displayed
- * @param modifier the [Modifier] for the composable
+ * @param P the type of the [Person].
+ * @param players A list of [P] that will be displayed.
+ * @param onClick A function to be executed once a [Person]'s follow button is clicked.
+ * @param onPersonClick A function that is executed if clicked on a result.
+ * @param modifier the [Modifier] for the composable.
  */
 @Composable
-fun SearchResultList(players: List<Person>, modifier: Modifier = Modifier) {
+fun <P : Person> SearchResultList(
+    players: List<P>,
+    onClick: (P) -> Unit,
+    onPersonClick: (P) -> Unit,
+    modifier: Modifier = Modifier,
+) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
       PersonCard(
           person = player,
+          modifier = modifier.clickable { onPersonClick(player) },
           trailingAction = {
-            OutlinedButton(
-                onClick = { /*TODO*/},
-                shape = RoundedCornerShape(24.dp),
-            ) {
-              Icon(
-                  PawniesIcons.Add, contentDescription = LocalLocalizedStrings.current.socialFollow)
-
-              Text(
-                  modifier = Modifier.padding(start = 8.dp),
-                  text = LocalLocalizedStrings.current.socialFollow,
-              )
-            }
-          })
+            FollowButton(
+                following = player.followed,
+                onClick = { onClick(player) },
+            )
+          },
+      )
     }
   }
 }

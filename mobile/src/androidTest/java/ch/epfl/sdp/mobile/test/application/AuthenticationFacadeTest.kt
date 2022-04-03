@@ -7,7 +7,9 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Failure
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Success
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -19,6 +21,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -137,7 +140,12 @@ class AuthenticationFacadeTest {
     facade.signInWithEmail("email@example.org", "password")
 
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val following = userAuthenticated.following.first()
+    val following =
+        store
+            .collection("users")
+            .asFlow<ProfileDocument>()
+            .map { it.mapNotNull { doc -> doc?.toProfile(userAuthenticated) } }
+            .first()
 
     val profile = following[0]
     assertThat(profile.name).isEqualTo("")

@@ -22,15 +22,7 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
   val authenticateOr: String
 
-  val boardColorBlack: String
-  val boardColorWhite: String
-  val boardPieceKing: String
-  val boardPieceQueen: String
-  val boardPieceRook: String
-  val boardPieceBishop: String
-  val boardPieceKnight: String
-  val boardPiecePawn: String
-  val boardPieceContentDescription: (color: String, rank: String) -> String
+  val arContentDescription: String
 
   val profileMatchTitle: (String) -> String
   val profileWonByCheckmate: (Int) -> String
@@ -41,15 +33,53 @@ interface LocalizedStrings {
   val profilePastGames: String
   val profilePuzzle: String
   val profileSettings: String
+  val profileUnfollow: String
+  val profileChallenge: String
+  val profileEditIcon: String
+
+  val boardColorBlack: String
+  val boardColorWhite: String
+  val boardPieceKing: String
+  val boardPieceQueen: String
+  val boardPieceRook: String
+  val boardPieceBishop: String
+  val boardPieceKnight: String
+  val boardPiecePawn: String
+  val boardPieceContentDescription: (color: String, rank: String) -> String
+  val boardContentDescription: String
+
+  val gameBack: String
+  val gameShowAr: String
+  val gameMicOffContentDescription: String
+  val gameMicOnContentDescription: String
+  val gameListening: String
+  val gameMessageYourTurn: String
+  val gameMessageCheck: String
+  val gameMessageStalemate: String
+  val gameMessageCheckmate: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String
-  val socialFollow: String
+  val socialPerformFollow: String
+  val socialPerformUnfollow: String
   val socialSearchBarPlaceHolder: String
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
 
+  val sectionAr: String
   val sectionSocial: String
   val sectionSettings: String
-  val sectionGame: String
+  val sectionPlay: String
+  val newGame: String
+
+  val prepareGameChooseColor: String
+  val prepareGameChooseOpponent: String
+  val prepareGameChooseGame: String
+  val prepareGameWhiteColor: String
+  val prepareGameBlackColor: String
+  val prepareGameStart: String
+  val prepareGameSelectOpponent: String
+  val prepareGameSelectedOpponent: String
+  val prepareGamePlayLocal: String
+  val prepareGamePlayOnline: String
 }

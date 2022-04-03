@@ -16,6 +16,8 @@ object English : LocalizedStrings {
   override val authenticateErrorFailure = "Something went wrong when authenticating"
   override val authenticateOr = "or"
 
+  override val arContentDescription: String = "ArComposable"
+
   override val boardColorBlack = "black"
   override val boardColorWhite = "white"
   override val boardPieceKing = "king"
@@ -25,6 +27,17 @@ object English : LocalizedStrings {
   override val boardPieceKnight = "knight"
   override val boardPiecePawn = "pawn"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
+  override val boardContentDescription = "chessboard"
+
+  override val gameBack = "Back"
+  override val gameShowAr = "Start AR mode"
+  override val gameMicOffContentDescription = "Microphone off"
+  override val gameMicOnContentDescription = "Microphone on"
+  override val gameListening = "Listening"
+  override val gameMessageYourTurn = "Your turn"
+  override val gameMessageCheck = "Check !"
+  override val gameMessageStalemate = "Stalemate !"
+  override val gameMessageCheckmate = "Checkmate !"
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
@@ -36,16 +49,34 @@ object English : LocalizedStrings {
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
+  override val profileUnfollow = "Unfollow"
+  override val profileChallenge = "Challenge"
+  override val profileEditIcon = "Edit profile icon"
 
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Play".uppercase()
-  override val socialFollow = "Follow".uppercase()
+  override val socialPerformFollow = "Follow".uppercase()
+  override val socialPerformUnfollow = "Followed".uppercase()
   override val socialSearchBarPlaceHolder = "Search player ..."
   override val socialSearchEmptyTitle = "Search any player"
   override val socialSearchEmptySubtitle =
       "Find any player using their name, follow them, or invite them to play or see their match history"
 
+  override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
-  override val sectionGame = "Game"
+  override val sectionPlay = "Play"
+
+  override val newGame = "New game".uppercase()
+
+  override val prepareGameChooseColor = "Pick your color :"
+  override val prepareGameChooseOpponent = "Pick an opponent :"
+  override val prepareGameChooseGame = "Pick your game :"
+  override val prepareGameWhiteColor = "White".uppercase()
+  override val prepareGameBlackColor = "Black".uppercase()
+  override val prepareGameStart = "Start!".uppercase()
+  override val prepareGameSelectOpponent = "Select".uppercase()
+  override val prepareGameSelectedOpponent = "Selected".uppercase()
+  override val prepareGamePlayLocal = "Play locally".uppercase()
+  override val prepareGamePlayOnline = "Play against opponent".uppercase()
 }

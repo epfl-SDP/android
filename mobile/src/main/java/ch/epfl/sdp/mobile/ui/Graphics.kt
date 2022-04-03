@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import ch.epfl.sdp.mobile.R
@@ -12,6 +13,21 @@ val Icons.Branded: PawniesIcons
 
 /** An object that contains all the icons that will be used in Pawnies. */
 object PawniesIcons
+
+val PawniesIcons.ArView
+  get() = Icons.Default.ViewInAr
+
+/** An icon to close the game screen. */
+val PawniesIcons.GameClose
+  get() = Icons.Rounded.Close
+
+/** An icon that indicates that the mic if on. */
+val PawniesIcons.GameMicOn
+  get() = Icons.Default.Mic
+
+/** An icon that indicates that the mic is off. */
+val PawniesIcons.GameMicOff
+  get() = Icons.Default.MicOff
 
 /** An icon to show a password. */
 val PawniesIcons.PasswordShow
@@ -29,15 +45,18 @@ val PawniesIcons.SectionSocial
 val PawniesIcons.SectionSettings
   get() = Icons.Default.Settings
 
+/** An icon for the chess board section. */
+val PawniesIcons.SectionPlay
+  get() = Icons.Default.Games
+
 val PawniesIcons.Add
   get() = Icons.Default.Add
 
 val PawniesIcons.Search
   get() = Icons.Default.Search
 
-/** An icon for the game section. */
-val PawniesIcons.SectionGame
-  get() = Icons.Default.Piano
+val PawniesIcons.Check
+  get() = Icons.Default.Check
 
 /** Chess pieces */
 object ChessIcons

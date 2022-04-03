@@ -14,15 +14,12 @@ interface ProfileScreenState : Person {
   /** Number of past games */
   val pastGamesCount: Int
 
-  /** Number of puzzles */
-  val puzzlesCount: Int
-
   /** List of chess matches */
   val matches: List<ChessMatch>
 
-  /** On settings button clicked */
-  fun onSettingsClick()
+  /** On unfollow button clicked */
+  fun onUnfollowClick()
 
-  /** On edit button clicked */
-  fun onEditClick()
+  /** On challenge button clicked */
+  fun onChallengeClick()
 }
