@@ -54,15 +54,15 @@ fun <P : Person> SocialScreen(
             Following ->
                 FollowList(
                     players = state.following,
-                    onPersonClick = state::onPersonClick,
+                    onShowProfileClick = state::onShowProfileClick,
                 )
             Searching ->
                 if (state.input.isEmpty()) EmptySearch()
                 else
                     SearchResultList(
                         players = state.searchResult,
-                        onClick = state::onFollowClick,
-                        onPersonClick = state::onPersonClick,
+                        onFollowClick = state::onFollowClick,
+                        onShowProfileClick = state::onShowProfileClick,
                     )
           }
         }
@@ -75,13 +75,13 @@ fun <P : Person> SocialScreen(
  *
  * @param P the type of the [Person].
  * @param players A list of [Person] that need to be displayed.
- * @param onPersonClick Callback function for click on Item.
+ * @param onShowProfileClick Callback function for click on Item.
  * @param modifier modifier the [Modifier] for the composable.
  */
 @Composable
 fun <P : Person> FollowList(
     players: List<P>,
-    onPersonClick: (P) -> Unit,
+    onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -97,8 +97,8 @@ fun <P : Person> FollowList(
       )
     }
     items(players) { friend ->
-      PersonCard(
-          modifier = Modifier.clickable { onPersonClick(friend) },
+      PersonItem(
+          modifier = Modifier.clickable { onShowProfileClick(friend) },
           person = friend,
           trailingAction = {
             OutlinedButton(
@@ -149,26 +149,26 @@ fun EmptySearch(
  *
  * @param P the type of the [Person].
  * @param players A list of [P] that will be displayed.
- * @param onClick A function to be executed once a [Person]'s follow button is clicked.
- * @param onPersonClick A function that is executed if clicked on a result.
+ * @param onFollowClick A function to be executed once a [Person]'s follow button is clicked.
+ * @param onShowProfileClick A function that is executed if clicked on a result.
  * @param modifier the [Modifier] for the composable.
  */
 @Composable
 fun <P : Person> SearchResultList(
     players: List<P>,
-    onClick: (P) -> Unit,
-    onPersonClick: (P) -> Unit,
+    onFollowClick: (P) -> Unit,
+    onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
     items(players) { player ->
-      PersonCard(
+      PersonItem(
           person = player,
-          modifier = modifier.clickable { onPersonClick(player) },
+          modifier = modifier.clickable { onShowProfileClick(player) },
           trailingAction = {
             FollowButton(
                 following = player.followed,
-                onClick = { onClick(player) },
+                onClick = { onFollowClick(player) },
             )
           },
       )

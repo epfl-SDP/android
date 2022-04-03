@@ -16,8 +16,6 @@ import ch.epfl.sdp.mobile.ui.social.SearchResultList
 import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
-import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
-import com.google.common.truth.Truth.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,10 +34,6 @@ class SocialScreenTest {
     override var input: String by mutableStateOf("")
     override val searchFieldInteraction = MutableInteractionSource()
 
-    override fun onValueChange() {
-      mode = Searching
-    }
-
     override fun onFollowClick(followed: Person) = Unit
 
     companion object {
@@ -53,7 +47,7 @@ class SocialScreenTest {
       }
     }
 
-    override fun onPersonClick(person: Person) {}
+    override fun onShowProfileClick(person: Person) {}
   }
 
   @Test
@@ -131,7 +125,9 @@ class SocialScreenTest {
 
     val state = FakeSnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = {}, onPersonClick = {}) }
+    rule.setContent {
+      SearchResultList(state.following, onFollowClick = {}, onShowProfileClick = {})
+    }
 
     this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
   }
@@ -148,8 +144,8 @@ class SocialScreenTest {
                     override val emoji = ":)"
                     override val followed = false
                   }),
-              onClick = {},
-              onPersonClick = {})
+              onFollowClick = {},
+              onShowProfileClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialPerformFollow.uppercase()).onFirst().assertExists()
