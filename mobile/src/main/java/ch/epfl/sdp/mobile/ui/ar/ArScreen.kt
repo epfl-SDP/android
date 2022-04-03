@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.ui.ar
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -14,16 +13,12 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
 import com.google.ar.core.Anchor
 import com.google.ar.sceneform.math.Vector3
+import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
-import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
-
-// ONLY FOR DEBUGGING
-// FIXME : Need to remove it when the project finish
-private const val DisplayAxes = false
 
 private const val BoardScale = 0.2f
 // This value cannot be computed, it's selected by test and try
@@ -36,61 +31,16 @@ fun ArScreen(modifier: Modifier = Modifier) {
 
   // TODO : Set the list size at initialization
   var pieceNodes by remember {
-    mutableStateOf<List<Pair<ModelNode, ch.epfl.sdp.mobile.application.chess.engine.Position>>>(
+    mutableStateOf<List<Pair<ModelNode?, ch.epfl.sdp.mobile.application.chess.engine.Position>>>(
         listOf())
   }
 
   var arBoard by remember { mutableStateOf<ArBoard?>(null) }
 
-  // DEBUG
-  var white by remember { mutableStateOf<ArModelNode?>(null) }
-  var red by remember { mutableStateOf<ArModelNode?>(null) }
-  var blue by remember { mutableStateOf<ArModelNode?>(null) }
-  var green by remember { mutableStateOf<ArModelNode?>(null) }
-
-  val context = LocalContext.current
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
 
   val nodePlacementMode = PlacementMode.PLANE_HORIZONTAL
-
-  /**
-   * Load the given model, scale it and store it as a [ArModelNode]
-   *
-   * @param glbPath The string indicating the model location
-   * @param placementMode Indicate how to position the model in the world. See documentation
-   * [PlacementMode] to see the possible value
-   * @param position The model position relative to the center of the world
-   */
-  suspend fun loadModelAsArNode(
-      glbPath: String,
-      placementMode: PlacementMode = ArModelNode.DEFAULT_PLACEMENT_MODE,
-      position: Position = ArModelNode.DEFAULT_PLACEMENT_POSITION
-  ): ArModelNode {
-    val node =
-        ArModelNode(placementMode = placementMode, autoAnchor = true, placementPosition = position)
-    node.loadModel(
-        context = context,
-        glbFileLocation = glbPath,
-        autoScale = true,
-    )
-    return node
-  }
-
-  /**
-   * Load the given model, scale it and store it as a [ModelNode]
-   *
-   * @param glbPath The string indicating the model location
-   * @param position The model position relative to the center of the parent
-   */
-  suspend fun loadModelAsModelNode(
-      glbPath: String,
-      position: Position = ModelNode.DEFAULT_MODEL_POSITION
-  ): ModelNode {
-    val node = ModelNode(position = position)
-    node.loadModel(context = context, glbFileLocation = glbPath)
-    return node
-  }
 
   // Keep the screen only for this composable
   DisposableEffect(view) {
@@ -98,118 +48,68 @@ fun ArScreen(modifier: Modifier = Modifier) {
     onDispose { view.keepScreenOn = false }
   }
 
-  // Load 3d Model and initialize the [ArBoard]
-  LaunchedEffect(Unit) {
-    boardNode = loadModelAsArNode(ChessModels.Board, nodePlacementMode)
-
-    val boardBoundingBox = boardNode!!.modelInstance?.filamentAsset?.boundingBox!!
-
-    // get height (on y axe) of the board
-    // Double the value to get the total height of the box
-    val boardYOffset = 2 * boardBoundingBox.halfExtent[1]
-    val boardHalfSize = boardBoundingBox.halfExtent[0]
-
-    arBoard = ArBoard(BoardBorderSize, boardYOffset, boardHalfSize)
-
-    // FIX ME : Only to simplify the dev process
-    val currentBoardState = Game.create().board
-
-    for (p in currentBoardState) {
-      val path =
-          when (p.second.rank) {
-            Rank.King -> ChessModels.King
-            Rank.Bishop -> ChessModels.Bishop
-            Rank.Pawn -> ChessModels.Pawn
-            Rank.Knight -> ChessModels.Knight
-            Rank.Queen -> ChessModels.Queen
-            Rank.Rook -> ChessModels.Rook
-          }
-
-      val model = loadModelAsModelNode(path)
-
-      val color =
-          when (p.second.color) {
-            Color.Black -> Vector3(53 / 255f, 56 / 255f, 57 / 255f)
-            Color.White -> Vector3(1f, 0.99f, 0.94f)
-          }
-
-      val instance = model.modelInstance ?: return@LaunchedEffect
-      val mat = instance.material ?: return@LaunchedEffect
-      mat.setFloat3("baseColorFactor", color)
-
-      if (p.second.rank == Rank.Knight && p.second.color == Color.Black) {
-        model.modelRotation = Rotation(0f, 180f, 0f)
-      }
-
-      pieceNodes = pieceNodes.toMutableList().apply { add(Pair(model, p.first)) }
-    }
-
-    // DEBUG
-    if (DisplayAxes) {
-      white = loadModelAsArNode("models/white.glb", nodePlacementMode)
-      red = loadModelAsArNode("models/red.glb", nodePlacementMode)
-      blue = loadModelAsArNode("models/blue.glb", nodePlacementMode)
-      green = loadModelAsArNode("models/green.glb", nodePlacementMode)
-    }
-  }
+  // FIX ME : Only to simplify the dev process
+  val currentBoardState = Game.create().board
 
   AndroidView(
-      factory = { ArSceneView(it) },
-      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
-      update = { arSceneView ->
-        val currentBoard = boardNode ?: return@AndroidView
-        val currentArBoard = arBoard ?: return@AndroidView
+      factory = { context ->
+        val arSceneView = ArSceneView(context)
+        boardNode =
+            ArModelNode(placementMode = nodePlacementMode).apply {
+              loadModelAsync(
+                  context = context,
+                  glbFileLocation = ChessModels.Board,
+                  autoScale = true,
+              ) { renderableInstance ->
+                val boardBoundingBox = renderableInstance.filamentAsset?.boundingBox!!
 
-        if (DisplayAxes) {
+                // get height (on y axe) of the board
+                // Double the value to get the total height of the box
+                val boardYOffset = 2 * boardBoundingBox.halfExtent[1]
+                val boardHalfSize = boardBoundingBox.halfExtent[0]
 
-          val currentWhite = white ?: return@AndroidView
-          val currentRed = red ?: return@AndroidView
-          val currentBlue = blue ?: return@AndroidView
-          val currentGreen = green ?: return@AndroidView
+                arBoard = ArBoard(BoardBorderSize, boardYOffset, boardHalfSize)
+                val currentBoard = arBoard ?: return@loadModelAsync
 
-          currentWhite.apply {
-            scale(2f)
-            currentBoard.addChild(this)
-            placementPosition = Position(y = currentArBoard.boardHeight)
-          }
+                for (p in currentBoardState) {
+                  val path =
+                      when (p.second.rank) {
+                        Rank.King -> ChessModels.King
+                        Rank.Bishop -> ChessModels.Bishop
+                        Rank.Pawn -> ChessModels.Pawn
+                        Rank.Knight -> ChessModels.Knight
+                        Rank.Queen -> ChessModels.Queen
+                        Rank.Rook -> ChessModels.Rook
+                      }
 
-          currentRed.apply {
-            scale(2f)
-            currentBoard.addChild(this)
-            placementPosition = Position(x = 3f, y = currentArBoard.boardHeight)
-          }
+                  val model =
+                      ModelNode(position = currentBoard.toArPosition(p.first)).apply {
+                        loadModelAsync(
+                            context = context,
+                            glbFileLocation = path,
+                            coroutineScope = view.lifecycleScope,
+                        ) { renderableInstance ->
+                          val color =
+                              when (p.second.color) {
+                                Color.Black -> Vector3(53 / 255f, 56 / 255f, 57 / 255f)
+                                Color.White -> Vector3(1f, 0.99f, 0.94f)
+                              }
 
-          currentBlue.apply {
-            scale(2f)
-            currentBoard.addChild(this)
-            placementPosition = Position(z = 3f, y = currentArBoard.boardHeight)
-          }
+                          val mat = renderableInstance.material
+                          mat.setFloat3("baseColorFactor", color)
+                        }
+                        if (p.second.rank == Rank.Knight && p.second.color == Color.Black) {
+                          modelRotation = Rotation(0f, 180f, 0f)
+                        }
+                      }
 
-          currentGreen.apply {
-            scale(2f)
-            currentBoard.addChild(this)
-            placementPosition = Position(y = 3f + currentArBoard.boardHeight)
-          }
-        }
+                  boardNode!!.addChild(model)
 
-        /** Add the given [piece] on the board in the correct position */
-        fun addPiece(
-            piece: ModelNode,
-            position: ch.epfl.sdp.mobile.application.chess.engine.Position
-        ) {
-          piece.let {
-            currentBoard.addChild(it)
-            it.modelPosition = currentArBoard.toArPosition(position)
-          }
-        }
-
-        for ((node, p) in pieceNodes) {
-          addPiece(node, p)
-        }
-
-        // Scale down the board size
-        // As all the pieces are the board children, they scale as well
-        currentBoard.scale(BoardScale)
+                  pieceNodes = pieceNodes.toMutableList().apply { add(Pair(model, p.first)) }
+                }
+              }
+              scale(BoardScale)
+            }
 
         /**
          * If not already in the scene, the board will be added. Update the board anchor with the
@@ -219,13 +119,17 @@ fun ArScreen(modifier: Modifier = Modifier) {
          */
         fun anchorOrMoveBoard(anchor: Anchor) {
           // Add only one instance of the node
-          if (!arSceneView.children.contains(currentBoard)) {
-            arSceneView.addChild(currentBoard)
+          if (!arSceneView.children.contains(boardNode!!)) {
+            arSceneView.addChild(boardNode!!)
           }
-          currentBoard.anchor = anchor
+          boardNode!!.anchor = anchor
         }
 
         // Place the board on the taped position
         arSceneView.onTouchAr = { hitResult, _ -> anchorOrMoveBoard(hitResult.createAnchor()) }
-      })
+
+        arSceneView
+      },
+      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
+  )
 }
