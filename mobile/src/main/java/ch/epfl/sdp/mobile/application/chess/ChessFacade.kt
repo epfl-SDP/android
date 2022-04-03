@@ -87,28 +87,35 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     }
   }
 
+  /**
+   * Determines the [MatchResult] of a given [Match]
+   *
+   * @param match the [Match] to determine its [MatchResult]
+   */
   suspend fun determineMatchOutcome(match: Match): MatchResult? {
     val game = match.game.filterNotNull().first()
     when (game.nextStep) {
       is NextStep.Checkmate -> MatchResult.Reason.CHECKMATE
       is NextStep.Stalemate -> Tie
+      else -> Tie
     }
-    return null
+    return Tie
   }
 
+  /**
+   * Returns a [Flow] of a list of [ChessMatch] of the matches played by the given profile.
+   *
+   * @param profile the profile we want to know their played [ChessMatch]es
+   */
   fun chessMatches(profile: Profile): Flow<List<ChessMatch>> {
     val matches = matches(profile)
-    return matches.mapNotNull { list ->
-      list.mapNotNull { match -> match.toChessMatch(profile.uid) }
-    }
+    return matches.map { list -> list.mapNotNull { match -> match.toChessMatch(profile.uid) } }
   }
 
   /**
    * Transforms a given [Match] to a [ChessMatch].
    *
    * @param currentUid the uid of the current user.
-   * @param match the given [Match]
-   * @param facade the used [ChessFacade]
    */
   suspend fun Match.toChessMatch(
       currentUid: String,
@@ -119,8 +126,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     val result = determineMatchOutcome(this)
     val game = this.game.first()
     val moveNum = game.serialize().size
-    result?.let { ChessMatch(adversary, result, moveNum) }
-    return null
+    return result?.let { ChessMatch(adversary, result, moveNum) }
   }
 }
 
