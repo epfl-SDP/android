@@ -79,4 +79,6 @@ object English : LocalizedStrings {
   override val prepareGameSelectedOpponent = "Selected".uppercase()
   override val prepareGamePlayLocal = "Play locally".uppercase()
   override val prepareGamePlayOnline = "Play against opponent".uppercase()
+
+  override val playOnlineGames = "Online games"
 }

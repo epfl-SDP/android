@@ -82,4 +82,6 @@ interface LocalizedStrings {
   val prepareGameSelectedOpponent: String
   val prepareGamePlayLocal: String
   val prepareGamePlayOnline: String
+
+  val playOnlineGames: String
 }
