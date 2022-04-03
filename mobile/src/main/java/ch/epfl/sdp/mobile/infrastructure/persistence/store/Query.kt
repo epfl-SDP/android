@@ -39,6 +39,30 @@ interface Query {
   fun orderBy(field: String, direction: Direction = Direction.Ascending): Query
 
   /**
+   * Filters the results by keeping only the documents for which the value of the given [field] is
+   * greater than the given [value]. Documents which do not contain this field will be discarded.
+   *
+   * @param field the field which is compared.
+   * @param value the value which is used for comparison.
+   * @param inclusive true if the results should include documents whose field is an exact match.
+   *
+   * @return the updated [Query].
+   */
+  fun whereGreaterThan(field: String, value: Any, inclusive: Boolean = true): Query
+
+  /**
+   * Filters the results by keeping only the documents for which the value of the given [field] is
+   * less than the given [value]. Documents which do not contain this field will be discarded.
+   *
+   * @param field the field which is compared.
+   * @param value the value which is used for comparison.
+   * @param inclusive true if the results should include documents whose field is an exact match.
+   *
+   * @return the updated [Query].
+   */
+  fun whereLessThan(field: String, value: Any, inclusive: Boolean = true): Query
+
+  /**
    * Filters the results by keeping only the documents which contain the given [value] for the given
    * [field].
    *

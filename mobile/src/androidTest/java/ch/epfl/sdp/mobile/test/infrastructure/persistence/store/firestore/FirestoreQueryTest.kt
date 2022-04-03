@@ -60,6 +60,50 @@ class FirestoreQueryTest {
   }
 
   @Test
+  fun whereGreaterThanNotInclusive_delegatesWhereGreaterThan() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereGreaterThan("field", "value") } returns result
+    reference.whereGreaterThan("field", "value", inclusive = false)
+    verify { query.whereGreaterThan("field", "value") }
+  }
+
+  @Test
+  fun whereGreaterThanInclusive_delegatesWhereGreaterThanOrEqual() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereGreaterThanOrEqualTo("field", "value") } returns result
+    reference.whereGreaterThan("field", "value", inclusive = true)
+    verify { query.whereGreaterThanOrEqualTo("field", "value") }
+  }
+
+  @Test
+  fun whereLessThanNotInclusive_delegatesWhereLessThan() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereLessThan("field", "value") } returns result
+    reference.whereLessThan("field", "value", inclusive = false)
+    verify { query.whereLessThan("field", "value") }
+  }
+
+  @Test
+  fun whereLessThanInclusive_delegatesWhereLessThanOrEqual() = runTest {
+    val query = mockk<Query>()
+    val result = mockk<Query>()
+    val reference = FirestoreQuery(query)
+
+    every { query.whereLessThanOrEqualTo("field", "value") } returns result
+    reference.whereLessThan("field", "value", inclusive = true)
+    verify { query.whereLessThanOrEqualTo("field", "value") }
+  }
+
+  @Test
   fun whereEquals_delegatesWhereEqualTo() = runTest {
     val query = mockk<Query>()
     val result = mockk<Query>()

@@ -22,6 +22,24 @@ interface FakeQuery : Query {
   override fun orderBy(field: String, direction: Query.Direction): FakeQuery =
       OrderByQueryDecorator(this, field, direction)
 
+  override fun whereGreaterThan(field: String, value: Any, inclusive: Boolean): FakeQuery =
+      WhereFakeQueryDecorator(
+          this.whereNotEquals(field, null),
+          where(field) {
+            val bound = if (inclusive) 0 else 1
+            FakeFieldComparator.compare(it, value) >= bound
+          },
+      )
+
+  override fun whereLessThan(field: String, value: Any, inclusive: Boolean): FakeQuery =
+      WhereFakeQueryDecorator(
+          this.whereNotEquals(field, null),
+          where(field) {
+            val bound = if (inclusive) 0 else -1
+            FakeFieldComparator.compare(it, value) <= bound
+          },
+      )
+
   override fun whereEquals(field: String, value: Any?): FakeQuery =
       WhereFakeQueryDecorator(this, where(field) { it == value })
 

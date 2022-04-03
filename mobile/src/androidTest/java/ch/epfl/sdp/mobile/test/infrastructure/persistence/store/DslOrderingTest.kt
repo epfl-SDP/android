@@ -66,4 +66,101 @@ class DslOrderingTest {
 
     assertThat(list.map { it?.value }).isEqualTo(sorted.map { it.value })
   }
+
+  @Test
+  fun whereGreaterThan_filersNullValues() = runTest {
+    val store = buildStore { collection("docs") { document("a", AnyDocument(null)) } }
+    val flow = store.collection("docs").whereGreaterThan("value", false).asFlow<AnyDocument>()
+    assertThat(flow.first().size).isEqualTo(0)
+  }
+
+  @Test
+  fun whereLessThan_filtersNullValues() = runTest {
+    val store = buildStore { collection("docs") { document("a", AnyDocument(null)) } }
+    val flow = store.collection("docs").whereLessThan("value", false).asFlow<AnyDocument>()
+    assertThat(flow.first().size).isEqualTo(0)
+  }
+
+  @Test
+  fun whereGreaterThanNotInclusive_doesNotIncludeEqualDocument() = runTest {
+    val store = buildStore {
+      collection("docs") {
+        document("a", BooleanDocument(false))
+        document("b", BooleanDocument(true))
+      }
+    }
+
+    val query = store.collection("docs").whereGreaterThan("value", false, inclusive = false)
+    val results = query.asFlow<BooleanDocument>().first().mapNotNull { it?.value }
+
+    assertThat(results).containsExactly(true)
+  }
+
+  @Test
+  fun whereGreaterThanInclusive_containsAllDocuments() = runTest {
+    val store = buildStore {
+      collection("docs") {
+        document("a", BooleanDocument(false))
+        document("b", BooleanDocument(true))
+      }
+    }
+
+    val query = store.collection("docs").whereGreaterThan("value", false, inclusive = true)
+    val results = query.asFlow<BooleanDocument>().first().mapNotNull { it?.value }
+
+    assertThat(results).containsExactly(false, true)
+  }
+
+  @Test
+  fun whereLessThanNotInclusive_doesNotIncludeEqualDocument() = runTest {
+    val store = buildStore {
+      collection("docs") {
+        document("a", BooleanDocument(false))
+        document("b", BooleanDocument(true))
+      }
+    }
+
+    val query = store.collection("docs").whereLessThan("value", true, inclusive = false)
+    val results = query.asFlow<BooleanDocument>().first().mapNotNull { it?.value }
+
+    assertThat(results).containsExactly(false)
+  }
+
+  @Test
+  fun whereLessThanInclusive_containsAllDocuments() = runTest {
+    val store = buildStore {
+      collection("docs") {
+        document("a", BooleanDocument(false))
+        document("b", BooleanDocument(true))
+      }
+    }
+
+    val query = store.collection("docs").whereLessThan("value", true, inclusive = true)
+    val results = query.asFlow<BooleanDocument>().first().mapNotNull { it?.value }
+
+    assertThat(results).containsExactly(false, true)
+  }
+
+  @Test
+  fun whereWithStrings_usesLexicographicOrdering() = runTest {
+    val store = buildStore {
+      collection("people") {
+        document("a", StringDocument("alice"))
+        document("b", StringDocument("bob"))
+        document("c", StringDocument("bob bis"))
+        document("d", StringDocument("dan"))
+      }
+    }
+
+    val names =
+        store
+            .collection("people")
+            .whereGreaterThan("value", "bob", inclusive = true)
+            .whereLessThan("value", "dan", inclusive = false)
+            .asFlow<StringDocument>()
+            .first()
+            .mapNotNull { it?.value }
+
+    assertThat(names).containsExactly("bob", "bob bis")
+  }
 }

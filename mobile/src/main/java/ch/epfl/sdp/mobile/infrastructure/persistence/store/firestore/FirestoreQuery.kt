@@ -29,6 +29,14 @@ class FirestoreQuery(
   override fun orderBy(field: String, direction: Query.Direction): Query =
       FirestoreQuery(reference.orderBy(field, direction.toFirestoreDirection()))
 
+  override fun whereGreaterThan(field: String, value: Any, inclusive: Boolean): Query =
+      if (inclusive) FirestoreQuery(reference.whereGreaterThanOrEqualTo(field, value))
+      else FirestoreQuery(reference.whereGreaterThan(field, value))
+
+  override fun whereLessThan(field: String, value: Any, inclusive: Boolean): Query =
+      if (inclusive) FirestoreQuery(reference.whereLessThanOrEqualTo(field, value))
+      else FirestoreQuery(reference.whereLessThan(field, value))
+
   override fun whereEquals(field: String, value: Any?): Query =
       FirestoreQuery(reference.whereEqualTo(field, value))
 
