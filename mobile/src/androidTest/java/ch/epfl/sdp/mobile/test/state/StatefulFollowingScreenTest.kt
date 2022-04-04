@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile
@@ -15,6 +16,7 @@ import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth.*
 import io.mockk.every
 import io.mockk.mockk
@@ -118,5 +120,83 @@ class StatefulFollowingScreenTest {
       rule.onNodeWithText(strings.socialPerformUnfollow).performClick()
       rule.onNodeWithText(strings.socialPerformFollow).assertExists()
     }
+  }
+
+  @Test
+  fun focusedSearchField_isInSearchMode() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val user =
+        with(AuthenticationFacade(auth, store)) {
+          signUpWithEmail("email", "name", "password")
+          currentUser.filterIsInstance<AuthenticatedUser>().first()
+        }
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(
+              authentication = remember { AuthenticationFacade(auth, store) },
+              social = remember { SocialFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store) },
+          ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
+        }
+
+    rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performClick()
+    rule.onNodeWithText(strings.socialSearchEmptyTitle).assertIsDisplayed()
+    rule.onNodeWithText(strings.socialSearchEmptySubtitle).assertIsDisplayed()
+  }
+
+  @Test
+  fun unfocusedSearchField_withText_isInSearchMode() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val user =
+        with(AuthenticationFacade(auth, store)) {
+          signUpWithEmail("email", "name", "password")
+          currentUser.filterIsInstance<AuthenticatedUser>().first()
+        }
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(
+              authentication = remember { AuthenticationFacade(auth, store) },
+              social = remember { SocialFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store) },
+          ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
+        }
+
+    rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Body")
+
+    // Closes the keyboard.
+    rule.onNodeWithText("Body").performImeAction()
+
+    rule.onNodeWithText(strings.socialFollowingTitle).assertDoesNotExist()
+    rule.onNodeWithText(strings.socialSearchEmptyTitle).assertDoesNotExist()
+    rule.onNodeWithText(strings.socialSearchEmptySubtitle).assertDoesNotExist()
+  }
+
+  @Test
+  fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("a", ProfileDocument(name = "Alexandre")) }
+    }
+    val user =
+        with(AuthenticationFacade(auth, store)) {
+          signUpWithEmail("email", "name", "password")
+          currentUser.filterIsInstance<AuthenticatedUser>().first()
+        }
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(
+              authentication = remember { AuthenticationFacade(auth, store) },
+              social = remember { SocialFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store) },
+          ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
+        }
+
+    rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
+    rule.onNodeWithText("Alexandre").assertIsDisplayed()
   }
 }
