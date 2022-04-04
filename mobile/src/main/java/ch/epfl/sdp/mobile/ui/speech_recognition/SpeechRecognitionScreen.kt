@@ -27,8 +27,8 @@ import kotlin.coroutines.resume
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-const val Lang = "en-US"
-const val MaxResultsCount = 10
+private const val Lang = "en-US"
+private const val MaxResultsCount = 10
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
