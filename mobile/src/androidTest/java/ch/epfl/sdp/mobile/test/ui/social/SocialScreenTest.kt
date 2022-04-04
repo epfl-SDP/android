@@ -9,7 +9,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformFollow
-import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchBarPlaceHolder
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchEmptyTitle
 import ch.epfl.sdp.mobile.ui.social.Person
 import ch.epfl.sdp.mobile.ui.social.SearchResultList
@@ -17,43 +16,40 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
-import com.google.common.truth.Truth.*
 import org.junit.Rule
 import org.junit.Test
+
+private val People =
+    listOf(
+        createPerson(Color.Default, "Toto", ":)"),
+        createPerson(Color.Default, "John", ":3"),
+        createPerson(Color.Default, "Travis", ";)"),
+        createPerson(Color.Default, "Cirrus", "TwT"),
+    )
+
+private fun createPerson(bgColor: Color, name: String, emoji: String): Person {
+  return object : Person {
+    override val backgroundColor: Color = bgColor
+    override val name: String = name
+    override val emoji: String = emoji
+    override val followed = false
+  }
+}
 
 class SocialScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class FakeSnapshotSocialScreenState() : SocialScreenState<Person> {
+  private class FakeSnapshotSocialScreenState : SocialScreenState<Person> {
     override var searchResult: List<Person> = emptyList()
     override var mode: SocialScreenState.Mode by mutableStateOf(Following)
-    override var following: List<Person> =
-        listOf(
-            createPerson(Color.Default, "Toto", ":)"),
-            createPerson(Color.Default, "John", ":3"),
-            createPerson(Color.Default, "Travis", ";)"),
-            createPerson(Color.Default, "Cirrus", "TwT"))
+    override var following: List<Person> = People
+
     override var input: String by mutableStateOf("")
     override val searchFieldInteraction = MutableInteractionSource()
 
-    override fun onValueChange() {
-      mode = Searching
-    }
-
     override fun onFollowClick(followed: Person) = Unit
 
-    companion object {
-      fun createPerson(bgColor: Color, name: String, emoji: String): Person {
-        return object : Person {
-          override val backgroundColor: Color = bgColor
-          override val name: String = name
-          override val emoji: String = emoji
-          override val followed = false
-        }
-      }
-    }
-
-    override fun onPersonClick(person: Person) {}
+    override fun onShowProfileClick(person: Person) {}
   }
 
   @Test
@@ -65,33 +61,11 @@ class SocialScreenTest {
   }
 
   @Test
-  fun type_switchMode() {
-    val state = FakeSnapshotSocialScreenState()
-    state.searchResult =
-        listOf(
-            object : Person {
-              override val backgroundColor = Color.Default
-              override val name = "test"
-              override val emoji = ":)"
-              override val followed = false
-            })
-    rule.setContentWithLocalizedStrings { SocialScreen(state) }
-    rule.onRoot().performTouchInput { swipeUp() }
-
-    rule.onNodeWithText(socialSearchBarPlaceHolder).performTextInput("test")
-
-    rule.onAllNodesWithText(socialPerformFollow).onFirst().assertExists()
-  }
-
-  @Test
   fun searchMode_emptyInputScreen() {
     val state = FakeSnapshotSocialScreenState()
+    state.mode = Searching
     rule.setContentWithLocalizedStrings { SocialScreen(state) }
     rule.onRoot().performTouchInput { swipeUp() }
-
-    val inputString = "test"
-    rule.onNodeWithText(socialSearchBarPlaceHolder).performTextInput(inputString)
-    rule.onNodeWithText(inputString).performTextClearance()
 
     rule.onNodeWithText(socialSearchEmptyTitle).assertExists()
   }
@@ -113,7 +87,7 @@ class SocialScreenTest {
 
     rule.setContent { SocialScreen(state = state) }
 
-    rule.onNodeWithTag("friendList").onChildren().assertCountEquals(4)
+    People.forEach { rule.onNodeWithText(it.name).assertExists() }
   }
 
   @Test
@@ -131,9 +105,11 @@ class SocialScreenTest {
 
     val state = FakeSnapshotSocialScreenState()
 
-    rule.setContent { SearchResultList(state.following, onClick = {}, onPersonClick = {}) }
+    rule.setContent {
+      SearchResultList(state.following, onFollowClick = {}, onShowProfileClick = {})
+    }
 
-    this.rule.onRoot().onChild().onChildren().assertCountEquals(4)
+    People.forEach { rule.onNodeWithText(it.name).assertExists() }
   }
 
   @Test
@@ -148,20 +124,20 @@ class SocialScreenTest {
                     override val emoji = ":)"
                     override val followed = false
                   }),
-              onClick = {},
-              onPersonClick = {})
+              onFollowClick = {},
+              onShowProfileClick = {})
         }
 
     rule.onAllNodesWithText(strings.socialPerformFollow.uppercase()).onFirst().assertExists()
   }
 
   @Test
-  fun list_renderSuccessfull_displayFourUser() {
+  fun list_displayAllUsers() {
 
     val state = FakeSnapshotSocialScreenState()
 
     rule.setContent { SocialScreen(state = state) }
 
-    rule.onNodeWithTag("friendList").onChildren().assertCountEquals(4)
+    People.forEach { rule.onNodeWithText(it.name).assertExists() }
   }
 }

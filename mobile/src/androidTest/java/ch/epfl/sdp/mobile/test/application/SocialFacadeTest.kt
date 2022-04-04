@@ -50,6 +50,50 @@ class SocialFacadeTest {
   }
 
   @Test
+  fun search_matchesAllWithPrefix() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument(name = "alice"))
+        document("2", ProfileDocument(name = "alexandre"))
+        document("3", ProfileDocument(name = "bob"))
+      }
+    }
+    val facade = SocialFacade(auth, store)
+
+    val results = facade.search("al").first().map { it.name }
+    Truth.assertThat(results).containsExactly("alexandre", "alice").inOrder()
+  }
+
+  @Test
+  fun search_matchesNameWithOnlyMaxChars() = runTest {
+    val name = CharArray(10) { Char.MAX_VALUE }.concatToString() // what a weird name
+    val auth = emptyAuth()
+    val store = buildStore { collection("users") { document("1", ProfileDocument(name = name)) } }
+    val facade = SocialFacade(auth, store)
+
+    val profile = facade.search(name).first()[0]
+    Truth.assertThat(profile.name).isEqualTo(name)
+  }
+
+  @Test
+  fun search_limitsResults() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") {
+        // Insert more profiles than MaxSearchResultCount.
+        repeat(SocialFacade.MaxSearchResultCount.toInt() + 1) {
+          document(it.toString(), ProfileDocument(name = "alexandre"))
+        }
+      }
+    }
+    val facade = SocialFacade(auth, store)
+
+    val profiles = facade.search("alexandre").first()
+    Truth.assertThat(profiles.size).isEqualTo(SocialFacade.MaxSearchResultCount)
+  }
+
+  @Test
   fun follow_addUidOfFollowedProfile() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "b") }
     val store = buildStore { collection("users") { document("other", ProfileDocument()) } }

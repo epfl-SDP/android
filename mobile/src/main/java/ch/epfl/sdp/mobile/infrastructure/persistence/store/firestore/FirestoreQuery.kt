@@ -20,6 +20,23 @@ class FirestoreQuery(
 
   override fun limit(count: Long): Query = FirestoreQuery(reference.limit(count))
 
+  private fun Query.Direction.toFirestoreDirection(): ActualQuery.Direction =
+      when (this) {
+        Query.Direction.Ascending -> ActualQuery.Direction.ASCENDING
+        Query.Direction.Descending -> ActualQuery.Direction.DESCENDING
+      }
+
+  override fun orderBy(field: String, direction: Query.Direction): Query =
+      FirestoreQuery(reference.orderBy(field, direction.toFirestoreDirection()))
+
+  override fun whereGreaterThan(field: String, value: Any, inclusive: Boolean): Query =
+      if (inclusive) FirestoreQuery(reference.whereGreaterThanOrEqualTo(field, value))
+      else FirestoreQuery(reference.whereGreaterThan(field, value))
+
+  override fun whereLessThan(field: String, value: Any, inclusive: Boolean): Query =
+      if (inclusive) FirestoreQuery(reference.whereLessThanOrEqualTo(field, value))
+      else FirestoreQuery(reference.whereLessThan(field, value))
+
   override fun whereEquals(field: String, value: Any?): Query =
       FirestoreQuery(reference.whereEqualTo(field, value))
 
