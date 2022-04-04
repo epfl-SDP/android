@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -39,6 +38,7 @@ fun SearchField(
     modifier: Modifier = Modifier,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
+  val strings = LocalLocalizedStrings.current
   val focused by interactionSource.collectIsFocusedAsState()
   val manager = LocalFocusManager.current
   OutlinedTextField(
@@ -52,7 +52,7 @@ fun SearchField(
             verticalAlignment = Alignment.CenterVertically,
         ) {
           Icon(Icons.Branded.Search, null)
-          Text(LocalLocalizedStrings.current.socialSearchBarPlaceHolder)
+          Text(strings.socialSearchBarPlaceHolder)
         }
       },
       trailingIcon = {
@@ -67,7 +67,12 @@ fun SearchField(
                 onValueChange("")
                 manager.clearFocus()
               },
-          ) { Icon(PawniesIcons.GameClose, null) }
+          ) {
+            Icon(
+                imageVector = PawniesIcons.GameClose,
+                contentDescription = strings.socialSearchClearContentDescription,
+            )
+          }
         }
       },
       interactionSource = interactionSource,
@@ -75,14 +80,13 @@ fun SearchField(
       singleLine = true,
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
       keyboardActions = KeyboardActions { manager.clearFocus() },
-      // TODO : Extract these colors.
       colors =
           TextFieldDefaults.outlinedTextFieldColors(
-              textColor = Color(0xFF356859),
-              backgroundColor = Color(0x66B9E4C9),
-              placeholderColor = Color(0xFFA9DBBB),
-              focusedBorderColor = Color(0xFF356859),
-              unfocusedBorderColor = Color(0x00356859),
+              textColor = PawniesColors.Green800,
+              backgroundColor = PawniesColors.Green100.copy(alpha = 0.4f),
+              placeholderColor = PawniesColors.Green200,
+              focusedBorderColor = PawniesColors.Green800,
+              unfocusedBorderColor = PawniesColors.Green800.copy(alpha = 0f),
           ),
   )
 }
