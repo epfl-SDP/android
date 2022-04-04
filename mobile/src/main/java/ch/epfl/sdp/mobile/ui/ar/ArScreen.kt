@@ -15,7 +15,7 @@ import io.github.sceneview.ar.ArSceneView
 private const val BoardScale = 0.2f
 
 @Composable
-fun ArScreen(modifier: Modifier = Modifier) {
+fun ArScreen(game: Game, modifier: Modifier = Modifier) {
 
   var chessScene by remember { mutableStateOf<ChessScene?>(null) }
 
@@ -38,7 +38,7 @@ fun ArScreen(modifier: Modifier = Modifier) {
         val arSceneView = ArSceneView(context)
 
         // Create the object [ChessScene] that will load all the AR elements
-        chessScene = ChessScene(context, view.lifecycleScope, currentBoardState)
+        chessScene = ChessScene(context, view.lifecycleScope, game.board)
 
         // Scale the whole scene to the desired size
         chessScene?.scale(BoardScale)
