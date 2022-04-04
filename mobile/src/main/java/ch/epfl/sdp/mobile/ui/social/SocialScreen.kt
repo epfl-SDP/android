@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.ui.social
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,12 +28,14 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
  * @param P the type of the [Person].
  * @param state the [SocialScreenState], manage the composable contents.
  * @param modifier the [Modifier] for the composable.
+ * @param key a function which uniquely identifies the list items.
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun <P : Person> SocialScreen(
     state: SocialScreenState<P>,
     modifier: Modifier = Modifier,
+    key: ((P) -> Any)? = null,
 ) {
   val transition = updateTransition(state.mode, "Social state")
 
@@ -55,14 +58,18 @@ fun <P : Person> SocialScreen(
                 FollowList(
                     players = state.following,
                     onShowProfileClick = state::onShowProfileClick,
+                    key = key,
+                    modifier = Modifier.fillMaxSize(),
                 )
             Searching ->
-                if (state.input.isEmpty()) EmptySearch()
+                if (state.input.isEmpty()) EmptySearch(Modifier.padding(16.dp))
                 else
                     SearchResultList(
                         players = state.searchResult,
                         onFollowClick = state::onFollowClick,
                         onShowProfileClick = state::onShowProfileClick,
+                        key = key,
+                        modifier = Modifier.fillMaxSize(),
                     )
           }
         }
@@ -77,12 +84,15 @@ fun <P : Person> SocialScreen(
  * @param players A list of [Person] that need to be displayed.
  * @param onShowProfileClick Callback function for click on Item.
  * @param modifier modifier the [Modifier] for the composable.
+ * @param key a function which uniquely identifies the list items.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <P : Person> FollowList(
     players: List<P>,
     onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
+    key: ((P) -> Any)? = null,
 ) {
   val strings = LocalLocalizedStrings.current
   LazyColumn(
@@ -96,9 +106,12 @@ fun <P : Person> FollowList(
           modifier = Modifier.padding(horizontal = 16.dp),
       )
     }
-    items(players) { friend ->
+    items(
+        items = players,
+        key = key,
+    ) { friend ->
       PersonItem(
-          modifier = Modifier.clickable { onShowProfileClick(friend) },
+          modifier = Modifier.clickable { onShowProfileClick(friend) }.animateItemPlacement(),
           person = friend,
           trailingAction = {
             OutlinedButton(
@@ -126,20 +139,20 @@ fun EmptySearch(
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
-
   val color = MaterialTheme.colors.primaryVariant.copy(0.4f)
-
   Column(
-      modifier,
+      modifier = modifier,
       verticalArrangement = Arrangement.spacedBy(8.dp),
-      horizontalAlignment = Alignment.CenterHorizontally) {
-    Icon(PawniesIcons.Search, "", modifier = Modifier.size(72.dp), tint = color)
+      horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    Icon(PawniesIcons.Search, null, modifier = Modifier.size(72.dp), tint = color)
     Text(text = strings.socialSearchEmptyTitle, style = MaterialTheme.typography.h4, color = color)
     Text(
         text = strings.socialSearchEmptySubtitle,
         style = MaterialTheme.typography.body1,
         color = color,
-        textAlign = TextAlign.Center)
+        textAlign = TextAlign.Center,
+    )
   }
 }
 
@@ -152,19 +165,25 @@ fun EmptySearch(
  * @param onFollowClick A function to be executed once a [Person]'s follow button is clicked.
  * @param onShowProfileClick A function that is executed if clicked on a result.
  * @param modifier the [Modifier] for the composable.
+ * @param key a function which uniquely identifies the list items.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <P : Person> SearchResultList(
     players: List<P>,
     onFollowClick: (P) -> Unit,
     onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
+    key: ((P) -> Any)? = null,
 ) {
   LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-    items(players) { player ->
+    items(
+        items = players,
+        key = key,
+    ) { player ->
       PersonItem(
           person = player,
-          modifier = modifier.clickable { onShowProfileClick(player) },
+          modifier = modifier.clickable { onShowProfileClick(player) }.animateItemPlacement(),
           trailingAction = {
             FollowButton(
                 following = player.followed,

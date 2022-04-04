@@ -59,6 +59,7 @@ fun StatefulFollowingScreen(
   SocialScreen(
       state = state,
       modifier = modifier,
+      key = { it.uid },
   )
 }
 
