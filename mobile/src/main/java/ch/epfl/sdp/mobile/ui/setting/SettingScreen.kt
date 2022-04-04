@@ -33,6 +33,7 @@ import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 fun SettingsScreen(
     state: SettingScreenState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberSettingTabBarState(state.pastGamesCount, state.puzzlesCount)

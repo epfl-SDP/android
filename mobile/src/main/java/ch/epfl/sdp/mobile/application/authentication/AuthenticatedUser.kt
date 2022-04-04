@@ -7,9 +7,7 @@ import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 /** Indicates that an [AuthenticatedUser] is currently authenticated. */
@@ -93,6 +91,4 @@ class AuthenticatedUser(
           .whereArrayContains("followers", user.uid)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(this) } }
-
-  val pastGames: Flow<List<ChessMatch>> = emptyFlow()
 }
