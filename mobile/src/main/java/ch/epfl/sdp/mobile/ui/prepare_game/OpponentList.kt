@@ -43,9 +43,15 @@ fun <P : Person> OpponentList(
         itemContent = { item ->
           Opponent(
               item,
-              onClick = { state.selectedOpponent = item },
+              onClick = {
+                if (state.selectedOpponent == item) {
+                  state.selectedOpponent = null
+                } else {
+                  state.selectedOpponent = item
+                }
+              },
               modifier = Modifier.animateItemPlacement(),
-              selected = state.selectedOpponent?.let { false /* TODO: Compare keys */ } ?: false,
+              selected = item == state.selectedOpponent,
           )
         },
     )

@@ -41,7 +41,7 @@ fun <P : Person> PrepareGameDialog(
       Surface(modifier = Modifier.zIndex(1f), elevation = elevation) {
         Column {
           Text(
-              text = strings.prepareGameChooseOpponent,
+              text = strings.prepareGameChooseColor,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
           )
