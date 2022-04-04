@@ -56,8 +56,6 @@ class SnapshotPrepareGameScreenState(
 
   override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
 
-  override var unselectedOpponents = opponents.filter { it != selectedOpponent }
-
   override val onPlayClick: (ProfileAdapter) -> Unit = {
     scope.launch {
       val (white, black) =

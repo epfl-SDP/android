@@ -22,7 +22,6 @@ interface PrepareGameScreenState<P : Person> {
   var colorChoice: ColorChoice
   val opponents: List<P>
   var selectedOpponent: P?
-  var unselectedOpponents: List<P>
   val user: AuthenticatedUser
   val navigateToGame: (Match) -> Unit
   val onPlayClick: (P) -> Unit

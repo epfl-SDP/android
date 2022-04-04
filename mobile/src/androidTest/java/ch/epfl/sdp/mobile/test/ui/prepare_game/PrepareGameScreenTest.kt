@@ -31,7 +31,6 @@ class PrepareGameScreenTest {
     override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
     override val opponents: List<ProfileAdapter> = listOf()
     override var selectedOpponent: ProfileAdapter? = null
-    override var unselectedOpponents: List<ProfileAdapter> = listOf()
     override val navigateToGame: (Match) -> Unit = { _ -> }
     override val onPlayClick: (ProfileAdapter) -> Unit = {}
     override val onCancelClick: () -> Unit = {}
