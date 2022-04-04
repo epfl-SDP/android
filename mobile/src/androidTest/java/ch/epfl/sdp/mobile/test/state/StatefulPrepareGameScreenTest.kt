@@ -16,6 +16,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -208,5 +209,78 @@ class StatefulPrepareGameScreenTest {
     rule.onNodeWithText("user2").assertExists()
     authUser1.unfollow(user2)
     rule.onNodeWithText("user2").assertDoesNotExist()
+  }
+
+  @Test
+  fun creatingGameFromPrepareGame_callsCallback() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection("games") {}
+    }
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val channel = Channel<Unit>(capacity = 1)
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(
+                user = currentUser,
+                navigateToGame = { _ ->
+                  channel.trySend(Unit)
+                  channel.close()
+                },
+                onCancelClick = {})
+          }
+        }
+
+    rule.onNodeWithText("user2").performClick()
+    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+
+    assertThat(channel.receive()).isEqualTo(Unit)
+  }
+
+  @Test
+  fun cancelingPrepareGame_callsCallback() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection("games") {}
+    }
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val channel = Channel<Unit>(capacity = 1)
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(
+                user = currentUser,
+                navigateToGame = {},
+                onCancelClick = {
+                  channel.trySend(Unit)
+                  channel.close()
+                })
+          }
+        }
+
+    rule.onNodeWithText(strings.prepareGameCancel).performClick()
+
+    assertThat(channel.receive()).isEqualTo(Unit)
   }
 }
