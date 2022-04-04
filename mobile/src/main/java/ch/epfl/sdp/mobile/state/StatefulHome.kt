@@ -75,7 +75,7 @@ fun StatefulHome(
       composable(SocialRoute) {
         StatefulFollowingScreen(
             user = user,
-            onPersonItemClick = onPersonItemClick,
+            onShowProfileClick = onPersonItemClick,
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
         )

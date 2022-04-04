@@ -38,17 +38,18 @@ data class ProfileAdapter(
  * values to retrieve the appropriate dependencies.
  *
  * @param user the current [AuthenticatedUser].
+ * @param onShowProfileClick the callback called when we want to show the profile of a user.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
-    onPersonItemClick: (ProfileAdapter) -> Unit,
+    onShowProfileClick: (ProfileAdapter) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(Actions(onShowProfileClick = onPersonItemClick))
+  val actions = rememberUpdatedState(Actions(onShowProfileClick = onShowProfileClick))
   val socialFacade = LocalSocialFacade.current
   val scope = rememberCoroutineScope()
 
@@ -72,7 +73,7 @@ fun StatefulFollowingScreen(
  *
  * @param onShowProfileClick a callback when a user is clicked to display their profile.
  */
-private data class Actions(
+data class Actions(
     val onShowProfileClick: (ProfileAdapter) -> Unit,
 )
 
@@ -87,7 +88,7 @@ private data class Actions(
  * @param socialFacade the [SocialFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
-private class SnapshotSocialScreenState(
+class SnapshotSocialScreenState(
     actions: State<Actions>,
     private val user: AuthenticatedUser,
     private val socialFacade: SocialFacade,
