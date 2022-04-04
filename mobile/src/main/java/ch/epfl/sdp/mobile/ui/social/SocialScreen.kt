@@ -2,15 +2,19 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -42,10 +46,25 @@ fun <P : Person> SocialScreen(
 ) {
   val transition = updateTransition(state.mode, "Social state")
 
+  val followingLazyListState = rememberLazyListState()
+  val searchingLazyListState = rememberLazyListState()
+  val elevated =
+      when (state.mode) {
+        Following ->
+            followingLazyListState.isScrollInProgress ||
+                followingLazyListState.firstVisibleItemIndex > 0 ||
+                followingLazyListState.firstVisibleItemScrollOffset > 0
+        Searching ->
+            searchingLazyListState.isScrollInProgress ||
+                searchingLazyListState.firstVisibleItemIndex > 0 ||
+                followingLazyListState.firstVisibleItemScrollOffset > 0
+      }
+
   Scaffold(
       modifier = modifier,
       topBar = {
-        Surface(elevation = 0.dp) {
+        val elevation by animateDpAsState(if (elevated) 4.dp else 0.dp)
+        Surface(elevation = elevation) {
           SearchField(
               modifier = Modifier.fillMaxWidth().padding(16.dp),
               value = state.input,
@@ -62,6 +81,7 @@ fun <P : Person> SocialScreen(
                 FollowList(
                     players = state.following,
                     onShowProfileClick = state::onShowProfileClick,
+                    lazyListState = followingLazyListState,
                     key = key,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = totalPadding,
@@ -77,6 +97,7 @@ fun <P : Person> SocialScreen(
                         players = state.searchResult,
                         onFollowClick = state::onFollowClick,
                         onShowProfileClick = state::onShowProfileClick,
+                        lazyListState = searchingLazyListState,
                         key = key,
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = totalPadding,
@@ -94,6 +115,7 @@ fun <P : Person> SocialScreen(
  * @param players A list of [Person] that need to be displayed.
  * @param onShowProfileClick Callback function for click on Item.
  * @param modifier modifier the [Modifier] for the composable.
+ * @param lazyListState the [LazyListState] for the list of items.
  * @param key a function which uniquely identifies the list items.
  * @param contentPadding the [PaddingValues] for this list.
  */
@@ -103,6 +125,7 @@ fun <P : Person> FollowList(
     players: List<P>,
     onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
     key: ((P) -> Any)? = null,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -110,6 +133,7 @@ fun <P : Person> FollowList(
   LazyColumn(
       modifier = modifier.testTag("friendList"),
       verticalArrangement = Arrangement.spacedBy(16.dp),
+      state = lazyListState,
       contentPadding = contentPadding,
   ) {
     item {
@@ -180,6 +204,7 @@ fun EmptySearch(
  * @param onFollowClick A function to be executed once a [Person]'s follow button is clicked.
  * @param onShowProfileClick A function that is executed if clicked on a result.
  * @param modifier the [Modifier] for the composable.
+ * @param lazyListState the [LazyListState] for this list.
  * @param key a function which uniquely identifies the list items.
  * @param contentPadding the [PaddingValues] for this screen.
  */
@@ -190,12 +215,14 @@ fun <P : Person> SearchResultList(
     onFollowClick: (P) -> Unit,
     onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
+    lazyListState: LazyListState = rememberLazyListState(),
     key: ((P) -> Any)? = null,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   LazyColumn(
       modifier = modifier,
       verticalArrangement = Arrangement.spacedBy(16.dp),
+      state = lazyListState,
       contentPadding = contentPadding,
   ) {
     items(
