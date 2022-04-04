@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,
-    modifier: Modifier = Modifier,
     navigateToGame: (match: Match) -> Unit,
     onCancelClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
   val scope = rememberCoroutineScope()
   val chessFacade = LocalChessFacade.current
