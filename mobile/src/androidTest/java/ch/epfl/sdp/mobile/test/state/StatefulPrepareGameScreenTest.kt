@@ -32,11 +32,12 @@ class StatefulPrepareGameScreenTest {
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPrepareGameScreen(user) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(user = user, navigateToGame = {}, onCancelClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameChooseGame).assertExists()
     rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
   }
 
@@ -52,7 +53,9 @@ class StatefulPrepareGameScreenTest {
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPrepareGameScreen(user) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(user = user, navigateToGame = {}, onCancelClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
@@ -71,50 +74,13 @@ class StatefulPrepareGameScreenTest {
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPrepareGameScreen(user) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(user = user, navigateToGame = {}, onCancelClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
     rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
     rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
-  }
-
-  @Test
-  fun switchGameToOnline_works() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-
-    facade.signUpWithEmail("email", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPrepareGameScreen(user) }
-        }
-    rule.onNodeWithText(strings.prepareGamePlayOnline).assertExists().performClick()
-    rule.onNodeWithText(strings.prepareGameChooseOpponent).assertExists()
-  }
-
-  @Test
-  fun switchGameToOffline_works() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-
-    facade.signUpWithEmail("email", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPrepareGameScreen(user) }
-        }
-    rule.onNodeWithText(strings.prepareGamePlayOnline).assertExists().performClick()
-    rule.onNodeWithText(strings.prepareGameChooseOpponent).assertExists()
-    rule.onNodeWithText(strings.prepareGamePlayLocal).assertExists().performClick()
-    rule.onNodeWithText(strings.prepareGameChooseOpponent).assertDoesNotExist()
-    rule.onNodeWithText(strings.prepareGameChooseGame).assertExists()
   }
 }
