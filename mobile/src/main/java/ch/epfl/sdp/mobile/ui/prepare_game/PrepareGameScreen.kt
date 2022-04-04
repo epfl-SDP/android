@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
 fun <P : Person>  PrepareGameScreen(
     state: PrepareGameScreenState<P>,
     modifier: Modifier = Modifier,
+    key: ((P) -> Any)? = null,
 ) {
   /*
    A bug in Compose's navigation component makes the system window shrink to the measured size of

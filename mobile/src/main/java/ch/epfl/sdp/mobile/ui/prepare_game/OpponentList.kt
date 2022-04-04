@@ -28,6 +28,7 @@ fun <P : Person> OpponentList(
     state: PrepareGameScreenState<P>,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
+    key: ((P) -> Any)? = null,
 ) {
   LazyColumn(
       verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -36,26 +37,15 @@ fun <P : Person> OpponentList(
       contentPadding = PaddingValues(8.dp),
       state = lazyListState,
   ) {
-    val selectedOpponent = state.selectedOpponent
-    if (selectedOpponent != null) {
-      item(key = null /** TODO: Find unique key **/) {
-        Opponent(
-            selectedOpponent,
-            onClick = { state.selectedOpponent = null },
-            selected = true,
-            modifier = Modifier.animateItemPlacement(),
-        )
-      }
-    }
-
     items(
         items = state.unselectedOpponents,
-        key = null /** { it } TODO: Find unique key **/,
-        itemContent = {
+        key = key,
+        itemContent = { item ->
           Opponent(
-              it,
-              onClick = { state.selectedOpponent = it },
+              item,
+              onClick = { state.selectedOpponent = item },
               modifier = Modifier.animateItemPlacement(),
+              selected = state.selectedOpponent?.let { false /* TODO: Compare keys */ } ?: false,
           )
         },
     )

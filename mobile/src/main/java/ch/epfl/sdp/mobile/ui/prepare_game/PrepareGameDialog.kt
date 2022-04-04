@@ -2,9 +2,12 @@ package ch.epfl.sdp.mobile.ui.prepare_game
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -14,7 +17,10 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.social.Person
 
 @Composable
-fun <P : Person> PrepareGameDialog(state: PrepareGameScreenState<P>, modifier: Modifier = Modifier) {
+fun <P : Person> PrepareGameDialog(
+    state: PrepareGameScreenState<P>,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
 
   Dialog(
@@ -40,7 +46,10 @@ fun <P : Person> PrepareGameDialog(state: PrepareGameScreenState<P>, modifier: M
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
           )
           ColorChoiceBar(
-              state = state, modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp))
+              colorChoice = state.colorChoice,
+              onSelectColor = { state.colorChoice = it },
+              modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+          )
           Text(
               text = strings.prepareGameChooseOpponent,
               style = MaterialTheme.typography.subtitle1,
@@ -49,19 +58,10 @@ fun <P : Person> PrepareGameDialog(state: PrepareGameScreenState<P>, modifier: M
         }
       }
       OpponentList(
-        state = state,
+          state = state,
           modifier = Modifier.animateContentSize(),
           lazyListState = lazyListState,
       )
     }
   }
-}
-
-@Composable
-fun <P : Person> ColorChoiceBar(state: PrepareGameScreenState<P>, modifier: Modifier = Modifier) {
-  ColorChoiceBar(
-      colorChoice = state.colorChoice,
-      onSelectColor = { state.colorChoice = it },
-      modifier = modifier,
-  )
 }
