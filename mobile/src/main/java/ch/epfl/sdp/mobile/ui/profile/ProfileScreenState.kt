@@ -15,7 +15,7 @@ interface ProfileScreenState : Person {
   val pastGamesCount: Int
 
   /** List of chess matches */
-  val matches: List<ChessMatch>
+  var matches: List<ChessMatch>
 
   /** On unfollow button clicked */
   fun onUnfollowClick()

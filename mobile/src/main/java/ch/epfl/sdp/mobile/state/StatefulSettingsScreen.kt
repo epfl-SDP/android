@@ -1,23 +1,39 @@
 package ch.epfl.sdp.mobile.state
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class AuthenticatedUserProfileScreenState(
     private val user: AuthenticatedUser,
-    matches: List<ChessMatch>
+    private val chessFacade: ChessFacade,
+    private val scope: CoroutineScope,
 ) : SettingScreenState {
   override val email = user.email
-  override val pastGamesCount = matches.size
+  override var pastGamesCount by mutableStateOf(0)
   override val puzzlesCount = 0
-  override val matches = matches
+  override var matches by mutableStateOf(emptyList<ChessMatch>())
+
+  init {
+    scope.launch {
+      chessFacade
+          .chessMatches(user)
+          .onEach {
+            matches = it
+            pastGamesCount = matches.size
+          }
+          .collect()
+    }
+  }
   override val backgroundColor = Color.Orange
   override val name = user.name
   override val emoji = user.emoji
@@ -39,10 +55,7 @@ fun StatefulSettingsScreen(
     modifier: Modifier = Modifier,
 ) {
   val chessFacade = LocalChessFacade.current
-  val matches =
-      remember(chessFacade, user) { chessFacade.chessMatches(user) }
-          .collectAsState(emptyList())
-          .value
-  val state = remember(user) { AuthenticatedUserProfileScreenState(user, matches) }
+  val scope = rememberCoroutineScope()
+  val state = remember(user) { AuthenticatedUserProfileScreenState(user, chessFacade, scope) }
   SettingsScreen(state, modifier)
 }

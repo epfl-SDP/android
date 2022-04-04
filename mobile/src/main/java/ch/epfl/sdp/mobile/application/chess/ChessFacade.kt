@@ -120,9 +120,9 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   suspend fun Match.toChessMatch(
       currentUid: String,
   ): ChessMatch? {
-    val blackID = this.black.filterNotNull().first().uid
-    val whiteID = this.white.filterNotNull().first().uid
-    val adversary = if (blackID == currentUid) whiteID else blackID
+    val black = this.black.filterNotNull().first()
+    val white = this.white.filterNotNull().first()
+    val adversary = if (black.uid == currentUid) white.name else black.name
     val result = determineMatchOutcome(this)
     val game = this.game.first()
     val moveNum = game.serialize().size
