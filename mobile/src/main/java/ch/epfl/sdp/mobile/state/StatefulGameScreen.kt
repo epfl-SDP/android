@@ -1,59 +1,129 @@
 package ch.epfl.sdp.mobile.state
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
+import ch.epfl.sdp.mobile.application.chess.engine.Color.White
+import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
-import ch.epfl.sdp.mobile.ui.game.Move
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+/**
+ * The different navigation actions which may be performed by the [StatefulGameScreen].
+ *
+ * @param onBack the action to perform when going back.
+ * @param onShowAr the action to perform when AR should be started for the match.
+ */
+data class StatefulGameScreenActions(
+    val onBack: () -> Unit,
+    val onShowAr: (Match) -> Unit,
+)
 
 /**
  * The [StatefulGameScreen] to be used for the Navigation
  *
  * @param user the currently logged-in user.
  * @param id the identifier for the match.
- * @param modifier the [Modifier] for the composable
+ * @param actions the [StatefulGameScreenActions] to perform.
+ * @param modifier the [Modifier] for the composable.
+ * @param paddingValues the [PaddingValues] for this composable.
  */
 @Composable
 fun StatefulGameScreen(
     user: AuthenticatedUser,
     id: String,
+    actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(),
 ) {
   val facade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
   val match = remember(facade, id) { facade.match(id) }
 
-  val gameScreenState = remember(user, match, scope) { SnapshotChessBoardState(user, match, scope) }
+  val gameScreenState =
+      remember(actions, user, match, scope) {
+        SnapshotChessBoardState(
+            actions = actions,
+            user = user,
+            match = match,
+            scope = scope,
+        )
+      }
 
-  GameScreen(gameScreenState, modifier)
+  GameScreen(
+      state = gameScreenState,
+      modifier = modifier,
+      contentPadding = paddingValues,
+  )
 }
 
 /**
  * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
- * and has a static move list
+ * and has a static move list.
+ *
+ * @param actions the actions to perform when navigating.
+ * @param user the currently authenticated user.
+ * @param match the match to display.
+ * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
 class SnapshotChessBoardState(
+    private val actions: StatefulGameScreenActions,
     private val user: AuthenticatedUser,
     private val match: Match,
     private val scope: CoroutineScope,
 ) : GameScreenState<SnapshotPiece> {
 
+  // TODO : Implement these things.
+  override var listening by mutableStateOf(false)
+    private set
+  override fun onListenClick() {
+    listening = !listening
+  }
+
+  override fun onArClick() = actions.onShowAr(match)
+
+  override fun onBackClick() = actions.onBack()
+
   private var game by mutableStateOf(Game.create())
-  private var white by mutableStateOf<Profile?>(null)
-  private var black by mutableStateOf<Profile?>(null)
+  private var whiteProfile by mutableStateOf<Profile?>(null)
+  private var blackProfile by mutableStateOf<Profile?>(null)
+
+  override val white: GameScreenState.Player
+    get() = GameScreenState.Player(whiteProfile?.name, message(White))
+
+  override val black: GameScreenState.Player
+    get() = GameScreenState.Player(blackProfile?.name, message(Black))
+
+  /**
+   * Computes the [Message] to display depending on the player color.
+   *
+   * @param color the [Color] of the player in the engine.
+   */
+  private fun message(color: Color): Message {
+    return when (val step = game.nextStep) {
+      is NextStep.Checkmate -> if (step.winner == color) None else Checkmate
+      is NextStep.MovePiece ->
+          if (step.turn == color) if (step.inCheck) InCheck else YourTurn else None
+      NextStep.Stalemate -> if (color == White) Stalemate else None
+    }
+  }
 
   init {
     scope.launch { match.game.collect { game = it } }
-    scope.launch { match.white.collect { white = it } }
-    scope.launch { match.black.collect { black = it } }
+    scope.launch { match.white.collect { whiteProfile = it } }
+    scope.launch { match.black.collect { blackProfile = it } }
   }
 
   /**
@@ -130,8 +200,8 @@ class SnapshotChessBoardState(
 
     val currentPlayingId =
         when (step.turn) {
-          Color.Black -> black?.uid
-          Color.White -> white?.uid
+          Black -> blackProfile?.uid
+          White -> whiteProfile?.uid
         }
 
     if (currentPlayingId == user.uid) {
@@ -147,21 +217,9 @@ class SnapshotChessBoardState(
     }
   }
 
-  override val moves: List<Move> =
-      listOf(
-          ChessMove(1, "f3"),
-          ChessMove(2, "e5"),
-          ChessMove(3, "g4"),
-          ChessMove(4, "Qh4#"),
-      )
+  override val moves: List<Move>
+    get() = game.serialize().map(::Move)
 }
-
-/**
- * Represents a [ChessBoardState]'s Move
- * @property number The move's number in the game's history
- * @property name The move's name in chess notation
- */
-data class ChessMove(override val number: Int, override val name: String) : Move
 
 /** Maps a game engine [Position] to a [ChessBoardState.Position] */
 private fun Position.toPosition(): ChessBoardState.Position {
@@ -181,8 +239,8 @@ private fun Piece<Color>.toPiece(): SnapshotPiece {
 
   val color =
       when (this.color) {
-        Color.Black -> ChessBoardState.Color.Black
-        Color.White -> ChessBoardState.Color.White
+        Black -> ChessBoardState.Color.Black
+        White -> ChessBoardState.Color.White
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)

@@ -73,7 +73,12 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) {
-        StatefulFollowingScreen(user, onPersonItemClick, Modifier.fillMaxSize())
+        StatefulFollowingScreen(
+            user = user,
+            onShowProfileClick = onPersonItemClick,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
       }
       composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
@@ -87,7 +92,18 @@ fun StatefulHome(
       composable(PrepareGameRoute) { StatefulPrepareGameScreen(user, Modifier.fillMaxSize()) }
       composable("$GameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
-        StatefulGameScreen(user, id, Modifier.fillMaxSize())
+        val actions =
+            StatefulGameScreenActions(
+                onBack = { controller.popBackStack() },
+                onShowAr = { controller.navigate(ArRoute) },
+            )
+        StatefulGameScreen(
+            actions = actions,
+            user = user,
+            id = id,
+            modifier = Modifier.fillMaxSize(),
+            paddingValues = paddingValues,
+        )
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
     }
@@ -113,5 +129,5 @@ private fun HomeSection.toRoute(): String =
     }
 
 private fun hideBar(route: String?): Boolean {
-  return route == GameRoute || route == PrepareGameRoute
+  return route == PrepareGameRoute || route?.startsWith(GameRoute) ?: false
 }

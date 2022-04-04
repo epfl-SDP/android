@@ -89,6 +89,7 @@ class AuthenticatedUser(
       firestore
           .collection("users")
           .whereArrayContains("followers", user.uid)
+          .orderBy("name")
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(this) } }
 }

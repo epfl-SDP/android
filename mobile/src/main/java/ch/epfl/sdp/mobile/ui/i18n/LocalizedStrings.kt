@@ -48,6 +48,16 @@ interface LocalizedStrings {
   val boardPieceContentDescription: (color: String, rank: String) -> String
   val boardContentDescription: String
 
+  val gameBack: String
+  val gameShowAr: String
+  val gameMicOffContentDescription: String
+  val gameMicOnContentDescription: String
+  val gameListening: String
+  val gameMessageYourTurn: String
+  val gameMessageCheck: String
+  val gameMessageStalemate: String
+  val gameMessageCheckmate: String
+
   val socialFollowingTitle: String
   val socialPerformPlay: String
   val socialPerformFollow: String
@@ -55,6 +65,7 @@ interface LocalizedStrings {
   val socialSearchBarPlaceHolder: String
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
+  val socialSearchClearContentDescription: String
 
   val sectionAr: String
   val sectionSocial: String
