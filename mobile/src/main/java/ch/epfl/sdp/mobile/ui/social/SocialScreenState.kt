@@ -33,7 +33,7 @@ interface SocialScreenState<P : Person> {
   val searchResult: List<P>
 
   /** The current [Mode] */
-  var mode: Mode
+  val mode: Mode
 
   /** The current user input in the search bar */
   var input: String

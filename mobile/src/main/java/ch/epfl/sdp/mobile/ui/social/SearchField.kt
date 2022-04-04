@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -14,10 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -41,12 +40,11 @@ fun SearchField(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
   val focused by interactionSource.collectIsFocusedAsState()
-  val (requester) = FocusRequester.createRefs()
-  val controller = LocalSoftwareKeyboardController.current
+  val manager = LocalFocusManager.current
   OutlinedTextField(
       value = value,
       onValueChange = onValueChange,
-      modifier = modifier.width(IntrinsicSize.Min).focusRequester(requester),
+      modifier = modifier.width(IntrinsicSize.Min),
       placeholder = {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -67,7 +65,7 @@ fun SearchField(
               onClick = {
                 // Clear the text and hide the keyboard.
                 onValueChange("")
-                controller?.hide()
+                manager.clearFocus()
               },
           ) { Icon(PawniesIcons.GameClose, null) }
         }
@@ -76,6 +74,7 @@ fun SearchField(
       shape = CircleShape,
       singleLine = true,
       keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+      keyboardActions = KeyboardActions { manager.clearFocus() },
       // TODO : Extract these colors.
       colors =
           TextFieldDefaults.outlinedTextFieldColors(

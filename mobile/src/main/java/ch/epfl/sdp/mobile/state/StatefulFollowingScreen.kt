@@ -93,15 +93,14 @@ private class SnapshotSocialScreenState(
 
   override val searchFieldInteraction = MutableInteractionSource()
 
-  override var mode: SocialScreenState.Mode by mutableStateOf(Following)
+  private var focused by mutableStateOf(false)
+
+  override val mode: SocialScreenState.Mode
+    get() = if (focused || input.isNotEmpty()) Searching else Following
 
   init {
     scope.launch {
-      searchFieldInteraction
-          .interactions
-          .reduceIsFocused()
-          .onEach { focused -> mode = if (focused) Searching else Following }
-          .collect()
+      searchFieldInteraction.interactions.reduceIsFocused().onEach { focused = it }.collect()
     }
   }
 
