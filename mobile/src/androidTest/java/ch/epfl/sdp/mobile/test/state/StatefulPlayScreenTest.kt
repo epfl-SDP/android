@@ -33,7 +33,7 @@ class StatefulPlayScreenTest {
         document("2", ProfileDocument("2", name = "test"))
       }
       collection("games") {
-        document("id", ChessDocument(uid = "786", whiteId = "1", blackId = "2"))
+        document("id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
     }
 
@@ -50,6 +50,61 @@ class StatefulPlayScreenTest {
 
     rule.onNodeWithText(strings.profileMatchTitle("test")).assertExists()
   }
+
+
+
+  @Test
+  fun statefulPlayScreen_isDisplayedWithNoWhiteId() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1"))
+      }
+      collection("games") {
+        document("id", ChessDocument(uid = null, whiteId = null, blackId = "1"))
+      }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signInWithEmail("email@example.org", "password")
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+      rule.setContentWithLocalizedStrings {
+        ProvideFacades(facade, social, chess) { StatefulPlayScreen(userAuthenticated, {}) }
+      }
+
+    rule.onNodeWithText(strings.profileMatchTitle("")).assertExists()
+  }
+
+  @Test
+  fun statefulPlayScreen_isDisplayedWithNoBlackId() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1"))
+      }
+      collection("games") {
+        document("id", ChessDocument(uid = null, whiteId = "1", blackId = null))
+      }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signInWithEmail("email@example.org", "password")
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+      rule.setContentWithLocalizedStrings {
+        ProvideFacades(facade, social, chess) { StatefulPlayScreen(userAuthenticated, {}) }
+      }
+
+    rule.onNodeWithText(strings.profileMatchTitle("")).assertExists()
+  }
+
 
   @Test
   fun statefulPlayScreen_isNotDisplayed() = runTest {
