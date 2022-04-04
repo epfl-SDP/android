@@ -33,7 +33,7 @@ interface SocialScreenState<P : Person> {
   val searchResult: List<P>
 
   /** The current [Mode] */
-  var mode: Mode
+  val mode: Mode
 
   /** The current user input in the search bar */
   var input: String
@@ -45,10 +45,7 @@ interface SocialScreenState<P : Person> {
    * Callback function to open profile of person
    * @param person the type of the [Person] which open the Profile.
    */
-  fun onPersonClick(person: P)
-
-  /** A callback invoked when the user type in the search text field */
-  fun onValueChange()
+  fun onShowProfileClick(person: P)
 
   /**
    * A callback invoked when the user follows another user.
