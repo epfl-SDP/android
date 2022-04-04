@@ -63,6 +63,13 @@ class PrepareGameScreenTest {
   }
 
   @Test
+  fun chooseOpponentText_isDisplayed() {
+    val state = fakeState()
+    val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
+    rule.onNodeWithText(strings.prepareGameChooseOpponent).assertExists()
+  }
+
+  @Test
   fun clickingOnBlack_ChangesColorToBlack() {
     val state = fakeState()
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
@@ -74,6 +81,15 @@ class PrepareGameScreenTest {
   fun clickingOnWhite_ChangesColorToWhite() {
     val state = fakeState()
     val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
+    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
+    assertThat(state.colorChoice, IsEqual(ColorChoice.White))
+  }
+
+  @Test
+  fun clickingOnBlackThenWhite_ChangesColorToWhite() {
+    val state = fakeState()
+    val strings = rule.setContentWithLocalizedStrings { PrepareGameScreen(state) }
+    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
     rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
     assertThat(state.colorChoice, IsEqual(ColorChoice.White))
   }
