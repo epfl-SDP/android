@@ -25,6 +25,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <P : Person> OpponentList(
+    opponents: List<P>,
     state: PrepareGameScreenState<P>,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
@@ -38,7 +39,7 @@ fun <P : Person> OpponentList(
       state = lazyListState,
   ) {
     items(
-        items = state.unselectedOpponents,
+        items = opponents,
         key = key,
         itemContent = { item ->
           Opponent(

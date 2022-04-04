@@ -58,6 +58,7 @@ fun <P : Person> PrepareGameDialog(
         }
       }
       OpponentList(
+          opponents = state.opponents,
           state = state,
           modifier = Modifier.animateContentSize(),
           lazyListState = lazyListState,

@@ -105,26 +105,6 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun clickNewGame_inPlaySection_switchesToBoard() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-
-    facade.signUpWithEmail("email", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulHome(user) }
-        }
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
-    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
-    rule.onNodeWithText(strings.newGame).assertExists().performClick().assertDoesNotExist()
-  }
-
-  @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
