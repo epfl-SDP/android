@@ -49,8 +49,6 @@ class SocialScreenTest {
 
     override fun onFollowClick(followed: Person) = Unit
 
-    companion object {}
-
     override fun onShowProfileClick(person: Person) {}
   }
 
