@@ -65,6 +65,7 @@ interface LocalizedStrings {
   val socialSearchBarPlaceHolder: String
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
+  val socialSearchClearContentDescription: String
 
   val sectionAr: String
   val sectionSocial: String

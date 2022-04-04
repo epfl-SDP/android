@@ -70,7 +70,12 @@ fun StatefulHome(
         startDestination = SocialRoute,
     ) {
       composable(SocialRoute) {
-        StatefulFollowingScreen(user, onPersonItemClick, Modifier.fillMaxSize())
+        StatefulFollowingScreen(
+            user = user,
+            onShowProfileClick = onPersonItemClick,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
       }
       composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
