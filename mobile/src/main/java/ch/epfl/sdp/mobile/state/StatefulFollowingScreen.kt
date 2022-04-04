@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.foundation.interaction.FocusInteraction
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
@@ -38,12 +39,14 @@ data class ProfileAdapter(
  *
  * @param user the current [AuthenticatedUser].
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
     onPersonItemClick: (ProfileAdapter) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val actions = rememberUpdatedState(Actions(onShowProfileClick = onPersonItemClick))
   val socialFacade = LocalSocialFacade.current
@@ -60,6 +63,7 @@ fun StatefulFollowingScreen(
       state = state,
       modifier = modifier,
       key = { it.uid },
+      contentPadding = contentPadding,
   )
 }
 

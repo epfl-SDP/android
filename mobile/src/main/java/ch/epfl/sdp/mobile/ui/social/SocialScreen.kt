@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Search
+import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
 
@@ -29,6 +30,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
  * @param state the [SocialScreenState], manage the composable contents.
  * @param modifier the [Modifier] for the composable.
  * @param key a function which uniquely identifies the list items.
+ * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -36,6 +38,7 @@ fun <P : Person> SocialScreen(
     state: SocialScreenState<P>,
     modifier: Modifier = Modifier,
     key: ((P) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val transition = updateTransition(state.mode, "Social state")
 
@@ -51,7 +54,8 @@ fun <P : Person> SocialScreen(
           )
         }
       },
-      content = {
+      content = { paddingValues ->
+        val totalPadding = contentPadding + paddingValues
         transition.AnimatedContent { target ->
           when (target) {
             Following ->
@@ -60,9 +64,14 @@ fun <P : Person> SocialScreen(
                     onShowProfileClick = state::onShowProfileClick,
                     key = key,
                     modifier = Modifier.fillMaxSize(),
+                    contentPadding = totalPadding,
                 )
             Searching ->
-                if (state.input.isEmpty()) EmptySearch(Modifier.padding(16.dp))
+                if (state.input.isEmpty())
+                    EmptySearch(
+                        modifier = Modifier.padding(16.dp),
+                        contentPadding = totalPadding,
+                    )
                 else
                     SearchResultList(
                         players = state.searchResult,
@@ -70,6 +79,7 @@ fun <P : Person> SocialScreen(
                         onShowProfileClick = state::onShowProfileClick,
                         key = key,
                         modifier = Modifier.fillMaxSize(),
+                        contentPadding = totalPadding,
                     )
           }
         }
@@ -85,6 +95,7 @@ fun <P : Person> SocialScreen(
  * @param onShowProfileClick Callback function for click on Item.
  * @param modifier modifier the [Modifier] for the composable.
  * @param key a function which uniquely identifies the list items.
+ * @param contentPadding the [PaddingValues] for this list.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -93,11 +104,13 @@ fun <P : Person> FollowList(
     onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     key: ((P) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val strings = LocalLocalizedStrings.current
   LazyColumn(
       modifier = modifier.testTag("friendList"),
       verticalArrangement = Arrangement.spacedBy(16.dp),
+      contentPadding = contentPadding,
   ) {
     item {
       Text(
@@ -133,15 +146,17 @@ fun <P : Person> FollowList(
  * This composable display the screen when the user is [Searching] mode but the input is empty.
  *
  * @param modifier the [Modifier] for the composable.
+ * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
 fun EmptySearch(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val strings = LocalLocalizedStrings.current
   val color = MaterialTheme.colors.primaryVariant.copy(0.4f)
   Column(
-      modifier = modifier,
+      modifier = modifier.padding(contentPadding),
       verticalArrangement = Arrangement.spacedBy(8.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
   ) {
@@ -166,6 +181,7 @@ fun EmptySearch(
  * @param onShowProfileClick A function that is executed if clicked on a result.
  * @param modifier the [Modifier] for the composable.
  * @param key a function which uniquely identifies the list items.
+ * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -175,8 +191,13 @@ fun <P : Person> SearchResultList(
     onShowProfileClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     key: ((P) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
-  LazyColumn(modifier, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+  LazyColumn(
+      modifier = modifier,
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+      contentPadding = contentPadding,
+  ) {
     items(
         items = players,
         key = key,
