@@ -15,7 +15,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
  * @param modifier [Modifier] for this composable
  */
 @Composable
-fun <P : Person>  PrepareGameScreen(
+fun <P : Person> PrepareGameScreen(
     state: PrepareGameScreenState<P>,
     modifier: Modifier = Modifier,
     key: ((P) -> Any)? = null,

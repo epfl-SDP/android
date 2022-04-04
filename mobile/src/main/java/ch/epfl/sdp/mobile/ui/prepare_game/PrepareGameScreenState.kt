@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
  * @property colorChoice chosen color
  * @property selectedOpponent the selected opponent whom to create a game with
  */
-interface PrepareGameScreenState<P : Person>  {
+interface PrepareGameScreenState<P : Person> {
 
   /** Color choices for a chess game */
   enum class ColorChoice {

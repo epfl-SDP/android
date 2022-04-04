@@ -34,11 +34,7 @@ fun StatefulPrepareGameScreen(
         SnapshotPrepareGameScreenState(
             user, opponents, navigateToGame, onCancelClick, scope, chessFacade)
       }
-  PrepareGameScreen(
-      state = state,
-      modifier = modifier,
-      key = { it.uid }
-  )
+  PrepareGameScreen(state = state, modifier = modifier, key = { it.uid })
 }
 
 /**

@@ -15,21 +15,19 @@ import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.ColorChoice
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import org.hamcrest.core.IsEqual
 import org.junit.Rule
 import org.junit.Test
-import kotlin.coroutines.CoroutineContext
 
 class PrepareGameScreenTest {
 
   private class FakePrepareGameScreenState(
-    override val user: AuthenticatedUser,
-    override val chessFacade: ChessFacade,
-    override val scope: CoroutineScope,
-  ): PrepareGameScreenState<ProfileAdapter> {
+      override val user: AuthenticatedUser,
+      override val chessFacade: ChessFacade,
+      override val scope: CoroutineScope,
+  ) : PrepareGameScreenState<ProfileAdapter> {
     override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
     override val opponents: List<ProfileAdapter> = listOf()
     override var selectedOpponent: ProfileAdapter? = null

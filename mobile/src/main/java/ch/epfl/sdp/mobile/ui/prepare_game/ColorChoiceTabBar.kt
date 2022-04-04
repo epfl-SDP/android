@@ -28,9 +28,9 @@ import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.*
  */
 @Composable
 fun ColorChoiceBar(
-  colorChoice: ColorChoice,
-  onSelectColor: (ColorChoice) -> Unit,
-  modifier: Modifier = Modifier
+    colorChoice: ColorChoice,
+    onSelectColor: (ColorChoice) -> Unit,
+    modifier: Modifier = Modifier
 ) {
   val strings = LocalLocalizedStrings.current
 
