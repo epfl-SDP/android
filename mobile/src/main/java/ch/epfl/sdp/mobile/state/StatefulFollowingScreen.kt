@@ -155,7 +155,7 @@ class SnapshotSocialScreenState(
  * element. This is a [Flow]-based equivalent to [MutableInteractionSource]'s
  * `collectIsFocusedAsState()`.
  *
- * @return the [Flow] of [Interaction] that is reduced.
+ * @receiver the [Flow] of [Interaction] that is reduced.
  * @return a [Flow] of [Boolean] which emits true iff the state is focused.
  */
 private fun Flow<Interaction>.reduceIsFocused(): Flow<Boolean> = flow {
