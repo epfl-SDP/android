@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.*
 
 /**
  * Composable for choosing a [ColorChoice]
@@ -27,9 +28,9 @@ import ch.epfl.sdp.mobile.ui.*
  */
 @Composable
 fun ColorChoiceBar(
-    colorChoice: ColorChoice,
-    onSelectColor: (ColorChoice) -> Unit,
-    modifier: Modifier = Modifier
+  colorChoice: ColorChoice,
+  onSelectColor: (ColorChoice) -> Unit,
+  modifier: Modifier = Modifier
 ) {
   val strings = LocalLocalizedStrings.current
 

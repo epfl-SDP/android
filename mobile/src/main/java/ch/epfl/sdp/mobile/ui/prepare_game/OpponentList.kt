@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.state.toColor
+import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
  * Composable that represents a list of potential opponents, with one potentially selected
@@ -24,9 +24,8 @@ import ch.epfl.sdp.mobile.state.toColor
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OpponentList(
-    opponents: List<Profile>,
-    state: PrepareGameScreenState,
+fun <P : Person> OpponentList(
+    state: PrepareGameScreenState<P>,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
 ) {
@@ -37,10 +36,11 @@ fun OpponentList(
       contentPadding = PaddingValues(8.dp),
       state = lazyListState,
   ) {
-    val selected = state.selectedOpponent
-    if (selected != null) {
-      item(key = selected.uid) {
-        selected.AsOpponent(
+    val selectedOpponent = state.selectedOpponent
+    if (selectedOpponent != null) {
+      item(key = null /** TODO: Find unique key **/) {
+        Opponent(
+            selectedOpponent,
             onClick = { state.selectedOpponent = null },
             selected = true,
             modifier = Modifier.animateItemPlacement(),
@@ -48,12 +48,12 @@ fun OpponentList(
       }
     }
 
-    // TODO: When selecting an opponent, do not let the first one in the list be "hidden"
     items(
-        items = opponents.filter { it.uid != state.selectedOpponent?.uid },
-        key = { it.uid },
+        items = state.unselectedOpponents,
+        key = null /** { it } TODO: Find unique key **/,
         itemContent = {
-          it.AsOpponent(
+          Opponent(
+              it,
               onClick = { state.selectedOpponent = it },
               modifier = Modifier.animateItemPlacement(),
           )
@@ -71,7 +71,8 @@ fun OpponentList(
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun Profile.AsOpponent(
+private fun <P : Person> Opponent(
+    person: P,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = false,
@@ -89,13 +90,11 @@ private fun Profile.AsOpponent(
         verticalAlignment = Alignment.CenterVertically) {
       Box(
           modifier =
-              Modifier.size(40.dp)
-                  .clip(CircleShape)
-                  .background(this@AsOpponent.backgroundColor.toColor()),
-      ) { Text(this@AsOpponent.emoji, modifier = Modifier.align(Alignment.Center)) }
+              Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
+      ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
       Spacer(modifier = Modifier.padding(8.dp))
       Text(
-          this@AsOpponent.name,
+          person.name,
           color = MaterialTheme.colors.primaryVariant,
           style = MaterialTheme.typography.subtitle1)
     }

@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.social.Person
 
 @Composable
-fun PrepareGameDialog(state: PrepareGameScreenState, modifier: Modifier = Modifier) {
+fun <P : Person> PrepareGameDialog(state: PrepareGameScreenState<P>, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
 
   Dialog(
@@ -48,8 +49,7 @@ fun PrepareGameDialog(state: PrepareGameScreenState, modifier: Modifier = Modifi
         }
       }
       OpponentList(
-          opponents = state.opponents,
-          state = state,
+        state = state,
           modifier = Modifier.animateContentSize(),
           lazyListState = lazyListState,
       )
@@ -58,7 +58,7 @@ fun PrepareGameDialog(state: PrepareGameScreenState, modifier: Modifier = Modifi
 }
 
 @Composable
-fun ColorChoiceBar(state: PrepareGameScreenState, modifier: Modifier = Modifier) {
+fun <P : Person> ColorChoiceBar(state: PrepareGameScreenState<P>, modifier: Modifier = Modifier) {
   ColorChoiceBar(
       colorChoice = state.colorChoice,
       onSelectColor = { state.colorChoice = it },
