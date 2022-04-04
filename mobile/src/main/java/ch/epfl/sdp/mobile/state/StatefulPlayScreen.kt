@@ -116,18 +116,23 @@ private class PlayScreenStateImpl(
   init {
     scope.launch {
       fetchForUser(user, facade).collect { list ->
-        matches =
-            list.map {
-              ChessMatch(
-                  adversary = if (user.uid == it.blackId) it.blackName else it.whiteName,
-                  matchResult = Tie,
-                  numberOfMoves = it.movesCount,
-              )
-            }
+        matches = list.map { createChessMatch(it, user) }
       }
     }
   }
 }
+
+/**
+ * Helper function for createChessMatch
+ * @param match [MatchInfo] intermediate datatype
+ * @param user authenticated user
+ */
+private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatch =
+    ChessMatch(
+        adversary = if (user.uid == match.blackId) match.blackName else match.whiteName,
+        matchResult = Tie,
+        numberOfMoves = match.movesCount,
+    )
 
 /**
  * A stateful implementation of the PlayScreen
