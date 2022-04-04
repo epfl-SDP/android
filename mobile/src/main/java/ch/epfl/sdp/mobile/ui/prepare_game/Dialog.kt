@@ -3,16 +3,12 @@ package ch.epfl.sdp.mobile.ui.prepare_game
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -39,6 +35,35 @@ fun Dialog(
     elevation: Dp = 24.dp,
     content: @Composable () -> Unit,
 ) {
+  Dialog(
+      modifier = modifier,
+      cancel = { OutlinedButton(onCancelClick, shape = CircleShape) { cancelContent() } },
+      confirm = { Button(onConfirmClick, shape = CircleShape) { confirmContent() } },
+      shape = shape,
+      elevation = elevation,
+      content = content,
+  )
+}
+
+/**
+ * A composable which displays a dialog which may have a cancel and a confirm action.
+ *
+ * @param modifier the [Modifier] for this composable.
+ * @param cancel the content for the cancel action.
+ * @param confirm the content for the confirm action.
+ * @param shape the [Shape] of the dialog.
+ * @param elevation the elevation of the dialog.
+ * @param content the body of the dialog.
+ */
+@Composable
+fun Dialog(
+    modifier: Modifier = Modifier,
+    cancel: (@Composable () -> Unit)? = null,
+    confirm: (@Composable () -> Unit)? = null,
+    shape: Shape = RoundedCornerShape(16.dp),
+    elevation: Dp = 24.dp,
+    content: @Composable () -> Unit,
+) {
   Surface(
       modifier = modifier.sizeIn(maxHeight = 560.dp, maxWidth = 560.dp),
       shape = shape,
@@ -51,8 +76,8 @@ fun Dialog(
           modifier = Modifier.padding(8.dp).fillMaxWidth(),
           horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
       ) {
-        OutlinedButton(onCancelClick, shape = CircleShape) { cancelContent() }
-        Button(onConfirmClick, shape = CircleShape) { confirmContent() }
+        if (cancel != null) cancel()
+        if (confirm != null) confirm()
       }
     }
   }
@@ -79,25 +104,15 @@ private fun DialogLayout(
 
     val dividerPlaceable =
         dividerMeasurable.measure(
-            Constraints(
-                minWidth = constraints.minWidth,
-                maxWidth = constraints.maxWidth,
-                minHeight = 1.dp.roundToPx(),
-                maxHeight = 1.dp.roundToPx(),
+            constraints.copy(
+                minHeight = 0,
+                maxHeight = dividerMeasurable.maxIntrinsicHeight(constraints.minWidth),
             ),
         )
-    val buttonsPlaceable =
-        buttonsMeasurable.measure(
-            Constraints(
-                minWidth = constraints.minWidth,
-                maxWidth = constraints.maxWidth,
-            ),
-        )
+    val buttonsPlaceable = buttonsMeasurable.measure(constraints.copy(minHeight = 0))
     val contentPlaceable =
         contentMeasurable.measure(
-            Constraints(
-                minWidth = constraints.minWidth,
-                maxWidth = constraints.maxWidth,
+            constraints.copy(
                 minHeight = 0,
                 maxHeight =
                     (constraints.maxHeight - dividerPlaceable.height - buttonsPlaceable.height)
