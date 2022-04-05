@@ -24,15 +24,13 @@ class PrepareGameScreenTest {
     override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
     override val opponents: List<ProfileAdapter> = listOf()
     override var selectedOpponent: ProfileAdapter? = null
-    override val onPlayClick: (ProfileAdapter) -> Unit = {}
-    override val onCancelClick: () -> Unit = {}
+    override fun onPlayClick(person: ProfileAdapter) {}
+    override fun onCancelClick() {}
   }
 
   @get:Rule val rule = createComposeRule()
 
   private fun fakeState(): FakePrepareGameScreenState {
-    val user = mockk<AuthenticatedUser>()
-
     return FakePrepareGameScreenState()
   }
 

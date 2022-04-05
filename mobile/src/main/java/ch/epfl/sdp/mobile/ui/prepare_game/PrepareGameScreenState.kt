@@ -22,6 +22,6 @@ interface PrepareGameScreenState<P : Person> {
   var colorChoice: ColorChoice
   val opponents: List<P>
   var selectedOpponent: P?
-  val onPlayClick: (P) -> Unit
-  val onCancelClick: () -> Unit
+  fun onPlayClick(person: P)
+  fun onCancelClick()
 }
