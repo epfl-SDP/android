@@ -37,12 +37,12 @@ class SpeechRecognitionScreenTest {
   @Test
   fun given_defaultScreenState_when_micClicked_then_displayPermissionDialog() {
     val state =
-      object : SpeechRecognitionScreenState {
-        override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
-        override val onPermissionChange: () -> Unit = {
-          microphonePermissionState.value = !microphonePermissionState.value
+        object : SpeechRecognitionScreenState {
+          override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
+          override val onPermissionChange: () -> Unit = {
+            microphonePermissionState.value = !microphonePermissionState.value
+          }
         }
-      }
 
     rule.setContent { SpeechRecognitionScreen(state) }
     rule.onNodeWithText(PermissionDenied).assertExists()
@@ -53,18 +53,17 @@ class SpeechRecognitionScreenTest {
   @Test
   fun given_permissionDialog_when_okClicked_then_grantPermission() {
     val state =
-      object : SpeechRecognitionScreenState {
-        override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
-        override val onPermissionChange: () -> Unit = {
-          microphonePermissionState.value = !microphonePermissionState.value
+        object : SpeechRecognitionScreenState {
+          override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
+          override val onPermissionChange: () -> Unit = {
+            microphonePermissionState.value = !microphonePermissionState.value
+          }
         }
-      }
 
     rule.setContent { SpeechRecognitionScreen(state) }
     rule.onNodeWithText(PermissionDenied).assertExists()
     rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
     rule.onNodeWithText(GrantText).assertExists().performClick()
     rule.onNodeWithText(PermissionGranted).assertExists()
-
   }
 }

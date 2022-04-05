@@ -16,7 +16,6 @@ import ch.epfl.sdp.mobile.state.StatefulSpeechRecognitionScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.ui.speech_recognition.ListeningText
-import ch.epfl.sdp.mobile.ui.speech_recognition.PermissionDenied
 import ch.epfl.sdp.mobile.ui.speech_recognition.PermissionGranted
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.flow.filterIsInstance
@@ -28,8 +27,7 @@ import org.junit.Test
 @ExperimentalPermissionsApi
 class StatefulSpeechRecognitionScreenTest {
 
-  @get:Rule
-  val rule = createComposeRule()
+  @get:Rule val rule = createComposeRule()
 
   @get:Rule val permissionRule: GrantPermissionRule = grant(Manifest.permission.CAMERA)
 

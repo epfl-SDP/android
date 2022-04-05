@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
-import ch.epfl.sdp.mobile.ui.speech_recognition.SpeechRecognitionScreen
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
