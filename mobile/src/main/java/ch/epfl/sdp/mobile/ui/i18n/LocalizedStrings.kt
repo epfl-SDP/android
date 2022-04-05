@@ -20,6 +20,8 @@ interface LocalizedStrings {
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
+  val authenticationBadPasswordFailure: String
+  val authenticationWrongEmailFormatFailure: String
   val authenticateOr: String
 
   val arContentDescription: String

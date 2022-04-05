@@ -9,5 +9,13 @@ enum class AuthenticationResult {
   /** Indicates that there was a failure during authentication. */
   Failure,
 
+  /** Indicates that there was a failure during authentication caused by a weak password. */
+  FailureBadPassword,
+
+  /**
+   * Indicates that there was a failure during authentication caused by an incorrectly typed email.
+   */
+  FailureIncorrectEmailFormat,
+
   // TODO : Some specific failures could be added here, like FailureBadPassword, etc.
 }
