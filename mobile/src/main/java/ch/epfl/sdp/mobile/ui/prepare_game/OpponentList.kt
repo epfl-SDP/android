@@ -24,6 +24,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
  * @param modifier [Modifier] for this composable
  * @param lazyListState the state of the lazyList displaying opponents
  * @param key a function which uniquely identifies the list items.
+ * @param P the type of the [Person].
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -68,6 +69,7 @@ fun <P : Person> OpponentList(
  * @param onClick button action
  * @param modifier [Modifier] for this composable
  * @param selected indicates if the opponent is selected
+ * @param P the type of the [Person].
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

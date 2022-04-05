@@ -23,6 +23,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
  * @param state the [PrepareGameScreenState] that manage the composable contents
  * @param modifier the [Modifier] for the composable
  * @param key a function which uniquely identifies the list items
+ * @param P the type of the [Person].
  */
 @Composable
 fun <P : Person> PrepareGameDialog(

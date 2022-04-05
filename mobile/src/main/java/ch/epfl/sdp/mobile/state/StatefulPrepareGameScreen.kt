@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
@@ -15,6 +14,8 @@ import kotlinx.coroutines.launch
 /**
  * A composable that makes a [PrepareGameScreen] stateful
  * @param user authenticated user
+ * @param navigateToGame The action to take for navigating to a created game
+ * @param cancelClick The action to take when clicking on the dialog's cancel button
  * @param modifier [Modifier] for this composable
  */
 @Composable
@@ -45,9 +46,12 @@ fun StatefulPrepareGameScreen(
 
 /**
  * An implementation of the [PrepareGameScreenState]
- * @param user authenticated user
- * @property colorChoice chosen color side
- * @property selectedOpponent The selected opponent's [Profile], if any
+ *
+ * @param user The current [AuthenticatedUser]
+ * @param navigateToGame The action to take for navigating to a created game
+ * @param cancelClick The action to take when clicking on the dialog's cancel button
+ * @param chessFacade The chess facade to act on the store
+ * @param scope The [Composable]'s [CoroutineScope]
  */
 class SnapshotPrepareGameScreenState(
     val user: AuthenticatedUser,

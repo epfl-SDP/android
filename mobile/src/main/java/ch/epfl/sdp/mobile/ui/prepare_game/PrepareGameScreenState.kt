@@ -4,8 +4,6 @@ import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
  * State interface of the [PrepareGameScreen]
- * @property
- * @property selectedOpponent the selected opponent whom to create a game with
  */
 interface PrepareGameScreenState<P : Person> {
 
