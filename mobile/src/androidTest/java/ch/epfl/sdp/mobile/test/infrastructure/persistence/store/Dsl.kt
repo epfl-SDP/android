@@ -23,6 +23,21 @@ fun buildStore(
 interface DocumentBuilder {
 
   /**
+   * Adds a new document with a random identifier, unique within its collection.
+   *
+   * @param T the type of the added document.
+   *
+   * @param value the value of the document which is added.
+   * @param valueClass the [KClass] of the newly inserted document.
+   * @param content the [CollectionBuilder] when building some inner collections.
+   */
+  fun <T : Any> document(
+      value: T,
+      valueClass: KClass<T>,
+      content: CollectionBuilder.() -> Unit = {},
+  )
+
+  /**
    * Adds a new document at the given path. If the document already exists, its value will be
    * replaced with the new values.
    *
@@ -40,6 +55,19 @@ interface DocumentBuilder {
       content: CollectionBuilder.() -> Unit = {},
   )
 }
+
+/**
+ * Adds a new document with a random identifier, unique within its collection.
+ *
+ * @param T the type of the added document.
+ *
+ * @param value the value of the document which is added.
+ * @param content the [CollectionBuilder] when building some inner collections.
+ */
+inline fun <reified T : Any> DocumentBuilder.document(
+    value: T,
+    noinline content: CollectionBuilder.() -> Unit = {}
+): Unit = document(value, T::class, content)
 
 /**
  * Adds a new document at the given path. If the document already exists, its value will be replaced

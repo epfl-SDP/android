@@ -45,6 +45,12 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
   }
 
   override fun <T : Any> document(
+      value: T,
+      valueClass: KClass<T>,
+      content: CollectionBuilder.() -> Unit
+  ) = document(UUID.randomUUID().toString(), value, valueClass, content)
+
+  override fun <T : Any> document(
       path: String,
       value: T,
       valueClass: KClass<T>,

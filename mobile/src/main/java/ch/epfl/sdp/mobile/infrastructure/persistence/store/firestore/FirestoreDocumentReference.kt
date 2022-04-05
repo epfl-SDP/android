@@ -24,6 +24,9 @@ class FirestoreDocumentReference(
     private val reference: ActualDocumentReference,
 ) : DocumentReference {
 
+  override val id: String
+    get() = reference.id
+
   override fun collection(path: String): CollectionReference =
       FirestoreCollectionReference(reference.collection(path))
 
