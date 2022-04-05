@@ -94,7 +94,7 @@ private fun <P : Person> Opponent(
           modifier =
               Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
       ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
-      Spacer(modifier = Modifier.padding(8.dp))
+      Spacer(modifier = Modifier.width(16.dp))
       Text(
           person.name,
           color = MaterialTheme.colors.primaryVariant,
