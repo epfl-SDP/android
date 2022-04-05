@@ -1,6 +1,11 @@
 package ch.epfl.sdp.mobile.ui.social
 
-class ChessMatch(val adversary: String, val matchResult: MatchResult, val numberOfMoves: Int)
+class ChessMatch(
+    val uid: String,
+    val adversary: String,
+    val matchResult: MatchResult,
+    val numberOfMoves: Int
+)
 
 sealed interface MatchResult {
   enum class Reason {
@@ -14,3 +19,7 @@ data class Win(val reason: MatchResult.Reason) : MatchResult
 data class Loss(val reason: MatchResult.Reason) : MatchResult
 
 object Tie : MatchResult
+
+object YourTurn : MatchResult
+
+object OtherTurn : MatchResult

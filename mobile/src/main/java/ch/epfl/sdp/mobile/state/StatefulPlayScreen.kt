@@ -6,13 +6,14 @@ import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
+import ch.epfl.sdp.mobile.application.chess.engine.Color
+import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.state.Loadable.Companion.loaded
 import ch.epfl.sdp.mobile.state.Loadable.Companion.loading
 import ch.epfl.sdp.mobile.ui.play.PlayScreen
 import ch.epfl.sdp.mobile.ui.play.PlayScreenState
-import ch.epfl.sdp.mobile.ui.social.ChessMatch
-import ch.epfl.sdp.mobile.ui.social.Tie
+import ch.epfl.sdp.mobile.ui.social.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -47,6 +48,23 @@ private inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
       Loadable.Loading -> lazyBlock()
     }
 
+/**
+ * Gives higher order function to decide the MatchResult
+ * @param userColor color of the current user
+ */
+private inline fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
+    when (this) {
+      is NextStep.Stalemate -> { _ -> Tie }
+      is NextStep.MovePiece -> { userColor -> if (this.turn == userColor) YourTurn else OtherTurn }
+      is NextStep.Checkmate -> { userColor ->
+            if (userColor == this.winner) {
+              Win(MatchResult.Reason.CHECKMATE)
+            } else {
+              Loss(MatchResult.Reason.CHECKMATE)
+            }
+          }
+    }
+
 /** Intermediate State to simplify the data handling */
 private data class MatchInfo(
     val id: String?,
@@ -55,6 +73,7 @@ private data class MatchInfo(
     val blackId: String,
     val whiteName: String,
     val blackName: String,
+    val matchResult: (userColor: Color) -> MatchResult
 )
 
 /**
@@ -85,14 +104,16 @@ private fun info(match: Match): Flow<MatchInfo> {
   val loadingGame = game.map { loaded(it) }.onStart { emit(loading()) }
 
   return combine(blackName, whiteName, loadingGame) { b, w, g ->
+    val blackId = b.map { it?.uid ?: "" }.orElse { "" }
+    val whiteId = w.map { it?.uid ?: "" }.orElse { "" }
     MatchInfo(
         id = match.id,
         movesCount = g.map { it.serialize().size }.orElse { 0 },
-        whiteId = w.map { it?.uid ?: "" }.orElse { "" },
-        blackId = w.map { it?.uid ?: "" }.orElse { "" },
+        whiteId = whiteId,
+        blackId = blackId,
         whiteName = w.map { it?.name ?: "" }.orElse { "" },
         blackName = b.map { it?.name ?: "" }.orElse { "" },
-    )
+        matchResult = g.map { it.nextStep.toMatchResult() }.orElse { { Tie } })
   }
 }
 
@@ -105,6 +126,7 @@ private fun info(match: Match): Flow<MatchInfo> {
  */
 private class PlayScreenStateImpl(
     onNewGameClick: State<() -> Unit>,
+    override val onGameItemClick: (ChessMatch) -> Unit,
     user: AuthenticatedUser,
     facade: ChessFacade,
     scope: CoroutineScope,
@@ -129,10 +151,11 @@ private class PlayScreenStateImpl(
  */
 private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatch =
     ChessMatch(
-        adversary = if (user.uid == match.blackId) match.blackName else match.whiteName,
-        matchResult = Tie,
+        adversary = if (user.uid == match.blackId) match.whiteName else match.blackName,
+        matchResult =
+            match.matchResult(if (user.uid == match.blackId) Color.Black else Color.White),
         numberOfMoves = match.movesCount,
-    )
+        uid = match.id ?: "")
 
 /**
  * A stateful implementation of the PlayScreen
@@ -144,6 +167,7 @@ private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMa
 @Composable
 fun StatefulPlayScreen(
     user: AuthenticatedUser,
+    onGameItemClick: (ChessMatch) -> Unit,
     navigateToGame: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -155,6 +179,7 @@ fun StatefulPlayScreen(
       remember(user, facade, scope) {
         PlayScreenStateImpl(
             onNewGameClick = currentNavigateToGame,
+            onGameItemClick = onGameItemClick,
             user = user,
             facade = facade,
             scope = scope,

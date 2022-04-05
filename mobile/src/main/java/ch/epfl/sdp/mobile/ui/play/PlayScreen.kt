@@ -41,7 +41,7 @@ fun PlayScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier,
-    ) { items(state.matches) { match -> Match(match) } }
+    ) { items(state.matches) { match -> Match(match, state.onGameItemClick) } }
   }
 
   Box(modifier = modifier.fillMaxSize().padding(contentPadding)) {

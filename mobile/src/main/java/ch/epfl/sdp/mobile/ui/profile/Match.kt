@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.profile
 
+import androidx.compose.foundation.clickable
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
@@ -23,6 +24,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 @Composable
 fun Match(
     match: ChessMatch,
+    onGameItemClick: (ChessMatch) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -30,7 +32,7 @@ fun Match(
   val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
 
   ListItem(
-      modifier = modifier,
+      modifier = modifier.clickable { onGameItemClick(match) },
       icon = { Icon(PawniesIcons.SectionSocial, null) },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },
@@ -50,6 +52,8 @@ private fun chooseSubtitle(
   val text =
       when (matchResult) {
         Tie -> strings.profileTieInfo
+        is YourTurn -> { _ -> strings.profileYourTurn }
+        is OtherTurn -> { _ -> strings.profileOthersTurn }
         is Loss ->
             when (matchResult.reason) {
               MatchResult.Reason.CHECKMATE -> strings.profileLostByCheckmate
@@ -61,5 +65,6 @@ private fun chooseSubtitle(
               MatchResult.Reason.FORFEIT -> strings.profileWonByForfeit
             }
       }
+
   return text(nMoves)
 }

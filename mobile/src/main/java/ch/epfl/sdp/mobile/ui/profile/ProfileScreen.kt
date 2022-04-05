@@ -45,6 +45,7 @@ fun ProfileScreen(
         )
       },
       matches = state.matches,
+      onGameItemClick = {},
       lazyColumnState = lazyColumnState,
       modifier = modifier)
 }

@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -62,6 +63,10 @@ fun StatefulHome(
     controller.navigate("$ProfileRoute/${person.uid}")
   }
 
+  val onGameItemClick: (match: ChessMatch) -> Unit = { match ->
+    controller.navigate("$GameRoute/${match.uid}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -88,6 +93,7 @@ fun StatefulHome(
       composable(PlayRoute) {
         StatefulPlayScreen(
             user = user,
+            onGameItemClick = onGameItemClick,
             navigateToGame = { controller.navigate(PrepareGameRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)

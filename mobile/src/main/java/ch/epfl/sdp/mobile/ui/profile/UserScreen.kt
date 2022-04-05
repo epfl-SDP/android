@@ -25,6 +25,7 @@ fun UserScreen(
     header: @Composable () -> Unit,
     profileTabBar: @Composable () -> Unit,
     matches: List<ChessMatch>,
+    onGameItemClick: (ChessMatch) -> Unit,
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
 ) {
@@ -36,6 +37,6 @@ fun UserScreen(
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
-    items(matches) { match -> Match(match) }
+    items(matches) { match -> Match(match, onGameItemClick) }
   }
 }
