@@ -65,6 +65,7 @@ class SnapshotPrepareGameScreenState(
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
 
   override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
+  private set
 
   override fun onOpponentClick(opponent: ProfileAdapter) {
     selectedOpponent =

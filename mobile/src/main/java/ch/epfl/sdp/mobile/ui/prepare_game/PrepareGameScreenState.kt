@@ -18,7 +18,7 @@ interface PrepareGameScreenState<P : Person> {
   val opponents: List<P>
 
   /** A potentially selected opponent to display differently in the opponent list */
-  var selectedOpponent: P?
+  val selectedOpponent: P?
 
   /** The action to take when clicking on an opponent in the opponent's list */
   fun onOpponentClick(opponent: P)
