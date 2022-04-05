@@ -20,14 +20,17 @@ interface PrepareGameScreenState<P : Person> {
   /** A potentially selected opponent to display differently in the opponent list */
   val selectedOpponent: P?
 
-  /** The action to take when clicking on an opponent in the opponent's list */
+  /**
+   * The action to take when clicking on an opponent in the opponent's list
+   * @param opponent The [Person] which was clicked
+   */
   fun onOpponentClick(opponent: P)
 
   /**
    * A callback for the action to take when clicking on the "play" button in the dialog, when a
    * specific opponent is selected.
    */
-  fun onPlayClick(opponent: P)
+  fun onPlayClick()
 
   /** A callback for the action to take when clicking on the "cancel" button in the dialog */
   fun onCancelClick()

@@ -65,7 +65,7 @@ class SnapshotPrepareGameScreenState(
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
 
   override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
-  private set
+    private set
 
   override fun onOpponentClick(opponent: ProfileAdapter) {
     selectedOpponent =
@@ -76,15 +76,17 @@ class SnapshotPrepareGameScreenState(
         }
   }
 
-  override fun onPlayClick(opponent: ProfileAdapter) {
-    scope.launch {
-      val (white, black) =
-          when (colorChoice) {
-            ColorChoice.White -> ProfileAdapter(user) to opponent
-            ColorChoice.Black -> opponent to ProfileAdapter(user)
-          }
-      val match = chessFacade.createMatch(white = white.profile, black = black.profile)
-      navigateToGame(match)
+  override fun onPlayClick() {
+    selectedOpponent?.let {
+      scope.launch {
+        val (white, black) =
+            when (colorChoice) {
+              ColorChoice.White -> ProfileAdapter(user) to it
+              ColorChoice.Black -> it to ProfileAdapter(user)
+            }
+        val match = chessFacade.createMatch(white = white.profile, black = black.profile)
+        navigateToGame(match)
+      }
     }
   }
 

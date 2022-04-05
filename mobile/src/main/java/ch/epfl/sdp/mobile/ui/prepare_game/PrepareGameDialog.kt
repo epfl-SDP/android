@@ -36,7 +36,7 @@ fun <P : Person> PrepareGameDialog(
   Dialog(
       modifier = modifier,
       onCancelClick = { state.onCancelClick() },
-      onConfirmClick = { state.selectedOpponent?.let { state.onPlayClick(it) } },
+      onConfirmClick = { state.onPlayClick() },
       cancelContent = { Text(strings.prepareGameCancel) },
       confirmContent = { Text(strings.prepareGamePlay) },
   ) {
