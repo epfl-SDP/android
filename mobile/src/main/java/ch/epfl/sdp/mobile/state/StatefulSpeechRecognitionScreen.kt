@@ -20,5 +20,5 @@ object SpeechRecognitionScreenState : SpeechRecognitionScreenState {
 @Composable
 fun StatefulSpeechRecognitionScreen(user: AuthenticatedUser, modifier: Modifier = Modifier) {
   val state = SpeechRecognitionScreenState
-  SpeechRecognitionScreen(state)
+  SpeechRecognitionScreen(state, modifier)
 }
