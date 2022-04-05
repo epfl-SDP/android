@@ -30,7 +30,8 @@ import ch.epfl.sdp.mobile.ui.social.Person
 @Composable
 fun <P : Person> OpponentList(
     opponents: List<P>,
-    state: PrepareGameScreenState<P>,
+    selectedOpponent: P?,
+    onOpponentClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     key: ((P) -> Any)? = null,
@@ -48,15 +49,9 @@ fun <P : Person> OpponentList(
         itemContent = { item ->
           Opponent(
               item,
-              onClick = {
-                if (state.selectedOpponent == item) {
-                  state.selectedOpponent = null
-                } else {
-                  state.selectedOpponent = item
-                }
-              },
+              onClick = { onOpponentClick(item) },
               modifier = Modifier.animateItemPlacement(),
-              selected = item == state.selectedOpponent,
+              selected = item == selectedOpponent,
           )
         },
     )

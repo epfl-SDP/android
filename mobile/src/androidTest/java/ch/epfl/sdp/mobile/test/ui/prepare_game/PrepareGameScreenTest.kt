@@ -24,6 +24,7 @@ class PrepareGameScreenTest {
     override var selectedOpponent: ProfileAdapter? = null
     override fun onPlayClick(opponent: ProfileAdapter) {}
     override fun onCancelClick() {}
+    override fun onOpponentClick(opponent: ProfileAdapter) {}
   }
 
   @get:Rule val rule = createComposeRule()

@@ -2,9 +2,7 @@ package ch.epfl.sdp.mobile.ui.prepare_game
 
 import ch.epfl.sdp.mobile.ui.social.Person
 
-/**
- * State interface of the [PrepareGameScreen]
- */
+/** State interface of the [PrepareGameScreen] */
 interface PrepareGameScreenState<P : Person> {
 
   /** Color choices for a chess game */
@@ -21,6 +19,9 @@ interface PrepareGameScreenState<P : Person> {
 
   /** A potentially selected opponent to display differently in the opponent list */
   var selectedOpponent: P?
+
+  /** The action to take when clicking on an opponent in the opponent's list */
+  fun onOpponentClick(opponent: P)
 
   /**
    * A callback for the action to take when clicking on the "play" button in the dialog, when a
