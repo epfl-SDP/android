@@ -164,7 +164,6 @@ class StatefulHomeTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -185,7 +184,6 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.newGame).performClick()
     rule.onNodeWithText("user2").performClick()
     rule.onNodeWithText(strings.prepareGamePlay).performClick()
-
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
   }
 
@@ -194,7 +192,6 @@ class StatefulHomeTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
