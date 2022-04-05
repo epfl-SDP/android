@@ -90,7 +90,7 @@ fun StatefulHome(
         StatefulPrepareGameScreen(
             user,
             navigateToGame = { match -> controller.navigate("$GameRoute/${match.id}") },
-            onCancelClick = { controller.popBackStack() },
+            cancelClick = { controller.popBackStack() },
         )
       }
       composable("$GameRoute/{id}") { entry ->

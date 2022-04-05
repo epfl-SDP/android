@@ -41,7 +41,7 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess) {
-            StatefulPrepareGameScreen(user = user, navigateToGame = {}, onCancelClick = {})
+            StatefulPrepareGameScreen(user = user, navigateToGame = {}, cancelClick = {})
           }
         }
 
@@ -62,7 +62,7 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess) {
-            StatefulPrepareGameScreen(user = user, navigateToGame = {}, onCancelClick = {})
+            StatefulPrepareGameScreen(user = user, navigateToGame = {}, cancelClick = {})
           }
         }
 
@@ -83,7 +83,7 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess) {
-            StatefulPrepareGameScreen(user = user, navigateToGame = {}, onCancelClick = {})
+            StatefulPrepareGameScreen(user = user, navigateToGame = {}, cancelClick = {})
           }
         }
 
@@ -110,7 +110,7 @@ class StatefulPrepareGameScreenTest {
 
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, social, chess) {
-        StatefulPrepareGameScreen(user = authUser1, navigateToGame = {}, onCancelClick = {})
+        StatefulPrepareGameScreen(user = authUser1, navigateToGame = {}, cancelClick = {})
       }
     }
 
@@ -136,7 +136,7 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess) {
-            StatefulPrepareGameScreen(user = currentUser, navigateToGame = {}, onCancelClick = {})
+            StatefulPrepareGameScreen(user = currentUser, navigateToGame = {}, cancelClick = {})
           }
         }
 
@@ -168,7 +168,7 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess) {
-            StatefulPrepareGameScreen(user = currentUser, navigateToGame = {}, onCancelClick = {})
+            StatefulPrepareGameScreen(user = currentUser, navigateToGame = {}, cancelClick = {})
           }
         }
 
@@ -200,7 +200,7 @@ class StatefulPrepareGameScreenTest {
 
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, social, chess) {
-        StatefulPrepareGameScreen(user = authUser1, navigateToGame = {}, onCancelClick = {})
+        StatefulPrepareGameScreen(user = authUser1, navigateToGame = {}, cancelClick = {})
       }
     }
 
@@ -236,7 +236,7 @@ class StatefulPrepareGameScreenTest {
                   channel.trySend(Unit)
                   channel.close()
                 },
-                onCancelClick = {})
+                cancelClick = {})
           }
         }
 
@@ -270,7 +270,7 @@ class StatefulPrepareGameScreenTest {
             StatefulPrepareGameScreen(
                 user = currentUser,
                 navigateToGame = {},
-                onCancelClick = {
+                cancelClick = {
                   channel.trySend(Unit)
                   channel.close()
                 })

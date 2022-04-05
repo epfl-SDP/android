@@ -1,14 +1,10 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.ui.social.Person
-import kotlinx.coroutines.CoroutineScope
 
 /**
  * State interface of the [PrepareGameScreen]
- * @property colorChoice chosen color
+ * @property
  * @property selectedOpponent the selected opponent whom to create a game with
  */
 interface PrepareGameScreenState<P : Person> {
@@ -19,9 +15,21 @@ interface PrepareGameScreenState<P : Person> {
     Black
   }
 
+  /** The chosen color for the authenticated user */
   var colorChoice: ColorChoice
+
+  /** The list of opponents to display in the [PrepareGameScreen] */
   val opponents: List<P>
+
+  /** A potentially selected opponent to display differently in the opponent list */
   var selectedOpponent: P?
-  fun onPlayClick(person: P)
+
+  /**
+   * A callback for the action to take when clicking on the "play" button in the dialog, when a
+   * specific opponent is selected.
+   */
+  fun onPlayClick(opponent: P)
+
+  /** A callback for the action to take when clicking on the "cancel" button in the dialog */
   fun onCancelClick()
 }

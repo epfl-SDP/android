@@ -20,7 +20,10 @@ import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
  * Composable that represents a list of potential opponents, with one potentially selected
+ * @param state the state of the [PrepareGameScreen]
  * @param modifier [Modifier] for this composable
+ * @param lazyListState the state of the lazyList displaying opponents
+ * @param key a function which uniquely identifies the list items.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,10 +64,10 @@ fun <P : Person> OpponentList(
 
 /**
  * Composable that represents an opponent in [OpponentList]
- * @receiver The profile of the opponent
- * @param selected indicates if the opponent is selected
+ * @param person Person representing the opponent
  * @param onClick button action
  * @param modifier [Modifier] for this composable
+ * @param selected indicates if the opponent is selected
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

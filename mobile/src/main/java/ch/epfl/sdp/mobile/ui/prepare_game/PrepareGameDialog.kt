@@ -16,10 +16,19 @@ import androidx.compose.ui.zIndex
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.social.Person
 
+/**
+ * A composable representing a [Dialog] for choosing a configuration of parameters when creating a
+ * new online game
+ *
+ * @param state the [PrepareGameScreenState] that manage the composable contents
+ * @param modifier the [Modifier] for the composable
+ * @param key a function which uniquely identifies the list items
+ */
 @Composable
 fun <P : Person> PrepareGameDialog(
     state: PrepareGameScreenState<P>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    key: ((P) -> Any)? = null,
 ) {
   val strings = LocalLocalizedStrings.current
 
@@ -62,6 +71,7 @@ fun <P : Person> PrepareGameDialog(
           state = state,
           modifier = Modifier.animateContentSize(),
           lazyListState = lazyListState,
+          key = key,
       )
     }
   }

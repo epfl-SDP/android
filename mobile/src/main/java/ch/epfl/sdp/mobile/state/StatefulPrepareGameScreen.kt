@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,
     navigateToGame: (match: Match) -> Unit,
-    onCancelClick: () -> Unit,
+    cancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val scope = rememberCoroutineScope()
@@ -30,12 +30,12 @@ fun StatefulPrepareGameScreen(
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
 
   val state =
-      remember(user, opponents, navigateToGame, onCancelClick, scope, chessFacade) {
+      remember(user, opponents, navigateToGame, cancelClick, scope, chessFacade) {
         SnapshotPrepareGameScreenState(
             user = user,
             opponents = opponents,
             navigateToGame = navigateToGame,
-            onCancelClick = onCancelClick,
+            cancelClick = cancelClick,
             chessFacade = chessFacade,
             scope = scope,
         )
@@ -53,7 +53,7 @@ class SnapshotPrepareGameScreenState(
     val user: AuthenticatedUser,
     override val opponents: List<ProfileAdapter>,
     val navigateToGame: (match: Match) -> Unit,
-    override val onCancelClick: () -> Unit,
+    val cancelClick: () -> Unit,
     val chessFacade: ChessFacade,
     val scope: CoroutineScope,
 ) : PrepareGameScreenState<ProfileAdapter> {
@@ -62,15 +62,17 @@ class SnapshotPrepareGameScreenState(
 
   override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
 
-  override val onPlayClick: (ProfileAdapter) -> Unit = {
+  override fun onPlayClick(opponent: ProfileAdapter) {
     scope.launch {
       val (white, black) =
           when (colorChoice) {
-            ColorChoice.White -> ProfileAdapter(user) to it
-            ColorChoice.Black -> it to ProfileAdapter(user)
+            ColorChoice.White -> ProfileAdapter(user) to opponent
+            ColorChoice.Black -> opponent to ProfileAdapter(user)
           }
       val match = chessFacade.createMatch(white = white.profile, black = black.profile)
       navigateToGame(match)
     }
   }
+
+  override fun onCancelClick() = this.cancelClick()
 }

@@ -7,13 +7,11 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.state.ProfileAdapter
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.ColorChoice
-import io.mockk.mockk
 import org.hamcrest.core.IsEqual
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +22,7 @@ class PrepareGameScreenTest {
     override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
     override val opponents: List<ProfileAdapter> = listOf()
     override var selectedOpponent: ProfileAdapter? = null
-    override fun onPlayClick(person: ProfileAdapter) {}
+    override fun onPlayClick(opponent: ProfileAdapter) {}
     override fun onCancelClick() {}
   }
 

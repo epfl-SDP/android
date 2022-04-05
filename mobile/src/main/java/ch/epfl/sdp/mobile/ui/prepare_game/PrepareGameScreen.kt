@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
  * Composable that implements a complete PrepareGame screen
  * @param state current state of the screen
  * @param modifier [Modifier] for this composable
+ * @param key a function which uniquely identifies the list items
  */
 @Composable
 fun <P : Person> PrepareGameScreen(
@@ -32,6 +33,7 @@ fun <P : Person> PrepareGameScreen(
     PrepareGameDialog(
         state = state,
         modifier = Modifier.padding(vertical = 48.dp),
+        key = key,
     )
   }
 }
