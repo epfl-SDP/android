@@ -20,6 +20,9 @@ interface PrepareGameScreenState<P : Person> {
   /** A potentially selected opponent to display differently in the opponent list */
   val selectedOpponent: P?
 
+  /** Whether or not the confirm button should be clickable */
+  val playEnabled: Boolean
+
   /**
    * The action to take when clicking on an opponent in the opponent's list
    * @param opponent The [Person] which was clicked

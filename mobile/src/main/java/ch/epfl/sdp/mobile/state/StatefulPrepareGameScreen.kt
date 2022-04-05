@@ -67,13 +67,17 @@ class SnapshotPrepareGameScreenState(
   override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
     private set
 
+  override var playEnabled: Boolean by mutableStateOf(selectedOpponent != null)
+    private set
+
   override fun onOpponentClick(opponent: ProfileAdapter) {
-    selectedOpponent =
-        if (selectedOpponent == opponent) {
-          null
-        } else {
-          opponent
-        }
+    if (selectedOpponent == opponent) {
+      selectedOpponent = null
+      playEnabled = false
+    } else {
+      selectedOpponent = opponent
+      playEnabled = true
+    }
   }
 
   override fun onPlayClick() {

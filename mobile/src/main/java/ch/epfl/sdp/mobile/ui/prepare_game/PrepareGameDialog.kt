@@ -39,6 +39,7 @@ fun <P : Person> PrepareGameDialog(
       onConfirmClick = { state.onPlayClick() },
       cancelContent = { Text(strings.prepareGameCancel) },
       confirmContent = { Text(strings.prepareGamePlay) },
+      confirmEnabled = state.playEnabled,
   ) {
     Column {
       val lazyListState = rememberLazyListState()

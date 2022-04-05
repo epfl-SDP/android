@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
  * @param cancelContent the content of the cancel button.
  * @param confirmContent the content of the confirm button.
  * @param modifier the [Modifier] for this composable.
+ * @param confirmEnabled Whether or not the confirm button should be clickable
  * @param shape the [Shape] of the dialog.
  * @param elevation the elevation of the dialog.
  * @param content the body of the dialog.
@@ -31,6 +32,7 @@ fun Dialog(
     cancelContent: @Composable RowScope.() -> Unit,
     confirmContent: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
+    confirmEnabled: Boolean = true,
     shape: Shape = RoundedCornerShape(16.dp),
     elevation: Dp = 24.dp,
     content: @Composable () -> Unit,
@@ -38,7 +40,9 @@ fun Dialog(
   Dialog(
       modifier = modifier,
       cancel = { OutlinedButton(onCancelClick, shape = CircleShape) { cancelContent() } },
-      confirm = { Button(onConfirmClick, shape = CircleShape) { confirmContent() } },
+      confirm = {
+        Button(onConfirmClick, enabled = confirmEnabled, shape = CircleShape) { confirmContent() }
+      },
       shape = shape,
       elevation = elevation,
       content = content,

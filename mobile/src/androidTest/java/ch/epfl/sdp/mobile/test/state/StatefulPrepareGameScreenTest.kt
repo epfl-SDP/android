@@ -277,4 +277,77 @@ class StatefulPrepareGameScreenTest {
 
     assertThat(channel.receive()).isEqualTo(Unit)
   }
+
+  @Test
+  fun given_NoOpponentSelected_When_ClickingPlay_Then_ButtonNotClicked() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val channel = Channel<Unit>(capacity = 1)
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(
+                user = currentUser,
+                navigateToGame = {
+                  channel.trySend(Unit)
+                  channel.close()
+                },
+                cancelClick = {})
+          }
+        }
+
+    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+    assertThat(channel.tryReceive().getOrNull()).isNotEqualTo(Unit)
+  }
+
+  @Test
+  fun given_SelectedOpponent_When_DeselectingItAndClickingPlay_Then_ButtonNotClicked() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val channel = Channel<Unit>(capacity = 1)
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) {
+            StatefulPrepareGameScreen(
+                user = currentUser,
+                navigateToGame = {
+                  channel.trySend(Unit)
+                  channel.close()
+                },
+                cancelClick = {})
+          }
+        }
+    // Select opponent
+    rule.onNodeWithText("user2").performClick()
+
+    // Deselect opponent
+    rule.onNodeWithText("user2").performClick()
+    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+
+    assertThat(channel.tryReceive().getOrNull()).isNotEqualTo(Unit)
+  }
 }
