@@ -29,14 +29,23 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 
 private const val Lang = "en-US"
 private const val MaxResultsCount = 10
+const val PermissionGranted = "Permission has been granted ! "
+const val PermissionDenied = "Permission was NOT GRANTED !"
+const val DefaultText = "---"
+const val ListeningText = "Listening..."
+const val MicroIconDescription = "micro"
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
-fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
+fun SpeechRecognitionScreen(
+    state: SpeechRecognitionScreenState,
+    modifier: Modifier = Modifier,
+    microPermissionState: PermissionState =
+        rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
+) {
 
   val context = LocalContext.current
-  var text by remember { mutableStateOf("---") }
-  val microPermissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
+  var text by remember { mutableStateOf(DefaultText) }
   var activeSpeech by remember { mutableStateOf(false) }
   val scope = rememberCoroutineScope()
 
@@ -54,18 +63,18 @@ fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
     OutlinedButton(
         shape = CircleShape,
         onClick = {
-          askForPermission(microPermissionState)
+          askForPermission(microPermissionState, state.onPermissionChange)
           activeSpeech = !activeSpeech && microPermissionState.hasPermission
           scope.launch {
             if (activeSpeech) {
-              text = "Listening..."
+              text = ListeningText
               text = recognition(context).joinToString(separator = "\n")
               activeSpeech = false
             } else {
-              text = "---"
+              text = DefaultText
             }
           }
-        }) { Icon(microIcon, null) }
+        }) { Icon(microIcon, MicroIconDescription) }
 
     // Display information about vocal permission
     PermissionText(
@@ -75,15 +84,19 @@ fun SpeechRecognitionScreen(modifier: Modifier = Modifier) {
 }
 
 @OptIn(ExperimentalPermissionsApi::class)
-private fun askForPermission(microPermissionState: PermissionState) {
+private fun askForPermission(
+    microPermissionState: PermissionState,
+    onPermissionChange: () -> Unit
+) {
   if (!microPermissionState.hasPermission) {
     microPermissionState.launchPermissionRequest()
+    onPermissionChange()
   }
 }
 
 @Composable
 private fun PermissionText(modifier: Modifier = Modifier, hasPermission: Boolean = false) {
-  val text = if (hasPermission) "Permission has been granted ! " else "Permission was NOT GRANTED !"
+  val text = if (hasPermission) PermissionGranted else PermissionDenied
   Text(text = text, textAlign = TextAlign.Center, modifier = modifier)
 }
 

@@ -4,7 +4,14 @@
 
     <!-- Necessary permissions for speech recognition -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Required for interaction with a speech recognition service -->
+    <queries>
+        <intent>
+            <action
+                android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
