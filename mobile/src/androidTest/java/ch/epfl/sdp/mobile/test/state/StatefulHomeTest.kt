@@ -222,7 +222,6 @@ class StatefulHomeTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)

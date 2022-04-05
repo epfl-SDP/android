@@ -153,7 +153,6 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -186,7 +185,6 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -214,7 +212,6 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -251,7 +248,6 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-      collection("games") {}
     }
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
