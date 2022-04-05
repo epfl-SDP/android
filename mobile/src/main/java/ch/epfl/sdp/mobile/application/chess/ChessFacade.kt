@@ -10,7 +10,6 @@ import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import java.util.*
 import kotlinx.coroutines.flow.*
 
 /**
@@ -31,20 +30,9 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @return The created [Match] before storing it in the [Store] (without the GameId)
    */
   suspend fun createMatch(white: Profile, black: Profile): Match {
-    val id = UUID.randomUUID().toString()
-    val match = StoreMatch(id, store)
-    store
-        .collection("games")
-        .document(id)
-        .set(
-            ChessDocument(
-                moves = emptyList(),
-                whiteId = white.uid,
-                blackId = black.uid,
-            ),
-        )
-
-    return match
+    val document = store.collection("games").document()
+    document.set(ChessDocument(whiteId = white.uid, blackId = black.uid))
+    return StoreMatch(document.id, store)
   }
 
   /**
