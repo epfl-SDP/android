@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile.Color
@@ -53,6 +54,7 @@ class AuthenticatedUserProfileScreenState(
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()

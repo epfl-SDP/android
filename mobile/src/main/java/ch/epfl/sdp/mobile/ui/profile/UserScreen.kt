@@ -9,10 +9,10 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.SectionSocial
+import ch.epfl.sdp.mobile.ui.ChessIcons
+import ch.epfl.sdp.mobile.ui.WhiteKing
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.social.*
 
@@ -32,6 +32,7 @@ fun UserScreen(
     matches: List<ChessMatch>,
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val strings = LocalLocalizedStrings.current
 
@@ -40,13 +41,14 @@ fun UserScreen(
       verticalArrangement = Arrangement.Top,
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = modifier,
+      contentPadding = contentPadding,
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
     items(matches) { match ->
       val title = strings.profileMatchTitle(match.adversary)
       val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
-      Match(title, subtitle, PawniesIcons.SectionSocial)
+      Match(title, subtitle, ChessIcons.WhiteKing)
     }
   }
 }
@@ -63,7 +65,7 @@ fun UserScreen(
 fun Match(
     title: String,
     subtitle: String,
-    icon: ImageVector,
+    icon: Painter,
     modifier: Modifier = Modifier,
 ) {
   ListItem(

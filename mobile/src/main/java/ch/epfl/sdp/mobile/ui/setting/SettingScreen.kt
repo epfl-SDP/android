@@ -56,7 +56,8 @@ fun SettingsScreen(
       },
       matches = state.matches,
       lazyColumnState = lazyColumnState,
-      modifier = modifier)
+      modifier = modifier,
+      contentPadding = contentPadding)
 }
 
 /**
