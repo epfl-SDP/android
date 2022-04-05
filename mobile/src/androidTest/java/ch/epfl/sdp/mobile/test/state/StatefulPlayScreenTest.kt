@@ -46,7 +46,9 @@ class StatefulPlayScreenTest {
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPlayScreen(userAuthenticated, {}) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPlayScreen(userAuthenticated, navigateToGame = {}, onGameItemClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.profileMatchTitle("test")).assertExists()
@@ -70,7 +72,9 @@ class StatefulPlayScreenTest {
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPlayScreen(userAuthenticated, {}) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPlayScreen(userAuthenticated, navigateToGame = {}, onGameItemClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.profileMatchTitle("")).assertExists()
@@ -94,7 +98,9 @@ class StatefulPlayScreenTest {
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPlayScreen(userAuthenticated, {}) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPlayScreen(userAuthenticated, navigateToGame = {}, onGameItemClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.profileMatchTitle("")).assertExists()
@@ -112,7 +118,9 @@ class StatefulPlayScreenTest {
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulPlayScreen(user, {}) }
+          ProvideFacades(facade, social, chess) {
+            StatefulPlayScreen(user, navigateToGame = {}, onGameItemClick = {})
+          }
         }
 
     rule.onNodeWithText(strings.profileMatchTitle("test")).assertDoesNotExist()

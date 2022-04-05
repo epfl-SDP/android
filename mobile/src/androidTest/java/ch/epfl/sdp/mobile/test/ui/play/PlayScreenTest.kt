@@ -11,10 +11,11 @@ import org.junit.Test
 
 open class TestPlayScreenState(
     override val onNewGameClick: () -> Unit,
+    override val onGameItemClick: (ChessMatch) -> Unit,
     override val matches: List<ChessMatch>
 ) : PlayScreenState
 
-object FakePlayScreenState : TestPlayScreenState({}, emptyList())
+object FakePlayScreenState : TestPlayScreenState({}, {}, emptyList())
 
 class PlayScreenTest {
   @get:Rule val rule = createComposeRule()

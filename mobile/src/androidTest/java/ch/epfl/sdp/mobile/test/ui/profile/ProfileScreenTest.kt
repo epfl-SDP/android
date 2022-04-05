@@ -34,7 +34,7 @@ class ProfileScreenTest {
 
   object FakeProfileScreenState :
       TestProfileScreenState(
-          List(20) { ChessMatch("Konor($it)", Win(CHECKMATE), 27) },
+          List(20) { ChessMatch("1", "Konor($it)", Win(CHECKMATE), 27) },
       )
 
   @Test
@@ -76,26 +76,28 @@ class ProfileScreenTest {
 
   @Test
   fun tieMatchResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("John", Tie, 10)) { profileTieInfo(10) }
+    testMatchResult(rule, ChessMatch("1", "John", Tie, 10)) { profileTieInfo(10) }
   }
 
   @Test
   fun lossByCheckmateResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("John", Loss(CHECKMATE), 10)) { profileLostByCheckmate(10) }
+    testMatchResult(rule, ChessMatch("1", "John", Loss(CHECKMATE), 10)) {
+      profileLostByCheckmate(10)
+    }
   }
 
   @Test
   fun lossByForfeitResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("John", Loss(FORFEIT), 10)) { profileLostByForfeit(10) }
+    testMatchResult(rule, ChessMatch("1", "John", Loss(FORFEIT), 10)) { profileLostByForfeit(10) }
   }
 
   @Test
   fun winCheckmateResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("John", Win(CHECKMATE), 10)) { profileWonByCheckmate(10) }
+    testMatchResult(rule, ChessMatch("1", "John", Win(CHECKMATE), 10)) { profileWonByCheckmate(10) }
   }
 
   @Test
   fun winByForfeitResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("John", Win(FORFEIT), 10)) { profileWonByForfeit(10) }
+    testMatchResult(rule, ChessMatch("1", "John", Win(FORFEIT), 10)) { profileWonByForfeit(10) }
   }
 }
