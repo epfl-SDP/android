@@ -32,7 +32,13 @@ fun StatefulPrepareGameScreen(
   val state =
       remember(user, opponents, navigateToGame, onCancelClick, scope, chessFacade) {
         SnapshotPrepareGameScreenState(
-            user, opponents, navigateToGame, onCancelClick, scope, chessFacade)
+            user = user,
+            opponents = opponents,
+            navigateToGame = navigateToGame,
+            onCancelClick = onCancelClick,
+            chessFacade = chessFacade,
+            scope = scope,
+        )
       }
   PrepareGameScreen(state = state, modifier = modifier, key = { it.uid })
 }
@@ -44,12 +50,12 @@ fun StatefulPrepareGameScreen(
  * @property selectedOpponent The selected opponent's [Profile], if any
  */
 class SnapshotPrepareGameScreenState(
-    override val user: AuthenticatedUser,
+    val user: AuthenticatedUser,
     override val opponents: List<ProfileAdapter>,
-    override val navigateToGame: (match: Match) -> Unit,
+    val navigateToGame: (match: Match) -> Unit,
     override val onCancelClick: () -> Unit,
-    override val scope: CoroutineScope,
-    override val chessFacade: ChessFacade,
+    val chessFacade: ChessFacade,
+    val scope: CoroutineScope,
 ) : PrepareGameScreenState<ProfileAdapter> {
 
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)

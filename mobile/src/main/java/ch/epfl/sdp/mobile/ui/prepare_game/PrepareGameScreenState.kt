@@ -22,10 +22,6 @@ interface PrepareGameScreenState<P : Person> {
   var colorChoice: ColorChoice
   val opponents: List<P>
   var selectedOpponent: P?
-  val user: AuthenticatedUser
-  val navigateToGame: (Match) -> Unit
   val onPlayClick: (P) -> Unit
   val onCancelClick: () -> Unit
-  val scope: CoroutineScope
-  val chessFacade: ChessFacade
 }
