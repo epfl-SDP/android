@@ -23,6 +23,9 @@ class FakeDocumentReference(id: FakeDocumentId) : DocumentReference, CollectionB
 
   val state = MutableStateFlow(State(id))
 
+  override val id: String
+    get() = state.value.id.value
+
   override fun collection(path: String): CollectionReference {
     return state.updateAndGetWithValue {
       val (col, ref) = it.collections.getOrPut(path) { FakeCollectionReference() }
