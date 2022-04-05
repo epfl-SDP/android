@@ -22,7 +22,8 @@ import ch.epfl.sdp.mobile.ui.social.Person
  * Composable that represents a list of potential opponents, with one potentially selected
  * @param P the type of the [Person]
  * @param opponents The list of [Person]s to display as opponents
- * @param selectedOpponent  A potentially selected opponent to display differently in the opponent list
+ * @param selectedOpponent A potentially selected opponent to display differently in the opponent
+ * list
  * @param onOpponentClick The action to take when clicking on an opponent in the opponent's list
  * @param modifier [Modifier] for this composable
  * @param lazyListState the state of the lazyList displaying opponents
@@ -39,10 +40,10 @@ fun <P : Person> OpponentList(
     key: ((P) -> Any)? = null,
 ) {
   LazyColumn(
-      verticalArrangement = Arrangement.spacedBy(8.dp),
+      verticalArrangement = Arrangement.Top,
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = modifier,
-      contentPadding = PaddingValues(8.dp),
+      contentPadding = PaddingValues(horizontal = 16.dp),
       state = lazyListState,
   ) {
     items(
@@ -52,7 +53,7 @@ fun <P : Person> OpponentList(
           Opponent(
               item,
               onClick = { onOpponentClick(item) },
-              modifier = Modifier.animateItemPlacement(),
+              modifier = Modifier.fillMaxWidth().animateItemPlacement(),
               selected = item == selectedOpponent,
           )
         },
@@ -76,26 +77,52 @@ private fun <P : Person> Opponent(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
 ) {
-  Button(
-      modifier = modifier.fillMaxWidth(),
-      shape = CircleShape,
-      colors = opponentColor(selected),
+  SelectableItem(
       onClick = onClick,
-      elevation = null,
+      selected = selected,
+      modifier = modifier,
   ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically) {
-      Box(
-          modifier =
-              Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
-      ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
-      Spacer(modifier = Modifier.width(16.dp))
-      Text(
-          person.name,
-          color = MaterialTheme.colors.primaryVariant,
-          style = MaterialTheme.typography.subtitle1)
+    Box(
+        modifier =
+            Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
+    ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
+    Spacer(modifier = Modifier.width(16.dp))
+    Text(
+        person.name,
+        color = MaterialTheme.colors.primaryVariant,
+        style = MaterialTheme.typography.subtitle1)
+  }
+}
+
+/**
+ * Composable that represents a selectable item
+ * @param onClick button action
+ * @param selected indicates if the opponent is selected
+ * @param modifier [Modifier] for this composable
+ * @param content the content to display in the item
+ */
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SelectableItem(
+    onClick: () -> Unit,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit
+) {
+  Surface(
+      modifier = modifier,
+      shape = CircleShape,
+      color = opponentColor(selected).backgroundColor(true).value,
+      elevation = 0.dp,
+      onClick = onClick,
+  ) {
+    ProvideTextStyle(value = MaterialTheme.typography.button) {
+      Row(
+          modifier = Modifier.padding(16.dp),
+          horizontalArrangement = Arrangement.Start,
+          verticalAlignment = Alignment.CenterVertically,
+          content = content,
+      )
     }
   }
 }
