@@ -182,6 +182,7 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
     rule.onNodeWithText("user2").performClick()
     rule.onNodeWithText(strings.prepareGamePlay).performClick()
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
@@ -210,7 +211,7 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.newGame).performClick()
-
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
     rule.onNodeWithText(strings.prepareGamePlay).performClick()
 
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertDoesNotExist()
@@ -240,10 +241,11 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
 
     rule.onNodeWithText("user2").assertExists()
     rule.onNodeWithText(strings.prepareGameCancel).performClick()
     rule.onNodeWithText("user2").assertDoesNotExist()
-    rule.onNodeWithText(strings.newGame).assertExists()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).assertExists()
   }
 }
