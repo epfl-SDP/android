@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
+import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
@@ -40,24 +41,30 @@ fun SettingsScreen(
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
 
-  UserScreen(
-      header = {
-        SettingHeader(
-            state = state,
-            modifier = Modifier.padding(vertical = 16.dp),
-        )
-      },
-      profileTabBar = {
-        SettingTabBar(
-            state = tabBarState,
-            modifier = Modifier.fillMaxWidth(),
-            elevation = elevation,
-        )
-      },
-      matches = state.matches,
-      lazyColumnState = lazyColumnState,
+  Scaffold(
       modifier = modifier,
-      contentPadding = contentPadding)
+      content = { paddingValues ->
+        val totalPadding = paddingValues + contentPadding
+        UserScreen(
+            header = {
+              SettingHeader(
+                  state = state,
+                  modifier = Modifier.padding(vertical = 16.dp),
+              )
+            },
+            profileTabBar = {
+              SettingTabBar(
+                  state = tabBarState,
+                  modifier = Modifier.fillMaxWidth(),
+                  elevation = elevation,
+              )
+            },
+            matches = state.matches,
+            lazyColumnState = lazyColumnState,
+            modifier = modifier.fillMaxSize(),
+            contentPadding = totalPadding)
+      },
+  )
 }
 
 /**

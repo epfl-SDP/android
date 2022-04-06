@@ -10,8 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.ChessIcons
+import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.WhiteKing
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.social.*
@@ -68,10 +74,24 @@ fun Match(
     icon: Painter,
     modifier: Modifier = Modifier,
 ) {
+  val titles = title.split(' ', limit = 2)
+  val profileAgainst = titles[0]
+  val profileOpponent = titles[1]
   ListItem(
       modifier = modifier,
-      icon = { Icon(icon, null) },
-      text = { Text(title) },
+      icon = { Icon(icon, null, modifier = Modifier.size(40.dp)) },
+      text = {
+        Text(
+            buildAnnotatedString {
+              withStyle(style = SpanStyle(color = PawniesColors.Green800)) {
+                append("$profileAgainst ")
+              }
+              withStyle(style = SpanStyle(color = PawniesColors.Green500, fontWeight = SemiBold)) {
+                append(profileOpponent)
+              }
+            },
+            style = MaterialTheme.typography.body1)
+      },
       secondaryText = { Text(subtitle) },
   )
 }

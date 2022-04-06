@@ -4,9 +4,7 @@ import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.notation.deserialize
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
@@ -84,52 +82,6 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     return this.asFlow<ChessDocument>().map {
       it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
     }
-  }
-
-  /**
-   * Determines the [MatchResult] of a given [Match].
-   *
-   * @param color the [Color] of the current player.
-   * @param match the [Match] to determine its [MatchResult].
-   */
-  private suspend fun determineMatchOutcome(color: Color, match: Match): MatchResult? {
-    val game = match.game.filterNotNull().first()
-    return when (game.nextStep) {
-      is NextStep.Checkmate -> {
-        if (color == (game.nextStep as NextStep.Checkmate).winner) Win(MatchResult.Reason.CHECKMATE)
-        else Loss(MatchResult.Reason.CHECKMATE)
-      }
-      is NextStep.Stalemate -> Tie
-      else -> Tie // Should be changed to null but left for test purposes.
-    }
-  }
-
-  /**
-   * Returns a [Flow] of a list of [ChessMatch] of the matches played by the given profile.
-   *
-   * @param profile the profile we want to know their played [ChessMatch]es
-   */
-  fun chessMatches(profile: Profile): Flow<List<ChessMatch>> {
-    val matches = matches(profile)
-    return matches.map { list -> list.mapNotNull { match -> match.toChessMatch(profile.uid) } }
-  }
-
-  /**
-   * Transforms a given [Match] to a [ChessMatch].
-   *
-   * @param currentUid the uid of the current user.
-   */
-  private suspend fun Match.toChessMatch(
-      currentUid: String,
-  ): ChessMatch? {
-    val black = this.black.filterNotNull().first()
-    val white = this.white.filterNotNull().first()
-    val adversary = if (black.uid == currentUid) white.name else black.name
-    val color = if (black.uid == currentUid) Color.Black else Color.White
-    val result = determineMatchOutcome(color, this)
-    val game = this.game.first()
-    val moveNum = game.serialize().size
-    return result?.let { ChessMatch(adversary, result, moveNum) }
   }
 }
 

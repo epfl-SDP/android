@@ -80,7 +80,9 @@ fun StatefulHome(
             contentPadding = paddingValues,
         )
       }
-      composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
+      composable(SettingsRoute) {
+        StatefulSettingsScreen(user, Modifier.fillMaxSize(), paddingValues)
+      }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulProfileScreen(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
