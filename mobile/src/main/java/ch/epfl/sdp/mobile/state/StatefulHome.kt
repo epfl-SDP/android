@@ -63,7 +63,7 @@ fun StatefulHome(
     controller.navigate("$ProfileRoute/${person.uid}")
   }
 
-  val onGameItemClick: (match: ChessMatch) -> Unit = { match ->
+  val onGameItemClick: (match: ChessMatchAdapter) -> Unit = { match ->
     controller.navigate("$GameRoute/${match.uid}")
   }
 

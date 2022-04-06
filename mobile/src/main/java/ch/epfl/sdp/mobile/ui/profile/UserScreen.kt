@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.ui.social.*
  * @param profileBar part of slot construct that represents the tab bar.
  * @param matches the part that is responsible for the list of all matches
  * @param lazyColumnState to keep state of LazyColumn
+ *
  * @param modifier the [Modifier] for this composable.
  */
 @OptIn(ExperimentalFoundationApi::class)
@@ -37,6 +38,6 @@ fun UserScreen(
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
-    items(matches) { match -> Match(match, onGameItemClick) }
+    items(matches) { match -> Match(match, {onGameItemClick}) }
   }
 }

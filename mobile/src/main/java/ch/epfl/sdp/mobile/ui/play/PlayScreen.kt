@@ -12,23 +12,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.profile.Match
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
  * expanded to include history of matches
- * @param state state of the PlayScreen
+ * @param state the [PlayScreenState] to manage composable content
+ * @param key a function which uniquely identifies the list items.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun PlayScreen(
-    state: PlayScreenState,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues()
+fun <M : ChessMatch>PlayScreen(
+  state: PlayScreenState<M>,
+  modifier: Modifier = Modifier,
+  key: ((M) -> Any)? = null,
+  contentPadding: PaddingValues = PaddingValues()
 ) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
@@ -41,7 +45,7 @@ fun PlayScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier,
-    ) { items(state.matches) { match -> Match(match, state.onGameItemClick) } }
+    ) { items(state.matches, key) { match -> Match(match, { state.onGameItemClick(match) }) } }
   }
 
   Box(modifier = modifier.fillMaxSize().padding(contentPadding)) {

@@ -18,8 +18,41 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * A stateful implementation of the PlayScreen
+ * @param user the Authenticated user
+ * @param onGameItemClick callback function to navigate to game on click
+ * @param navigateToGame Callable lambda to navigate to game screen
+ * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this composable.
+ */
+@Composable
+fun StatefulPlayScreen(
+    user: AuthenticatedUser,
+    onGameItemClick: (ChessMatchAdapter) -> Unit,
+    navigateToGame: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+) {
+  val facade = LocalChessFacade.current
+  val currentNavigateToGame = rememberUpdatedState(navigateToGame)
+  val onGameItemClick = rememberUpdatedState(onGameItemClick)
+  val scope = rememberCoroutineScope()
+  val state =
+      remember(user, facade, scope) {
+        PlayScreenStateImpl(
+            onNewGameClick = currentNavigateToGame,
+            onGameItemClick = onGameItemClick,
+            user = user,
+            facade = facade,
+            scope = scope,
+        )
+      }
+  PlayScreen(state = state, modifier = modifier, key = { it.uid }, contentPadding = contentPadding)
+}
+
 /** An Loadable Union Type to differentiate between loaded and state */
-sealed interface Loadable<out T> {
+private sealed interface Loadable<out T> {
   object Loading : Loadable<Nothing>
   data class Loaded<out T>(val value: T) : Loadable<T>
 
@@ -52,7 +85,7 @@ private inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
  * Gives higher order function to decide the MatchResult
  * @param userColor color of the current user
  */
-private inline fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
+private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
     when (this) {
       is NextStep.Stalemate -> { _ -> Tie }
       is NextStep.MovePiece -> { userColor -> if (this.turn == userColor) YourTurn else OtherTurn }
@@ -75,6 +108,13 @@ private data class MatchInfo(
     val blackName: String,
     val matchResult: (userColor: Color) -> MatchResult
 )
+
+data class ChessMatchAdapter(
+    val uid: String,
+    override val adversary: String,
+    override val matchResult: MatchResult,
+    override val numberOfMoves: Int
+) : ChessMatch {}
 
 /**
  * Fetches the matches from the facade and convert it to a list of MatchInfos
@@ -126,13 +166,14 @@ private fun info(match: Match): Flow<MatchInfo> {
  */
 private class PlayScreenStateImpl(
     onNewGameClick: State<() -> Unit>,
-    override val onGameItemClick: (ChessMatch) -> Unit,
+    onGameItemClick: State<(ChessMatchAdapter) -> Unit>,
     user: AuthenticatedUser,
     facade: ChessFacade,
     scope: CoroutineScope,
-) : PlayScreenState {
+) : PlayScreenState<ChessMatchAdapter> {
   override val onNewGameClick by onNewGameClick
-  override var matches by mutableStateOf(emptyList<ChessMatch>())
+  override val onGameItemClick by onGameItemClick
+  override var matches by mutableStateOf(emptyList<ChessMatchAdapter>())
     private set
 
   init {
@@ -149,41 +190,10 @@ private class PlayScreenStateImpl(
  * @param match [MatchInfo] intermediate datatype
  * @param user authenticated user
  */
-private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatch =
-    ChessMatch(
+private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatchAdapter =
+    ChessMatchAdapter(
         adversary = if (user.uid == match.blackId) match.whiteName else match.blackName,
         matchResult =
             match.matchResult(if (user.uid == match.blackId) Color.Black else Color.White),
         numberOfMoves = match.movesCount,
         uid = match.id ?: "")
-
-/**
- * A stateful implementation of the PlayScreen
- * @param user the Authenticated user
- * @param navigateToGame Callable lambda to navigate to game screen
- * @param modifier the [Modifier] for this composable.
- * @param contentPadding the [PaddingValues] for this composable.
- */
-@Composable
-fun StatefulPlayScreen(
-    user: AuthenticatedUser,
-    onGameItemClick: (ChessMatch) -> Unit,
-    navigateToGame: () -> Unit,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
-) {
-  val facade = LocalChessFacade.current
-  val currentNavigateToGame = rememberUpdatedState(navigateToGame)
-  val scope = rememberCoroutineScope()
-  val state =
-      remember(user, facade, scope) {
-        PlayScreenStateImpl(
-            onNewGameClick = currentNavigateToGame,
-            onGameItemClick = onGameItemClick,
-            user = user,
-            facade = facade,
-            scope = scope,
-        )
-      }
-  PlayScreen(state, modifier, contentPadding)
-}
