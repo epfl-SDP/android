@@ -6,6 +6,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.compose.rememberNavController
 import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -106,26 +107,6 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun clickNewGame_inPlaySection_switchesToBoard() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-
-    facade.signUpWithEmail("email", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulHome(user) }
-        }
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
-    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
-    rule.onNodeWithText(strings.newGame).assertExists().performClick().assertDoesNotExist()
-  }
-
-  @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
@@ -177,6 +158,94 @@ class StatefulHomeTest {
         }
 
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+  }
+
+  @Test
+  fun creatingGameFromPrepareGameScreen_opensGameScreen() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText("user2").performClick()
+    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+  }
+
+  @Test
+  fun clickingOnPlayButtonFromPrepareGameScreen_withNoOpponentSelected_doesNothing() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.newGame).performClick()
+
+    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertDoesNotExist()
+    rule.onNodeWithText("user2").assertExists()
+  }
+
+  @Test
+  fun cancelingPreparegameScreen_returnsToPlaySection() = runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.newGame).performClick()
+
+    rule.onNodeWithText("user2").assertExists()
+    rule.onNodeWithText(strings.prepareGameCancel).performClick()
+    rule.onNodeWithText("user2").assertDoesNotExist()
+    rule.onNodeWithText(strings.newGame).assertExists()
   }
 
   @Test
