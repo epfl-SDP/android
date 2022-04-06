@@ -28,9 +28,6 @@ fun ArScreen(game: Game, modifier: Modifier = Modifier) {
     onDispose { view.keepScreenOn = false }
   }
 
-  // FIX ME : Only to simplify the dev process
-  val currentBoardState = Game.create().board
-
   AndroidView(
       factory = { context ->
 
