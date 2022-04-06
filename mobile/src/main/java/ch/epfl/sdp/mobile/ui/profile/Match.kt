@@ -16,14 +16,14 @@ import ch.epfl.sdp.mobile.ui.social.*
 /**
  * Composes a Match log using a match [title], [subtitle] and an [icon]
  * @param match a chess Match
- * @param onMatchClick  callback function if clicked on item
+ * @param onMatchClick callback function if clicked on item
  * @param modifier the [Modifier] for this composable.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Match(
     match: ChessMatch,
-    onMatchClick : () -> Unit,
+    onMatchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -31,7 +31,7 @@ fun Match(
   val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
 
   ListItem(
-      modifier = modifier.clickable { onMatchClick () },
+      modifier = modifier.clickable { onMatchClick() },
       icon = { Icon(PawniesIcons.SectionSocial, null) },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },

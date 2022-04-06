@@ -13,7 +13,7 @@ open class TestPlayScreenState(
     override val onNewGameClick: () -> Unit,
     override val onGameItemClick: (ChessMatch) -> Unit,
     override val matches: List<ChessMatch>
-) : PlayScreenState
+) : PlayScreenState<ChessMatch>
 
 object FakePlayScreenState : TestPlayScreenState({}, {}, emptyList())
 

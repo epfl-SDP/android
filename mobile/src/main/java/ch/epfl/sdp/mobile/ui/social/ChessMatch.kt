@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.ui.social
 
-interface ChessMatch{
-    val adversary: String
-    val matchResult: MatchResult
-    val numberOfMoves: Int
+interface ChessMatch {
+  val adversary: String
+  val matchResult: MatchResult
+  val numberOfMoves: Int
 }
 
 sealed interface MatchResult {

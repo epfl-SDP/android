@@ -4,6 +4,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
+import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
@@ -35,7 +36,7 @@ class SettingScreenTest {
 
   object FakeSetttingScreenState :
       TestSettingScreenState(
-          List(20) { ChessMatch("1", "Konor($it)", Win(CHECKMATE), 27) },
+          List(20) { ChessMatchAdapter("1", "Konor($it)", Win(CHECKMATE), 27) },
       ) {
     override val puzzlesCount = 12
   }
@@ -79,28 +80,34 @@ class SettingScreenTest {
 
   @Test
   fun tieMatchResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("1", "John", Tie, 10)) { profileTieInfo(10) }
+    testMatchResult(rule, ChessMatchAdapter("1", "John", Tie, 10)) { profileTieInfo(10) }
   }
 
   @Test
   fun lossByCheckmateResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("1", "John", Loss(CHECKMATE), 10)) {
+    testMatchResult(rule, ChessMatchAdapter("1", "John", Loss(CHECKMATE), 10)) {
       profileLostByCheckmate(10)
     }
   }
 
   @Test
   fun lossByForfeitResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("1", "John", Loss(FORFEIT), 10)) { profileLostByForfeit(10) }
+    testMatchResult(rule, ChessMatchAdapter("1", "John", Loss(FORFEIT), 10)) {
+      profileLostByForfeit(10)
+    }
   }
 
   @Test
   fun winCheckmateResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("1", "John", Win(CHECKMATE), 10)) { profileWonByCheckmate(10) }
+    testMatchResult(rule, ChessMatchAdapter("1", "John", Win(CHECKMATE), 10)) {
+      profileWonByCheckmate(10)
+    }
   }
 
   @Test
   fun winByForfeitResult_isDisplayed() {
-    testMatchResult(rule, ChessMatch("1", "John", Win(FORFEIT), 10)) { profileWonByForfeit(10) }
+    testMatchResult(rule, ChessMatchAdapter("1", "John", Win(FORFEIT), 10)) {
+      profileWonByForfeit(10)
+    }
   }
 }

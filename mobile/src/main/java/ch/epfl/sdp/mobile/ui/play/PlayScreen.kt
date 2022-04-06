@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.PawniesColors
@@ -28,11 +27,11 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <M : ChessMatch>PlayScreen(
-  state: PlayScreenState<M>,
-  modifier: Modifier = Modifier,
-  key: ((M) -> Any)? = null,
-  contentPadding: PaddingValues = PaddingValues()
+fun <M : ChessMatch> PlayScreen(
+    state: PlayScreenState<M>,
+    modifier: Modifier = Modifier,
+    key: ((M) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
   val strings = LocalLocalizedStrings.current
   Column(modifier) {
