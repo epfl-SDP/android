@@ -20,7 +20,7 @@ import io.github.sceneview.node.ModelNode
  * @param board The board that contains the displayed game state
  */
 class ChessScene(
-    val context: Context,
+    private val context: Context,
     private val lifecycleScope: LifecycleCoroutineScope,
     board: Board<Piece<Color>>,
 ) {
