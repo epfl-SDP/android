@@ -77,7 +77,7 @@ fun NewGameButton(
         collapsedContent = {
           Icon(PawniesIcons.Add, null)
           Spacer(Modifier.width(16.dp))
-          Text("New game".uppercase())
+          Text(strings.newGame)
         },
         modifier = Modifier.padding(16.dp),
     )
