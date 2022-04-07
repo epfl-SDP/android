@@ -28,7 +28,7 @@ class SnapshotPlayScreenState(
     private val localGame: (match: Match) -> Unit,
     private val onlineGame: () -> Unit,
     private val chessFacade: ChessFacade,
-    val scope: CoroutineScope,
+    private val scope: CoroutineScope,
 ) : PlayScreenState {
   override fun onLocalGameClick() {
     scope.launch {
