@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.ui.ar
 
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import io.github.sceneview.math.Position
+import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
+import io.github.sceneview.math.Position as ArPosition
 
 /**
  * This class contains information about the AR chess board model
@@ -19,12 +19,12 @@ data class ArBoard(
   private val cellSize = (boardHalfSize - boardBorderSize) / 4
   private val cellCenter = cellSize / 2
 
-  /** For the given [ChessBoardState.Position] and transform it into AR board [Position] */
-  fun toArPosition(position: ChessBoardState.Position): Position {
+  /** For the given [EnginePosition] and transform it into AR board [ArPosition] */
+  fun toArPosition(position: EnginePosition): ArPosition {
 
     fun transform(value: Int): Float {
       return -boardHalfSize + boardBorderSize + value * cellSize + cellCenter
     }
-    return Position(x = transform(position.x), y = boardHeight, z = transform(position.y))
+    return ArPosition(x = transform(position.x), y = boardHeight, z = transform(position.y))
   }
 }
