@@ -41,8 +41,8 @@ fun StatefulPlayScreen(
   val state =
       remember(user, facade, scope) {
         PlayScreenStateImpl(
-            onNewGameClick = currentNavigateToGame,
-            onGameItemClickAction = onGameItemClickAction,
+            onNewGameClickAction = currentNavigateToGame,
+            onMatchClickAction = onGameItemClickAction,
             user = user,
             facade = facade,
             scope = scope,
@@ -65,7 +65,7 @@ private sealed interface Loadable<out T> {
  * A map for the Loadable type
  * @param f callback function for map
  */
-private inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
+private fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
     when (this) {
       is Loadable.Loaded -> loaded(f(value))
       Loadable.Loading -> loading()
@@ -75,7 +75,7 @@ private inline fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
  * Extract the value out of the Loadable type
  * @param lazyBlock function which returns alternative value
  */
-private inline fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
+private fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     when (this) {
       is Loadable.Loaded -> value
       Loadable.Loading -> lazyBlock()
@@ -166,14 +166,14 @@ private fun info(match: Match): Flow<MatchInfo> {
  * @param scope for coroutines
  */
 private class PlayScreenStateImpl(
-    onNewGameClick: State<() -> Unit>,
-    onGameItemClickAction: State<(ChessMatchAdapter) -> Unit>,
+    onNewGameClickAction: State<() -> Unit>,
+    onMatchClickAction: State<(ChessMatchAdapter) -> Unit>,
     user: AuthenticatedUser,
     facade: ChessFacade,
     scope: CoroutineScope,
 ) : PlayScreenState<ChessMatchAdapter> {
-  override val onNewGameClick by onNewGameClick
-  val onGameItemClickAction by onGameItemClickAction
+  val onNewGameClickAction by onNewGameClickAction
+  val onMatchClickAction by onMatchClickAction
   override var matches by mutableStateOf(emptyList<ChessMatchAdapter>())
     private set
 
@@ -185,8 +185,12 @@ private class PlayScreenStateImpl(
     }
   }
 
-  override fun onGameItemClick(match: ChessMatchAdapter) {
-    onGameItemClickAction(match)
+  override fun onMatchClick(match: ChessMatchAdapter) {
+    onMatchClickAction(match)
+  }
+
+  override fun onNewGameClick() {
+    onNewGameClickAction()
   }
 }
 

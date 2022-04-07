@@ -6,10 +6,10 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
 interface PlayScreenState<M : ChessMatch> {
 
   /* Callable upon actioning button */
-  val onNewGameClick: () -> Unit
+  fun onNewGameClick()
 
   /** Action to execute when clicked on match item in list */
-  fun onGameItemClick(match: M)
+  fun onMatchClick(match: M)
 
   /** List of matches of current user */
   val matches: List<M>

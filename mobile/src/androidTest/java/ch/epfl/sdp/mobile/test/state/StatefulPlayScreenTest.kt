@@ -55,6 +55,79 @@ class StatefulPlayScreenTest {
   }
 
   @Test
+  fun given_playerHasLostByCheckmate_when_accessingPlayScreen_then_displayLostByCheckmate() =
+      runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1"))
+        document("2", ProfileDocument("2", name = "test"))
+      }
+      collection("games") {
+        document(
+            /* Funfact: Fool's Mate, Fastest checkmate possible https://www.chess.com/article/view/fastest-chess-checkmates */
+            "id",
+            ChessDocument(
+                uid = "786",
+                whiteId = "1",
+                blackId = "2",
+                moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
+      }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signInWithEmail("email@example.org", "password")
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) {
+            StatefulPlayScreen(userAuthenticated, navigateToGame = {}, onGameItemClick = {})
+          }
+        }
+
+    rule.onNodeWithText(strings.profileLostByCheckmate(4)).assertExists()
+  }
+
+  @Test
+  fun given_playerHasWonByCheckmate_when_accessingPlayScreen_then_displayWinByCheckmate() =
+      runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1"))
+        document("2", ProfileDocument("2", name = "test"))
+      }
+      collection("games") {
+        document(
+            "id",
+            ChessDocument(
+                uid = "786",
+                whiteId = "2",
+                blackId = "1",
+                moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
+      }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    facade.signInWithEmail("email@example.org", "password")
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess) {
+            StatefulPlayScreen(userAuthenticated, navigateToGame = {}, onGameItemClick = {})
+          }
+        }
+
+    rule.onNodeWithText(strings.profileWonByCheckmate(4)).assertExists()
+  }
+
+  @Test
   fun statefulPlayScreen_isDisplayedWithNoWhiteId() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {

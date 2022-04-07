@@ -43,11 +43,12 @@ fun <M : ChessMatch> PlayScreen(
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-    ) { items(state.matches, key) { match -> Match(match, { state.onGameItemClick(match) }) } }
+    ) { items(state.matches, key) { match -> Match(match, { state.onMatchClick(match) }) } }
   }
 
   Box(modifier = modifier.fillMaxSize().padding(contentPadding)) {
-    NewGameButton(onNewGame = state.onNewGameClick, modifier = Modifier.align(Alignment.BottomEnd))
+    NewGameButton(
+        onNewGame = { state.onNewGameClick() }, modifier = Modifier.align(Alignment.BottomEnd))
   }
 }
 

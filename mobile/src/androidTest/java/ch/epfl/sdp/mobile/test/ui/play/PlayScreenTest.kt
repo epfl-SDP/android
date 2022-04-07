@@ -10,12 +10,16 @@ import org.junit.Rule
 import org.junit.Test
 
 open class TestPlayScreenState(
-    override val onNewGameClick: () -> Unit,
+    val onNewGameClickAction: () -> Unit,
     val onGameItemClickAction: (ChessMatch) -> Unit,
     override val matches: List<ChessMatch>
 ) : PlayScreenState<ChessMatch> {
-  override fun onGameItemClick(match: ChessMatch) {
+  override fun onMatchClick(match: ChessMatch) {
     onGameItemClickAction(match)
+  }
+
+  override fun onNewGameClick() {
+    onNewGameClickAction()
   }
 }
 
