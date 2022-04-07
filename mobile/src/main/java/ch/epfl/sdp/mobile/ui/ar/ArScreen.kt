@@ -48,11 +48,13 @@ fun ArScreen(game: Game, modifier: Modifier = Modifier) {
          */
         fun anchorOrMoveBoard(anchor: Anchor) {
 
-          // Add only one instance of the node
-          if (!arSceneView.children.contains(chessScene!!.boardNode)) {
-            arSceneView.addChild(chessScene!!.boardNode)
+          chessScene?.let {
+            // Add only one instance of the node
+            if (!arSceneView.children.contains(it.boardNode)) {
+              arSceneView.addChild(it.boardNode)
+            }
+            it.boardNode.anchor = anchor
           }
-          chessScene!!.boardNode.anchor = anchor
         }
 
         // Place the chess board on the taped position
