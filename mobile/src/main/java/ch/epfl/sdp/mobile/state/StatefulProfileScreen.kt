@@ -37,7 +37,7 @@ fun StatefulProfileScreen(
   val chessFacade = LocalChessFacade.current
   val profile by remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
   val matches =
-      remember(chessFacade, profile) { profile?.let { chessFacade.chessMatches(it) } }
+      remember(chessFacade, profile) { profile?.let { chessMatches(it, chessFacade) } }
           ?.collectAsState(emptyList())
           ?.value
           ?: emptyList()
