@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.state.DefaultSpeechRecognitionScreenState
 import ch.epfl.sdp.mobile.ui.speech_recognition.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -18,7 +19,6 @@ import org.junit.Test
 
 @ExperimentalPermissionsApi
 class SpeechRecognitionScreenTest {
-
   @get:Rule val rule = createComposeRule()
   @get:Rule
   val permissionRule: GrantPermissionRule =
@@ -63,5 +63,25 @@ class SpeechRecognitionScreenTest {
 
     rule.onNodeWithText(ListeningText).assertDoesNotExist()
     rule.onNodeWithText(DefaultText).assertExists()
+  }
+
+  @Test
+  fun given_listeningMic_when_talking_then_textDisplayed() {
+    val mockedPermission = mockk<PermissionState>()
+    every { mockedPermission.hasPermission } returns true
+
+    val state = DefaultSpeechRecognitionScreenState(mockedPermission, mutableStateOf(true))
+
+    val speech = "Hello World"
+
+    val mockedRecognizer: SpeechRecognizable = mockk()
+
+    coEvery { mockedRecognizer.recognition(any()) } returns listOf(speech)
+
+    rule.setContent { SpeechRecognitionScreen(state, mockedRecognizer) }
+    rule.onNodeWithText(PermissionGranted).assertExists()
+    rule.onNodeWithText(DefaultText).assertExists()
+    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
+    rule.onNodeWithText(speech).assertExists()
   }
 }

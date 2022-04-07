@@ -1,11 +1,5 @@
 package ch.epfl.sdp.mobile.ui.speech_recognition
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.speech.RecognitionListener
-import android.speech.RecognizerIntent
-import android.speech.SpeechRecognizer
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.Arrangement
@@ -23,13 +17,9 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
-import kotlin.coroutines.resume
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 
 /* Extracted strings used for test, may be removed later */
-private const val Lang = "en-US"
-private const val MaxResultsCount = 10
 const val PermissionGranted = "Permission has been granted ! "
 const val PermissionDenied = "Permission was NOT GRANTED !"
 const val DefaultText = "---"
@@ -48,6 +38,7 @@ private val mutex = MutatorMutex()
 @OptIn(ExperimentalPermissionsApi::class)
 fun SpeechRecognitionScreen(
     state: SpeechRecognitionScreenState,
+    recognizer: SpeechRecognizable = SpeechRecognizerEntity(),
     modifier: Modifier = Modifier,
 ) {
 
@@ -91,7 +82,7 @@ fun SpeechRecognitionScreen(
             vocalize {
               if (activeSpeech) {
                 text = ListeningText
-                text = recognition(context).joinToString(separator = "\n")
+                text = recognizer.recognition(context).joinToString(separator = "\n")
               } else {
                 text = DefaultText
               }
@@ -131,49 +122,4 @@ private fun askForPermission(
 private fun PermissionText(modifier: Modifier = Modifier, hasPermission: Boolean = false) {
   val text = if (hasPermission) PermissionGranted else PermissionDenied
   Text(text = text, textAlign = TextAlign.Center, modifier = modifier)
-}
-
-/**
- * Returns speech results from the speech recognizer
- * @param context [Context] context of the app execution
- * @return List of size maximum [MaxResultsCount] of speech recognizer results as strings
- */
-suspend fun recognition(context: Context): List<String> = suspendCancellableCoroutine { cont ->
-  val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
-  val speechRecognizerIntent =
-      Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) // Speech action
-          .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Lang) // Speech language
-          .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, MaxResultsCount) // Number of results
-
-  // Listener for results
-  val listener =
-      object : RecognitionListenerAdapter() {
-        override fun onResults(results: Bundle?) {
-          super.onResults(results)
-          cont.resume(
-              // results cannot be null
-              results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: emptyList())
-        }
-      }
-  recognizer.setRecognitionListener(listener)
-  recognizer.startListening(speechRecognizerIntent)
-
-  // Clearing upon coroutine cancellation
-  cont.invokeOnCancellation {
-    recognizer.stopListening()
-    recognizer.destroy()
-  }
-}
-
-/** Adapter class for Recognition' listener */
-abstract class RecognitionListenerAdapter : RecognitionListener {
-  override fun onReadyForSpeech(params: Bundle?) = Unit
-  override fun onBeginningOfSpeech() = Unit
-  override fun onRmsChanged(rmsdB: Float) = Unit
-  override fun onBufferReceived(buffer: ByteArray?) = Unit
-  override fun onEndOfSpeech() = Unit
-  override fun onError(error: Int) = Unit
-  override fun onResults(results: Bundle?) = Unit
-  override fun onPartialResults(partialResults: Bundle?) = Unit
-  override fun onEvent(eventType: Int, params: Bundle?) = Unit
 }

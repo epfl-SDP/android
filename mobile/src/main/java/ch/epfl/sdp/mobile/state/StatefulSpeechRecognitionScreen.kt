@@ -10,6 +10,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 
+/**
+ * Default implementation of the [SpeechRecognitionScreenState]
+ * @property permissionState [PermissionState] for launching permission dialog
+ * @property microphonePermissionState mutable state of microphone permission
+ */
 @ExperimentalPermissionsApi
 class DefaultSpeechRecognitionScreenState(
     override val permissionState: PermissionState,
@@ -22,6 +27,11 @@ class DefaultSpeechRecognitionScreenState(
   }
 }
 
+/**
+ * Stateful composable for the SpeechRecognitionScreen
+ * @param user authenticated user
+ * @param modifier [Modifier] of this composable
+ */
 @ExperimentalPermissionsApi
 @Composable
 fun StatefulSpeechRecognitionScreen(user: AuthenticatedUser, modifier: Modifier = Modifier) {
@@ -35,5 +45,5 @@ fun StatefulSpeechRecognitionScreen(user: AuthenticatedUser, modifier: Modifier 
         DefaultSpeechRecognitionScreenState(permissionState, microphonePermissionState)
       }
 
-  SpeechRecognitionScreen(state = state, modifier)
+  SpeechRecognitionScreen(state = state, modifier = modifier)
 }
