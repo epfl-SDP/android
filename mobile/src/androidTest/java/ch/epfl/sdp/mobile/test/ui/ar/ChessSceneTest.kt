@@ -24,7 +24,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun give_chessScene_when_scaled_then_rootHasCorrectScaleVector() {
+  fun given_chessScene_when_scaled_then_rootHasCorrectScaleVector() {
     val board = Game.create()
     val chessScene =
         ChessScene(rule.activity.applicationContext, rule.activity.lifecycleScope, board.board)
