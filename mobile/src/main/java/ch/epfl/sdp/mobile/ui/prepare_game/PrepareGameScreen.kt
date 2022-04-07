@@ -1,46 +1,40 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
- * Composable that implements a complete PrepareGame screen from [ColorChoiceBar] and
- * [GameTypeChoiceButtons]
+ * Composable that implements a complete PrepareGame screen
  * @param state current state of the screen
  * @param modifier [Modifier] for this composable
+ * @param key a function which uniquely identifies the list items
+ * @param P the type of the [Person].
  */
 @Composable
-fun PrepareGameScreen(
-    state: PrepareGameScreenState,
+fun <P : Person> PrepareGameScreen(
+    state: PrepareGameScreenState<P>,
     modifier: Modifier = Modifier,
+    key: ((P) -> Any)? = null,
 ) {
-  val strings = LocalLocalizedStrings.current
-  Column(
-      verticalArrangement = Arrangement.spacedBy(16.dp),
-      modifier = modifier.padding(16.dp, 16.dp)) {
-    Text(text = strings.prepareGameChooseColor, style = MaterialTheme.typography.subtitle1)
-    ColorChoiceBar(
-        colorChoice = state.colorChoice,
-        onSelectColor = { state.colorChoice = it },
+  /*
+   A bug in Compose's navigation component makes the system window shrink to the measured size of
+   the dialog when it's filled for the first time. On the following recompositions, this new size
+   is applied as the constraints to the root of the hierarchy and some elements might not be able
+   to occupy some space they need.
+   Applying Modifier.fillMaxSize() makes sure we "reserve" this space and that the window will
+   never force us to shrink our content.
+  */
+  Box(modifier.fillMaxSize(), Alignment.Center) {
+    PrepareGameDialog(
+        state = state,
+        modifier = Modifier.padding(vertical = 48.dp),
+        key = key,
     )
-    Text(
-        text =
-            when (state.gameType) {
-              GameType.Online -> strings.prepareGameChooseOpponent
-              GameType.Local -> strings.prepareGameChooseGame
-            },
-        style = MaterialTheme.typography.subtitle1)
-
-    GameTypeChoiceButtons(
-        state.gameType,
-        { state.gameType = GameType.Online },
-        { state.gameType = GameType.Local },
-        Modifier.align(Alignment.CenterHorizontally))
   }
 }
