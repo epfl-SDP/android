@@ -64,7 +64,10 @@ fun SettingsScreen(
             modifier = modifier.fillMaxSize(),
             contentPadding = totalPadding)
       },
-  )
+      matches = state.matches,
+      onMatchClick = {},
+      lazyColumnState = lazyColumnState,
+      modifier = modifier)
 }
 
 /**

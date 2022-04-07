@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.*
 
 /**
  * Composable for choosing a [ColorChoice]
@@ -68,7 +69,7 @@ fun ColorChoiceTabItem(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     colors: ColorChoiceColors = DefaultColorChoiceColors,
-    borderWidth: Dp = 4.dp,
+    borderWidth: Dp = 2.dp,
     shape: Shape = RectangleShape,
 ) {
   val contentColor by colors.content(selected)
@@ -80,15 +81,17 @@ fun ColorChoiceTabItem(
       shape = shape,
       modifier =
           modifier.let { if (selected) it.dashedBorder(borderWidth, borderColor, shape) else it }) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.selectable(selected, onClick = onClick).clickable { onClick() }) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier =
+            Modifier.selectable(selected, onClick = onClick).clickable { onClick() }.padding(16.dp),
+    ) {
       Icon(
           painter = ChessIcons.BlackBishop,
           contentDescription = null,
       )
-      Spacer(Modifier.width(4.dp))
+      Spacer(Modifier.width(8.dp))
       Text(
           text = text,
           color = contentColor,

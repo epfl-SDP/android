@@ -32,20 +32,9 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @return The created [Match] before storing it in the [Store] (without the GameId)
    */
   suspend fun createMatch(white: Profile, black: Profile): Match {
-    val id = UUID.randomUUID().toString()
-    val match = StoreMatch(id, store)
-    store
-        .collection("games")
-        .document(id)
-        .set(
-            ChessDocument(
-                moves = emptyList(),
-                whiteId = white.uid,
-                blackId = black.uid,
-            ),
-        )
-
-    return match
+    val document = store.collection("games").document()
+    document.set(ChessDocument(whiteId = white.uid, blackId = black.uid))
+    return StoreMatch(document.id, store)
   }
 
   /**
@@ -69,7 +58,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
     val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
 
-    return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
+    return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
   private fun getMatchesForPlayer(colorField: String, playerId: String): Flow<List<Match>> {

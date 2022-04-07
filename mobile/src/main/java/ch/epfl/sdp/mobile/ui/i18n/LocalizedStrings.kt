@@ -37,6 +37,8 @@ interface LocalizedStrings {
   val profileChallenge: String
   val profileEditIcon: String
   val profileAgainst: String
+  val profileYourTurn: String
+  val profileOthersTurn: String
 
   val boardColorBlack: String
   val boardColorWhite: String
@@ -79,9 +81,12 @@ interface LocalizedStrings {
   val prepareGameChooseGame: String
   val prepareGameWhiteColor: String
   val prepareGameBlackColor: String
-  val prepareGameStart: String
+  val prepareGamePlay: String
+  val prepareGameCancel: String
   val prepareGameSelectOpponent: String
   val prepareGameSelectedOpponent: String
   val prepareGamePlayLocal: String
   val prepareGamePlayOnline: String
+
+  val playOnlineGames: String
 }
