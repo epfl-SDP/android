@@ -42,7 +42,9 @@ class SnapshotPlayScreenState(
 /**
  * A stateful implementation of the PlayScreen
  * @param navigateToPrepareGame Callable lambda to navigate to [PrepareGameScreen] screen
+ * @param navigateToLocalGame Callable lambda to navigate to a certain local game screen
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding The [PaddingValues] to apply to the [PlayScreen]
  */
 @Composable
 fun StatefulPlayScreen(

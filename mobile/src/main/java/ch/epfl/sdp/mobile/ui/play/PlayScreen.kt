@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.ui.*
  * expanded to include history of matches
  * @param state state of the PlayScreen
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding The [PaddingValues] to apply to the content
  */
 @Composable
 fun PlayScreen(
@@ -39,7 +40,9 @@ fun PlayScreen(
 
 /**
  * Composable that composes a new game button
- * @param onLocalGame callable upon button action
+ * @param state the [ExpandableFloatingActionButton]'s state
+ * @param onLocalGame callable upon local game button press
+ * @param onRemoteGame callable upon remote game button press
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
