@@ -38,6 +38,7 @@ fun UserScreen(
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
-    items(matches) { match -> Match(match, { onGameItemClick }) }
+    items(matches) { match -> Match(match, { onGameItemClick(match) }) }
+
   }
 }
