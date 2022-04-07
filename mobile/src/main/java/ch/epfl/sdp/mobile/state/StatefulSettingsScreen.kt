@@ -112,5 +112,5 @@ private suspend fun Match.toChessMatch(
   val result = determineMatchOutcome(color, this)
   val game = this.game.first()
   val moveNum = game.serialize().size
-  return result?.let { ChessMatch(adversary, result, moveNum) }
+  return result?.let { ChessMatchAdapter(this.id ?: "", adversary, result, moveNum) }
 }

@@ -42,6 +42,8 @@ fun UserScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val strings = LocalLocalizedStrings.current
+
   LazyColumn(
       state = lazyColumnState,
       verticalArrangement = Arrangement.Top,
@@ -119,6 +121,7 @@ private fun chooseSubtitle(
               MatchResult.Reason.CHECKMATE -> strings.profileWonByCheckmate
               MatchResult.Reason.FORFEIT -> strings.profileWonByForfeit
             }
+        else -> strings.profileTieInfo
       }
   return text(nMoves)
 }
