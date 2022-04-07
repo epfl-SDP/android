@@ -16,7 +16,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 /**
  * Composes a Match log using a match [title], [subtitle] and an [icon]
  * @param match a chess Match
- * @param onMatchClick callback function if clicked on item
+ * @param onClick callback function if clicked on item
  * @param modifier the [Modifier] for this composable.
  */
 @OptIn(ExperimentalMaterialApi::class)
