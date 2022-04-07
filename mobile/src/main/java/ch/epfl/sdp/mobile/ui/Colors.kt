@@ -25,7 +25,9 @@ object PawniesColors {
   val Green800 = Color(0xFF356859)
   val Orange500 = Color(0xFFFD5523)
   val Orange200 = Color(0xFFF8A68D)
+}
 
+object PawniesArColors {
   // ArModel Color
   val White = Vector3(1f, 0.99f, 0.94f)
   val Black = Vector3(53 / 255f, 56 / 255f, 57 / 255f)

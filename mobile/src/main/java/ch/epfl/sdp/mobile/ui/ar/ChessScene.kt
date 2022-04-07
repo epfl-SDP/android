@@ -74,8 +74,8 @@ class ChessScene(
   /** Return the model color as a [Vector3] given the piece [color] */
   private fun getModelColor(color: Color): Vector3 {
     return when (color) {
-      Color.Black -> PawniesColors.Black
-      Color.White -> PawniesColors.White
+      Color.Black -> PawniesArColors.Black
+      Color.White -> PawniesArColors.White
     }
   }
 
