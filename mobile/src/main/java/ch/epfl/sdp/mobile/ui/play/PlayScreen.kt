@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.play
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -31,7 +30,9 @@ fun PlayScreen(
 ) {
   val buttonState = rememberExpandableFloatingActionButtonState()
 
-  Box(modifier = modifier.fillMaxSize().padding(contentPadding)) {
+  Box(
+      modifier = modifier.fillMaxSize().padding(contentPadding),
+      contentAlignment = Alignment.BottomEnd) {
     NewGameButton(
         state = buttonState,
         onLocalGame = { state.onLocalGameClick() },
@@ -57,35 +58,30 @@ fun NewGameButton(
 ) {
   val strings = LocalLocalizedStrings.current
 
-  Box(
-      modifier.fillMaxSize().background(MaterialTheme.colors.background),
-      Alignment.BottomEnd,
-  ) {
-    ExpandableFloatingActionButton(
-        state = state,
-        expandedContent = {
-          ExpandableFloatingActionButtonItem(
-              onClick = onLocalGame,
-              icon = { Icon(PawniesIcons.LocalPlay, null) },
-              text = { Text(strings.prepareGamePlayLocal) },
-              modifier = Modifier.fillMaxWidth(),
-          )
+  ExpandableFloatingActionButton(
+      state = state,
+      expandedContent = {
+        ExpandableFloatingActionButtonItem(
+            onClick = onLocalGame,
+            icon = { Icon(PawniesIcons.LocalPlay, null) },
+            text = { Text(strings.prepareGamePlayLocal) },
+            modifier = Modifier.fillMaxWidth(),
+        )
 
-          Divider(color = MaterialTheme.colors.onPrimary)
+        Divider(color = MaterialTheme.colors.onPrimary)
 
-          ExpandableFloatingActionButtonItem(
-              onClick = onRemoteGame,
-              icon = { Icon(PawniesIcons.OnlinePlay, null) },
-              text = { Text(strings.prepareGamePlayOnline) },
-              modifier = Modifier.fillMaxWidth(),
-          )
-        },
-        collapsedContent = {
-          Icon(PawniesIcons.Add, null)
-          Spacer(Modifier.width(16.dp))
-          Text(strings.newGame)
-        },
-        modifier = Modifier.padding(16.dp),
-    )
-  }
+        ExpandableFloatingActionButtonItem(
+            onClick = onRemoteGame,
+            icon = { Icon(PawniesIcons.OnlinePlay, null) },
+            text = { Text(strings.prepareGamePlayOnline) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+      },
+      collapsedContent = {
+        Icon(PawniesIcons.Add, null)
+        Spacer(Modifier.width(16.dp))
+        Text(strings.newGame)
+      },
+      modifier = modifier.padding(16.dp),
+  )
 }
