@@ -19,7 +19,6 @@ class DefaultSpeechRecognitionScreenState(
   override var hasMicrophonePermission by microphonePermissionState
   override fun onPermissionChange() {
     hasMicrophonePermission = permissionState.hasPermission
-
   }
 }
 
@@ -28,11 +27,13 @@ class DefaultSpeechRecognitionScreenState(
 fun StatefulSpeechRecognitionScreen(user: AuthenticatedUser, modifier: Modifier = Modifier) {
 
   val permissionState = rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
-  val microphonePermissionState = remember(permissionState.hasPermission) { mutableStateOf(permissionState.hasPermission) }
+  val microphonePermissionState =
+      remember(permissionState.hasPermission) { mutableStateOf(permissionState.hasPermission) }
 
-  val state = remember(permissionState, microphonePermissionState) {
-    DefaultSpeechRecognitionScreenState(permissionState, microphonePermissionState)
-  }
+  val state =
+      remember(permissionState, microphonePermissionState) {
+        DefaultSpeechRecognitionScreenState(permissionState, microphonePermissionState)
+      }
 
   SpeechRecognitionScreen(state = state, modifier)
 }

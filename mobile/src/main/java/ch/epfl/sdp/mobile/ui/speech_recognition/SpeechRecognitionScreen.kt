@@ -134,9 +134,9 @@ private fun PermissionText(modifier: Modifier = Modifier, hasPermission: Boolean
 }
 
 /**
- *  Returns speech results from the speech recognizer
- *  @param context [Context] context of the app execution
- *  @return List of size maximum [MaxResultsCount] of speech recognizer results as strings
+ * Returns speech results from the speech recognizer
+ * @param context [Context] context of the app execution
+ * @return List of size maximum [MaxResultsCount] of speech recognizer results as strings
  */
 suspend fun recognition(context: Context): List<String> = suspendCancellableCoroutine { cont ->
   val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
@@ -165,9 +165,7 @@ suspend fun recognition(context: Context): List<String> = suspendCancellableCoro
   }
 }
 
-/**
- * Adapter class for Recognition' listener
- */
+/** Adapter class for Recognition' listener */
 abstract class RecognitionListenerAdapter : RecognitionListener {
   override fun onReadyForSpeech(params: Bundle?) = Unit
   override fun onBeginningOfSpeech() = Unit

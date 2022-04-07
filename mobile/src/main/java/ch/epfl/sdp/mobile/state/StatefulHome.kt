@@ -106,7 +106,9 @@ fun StatefulHome(
         )
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
-      composable(SpeechRecognitionRoute) { StatefulSpeechRecognitionScreen(user, Modifier.fillMaxSize()) }
+      composable(SpeechRecognitionRoute) {
+        StatefulSpeechRecognitionScreen(user, Modifier.fillMaxSize())
+      }
     }
   }
 }

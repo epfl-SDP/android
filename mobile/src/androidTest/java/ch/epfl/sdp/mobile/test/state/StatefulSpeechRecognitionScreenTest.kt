@@ -53,6 +53,5 @@ class StatefulSpeechRecognitionScreenTest {
     rule.onNodeWithText(ListeningText).assertExists()
     rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
     rule.onNodeWithText(DefaultText).assertExists()
-
   }
 }
