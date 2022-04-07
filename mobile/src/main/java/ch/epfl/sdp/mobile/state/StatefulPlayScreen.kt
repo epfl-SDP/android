@@ -56,7 +56,7 @@ fun StatefulPlayScreen(
   val scope = rememberCoroutineScope()
 
   val state =
-      remember(navigateToLocalGame, navigateToPrepareGame) {
+      remember(user, navigateToLocalGame, navigateToPrepareGame, chess, scope) {
         SnapshotPlayScreenState(
             user = user,
             localGame = navigateToLocalGame,
