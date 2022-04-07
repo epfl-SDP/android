@@ -11,7 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.Add
+import ch.epfl.sdp.mobile.ui.LocalPlay
+import ch.epfl.sdp.mobile.ui.OnlinePlay
+import ch.epfl.sdp.mobile.ui.PawniesIcons
 
 /**
  * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
