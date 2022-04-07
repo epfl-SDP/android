@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.map
  */
 interface DocumentReference {
 
+  /** The unique identifier of the document within its parent collection. */
+  val id: String
+
   /**
    * Accesses a nested collection.
    *

@@ -80,7 +80,8 @@ interface LocalizedStrings {
   val prepareGameChooseGame: String
   val prepareGameWhiteColor: String
   val prepareGameBlackColor: String
-  val prepareGameStart: String
+  val prepareGamePlay: String
+  val prepareGameCancel: String
   val prepareGameSelectOpponent: String
   val prepareGameSelectedOpponent: String
   val prepareGamePlayLocal: String
