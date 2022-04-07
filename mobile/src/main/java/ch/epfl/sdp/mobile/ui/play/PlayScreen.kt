@@ -35,8 +35,14 @@ fun PlayScreen(
       contentAlignment = Alignment.BottomEnd) {
     NewGameButton(
         state = buttonState,
-        onLocalGame = { state.onLocalGameClick() },
-        onRemoteGame = { state.onOnlineGameClick() },
+        onLocalGame = {
+          state.onLocalGameClick()
+          buttonState.expanded = false
+        },
+        onRemoteGame = {
+          state.onOnlineGameClick()
+          buttonState.expanded = false
+        },
         modifier = Modifier,
     )
   }

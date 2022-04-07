@@ -246,7 +246,7 @@ class StatefulHomeTest {
     rule.onNodeWithText("user2").assertExists()
     rule.onNodeWithText(strings.prepareGameCancel).performClick()
     rule.onNodeWithText("user2").assertDoesNotExist()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).assertExists()
+    rule.onNodeWithText(strings.newGame).assertExists()
   }
 
   @Test
