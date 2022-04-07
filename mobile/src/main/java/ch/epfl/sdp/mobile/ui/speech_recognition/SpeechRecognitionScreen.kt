@@ -1,12 +1,13 @@
 package ch.epfl.sdp.mobile.ui.speech_recognition
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import androidx.compose.foundation.MutatePriority
+import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.CircleShape
@@ -22,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.rememberPermissionState
 import kotlin.coroutines.resume
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
+/* Extracted strings used for test, may be removed later */
 private const val Lang = "en-US"
 private const val MaxResultsCount = 10
 const val PermissionGranted = "Permission has been granted ! "
@@ -35,13 +36,19 @@ const val DefaultText = "---"
 const val ListeningText = "Listening..."
 const val MicroIconDescription = "micro"
 
+/** Mutator used for cancelling a concurrent speech if the user mutes the mic */
+private val mutex = MutatorMutex()
+
+/**
+ * Screen for demonstrating the SpeechRecognition android feature
+ * @param state State of the screen
+ * @param modifier [Modifier] of this composable
+ */
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun SpeechRecognitionScreen(
     state: SpeechRecognitionScreenState,
     modifier: Modifier = Modifier,
-    microPermissionState: PermissionState =
-        rememberPermissionState(permission = Manifest.permission.RECORD_AUDIO)
 ) {
 
   val context = LocalContext.current
@@ -51,6 +58,22 @@ fun SpeechRecognitionScreen(
 
   val microIcon = if (activeSpeech) PawniesIcons.GameMicOn else PawniesIcons.GameMicOff
 
+  /**
+   * Blocking function to ensure that only the most recent call to the block function is executed
+   * and older executions are cancelled
+   *
+   * @param block: a suspending function namely the speech recognition routine
+   */
+  suspend fun vocalize(block: suspend () -> Unit) {
+    mutex.mutate(MutatePriority.UserInput) {
+      try {
+        block()
+      } finally {
+        activeSpeech = false
+      }
+    }
+  }
+
   Column(
       verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
       horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,31 +81,36 @@ fun SpeechRecognitionScreen(
 
     // Speech Text
     Text(text, textAlign = TextAlign.Center)
-
     // Microphone Button
     OutlinedButton(
         shape = CircleShape,
         onClick = {
-          askForPermission(microPermissionState, state.onPermissionChange)
-          activeSpeech = !activeSpeech && microPermissionState.hasPermission
+          askForPermission(state.permissionState, state::onPermissionChange)
+          activeSpeech = !activeSpeech && state.hasMicrophonePermission
           scope.launch {
-            if (activeSpeech) {
-              text = ListeningText
-              text = recognition(context).joinToString(separator = "\n")
-              activeSpeech = false
-            } else {
-              text = DefaultText
+            vocalize {
+              if (activeSpeech) {
+                text = ListeningText
+                text = recognition(context).joinToString(separator = "\n")
+              } else {
+                text = DefaultText
+              }
             }
           }
         }) { Icon(microIcon, MicroIconDescription) }
 
     // Display information about vocal permission
     PermissionText(
-        hasPermission = microPermissionState.hasPermission,
+        hasPermission = state.hasMicrophonePermission,
     )
   }
 }
 
+/**
+ * Asks the user to grant permission to use the mic if not already granted
+ * @param microPermissionState permission state of microphone
+ * @param onPermissionChange call back to change permission un the state
+ */
 @OptIn(ExperimentalPermissionsApi::class)
 private fun askForPermission(
     microPermissionState: PermissionState,
@@ -94,13 +122,22 @@ private fun askForPermission(
   }
 }
 
+/**
+ * Composable responsible for displaying the permission text
+ * @param hasPermission True if the permission was granted false otherwise
+ * @param modifier [Modifier] for this composable
+ */
 @Composable
 private fun PermissionText(modifier: Modifier = Modifier, hasPermission: Boolean = false) {
   val text = if (hasPermission) PermissionGranted else PermissionDenied
   Text(text = text, textAlign = TextAlign.Center, modifier = modifier)
 }
 
-// Returns speech result from the recognizer
+/**
+ *  Returns speech results from the speech recognizer
+ *  @param context [Context] context of the app execution
+ *  @return List of size maximum [MaxResultsCount] of speech recognizer results as strings
+ */
 suspend fun recognition(context: Context): List<String> = suspendCancellableCoroutine { cont ->
   val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
   val speechRecognizerIntent =
@@ -114,7 +151,7 @@ suspend fun recognition(context: Context): List<String> = suspendCancellableCoro
         override fun onResults(results: Bundle?) {
           super.onResults(results)
           cont.resume(
-              // results cannot br null
+              // results cannot be null
               results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: emptyList())
         }
       }
@@ -128,6 +165,9 @@ suspend fun recognition(context: Context): List<String> = suspendCancellableCoro
   }
 }
 
+/**
+ * Adapter class for Recognition' listener
+ */
 abstract class RecognitionListenerAdapter : RecognitionListener {
   override fun onReadyForSpeech(params: Bundle?) = Unit
   override fun onBeginningOfSpeech() = Unit

@@ -1,69 +1,69 @@
 package ch.epfl.sdp.mobile.test.ui.speech_recognition
 
-import androidx.compose.runtime.MutableState
+import android.Manifest
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.rule.GrantPermissionRule
+import ch.epfl.sdp.mobile.state.DefaultSpeechRecognitionScreenState
 import ch.epfl.sdp.mobile.ui.speech_recognition.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
-private const val GrantText = "ALLOW"
-private const val DenyText = "DENY"
-
 @ExperimentalPermissionsApi
 class SpeechRecognitionScreenTest {
+
   @get:Rule val rule = createComposeRule()
+  @get:Rule
+  val permissionRule: GrantPermissionRule =
+      GrantPermissionRule.grant(Manifest.permission.RECORD_AUDIO)
 
   @Test
   fun given_defaultScreenState_when_showed_then_displayedDefaultScreen() {
-    val state =
-        object : SpeechRecognitionScreenState {
-          override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
-          override val onPermissionChange: () -> Unit = {
-            microphonePermissionState.value = !microphonePermissionState.value
-          }
-        }
-
+    val mockedPermission = mockk<PermissionState>()
+    every { mockedPermission.hasPermission } returns false
+    val state =  DefaultSpeechRecognitionScreenState(mockedPermission, mutableStateOf(false))
     rule.setContent { SpeechRecognitionScreen(state) }
-    rule.onNodeWithText(PermissionDenied).assertDoesNotExist()
+    //Permission is granted by default :(
+    rule.onNodeWithText(PermissionDenied).assertExists()
     rule.onNodeWithContentDescription(MicroIconDescription).assertExists()
     rule.onNodeWithText(DefaultText).assertExists()
+
   }
 
   @Test
-  fun given_defaultScreenState_when_micClicked_then_displayPermissionDialog() {
-    val state =
-        object : SpeechRecognitionScreenState {
-          override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
-          override val onPermissionChange: () -> Unit = {
-            microphonePermissionState.value = !microphonePermissionState.value
-          }
-        }
+  fun given_defaultScreenState_when_micClicked_then_ListeningDisplayed() {
+    val mockedPermission = mockk<PermissionState>()
+    every { mockedPermission.hasPermission } returns true
+    val state =  DefaultSpeechRecognitionScreenState(mockedPermission, mutableStateOf(true))
 
     rule.setContent { SpeechRecognitionScreen(state) }
-    rule.onNodeWithText(PermissionDenied).assertExists()
-    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
-    rule.onNodeWithText(GrantText).assertExists()
-  }
-
-  @Test
-  fun given_permissionDialog_when_okClicked_then_grantPermission() {
-    val state =
-        object : SpeechRecognitionScreenState {
-          override val microphonePermissionState: MutableState<Boolean> = mutableStateOf(false)
-          override val onPermissionChange: () -> Unit = {
-            microphonePermissionState.value = !microphonePermissionState.value
-          }
-        }
-
-    rule.setContent { SpeechRecognitionScreen(state) }
-    rule.onNodeWithText(PermissionDenied).assertExists()
-    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
-    rule.onNodeWithText(GrantText).assertExists().performClick()
     rule.onNodeWithText(PermissionGranted).assertExists()
+    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
+    rule.onNodeWithText(ListeningText).assertExists()
+  }
+
+  @Test
+  fun given_listeningMic_when_micClicked_then_stopListening() {
+    val mockedPermission = mockk<PermissionState>()
+    every { mockedPermission.hasPermission } returns true
+    val state =  DefaultSpeechRecognitionScreenState(mockedPermission, mutableStateOf(true))
+
+
+    rule.setContent { SpeechRecognitionScreen(state) }
+    rule.onNodeWithText(PermissionGranted).assertExists()
+    rule.onNodeWithText(DefaultText).assertExists()
+    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
+    rule.onNodeWithText(ListeningText).assertExists()
+    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
+
+    rule.onNodeWithText(ListeningText).assertDoesNotExist()
+    rule.onNodeWithText(DefaultText).assertExists()
   }
 }

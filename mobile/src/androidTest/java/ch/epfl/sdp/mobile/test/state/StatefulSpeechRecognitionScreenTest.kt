@@ -15,7 +15,9 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSpeechRecognitionScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.ui.speech_recognition.DefaultText
 import ch.epfl.sdp.mobile.ui.speech_recognition.ListeningText
+import ch.epfl.sdp.mobile.ui.speech_recognition.MicroIconDescription
 import ch.epfl.sdp.mobile.ui.speech_recognition.PermissionGranted
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.flow.filterIsInstance
@@ -46,10 +48,11 @@ class StatefulSpeechRecognitionScreenTest {
       ProvideFacades(facade, social, chess) { StatefulSpeechRecognitionScreen(user) }
     }
 
-    // rule.onNodeWithText(PermissionDenied).assertExists()
     rule.onNodeWithText(PermissionGranted).assertExists()
-    rule.onNodeWithContentDescription("micro").assertExists().performClick()
+    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
     rule.onNodeWithText(ListeningText).assertExists()
-    rule.onNodeWithContentDescription("micro").assertExists().performClick()
+    rule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
+    rule.onNodeWithText(DefaultText).assertExists()
+
   }
 }
