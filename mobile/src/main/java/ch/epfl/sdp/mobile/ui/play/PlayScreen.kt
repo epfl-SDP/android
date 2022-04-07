@@ -39,11 +39,10 @@ fun <M : ChessMatch> PlayScreen(
         text = strings.playOnlineGames,
         color = MaterialTheme.colors.primary,
         style = MaterialTheme.typography.h4,
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 32.dp))
+        modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp))
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier,
     ) { items(state.matches, key) { match -> Match(match, { state.onGameItemClick(match) }) } }
   }
 

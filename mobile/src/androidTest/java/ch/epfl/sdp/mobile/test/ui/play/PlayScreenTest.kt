@@ -11,9 +11,13 @@ import org.junit.Test
 
 open class TestPlayScreenState(
     override val onNewGameClick: () -> Unit,
-    override val onGameItemClick: (ChessMatch) -> Unit,
+    val onGameItemClickAction: (ChessMatch) -> Unit,
     override val matches: List<ChessMatch>
-) : PlayScreenState<ChessMatch>
+) : PlayScreenState<ChessMatch> {
+  override fun onGameItemClick(match: ChessMatch) {
+    onGameItemClickAction(match)
+  }
+}
 
 object FakePlayScreenState : TestPlayScreenState({}, {}, emptyList())
 

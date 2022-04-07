@@ -9,7 +9,7 @@ interface PlayScreenState<M : ChessMatch> {
   val onNewGameClick: () -> Unit
 
   /** Action to execute when clicked on match item in list */
-  val onGameItemClick: (M) -> Unit
+  fun onGameItemClick(match: M)
 
   /** List of matches of current user */
   val matches: List<M>

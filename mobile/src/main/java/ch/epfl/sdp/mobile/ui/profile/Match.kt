@@ -23,7 +23,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 @Composable
 fun Match(
     match: ChessMatch,
-    onMatchClick: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -31,7 +31,7 @@ fun Match(
   val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
 
   ListItem(
-      modifier = modifier.clickable { onMatchClick() },
+      modifier = modifier.clickable { onClick() },
       icon = { Icon(PawniesIcons.SectionSocial, null) },
       text = { Text(title) },
       secondaryText = { Text(subtitle) },

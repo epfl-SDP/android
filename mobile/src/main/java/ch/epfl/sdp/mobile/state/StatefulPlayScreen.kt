@@ -36,13 +36,13 @@ fun StatefulPlayScreen(
 ) {
   val facade = LocalChessFacade.current
   val currentNavigateToGame = rememberUpdatedState(navigateToGame)
-  val onGameItemClick = rememberUpdatedState(onGameItemClick)
+  val onGameItemClickAction = rememberUpdatedState(onGameItemClick)
   val scope = rememberCoroutineScope()
   val state =
       remember(user, facade, scope) {
         PlayScreenStateImpl(
             onNewGameClick = currentNavigateToGame,
-            onGameItemClick = onGameItemClick,
+            onGameItemClickAction = onGameItemClickAction,
             user = user,
             facade = facade,
             scope = scope,
@@ -109,6 +109,7 @@ private data class MatchInfo(
     val matchResult: (userColor: Color) -> MatchResult
 )
 
+/** An adapter that is of type [ChessMatch] and contains the uid. */
 data class ChessMatchAdapter(
     val uid: String,
     override val adversary: String,
@@ -166,13 +167,13 @@ private fun info(match: Match): Flow<MatchInfo> {
  */
 private class PlayScreenStateImpl(
     onNewGameClick: State<() -> Unit>,
-    onGameItemClick: State<(ChessMatchAdapter) -> Unit>,
+    onGameItemClickAction: State<(ChessMatchAdapter) -> Unit>,
     user: AuthenticatedUser,
     facade: ChessFacade,
     scope: CoroutineScope,
 ) : PlayScreenState<ChessMatchAdapter> {
   override val onNewGameClick by onNewGameClick
-  override val onGameItemClick by onGameItemClick
+  val onGameItemClickAction by onGameItemClickAction
   override var matches by mutableStateOf(emptyList<ChessMatchAdapter>())
     private set
 
@@ -182,6 +183,10 @@ private class PlayScreenStateImpl(
         matches = list.map { createChessMatch(it, user) }
       }
     }
+  }
+
+  override fun onGameItemClick(match: ChessMatchAdapter) {
+    onGameItemClickAction(match)
   }
 }
 

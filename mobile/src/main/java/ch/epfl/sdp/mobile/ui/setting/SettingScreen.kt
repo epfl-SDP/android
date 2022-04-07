@@ -54,7 +54,7 @@ fun SettingsScreen(
         )
       },
       matches = state.matches,
-      onGameItemClick = {},
+      onMatchClick = {},
       lazyColumnState = lazyColumnState,
       modifier = modifier)
 }
