@@ -65,6 +65,7 @@ interface LocalizedStrings {
   val socialSearchBarPlaceHolder: String
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
+  val socialSearchClearContentDescription: String
 
   val sectionAr: String
   val sectionSocial: String
@@ -78,7 +79,8 @@ interface LocalizedStrings {
   val prepareGameChooseGame: String
   val prepareGameWhiteColor: String
   val prepareGameBlackColor: String
-  val prepareGameStart: String
+  val prepareGamePlay: String
+  val prepareGameCancel: String
   val prepareGameSelectOpponent: String
   val prepareGameSelectedOpponent: String
   val prepareGamePlayLocal: String

@@ -61,6 +61,7 @@ object English : LocalizedStrings {
   override val socialSearchEmptyTitle = "Search any player"
   override val socialSearchEmptySubtitle =
       "Find any player using their name, follow them, or invite them to play or see their match history"
+  override val socialSearchClearContentDescription = "Clear search field"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
@@ -75,7 +76,8 @@ object English : LocalizedStrings {
   override val prepareGameChooseGame = "Pick your game :"
   override val prepareGameWhiteColor = "White".uppercase()
   override val prepareGameBlackColor = "Black".uppercase()
-  override val prepareGameStart = "Start!".uppercase()
+  override val prepareGamePlay = "Play !".uppercase()
+  override val prepareGameCancel = "Cancel".uppercase()
   override val prepareGameSelectOpponent = "Select".uppercase()
   override val prepareGameSelectedOpponent = "Selected".uppercase()
   override val prepareGamePlayLocal = "Play locally".uppercase()
