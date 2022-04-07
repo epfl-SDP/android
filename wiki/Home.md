@@ -19,6 +19,9 @@ You can find here information about the organization and the workflow of this re
 | Alexandre Piveteau   | AP |
 | Mohamed Badr Taddist | BT |
 
+- For unit tests and integration tests, we define this naming convention : `given_precondition_when_actionPerformed_then_expectedBehavior`
+  - This convention is a bit long, try to be concise between the keywords `given`, `when` and `then` to not exceed the max number of character per line
+
 ## Pull request
 
 - Each PR must be linked to the corresponding issue.
