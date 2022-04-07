@@ -45,6 +45,8 @@ object English : LocalizedStrings {
   override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
   override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
   override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
+  override val profileYourTurn = "Your turn to play!"
+  override val profileOthersTurn = "Their turn to play."
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
@@ -81,4 +83,6 @@ object English : LocalizedStrings {
   override val prepareGameSelectedOpponent = "Selected".uppercase()
   override val prepareGamePlayLocal = "Play locally".uppercase()
   override val prepareGamePlayOnline = "Play against opponent".uppercase()
+
+  override val playOnlineGames = "Online games"
 }
