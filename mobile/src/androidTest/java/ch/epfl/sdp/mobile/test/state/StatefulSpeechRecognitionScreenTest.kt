@@ -31,7 +31,7 @@ class StatefulSpeechRecognitionScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  @get:Rule val permissionRule: GrantPermissionRule = grant(Manifest.permission.CAMERA)
+  @get:Rule val permissionRule: GrantPermissionRule = grant(Manifest.permission.RECORD_AUDIO)
 
   @Test
   fun given_defaultScreen_when_micClicked_and_okClicked_then_permissionGranted() = runTest {
