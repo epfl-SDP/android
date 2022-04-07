@@ -250,7 +250,7 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_StatefulHome_When_creatingOnlineGameFromUI_opensGameScreenWithCorrectOpponent() =
+  fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
       runTest {
     val auth = emptyAuth()
     val store = buildStore {
@@ -282,7 +282,7 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_StatefulHome_When_creatingLocalGameFromUI_opensGameScreen() = runTest {
+  fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
 

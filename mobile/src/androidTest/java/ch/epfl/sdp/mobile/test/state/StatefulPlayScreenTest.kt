@@ -26,7 +26,7 @@ class StatefulPlayScreenTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun given_PlayScreen_When_ClickingNewGame_Then_LocalAndOnlinePlayAreDisplayed() = runTest {
+  fun given_playScreen_when_clickingNewGame_then_localAndOnlinePlayAreDisplayed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
@@ -53,7 +53,7 @@ class StatefulPlayScreenTest {
   }
 
   @Test
-  fun given_PlayScreen_When_ClickingNewGameAndLocalPlay_Then_LocalGameCallbackIsCalled() = runTest {
+  fun given_playScreen_when_clickingNewGameAndLocalPlay_then_localGameCallbackIsCalled() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
@@ -87,7 +87,7 @@ class StatefulPlayScreenTest {
   }
 
   @Test
-  fun given_PlayScreen_When_ClickingNewGameAndOnlinePlay_Then_OnlineGameCallbackIsCalled() =
+  fun given_playScreen_when_clickingNewGameAndOnlinePlay_then_onlineGameCallbackIsCalled() =
       runTest {
     val auth = emptyAuth()
     val store = buildStore {
