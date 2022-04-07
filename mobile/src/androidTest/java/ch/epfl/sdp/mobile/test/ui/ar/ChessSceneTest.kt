@@ -15,7 +15,7 @@ class ChessSceneTest {
   @get:Rule val rule = createAndroidComposeRule<HomeActivity>()
 
   @Test
-  fun given_emptyState_when_initChessScene_Then_rootIsNotNull() {
+  fun given_emptyState_when_initChessScene_then_rootIsNotNull() {
     val board = Game.create()
     val chessScene =
         ChessScene(rule.activity.applicationContext, rule.activity.lifecycleScope, board.board)
