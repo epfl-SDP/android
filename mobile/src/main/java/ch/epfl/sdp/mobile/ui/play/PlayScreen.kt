@@ -20,8 +20,8 @@ import ch.epfl.sdp.mobile.ui.profile.Match
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
- * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
- * expanded to include history of matches
+ * Composable that composes the PlayScreen expanded to include history of matches
+ * @param M the type of the [Match].
  * @param state the [PlayScreenState] to manage composable content
  * @param key a function which uniquely identifies the list items.
  * @param modifier the [Modifier] for this composable.
