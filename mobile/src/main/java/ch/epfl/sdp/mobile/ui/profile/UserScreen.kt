@@ -16,8 +16,8 @@ import ch.epfl.sdp.mobile.ui.social.*
  * @param header part of slot construct that comes into the header
  * @param profileBar part of slot construct that represents the tab bar.
  * @param matches the part that is responsible for the list of all matches
- * @param lazyColumnState to keep state of LazyColumn
- * onMatchClick a callback called when a [ChessMatch] is clicked
+ * @param lazyColumnState to keep state of LazyColumn onMatchClick a callback called when a
+ * [ChessMatch] is clicked
  * @param modifier the [Modifier] for this composable.
  */
 @OptIn(ExperimentalFoundationApi::class)
