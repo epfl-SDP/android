@@ -14,6 +14,17 @@ import io.github.sceneview.ar.ArSceneView
 
 private const val BoardScale = 0.2f
 
+/**
+ * This composable displays a chess game in AR. When it is created, it will load the different
+ * models needed to display the scene . To show the board, the user need to wait that ARCore analyse
+ * the environment and when it's ready, the user need to tap on the screen and the board will be
+ * placed at this position
+ *
+ * This composable will keep the screen on, it will never sleep
+ *
+ * @param game The game that will be displayed in AR
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun ArScreen(game: Game, modifier: Modifier = Modifier) {
 
@@ -22,7 +33,7 @@ fun ArScreen(game: Game, modifier: Modifier = Modifier) {
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
 
-  // Keep the screen only for this composable
+  // Keep the screen on only for this composable
   DisposableEffect(view) {
     view.keepScreenOn = true
     onDispose { view.keepScreenOn = false }
