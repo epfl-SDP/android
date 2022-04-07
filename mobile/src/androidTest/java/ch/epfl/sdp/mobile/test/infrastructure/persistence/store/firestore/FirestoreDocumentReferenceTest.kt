@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreDo
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.*
 import io.mockk.every
 import io.mockk.mockk
@@ -14,6 +15,15 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class FirestoreDocumentReferenceTest {
+
+  @Test
+  fun given_documentReference_when_accessingId_then_delegatesToFirestoreDocumentId() {
+    val document = mockk<DocumentReference>().apply { every { id } returns "id" }
+    val reference = FirestoreDocumentReference(document)
+
+    assertThat(reference.id).isEqualTo("id")
+    verify { document.id }
+  }
 
   @Test
   fun collection_callsCollection() {

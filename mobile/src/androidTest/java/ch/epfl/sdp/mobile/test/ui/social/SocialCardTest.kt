@@ -4,7 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.ui.social.Person
-import ch.epfl.sdp.mobile.ui.social.PersonCard
+import ch.epfl.sdp.mobile.ui.social.PersonItem
 import org.junit.Rule
 import org.junit.Test
 
@@ -21,14 +21,14 @@ class SocialCardTest {
   @Test
   fun card_displayCorrectName() {
 
-    rule.setContent { PersonCard(person = FakeFriendCard()) }
+    rule.setContent { PersonItem(person = FakeFriendCard()) }
 
     rule.onNodeWithText("Toto").assertExists()
   }
 
   @Test
   fun card_displayCorrectEmoji() {
-    rule.setContent { PersonCard(person = FakeFriendCard()) }
+    rule.setContent { PersonItem(person = FakeFriendCard()) }
 
     rule.onNodeWithText(":3").assertExists()
   }

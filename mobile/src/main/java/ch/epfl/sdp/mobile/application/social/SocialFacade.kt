@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.social
 
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.toProfile
@@ -67,6 +68,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
           .limit(MaxSearchResultCount)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
+          .map { list -> list.filterNot { it.uid == (user as? AuthenticatedUser)?.uid } }
 
   /**
    * Returns a [Flow] of the [Profile] corresponding to a given unique identifier.

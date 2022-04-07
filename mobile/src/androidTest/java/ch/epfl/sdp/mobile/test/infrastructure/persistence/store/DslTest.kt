@@ -190,4 +190,11 @@ class DslTest {
         store.collection("users").whereArrayContains("friends", "Matthieu").asFlow<User>().first()
     assertThat(users.single()).isEqualTo(chau)
   }
+
+  @Test
+  fun given_documentReference_when_gettingItsId_then_returnsCorrectId() {
+    val store = emptyStore()
+    val reference = store.collection("col").document("id")
+    assertThat(reference.id).isEqualTo("id")
+  }
 }
