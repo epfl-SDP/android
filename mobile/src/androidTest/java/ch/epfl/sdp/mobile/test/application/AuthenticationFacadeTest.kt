@@ -4,8 +4,8 @@ import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Failure
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.Success
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.*
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
@@ -43,7 +43,59 @@ class AuthenticationFacadeTest {
 
     val facade = AuthenticationFacade(auth, firestore)
 
-    assertThat(facade.signInWithEmail("email", "password")).isEqualTo(Failure)
+    assertThat(facade.signInWithEmail("email@epfl.ch", "password")).isEqualTo(FailureInvalidUser)
+  }
+
+  @Test
+  fun Given_nonEmptyAuth_When_theEnteredPasswordIsIncorrect_Then_aFailureIncorrectPasswordOccurs() {
+    runTest {
+      val auth = buildAuth { user("email@example.org", "password") }
+      val firestore = emptyStore()
+
+      val facade = AuthenticationFacade(auth, firestore)
+
+      assertThat(facade.signInWithEmail("email@example.org", "incorrect"))
+          .isEqualTo(FailureIncorrectPassword)
+    }
+  }
+
+  @Test
+  fun Given_emptyAuth_When_theTypedPasswordIsWeak_Then_aFailureBadPasswordOccurs() {
+    runTest {
+      val auth = emptyAuth()
+      val firestore = emptyStore()
+
+      val facade = AuthenticationFacade(auth, firestore)
+
+      assertThat(facade.signUpWithEmail("email@epfl.ch", "Fred", "weak"))
+          .isEqualTo(FailureBadPassword)
+    }
+  }
+
+  @Test
+  fun Given_emptyAuth_When_theTypedEmailIsMalformed_Then_aFailureIncorrectEmailFormatOccurs() {
+    runTest {
+      val auth = emptyAuth()
+      val firestore = emptyStore()
+
+      val facade = AuthenticationFacade(auth, firestore)
+
+      assertThat(facade.signUpWithEmail("invalid-email", "Fred", "password"))
+          .isEqualTo(FailureIncorrectEmailFormat)
+    }
+  }
+
+  @Test
+  fun Given_nonEmptyAuth_When_theEmailAccountExists_Then_aFailureExistingAccountOccurs() {
+    runTest {
+      val auth = buildAuth { user("email@example.org", "password") }
+      val firestore = emptyStore()
+
+      val facade = AuthenticationFacade(auth, firestore)
+
+      assertThat(facade.signUpWithEmail("email@example.org", "Fred", "password"))
+          .isEqualTo(FailureExistingAccount)
+    }
   }
 
   @Test
@@ -53,7 +105,7 @@ class AuthenticationFacadeTest {
 
     val api = AuthenticationFacade(auth, store)
 
-    assertThat(api.signUpWithEmail("email", "name", "password")).isEqualTo(Success)
+    assertThat(api.signUpWithEmail("email@epfl.ch", "name", "password")).isEqualTo(Success)
   }
 
   @Test
@@ -86,7 +138,7 @@ class AuthenticationFacadeTest {
     val store = emptyStore()
 
     val facade = AuthenticationFacade(auth, store)
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
     facade.currentUser.filterIsInstance<AuthenticatedUser>().first().signOut()
 
     assertThat(auth.currentUser.first()).isNull()

@@ -15,9 +15,13 @@ object English : LocalizedStrings {
   override val authenticateSwitchToRegister = "Sign up".uppercase()
   override val authenticateErrorFailure = "Something went wrong when authenticating"
   override val authenticationBadPasswordFailure =
-      "Your password should be at least 8 characters long, and contain at least one number, capital letter and special character"
+      "Your password should be at least 6 characters long, and contain at least one number, capital letter and special character"
   override val authenticationWrongEmailFormatFailure =
       "Your email must be of the form: person@domain"
+  override val authenticationInvalidUserFailure = "There is no user registered with this email"
+  override val authenticationIncorrectPasswordFailure =
+      "The email or password you entered is incorrect"
+  override val authenticationExistingAccountFailure = "A user with this email already exists"
   override val authenticateOr = "or"
 
   override val arContentDescription: String = "ArComposable"

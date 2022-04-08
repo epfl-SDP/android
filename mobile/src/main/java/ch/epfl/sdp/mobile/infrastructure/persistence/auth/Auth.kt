@@ -21,6 +21,24 @@ interface Auth {
     /** Indicates that there was a failure during authentication. */
     object FailureInternal : AuthenticationResult
 
+    /** Indicates that the password the user chose for their account is not strong enough. */
+    object FailureBadPassword : AuthenticationResult
+
+    /** Indicates that the email the user typed is malformed. */
+    object FailureIncorrectEmailFormat : AuthenticationResult
+
+    /** Indicates that an account already exists with the given email. */
+    object FailureExistingAccount : AuthenticationResult
+
+    /** Indicates that the given password associated to an email is incorrect. */
+    object FailureIncorrectPassword : AuthenticationResult
+
+    /**
+     * Indicates that the user account corresponding to an email does not exist or has been
+     * disabled.
+     */
+    object FailureInvalidUser : AuthenticationResult
+
     // TODO : Some specific failures could be added here, like FailureBadPassword, etc.
   }
 

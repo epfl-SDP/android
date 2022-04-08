@@ -22,6 +22,9 @@ interface LocalizedStrings {
   val authenticateErrorFailure: String
   val authenticationBadPasswordFailure: String
   val authenticationWrongEmailFormatFailure: String
+  val authenticationInvalidUserFailure: String
+  val authenticationIncorrectPasswordFailure: String
+  val authenticationExistingAccountFailure: String
   val authenticateOr: String
 
   val arContentDescription: String

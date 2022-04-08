@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
-import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.*
 import com.google.firebase.auth.FirebaseAuth as ActualFirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import kotlinx.coroutines.channels.BufferOverflow
@@ -38,28 +38,38 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
    */
   private suspend fun authenticate(
       block: suspend () -> AuthResult?,
+      type: String,
   ): AuthenticationResult =
       try {
         val result = block()
         val user = result?.user?.let(::FirebaseUser)
         AuthenticationResult.Success(user)
       } catch (other: Throwable) {
-        AuthenticationResult.FailureInternal
+        when (other) {
+          is FirebaseAuthWeakPasswordException -> AuthenticationResult.FailureBadPassword
+          is FirebaseAuthInvalidCredentialsException ->
+              when (type) {
+                "SignIn" -> AuthenticationResult.FailureIncorrectPassword
+                "SignUp" -> AuthenticationResult.FailureIncorrectEmailFormat
+                else -> AuthenticationResult.FailureInternal
+              }
+          is FirebaseAuthUserCollisionException -> AuthenticationResult.FailureExistingAccount
+          is FirebaseAuthInvalidUserException -> AuthenticationResult.FailureInvalidUser
+          else -> AuthenticationResult.FailureInternal
+        }
       }
 
   override suspend fun signInWithEmail(
       email: String,
       password: String,
-  ): AuthenticationResult = authenticate {
-    actual.signInWithEmailAndPassword(email, password).await()
-  }
+  ): AuthenticationResult =
+      authenticate({ actual.signInWithEmailAndPassword(email, password).await() }, "SignIn")
 
   override suspend fun signUpWithEmail(
       email: String,
       password: String,
-  ): AuthenticationResult = authenticate {
-    actual.createUserWithEmailAndPassword(email, password).await()
-  }
+  ): AuthenticationResult =
+      authenticate({ actual.createUserWithEmailAndPassword(email, password).await() }, "SignUp")
 
   override suspend fun signOut() {
     actual.signOut()

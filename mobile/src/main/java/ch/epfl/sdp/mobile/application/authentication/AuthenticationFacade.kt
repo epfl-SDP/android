@@ -39,6 +39,14 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
     return when (block()) {
       is Auth.AuthenticationResult.Success -> AuthenticationResult.Success
       Auth.AuthenticationResult.FailureInternal -> AuthenticationResult.Failure
+      Auth.AuthenticationResult.FailureBadPassword -> AuthenticationResult.FailureBadPassword
+      Auth.AuthenticationResult.FailureExistingAccount ->
+          AuthenticationResult.FailureExistingAccount
+      Auth.AuthenticationResult.FailureIncorrectEmailFormat ->
+          AuthenticationResult.FailureIncorrectEmailFormat
+      Auth.AuthenticationResult.FailureIncorrectPassword ->
+          AuthenticationResult.FailureIncorrectPassword
+      Auth.AuthenticationResult.FailureInvalidUser -> AuthenticationResult.FailureInvalidUser
     }
   }
 

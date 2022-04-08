@@ -23,9 +23,9 @@ class FakeAuth : Auth, AuthBuilder {
       password: String,
   ): Auth.AuthenticationResult {
     val users = record.value.users
-    val user = users.firstOrNull { it.email == email } ?: return FailureInternal
+    val user = users.firstOrNull { it.email == email } ?: return FailureInvalidUser
     if (user.password != password) {
-      return FailureInternal
+      return FailureIncorrectPassword
     }
     record.update { it.copy(currentUser = user) }
     return Success(user)
@@ -73,7 +73,9 @@ class FakeAuth : Auth, AuthBuilder {
       // If an account already exists with this email or this uid, we must return an authentication
       // failure.
       val exists = users.any { it.email == email || it.uid == uid }
-      if (exists) return FailureInternal
+      if (!email.contains('@')) return FailureIncorrectEmailFormat
+      if (password.length < 6) return FailureBadPassword
+      if (exists) return FailureExistingAccount
 
       val newUser = FakeUser(uid = uid, email = email, password = password)
       val newRec = FakeAuthRecord(currentUser = newUser, users = users + newUser)
