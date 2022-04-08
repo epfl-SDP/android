@@ -1,4 +1,4 @@
-# Sprint 2
+# Sprint 4
 
 ## Summary
 
@@ -7,7 +7,7 @@ This Sprint was the first sprint with a two-week duration. This introduced some 
 ![Moodboard of the retrospective](image/mood-board.jpg)
 
 
-## Lars Barmettler
+## Lars Barmettler (Scrum Master)
 
 The last two weeks I was able to work quite productive. In the first week I could correct a refactoring some ill-favoured code which I wrongly implemented in the previous sprint. This was not that hard to do such that I quickly progressed to my second task. The second task, however, was quite demanding and so I often took consultation by Alexandre. He showed me how to solve this problem in a Kotlin way. I really like that we can ask without hesitation questions each other and getting quickly a respond. We should continue to stick to this mindset for the rest of the project.
 
@@ -19,7 +19,7 @@ Additionally, I had to finish increasing the coverage on a feature from last spr
 
 Overall, I think this 2 week sprint went quite well and did not make it harder to deliver my features than previous shorter sprints.
 
-## Chau Ying Kot (Scrum Master)
+## Chau Ying Kot
 
 For this sprint, I have a even better understanding on SceneView(the library used to display AR) and their project is structured. And now, I see all the possibilities we have at our disposal.
 
