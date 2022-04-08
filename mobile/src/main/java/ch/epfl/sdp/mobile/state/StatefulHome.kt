@@ -59,6 +59,10 @@ fun StatefulHome(
     controller.navigate("$ProfileRoute/${person.uid}")
   }
 
+  val onGameItemClick: (match: ChessMatchAdapter) -> Unit = { match ->
+    controller.navigate("$GameRoute/${match.uid}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -84,7 +88,11 @@ fun StatefulHome(
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            user = user,
+            onGameItemClick = onGameItemClick,
+            navigateToGame = { controller.navigate(PrepareGameRoute) },
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       dialog(PrepareGameRoute) {
         StatefulPrepareGameScreen(
