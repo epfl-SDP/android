@@ -87,9 +87,9 @@ fun ChessBoardRobotInputScope.click(x: Int, y: Int, pointerId: Int = 0) {
  * @param pointerId the identifier of the pointer.
  */
 fun ChessBoardRobotInputScope.drag(
-  from: ChessBoardState.Position,
-  to: ChessBoardState.Position,
-  pointerId: Int = 0,
+    from: ChessBoardState.Position,
+    to: ChessBoardState.Position,
+    pointerId: Int = 0,
 ) {
   down(x = from.x, y = from.y, pointerId = pointerId)
   moveTo(x = to.x, y = to.y, pointerId = pointerId)

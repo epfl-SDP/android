@@ -4,7 +4,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.test.application.chess.engine.GameScope
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
 
 /**
  * Performs all the steps from the [block], updating the robot internally. If a step fails, it will

@@ -6,10 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoard
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState.Piece
+import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
 import ch.epfl.sdp.mobile.ui.game.ClassicRank.Pawn
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -21,8 +21,8 @@ class ChessBoardTest {
   @get:Rule val rule = createComposeRule()
 
   /**
-   * An implementation of [ClassicChessBoardState] which moves a single piece around the chessboard on drag
-   * and drops.
+   * An implementation of [ClassicChessBoardState] which moves a single piece around the chessboard
+   * on drag and drops.
    *
    * @param piece the [Piece] which should be moved.
    */

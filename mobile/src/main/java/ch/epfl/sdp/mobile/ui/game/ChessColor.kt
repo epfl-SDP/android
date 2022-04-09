@@ -10,8 +10,8 @@ interface ChessColor
  * @param contentDescription the content description for this color.
  */
 enum class ClassicColor(
-  val contentDescription: LocalizedStrings.() -> String,
-) : ChessColor{
+    val contentDescription: LocalizedStrings.() -> String,
+) : ChessColor {
   Black(contentDescription = { boardColorBlack }),
   White(contentDescription = { boardColorWhite }),
 }
