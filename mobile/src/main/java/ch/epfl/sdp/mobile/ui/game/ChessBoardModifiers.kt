@@ -88,7 +88,7 @@ fun Modifier.grid(
 }
 
 /**
- * A [Modifier] which draws a [Set] of [ChessBoardState.Position].
+ * A [Modifier] which draws a [Set] of [ClassicChessBoardState.Position].
  *
  * @param positions the positions to draw on the component.
  * @param color the [Color] of the circles.
@@ -96,10 +96,10 @@ fun Modifier.grid(
  * @param cells the number of cells in the grid.
  */
 fun Modifier.actions(
-    positions: Set<ChessBoardState.Position>,
-    color: Color = Color.Unspecified,
-    diameter: Dp = 16.dp,
-    cells: Int = ChessBoardCells
+  positions: Set<ChessBoardState.Position>,
+  color: Color = Color.Unspecified,
+  diameter: Dp = 16.dp,
+  cells: Int = ChessBoardCells
 ): Modifier = composed {
   val surfaceColor = color.takeOrElse { LocalContentColor.current }
   cells(positions = positions, cells = cells) {
@@ -115,9 +115,9 @@ fun Modifier.actions(
  * @param cells the number of cells in the grid.
  */
 fun Modifier.check(
-    position: ChessBoardState.Position?,
-    color: Color = Color.Unspecified,
-    cells: Int = ChessBoardCells,
+  position: ChessBoardState.Position?,
+  color: Color = Color.Unspecified,
+  cells: Int = ChessBoardCells,
 ): Modifier = composed {
   val fillColor = color.takeOrElse { LocalContentColor.current }
   cells(
@@ -130,7 +130,7 @@ fun Modifier.check(
 private const val SelectionDurationMillis = DefaultDurationMillis * 4
 
 /**
- * A [Modifier] which draws an animated dashed border for the provide [ChessBoardState.Position].
+ * A [Modifier] which draws an animated dashed border for the provide [ClassicChessBoardState.Position].
  *
  * @param position the position that should be drawn.
  * @param color the [Color] of the animated border.
@@ -138,10 +138,10 @@ private const val SelectionDurationMillis = DefaultDurationMillis * 4
  * @param cells the number of cells in the grid.
  */
 fun Modifier.selection(
-    position: ChessBoardState.Position?,
-    color: Color = Color.Unspecified,
-    width: Dp = 4.dp,
-    cells: Int = ChessBoardCells,
+  position: ChessBoardState.Position?,
+  color: Color = Color.Unspecified,
+  width: Dp = 4.dp,
+  cells: Int = ChessBoardCells,
 ): Modifier = composed {
   val lineColor = color.takeOrElse { LocalContentColor.current }
   val transition = rememberInfiniteTransition()
@@ -176,16 +176,16 @@ fun Modifier.selection(
 }
 
 /**
- * A [Modifier] which calls [onDraw] for each cell passed as a [ChessBoardState.Position].
+ * A [Modifier] which calls [onDraw] for each cell passed as a [ClassicChessBoardState.Position].
  *
  * @param positions the [Set] of position which should be drawn.
  * @param cells the number of cells which should be displayed per side.
  * @param onDraw the [DrawScope] in which drawing operations should be performed for each cell.
  */
 private fun Modifier.cells(
-    positions: Set<ChessBoardState.Position>,
-    cells: Int = ChessBoardCells,
-    onDraw: DrawScope.() -> Unit,
+  positions: Set<ChessBoardState.Position>,
+  cells: Int = ChessBoardCells,
+  onDraw: DrawScope.() -> Unit,
 ): Modifier = drawBehind {
   val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
   val squareSize = size.minDimension / cells

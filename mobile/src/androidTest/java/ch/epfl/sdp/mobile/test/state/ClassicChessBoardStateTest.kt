@@ -4,12 +4,13 @@ import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
+import ch.epfl.sdp.mobile.state.SnapshotClassicChessBoardState
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +19,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class ChessBoardStateTest {
+class ClassicChessBoardStateTest {
 
   @Test
   fun selectingPiece_displaysAvailableMoves() = runTest {
@@ -40,7 +41,7 @@ class ChessBoardStateTest {
     val match = facade.createMatch(user, user)
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
-    val state = SnapshotChessBoardState(actions, user, match, scope)
+    val state = SnapshotClassicChessBoardState(actions, user, match, scope)
 
     state.onPositionClick(ChessBoardState.Position(4, 6))
     assertThat(state.availableMoves)

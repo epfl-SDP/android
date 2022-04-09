@@ -10,10 +10,8 @@ import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.GameScreen
-import ch.epfl.sdp.mobile.ui.game.GameScreenState
+import ch.epfl.sdp.mobile.state.SnapshotClassicChessBoardState.SnapshotPiece
+import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
@@ -54,7 +52,7 @@ fun StatefulGameScreen(
 
   val gameScreenState =
       remember(actions, user, match, scope) {
-        SnapshotChessBoardState(
+        SnapshotClassicChessBoardState(
             actions = actions,
             user = user,
             match = match,
@@ -78,7 +76,7 @@ fun StatefulGameScreen(
  * @param match the match to display.
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
-class SnapshotChessBoardState(
+class SnapshotClassicChessBoardState(
     private val actions: StatefulGameScreenActions,
     private val user: AuthenticatedUser,
     private val match: Match,
@@ -127,8 +125,8 @@ class SnapshotChessBoardState(
   }
 
   /**
-   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
-   * different pieces.
+   * An implementation of [ClassicChessBoardState.Piece] which uses a [PieceIdentifier] to
+   * disambiguate different pieces.
    *
    * @param id the unique [PieceIdentifier].
    * @param color the color for the piece.
@@ -136,9 +134,9 @@ class SnapshotChessBoardState(
    */
   data class SnapshotPiece(
       val id: PieceIdentifier,
-      override val color: ChessBoardState.Color,
-      override val rank: ChessBoardState.Rank,
-  ) : ChessBoardState.Piece
+      override val color: ClassicColor,
+      override val rank: ClassicRank,
+  ) : ClassicChessBoardState.Piece
 
   /** The currently selected [Position] of the board. */
   override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
@@ -168,7 +166,10 @@ class SnapshotChessBoardState(
           .toSet()
     }
 
-  override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
+  override fun onDropPiece(
+      piece: ClassicChessBoardState.Piece,
+      endPosition: ChessBoardState.Position
+  ) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     tryPerformMove(startPosition, endPosition)
   }
@@ -183,11 +184,11 @@ class SnapshotChessBoardState(
   }
 
   /**
-   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
-   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
+   * Attempts to perform a move from the given [ClassicChessBoardState.Position] to the given
+   * [ClassicChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
    *
-   * @param from the start [ChessBoardState.Position].
-   * @param to the end [ChessBoardState.Position].
+   * @param from the start [ClassicChessBoardState.Position].
+   * @param to the end [ClassicChessBoardState.Position].
    */
   private fun tryPerformMove(
       from: ChessBoardState.Position,
@@ -221,7 +222,7 @@ class SnapshotChessBoardState(
     get() = game.serialize().map(::Move)
 }
 
-/** Maps a game engine [Position] to a [ChessBoardState.Position] */
+/** Maps a game engine [Position] to a [ClassicChessBoardState.Position] */
 private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
@@ -229,18 +230,18 @@ private fun Position.toPosition(): ChessBoardState.Position {
 private fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
-        Rank.King -> ChessBoardState.Rank.King
-        Rank.Queen -> ChessBoardState.Rank.Queen
-        Rank.Rook -> ChessBoardState.Rank.Rook
-        Rank.Bishop -> ChessBoardState.Rank.Bishop
-        Rank.Knight -> ChessBoardState.Rank.Knight
-        Rank.Pawn -> ChessBoardState.Rank.Pawn
+        Rank.King -> ClassicRank.King
+        Rank.Queen -> ClassicRank.Queen
+        Rank.Rook -> ClassicRank.Rook
+        Rank.Bishop -> ClassicRank.Bishop
+        Rank.Knight -> ClassicRank.Knight
+        Rank.Pawn -> ClassicRank.Pawn
       }
 
   val color =
       when (this.color) {
-        Black -> ChessBoardState.Color.Black
-        White -> ChessBoardState.Color.White
+        Black -> ClassicColor.Black
+        White -> ClassicColor.White
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)

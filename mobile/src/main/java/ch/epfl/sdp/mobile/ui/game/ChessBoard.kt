@@ -22,10 +22,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
+import ch.epfl.sdp.mobile.ui.game.ClassicColor.Black
+import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
 import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -38,13 +38,13 @@ const val ChessBoardCells = 8
  * using its unique [Piece] type, so pieces smoothly animate when the board changes.
  *
  * @param Piece the type of the pieces.
- * @param state the [ChessBoardState] that is used by this composable.
+ * @param state the [ClassicChessBoardState] that is used by this composable.
  * @param modifier the [Modifier] for this composable.
- * @param enabled true iff the [ChessBoardState] should allow for user interactions.
+ * @param enabled true iff the [ClassicChessBoardState] should allow for user interactions.
  */
 @Composable
-fun <Piece : ChessBoardState.Piece> ChessBoard(
-    state: ChessBoardState<Piece>,
+fun ChessBoard(
+    state: ClassicChessBoardState,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
@@ -213,7 +213,7 @@ private fun Modifier.movablePiece(
  */
 @Composable
 private fun Piece(
-    piece: Piece,
+    piece: ClassicChessBoardState.Piece,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current

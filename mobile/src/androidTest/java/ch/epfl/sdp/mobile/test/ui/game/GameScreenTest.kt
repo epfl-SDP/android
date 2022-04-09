@@ -6,8 +6,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
@@ -17,9 +17,9 @@ import org.junit.Test
 class GameScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotGameScreenState :
+  private class SnapshotGameScreenStateClassic :
       GameScreenState<Piece>,
-      ChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
+      ClassicChessBoardState by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
     override val moves: List<Move>
       get() =
           listOf(
@@ -44,8 +44,8 @@ class GameScreenTest {
   }
 
   @Composable
-  private fun rememberSnapshotGameScreenState(): SnapshotGameScreenState {
-    return remember { SnapshotGameScreenState() }
+  private fun rememberSnapshotGameScreenState(): SnapshotGameScreenStateClassic {
+    return remember { SnapshotGameScreenStateClassic() }
   }
 
   @Test
