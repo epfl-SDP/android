@@ -40,7 +40,7 @@ fun Game.serialize(): List<String> {
 }
 
 /** Parsing string to moves */
-private fun parseStringToMove(move: String): Pair<Position, Delta> {
+fun parseStringToMove(move: String): Pair<Position, Delta> {
 
   val length = move.length
   val fromStr = move.subSequence(length - 5, length - 3).toString()

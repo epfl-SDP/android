@@ -5,7 +5,7 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.notation.deserialize
+import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
@@ -88,7 +88,7 @@ private data class StoreMatch(
 
   private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
 
-  override val game = documentFlow.map { it?.moves ?: emptyList() }.map { it.deserialize() }
+  override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
 
   override val white =
       documentFlow.map { it?.whiteId }.flatMapLatest {
