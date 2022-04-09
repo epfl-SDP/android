@@ -6,6 +6,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /**
+ * Returns the longest common prefix length between two [List].
+ *
+ * @param a the first [List] to inspect.
+ * @param b the second [List] to inspect.
+ */
+private fun prefixLength(a: List<*>, b: List<*>): Int =
+    a.asSequence().zip(b.asSequence()).takeWhile { (a, b) -> (a == b) }.count()
+
+/**
  * A specialized [Flow] operator which incrementally maps some lists of [String] moves to the
  * resulting chess [Game].
  *
@@ -16,7 +25,7 @@ fun Flow<List<String>>.mapToGame(): Flow<Game> = flow {
   var game = Game.create()
   var moves = emptyList<String>()
   collect { list ->
-    val prefix = moves.asSequence().zip(list.asSequence()).takeWhile { (a, b) -> a == b }.count()
+    val prefix = prefixLength(moves, list)
     if (prefix == moves.size) {
       // Incremental update.
       for (move in list.drop(prefix)) {
