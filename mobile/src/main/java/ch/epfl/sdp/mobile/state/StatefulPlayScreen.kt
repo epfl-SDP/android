@@ -37,15 +37,22 @@ fun StatefulPlayScreen(
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val chess = LocalChessFacade.current
-  val currentNavigateToGame = rememberUpdatedState(navigateToGame)
+  val currentNavigateToPrepareGame = rememberUpdatedState(navigateToPrepareGame)
+  val currentNavigateToLocalGame = rememberUpdatedState(navigateToLocalGame)
   val onGameItemClickAction = rememberUpdatedState(onGameItemClick)
   val scope = rememberCoroutineScope()
   val state =
-      remember(user, navigateToLocalGame, navigateToPrepareGame, chess, scope,) {
+      remember(
+          user,
+          navigateToLocalGame,
+          navigateToPrepareGame,
+          chess,
+          scope,
+      ) {
         PlayScreenStateImpl(
             user = user,
-            localGame = navigateToLocalGame,
-            onlineGame = navigateToPrepareGame,
+            onLocalGameClickAction = currentNavigateToLocalGame,
+            onOnlineGameClickAction = currentNavigateToPrepareGame,
             onMatchClickAction = onGameItemClickAction,
             chessFacade = chess,
             scope = scope,
@@ -165,25 +172,27 @@ private fun info(match: Match): Flow<MatchInfo> {
  * Implementation of the PlayScreenState
  * @param onNewGameClick callback function for the new game button
  * @param user authenticated user
- * @param facade [ChessFacade] to fetch the matches
+ * @param chessFacade [ChessFacade] to fetch the matches
  * @param scope for coroutines
  */
 private class PlayScreenStateImpl(
-    user: AuthenticatedUser,
-    localGame: State<(match: Match) -> Unit>,
-    onlineGame: State<() -> Unit>,
+    override val user: AuthenticatedUser,
+    onLocalGameClickAction: State<(match: Match) -> Unit>,
+    onOnlineGameClickAction: State<() -> Unit>,
     onMatchClickAction: State<(ChessMatchAdapter) -> Unit>,
-    facade: ChessFacade,
-    scope: CoroutineScope,
+    private val chessFacade: ChessFacade,
+    private val scope: CoroutineScope,
 ) : PlayScreenState<ChessMatchAdapter> {
-  val onNewGameClickAction by onNewGameClickAction
   val onMatchClickAction by onMatchClickAction
+  val onLocalGameClickAction by onLocalGameClickAction
+  val onOnlineClickAction by onOnlineGameClickAction
+
   override var matches by mutableStateOf(emptyList<ChessMatchAdapter>())
     private set
 
   init {
     scope.launch {
-      fetchForUser(user, facade).collect { list ->
+      fetchForUser(user, chessFacade).collect { list ->
         matches = list.map { createChessMatch(it, user) }
       }
     }
@@ -196,10 +205,10 @@ private class PlayScreenStateImpl(
   override fun onLocalGameClick() {
     scope.launch {
       val match = chessFacade.createLocalMatch(user)
-      localGame(match)
+      onLocalGameClickAction(match)
     }
   }
-  override fun onOnlineGameClick() = this.onlineGame()
+  override fun onOnlineGameClick() = this.onOnlineClickAction()
 }
 
 /**

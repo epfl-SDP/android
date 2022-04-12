@@ -23,7 +23,7 @@ open class TestPlayScreenState(
     onGameItemClickAction(match)
   }
 
-  //override fun onNewGameClick() {
+  // override fun onNewGameClick() {
   //  onNewGameClickAction()
   // }
 }

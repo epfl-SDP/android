@@ -3,8 +3,6 @@ package ch.epfl.sdp.mobile.ui.play
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -52,19 +50,19 @@ fun <M : ChessMatch> PlayScreen(
   }
 
   Box(
-    modifier = modifier.fillMaxSize().padding(contentPadding),
-    contentAlignment = Alignment.BottomEnd) {
+      modifier = modifier.fillMaxSize().padding(contentPadding),
+      contentAlignment = Alignment.BottomEnd) {
     NewGameButton(
-      state = buttonState,
-      onLocalGame = {
-        state.onLocalGameClick()
-        buttonState.expanded = false
-      },
-      onRemoteGame = {
-        state.onOnlineGameClick()
-        buttonState.expanded = false
-      },
-      modifier = Modifier,
+        state = buttonState,
+        onLocalGame = {
+          state.onLocalGameClick()
+          buttonState.expanded = false
+        },
+        onRemoteGame = {
+          state.onOnlineGameClick()
+          buttonState.expanded = false
+        },
+        modifier = Modifier,
     )
   }
 }
