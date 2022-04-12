@@ -70,7 +70,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
     val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
 
-    return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a + b }
+    return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
   private fun getMatchesForPlayer(colorField: String, playerId: String): Flow<List<Match>> {

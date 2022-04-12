@@ -1,9 +1,12 @@
 package ch.epfl.sdp.mobile.ui.play
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
+
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 
 /** Interface that represents state of the PlayScreen */
-interface PlayScreenState {
+interface PlayScreenState<M : ChessMatch> {
 
   /** The current [AuthenticatedUser] */
   val user: AuthenticatedUser
@@ -14,5 +17,9 @@ interface PlayScreenState {
   /** Callable upon actioning button for online games */
   fun onOnlineGameClick()
 
-  /* TODO: add necessary attributes: games log... */
+  /** Action to execute when clicked on match item in list */
+  fun onMatchClick(match: M)
+
+  /** List of matches of current user */
+  val matches: List<M>
 }

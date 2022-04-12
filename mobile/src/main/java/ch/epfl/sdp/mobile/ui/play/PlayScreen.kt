@@ -1,6 +1,10 @@
 package ch.epfl.sdp.mobile.ui.play
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -14,36 +18,53 @@ import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.LocalPlay
 import ch.epfl.sdp.mobile.ui.OnlinePlay
 import ch.epfl.sdp.mobile.ui.PawniesIcons
+import ch.epfl.sdp.mobile.ui.profile.Match
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
- * Composable that composes the PlayScreen [TODO] Contains a new game button only, should be
- * expanded to include history of matches
- * @param state state of the PlayScreen
+ * Composable that composes the PlayScreen expanded to include history of matches
+ * @param M the type of the [Match].
+ * @param state the [PlayScreenState] to manage composable content
+ * @param key a function which uniquely identifies the list items.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding The [PaddingValues] to apply to the content
  */
 @Composable
-fun PlayScreen(
-    state: PlayScreenState,
+fun <M : ChessMatch> PlayScreen(
+    state: PlayScreenState<M>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
+    key: ((M) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
+  val strings = LocalLocalizedStrings.current
   val buttonState = rememberExpandableFloatingActionButtonState()
 
+  Column(modifier) {
+    Text(
+        text = strings.playOnlineGames,
+        color = MaterialTheme.colors.primary,
+        style = MaterialTheme.typography.h4,
+        modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp))
+    LazyColumn(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) { items(state.matches, key) { match -> Match(match, { state.onMatchClick(match) }) } }
+  }
+
   Box(
-      modifier = modifier.fillMaxSize().padding(contentPadding),
-      contentAlignment = Alignment.BottomEnd) {
+    modifier = modifier.fillMaxSize().padding(contentPadding),
+    contentAlignment = Alignment.BottomEnd) {
     NewGameButton(
-        state = buttonState,
-        onLocalGame = {
-          state.onLocalGameClick()
-          buttonState.expanded = false
-        },
-        onRemoteGame = {
-          state.onOnlineGameClick()
-          buttonState.expanded = false
-        },
-        modifier = Modifier,
+      state = buttonState,
+      onLocalGame = {
+        state.onLocalGameClick()
+        buttonState.expanded = false
+      },
+      onRemoteGame = {
+        state.onOnlineGameClick()
+        buttonState.expanded = false
+      },
+      modifier = Modifier,
     )
   }
 }
