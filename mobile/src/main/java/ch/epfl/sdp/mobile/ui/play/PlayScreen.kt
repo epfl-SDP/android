@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.play
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -88,7 +89,7 @@ fun NewGameButton(
       expandedContent = {
         ExpandableFloatingActionButtonItem(
             onClick = onLocalGame,
-            icon = { Icon(PawniesIcons.LocalPlay, null) },
+            icon = { Image(PawniesIcons.LocalPlay, null) },
             text = { Text(strings.prepareGamePlayLocal) },
             modifier = Modifier.fillMaxWidth(),
         )
@@ -97,7 +98,7 @@ fun NewGameButton(
 
         ExpandableFloatingActionButtonItem(
             onClick = onRemoteGame,
-            icon = { Icon(PawniesIcons.OnlinePlay, null) },
+            icon = { Image(PawniesIcons.OnlinePlay, null) },
             text = { Text(strings.prepareGamePlayOnline) },
             modifier = Modifier.fillMaxWidth(),
         )
