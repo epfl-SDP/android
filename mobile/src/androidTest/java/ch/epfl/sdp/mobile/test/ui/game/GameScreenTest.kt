@@ -17,7 +17,7 @@ import org.junit.Test
 class GameScreenTest {
   @get:Rule val rule = createComposeRule()
 
-  private class SnapshotGameScreenStateClassic :
+  private class SnapshotGameScreenState :
       GameScreenState<Piece>,
       MovableChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
     override val moves: List<Move>
@@ -44,8 +44,8 @@ class GameScreenTest {
   }
 
   @Composable
-  private fun rememberSnapshotGameScreenState(): SnapshotGameScreenStateClassic {
-    return remember { SnapshotGameScreenStateClassic() }
+  private fun rememberSnapshotGameScreenState(): SnapshotGameScreenState {
+    return remember { SnapshotGameScreenState() }
   }
 
   @Test
