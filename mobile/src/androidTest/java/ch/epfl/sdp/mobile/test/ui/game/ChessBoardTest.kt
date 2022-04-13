@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoard
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.Pawn
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoard
 import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -128,7 +128,8 @@ class ChessBoardTest {
   fun disablingBoardDuringDrag_dropsPiece() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
     var enabled by mutableStateOf(true)
-    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state, enabled = enabled) }
+    val strings =
+        rule.setContentWithLocalizedStrings { ClassicChessBoard(state, enabled = enabled) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)
