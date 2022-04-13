@@ -81,7 +81,7 @@ class SnapshotChessBoardState(
     private val user: AuthenticatedUser,
     private val match: Match,
     private val scope: CoroutineScope,
-) : GameScreenState<SnapshotPiece> {
+) : GameScreenState<SnapshotPiece>, DefaultChessBoardState<SnapshotPiece>() {
 
   // TODO : Implement these things.
   override var listening by mutableStateOf(false)
@@ -94,7 +94,7 @@ class SnapshotChessBoardState(
 
   override fun onBackClick() = actions.onBack()
 
-  private var game by mutableStateOf(Game.create())
+  //private var game by mutableStateOf(Game.create())
   private var whiteProfile by mutableStateOf<Profile?>(null)
   private var blackProfile by mutableStateOf<Profile?>(null)
 
@@ -141,20 +141,6 @@ class SnapshotChessBoardState(
   /** The currently selected [Position] of the board. */
   override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
     private set
-
-  override val checkPosition: ChessBoardState.Position?
-    get() {
-      val nextStep = game.nextStep
-      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
-      return game.board
-          .first { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
-          .first
-          .toPosition()
-    }
-
-  override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
-    get() =
-        game.board.asSequence().map { (pos, piece) -> pos.toPosition() to piece.toPiece() }.toMap()
 
   override val availableMoves: Set<ChessBoardState.Position>
     // Display all the possible moves for all the pieces on the board.
@@ -217,29 +203,29 @@ class SnapshotChessBoardState(
 
   override val moves: List<Move>
     get() = game.serialize().map(::Move)
+
+  override fun Piece<Color>.toPiece(): SnapshotPiece {
+    val rank =
+        when (this.rank) {
+          Rank.King -> ChessBoardState.Rank.King
+          Rank.Queen -> ChessBoardState.Rank.Queen
+          Rank.Rook -> ChessBoardState.Rank.Rook
+          Rank.Bishop -> ChessBoardState.Rank.Bishop
+          Rank.Knight -> ChessBoardState.Rank.Knight
+          Rank.Pawn -> ChessBoardState.Rank.Pawn
+        }
+
+    val color =
+        when (this.color) {
+          Black -> ChessBoardState.Color.Black
+          White -> ChessBoardState.Color.White
+        }
+
+    return SnapshotPiece(id = this.id, rank = rank, color = color)
+  }
 }
 
 /** Maps a game engine [Position] to a [ClassicChessBoardState.Position] */
 private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
-}
-
-private fun Piece<Color>.toPiece(): SnapshotPiece {
-  val rank =
-      when (this.rank) {
-        Rank.King -> ChessBoardState.Rank.King
-        Rank.Queen -> ChessBoardState.Rank.Queen
-        Rank.Rook -> ChessBoardState.Rank.Rook
-        Rank.Bishop -> ChessBoardState.Rank.Bishop
-        Rank.Knight -> ChessBoardState.Rank.Knight
-        Rank.Pawn -> ChessBoardState.Rank.Pawn
-      }
-
-  val color =
-      when (this.color) {
-        Black -> ChessBoardState.Color.Black
-        White -> ChessBoardState.Color.White
-      }
-
-  return SnapshotPiece(id = this.id, rank = rank, color = color)
 }
