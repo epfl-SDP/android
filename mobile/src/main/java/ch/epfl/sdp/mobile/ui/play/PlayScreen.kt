@@ -50,7 +50,7 @@ fun <M : ChessMatch> PlayScreen(
             },
         )
       },
-  ) {
+  ) { innerPadding ->
     Column {
       Text(
           text = strings.playOnlineGames,
@@ -60,6 +60,7 @@ fun <M : ChessMatch> PlayScreen(
       LazyColumn(
           verticalArrangement = Arrangement.Top,
           horizontalAlignment = Alignment.CenterHorizontally,
+          contentPadding = innerPadding,
       ) { items(state.matches, key) { match -> Match(match, { state.onMatchClick(match) }) } }
     }
   }
