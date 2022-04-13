@@ -4,10 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,33 +35,33 @@ fun <M : ChessMatch> PlayScreen(
   val strings = LocalLocalizedStrings.current
   val buttonState = rememberExpandableFloatingActionButtonState()
 
-  Column(modifier) {
-    Text(
-        text = strings.playOnlineGames,
-        color = MaterialTheme.colors.primary,
-        style = MaterialTheme.typography.h4,
-        modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp))
-    LazyColumn(
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) { items(state.matches, key) { match -> Match(match, { state.onMatchClick(match) }) } }
-  }
-
-  Box(
-      modifier = modifier.fillMaxSize().padding(contentPadding),
-      contentAlignment = Alignment.BottomEnd) {
-    NewGameButton(
-        state = buttonState,
-        onLocalGame = {
-          state.onLocalGameClick()
-          buttonState.expanded = false
-        },
-        onRemoteGame = {
-          state.onOnlineGameClick()
-          buttonState.expanded = false
-        },
-        modifier = Modifier,
-    )
+  Scaffold(
+      modifier = modifier.padding(contentPadding),
+      floatingActionButton = {
+        NewGameButton(
+            state = buttonState,
+            onLocalGame = {
+              state.onLocalGameClick()
+              buttonState.expanded = false
+            },
+            onRemoteGame = {
+              state.onOnlineGameClick()
+              buttonState.expanded = false
+            },
+        )
+      },
+  ) {
+    Column {
+      Text(
+          text = strings.playOnlineGames,
+          color = MaterialTheme.colors.primary,
+          style = MaterialTheme.typography.h4,
+          modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp))
+      LazyColumn(
+          verticalArrangement = Arrangement.Top,
+          horizontalAlignment = Alignment.CenterHorizontally,
+      ) { items(state.matches, key) { match -> Match(match, { state.onMatchClick(match) }) } }
+    }
   }
 }
 
@@ -108,6 +105,6 @@ fun NewGameButton(
         Spacer(Modifier.width(16.dp))
         Text(strings.newGame)
       },
-      modifier = modifier.padding(16.dp),
+      modifier = modifier,
   )
 }
