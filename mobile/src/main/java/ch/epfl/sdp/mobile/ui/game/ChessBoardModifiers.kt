@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
@@ -102,7 +103,7 @@ fun Modifier.actions(
     cells: Int = ChessBoardCells
 ): Modifier = composed {
   val surfaceColor = color.takeOrElse { LocalContentColor.current }
-  cells(positions = positions, cells = cells) {
+  cells(positions = positions, cells = cells, drawBehind = false) {
     drawCircle(color = surfaceColor, radius = diameter.toPx() / 2)
   }
 }
@@ -180,13 +181,17 @@ fun Modifier.selection(
  *
  * @param positions the [Set] of position which should be drawn.
  * @param cells the number of cells which should be displayed per side.
+ * @param drawBehind a [Boolean] which indicates whether the [Modifier] should be drawn behind the
+ * content.
  * @param onDraw the [DrawScope] in which drawing operations should be performed for each cell.
  */
 private fun Modifier.cells(
     positions: Set<ChessBoardState.Position>,
     cells: Int = ChessBoardCells,
+    drawBehind: Boolean = true,
     onDraw: DrawScope.() -> Unit,
-): Modifier = drawBehind {
+): Modifier = drawWithContent {
+  if (!drawBehind) drawContent()
   val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
   val squareSize = size.minDimension / cells
   for ((x, y) in positions) {
@@ -204,4 +209,5 @@ private fun Modifier.cells(
         drawBlock = onDraw,
     )
   }
+  if (drawBehind) drawContent()
 }
