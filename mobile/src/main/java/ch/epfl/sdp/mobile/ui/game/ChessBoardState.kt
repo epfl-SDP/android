@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 
 /**
  * An interface which represents the state of a [ClassicChessBoard] composable. It display the
- * current state of the game
+ * current state of the game.
  *
  * Each [ChessBoardState.Piece] has unique [ChessBoardState.Piece], which is used to display some
  * smooth animations if multiple pieces with the same ranks and colors exist.

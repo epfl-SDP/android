@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.ui.game
 import androidx.compose.runtime.Stable
 
 /**
- * An interface that extend the interface [ChessBoardState] and offers some ways for the
+ * An interface that extends the interface [ChessBoardState] and offers some ways for the
  * [ClassicChessBoard] to interact with it and indicate the user gestures.
  *
  * @param Piece the type of the [ChessBoardState.Piece].

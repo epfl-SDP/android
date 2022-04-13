@@ -277,8 +277,6 @@ private val Piece.contentDescription: String
   get() {
     val strings = LocalLocalizedStrings.current
     val color = color.contentDescription(strings)
-
     val rank = rank.contentDescription(strings)
-
     return strings.boardPieceContentDescription(color, rank)
   }
