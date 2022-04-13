@@ -1,8 +1,6 @@
 package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
-import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
-import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
 
 /**
  * An interface which represents the state of a [ClassicChessBoard] composable. It display the
@@ -56,6 +54,4 @@ interface ChessBoardState<Piece : ChessBoardState.Piece> {
 
   /** Returns the position of the [Rank.King] currently in check, if there's any. */
   val checkPosition: Position?
-
-  fun EnginePiece<EngineColor>.toPiece() : Piece
 }

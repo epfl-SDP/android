@@ -4,8 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.application.chess.engine.Color
-import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
@@ -55,9 +53,6 @@ class ChessBoardTest {
     }
 
     override fun onPositionClick(position: Position) = Unit
-    override fun EnginePiece<Color>.toPiece(): Piece {
-      TODO("Not yet implemented")
-    }
   }
 
   @Test
