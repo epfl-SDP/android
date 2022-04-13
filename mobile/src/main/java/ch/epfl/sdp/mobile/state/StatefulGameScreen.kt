@@ -134,9 +134,9 @@ class SnapshotClassicChessBoardState(
    */
   data class SnapshotPiece(
       val id: PieceIdentifier,
-      override val color: ClassicColor,
-      override val rank: ClassicRank,
-  ) : ClassicChessBoardState.Piece
+      override val color: ChessBoardState.Color,
+      override val rank: ChessBoardState.Rank,
+  ) : ChessBoardState.Piece
 
   /** The currently selected [Position] of the board. */
   override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
@@ -166,10 +166,7 @@ class SnapshotClassicChessBoardState(
           .toSet()
     }
 
-  override fun onDropPiece(
-      piece: ClassicChessBoardState.Piece,
-      endPosition: ChessBoardState.Position
-  ) {
+  override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
     val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
     tryPerformMove(startPosition, endPosition)
   }
@@ -230,18 +227,18 @@ private fun Position.toPosition(): ChessBoardState.Position {
 private fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
-        Rank.King -> ClassicRank.King
-        Rank.Queen -> ClassicRank.Queen
-        Rank.Rook -> ClassicRank.Rook
-        Rank.Bishop -> ClassicRank.Bishop
-        Rank.Knight -> ClassicRank.Knight
-        Rank.Pawn -> ClassicRank.Pawn
+        Rank.King -> ChessBoardState.Rank.King
+        Rank.Queen -> ChessBoardState.Rank.Queen
+        Rank.Rook -> ChessBoardState.Rank.Rook
+        Rank.Bishop -> ChessBoardState.Rank.Bishop
+        Rank.Knight -> ChessBoardState.Rank.Knight
+        Rank.Pawn -> ChessBoardState.Rank.Pawn
       }
 
   val color =
       when (this.color) {
-        Black -> ClassicColor.Black
-        White -> ClassicColor.White
+        Black -> ChessBoardState.Color.Black
+        White -> ChessBoardState.Color.White
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)

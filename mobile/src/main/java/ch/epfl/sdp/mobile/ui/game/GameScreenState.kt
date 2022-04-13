@@ -6,10 +6,10 @@ import androidx.compose.runtime.Stable
  * A state which indicates the content of a [GameScreen] composable. It will keep track of the
  * values of moves history.
  *
- * @param Piece the type of the pieces of the underlying [ClassicChessBoardState].
+ * @param Piece the type of the pieces of the underlying [ChessBoardState].
  */
 @Stable
-interface GameScreenState<Pieces> : ClassicChessBoardState {
+interface GameScreenState<Pieces : ChessBoardState.Piece> : MovableChessBoardState<Pieces> {
 
   /**
    * A class representing a [Move] that's been performed by one of the players.

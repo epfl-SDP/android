@@ -20,8 +20,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green500
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
 import ch.epfl.sdp.mobile.ui.WhiteKing
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.Black
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import com.google.accompanist.flowlayout.FlowRow
@@ -34,7 +33,7 @@ import com.google.accompanist.flowlayout.FlowRow
  * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
-fun <Piece : ClassicChessBoardState.Piece> GameScreen(
+fun <Piece : ChessBoardState.Piece> GameScreen(
     state: GameScreenState<Piece>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -75,14 +74,14 @@ fun <Piece : ClassicChessBoardState.Piece> GameScreen(
  * A composable which displays some basic information about a player. Each player may have a name,
  * and an associated message.
  *
- * @param color the [ClassicChessBoardState.Color] of the player.
+ * @param color the [ChessBoardState.Color] of the player.
  * @param name the name of the player.
  * @param message the message associated to the player.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 private fun Player(
-    color: ClassicColor,
+    color: ChessBoardState.Color,
     name: String?,
     message: Message,
     modifier: Modifier = Modifier,

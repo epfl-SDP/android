@@ -24,12 +24,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.Black
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
+import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -42,13 +41,13 @@ const val ChessBoardCells = 8
  * using its unique [Piece] type, so pieces smoothly animate when the board changes.
  *
  * @param Piece the type of the pieces.
- * @param state the [ClassicChessBoardState] that is used by this composable.
+ * @param state the [MovableChessBoardState] that is used by this composable.
  * @param modifier the [Modifier] for this composable.
- * @param enabled true iff the [ClassicChessBoardState] should allow for user interactions.
+ * @param enabled true iff the [MovableChessBoardState] should allow for user interactions.
  */
 @Composable
-fun ChessBoard(
-    state: ClassicChessBoardState,
+fun <Piece : ChessBoardState.Piece> ChessBoard(
+    state: MovableChessBoardState<Piece>,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
@@ -217,77 +216,67 @@ private fun Modifier.movablePiece(
  */
 @Composable
 private fun Piece(
-    piece: ClassicChessBoardState.Piece,
+    piece: Piece,
     modifier: Modifier = Modifier,
 ) {
-  val strings = LocalLocalizedStrings.current
-  val painter =
-      when (piece.color) {
-        Black -> piece.rank.blackIcon
-        White -> piece.rank.whiteIcon
-      }
-  val contentDescription =
-      strings.boardPieceContentDescription(
-          piece.color.contentDescription(strings),
-          piece.rank.contentDescription(strings),
-      )
   Icon(
-      painter = painter(),
-      contentDescription = contentDescription,
+      painter = piece.icon,
+      contentDescription = piece.contentDescription,
       modifier = modifier,
   )
 }
 
-data class RankResources(
-    val contentDescription: String,
-    val whiteIcon: Painter,
-    val blackIcon: Painter,
-)
-
-@Composable
-private fun GetRankResources(rank: Rank): RankResources {
-
-  val strings = LocalLocalizedStrings.current
-
-  val contentDescription =
-      when (rank) {
-        King -> strings.boardPieceKing
-        Queen -> strings.boardPieceQueen
-        Rook -> strings.boardPieceRook
-        Bishop -> strings.boardPieceBishop
-        Knight -> strings.boardPieceKnight
-        Pawn -> strings.boardPiecePawn
+/** Returns the [Painter] associated to the value of this [Piece]. */
+private val Piece.icon: Painter
+  @Composable
+  get() =
+      when (color) {
+        Black ->
+            when (rank) {
+              King -> ChessIcons.BlackKing
+              Queen -> ChessIcons.BlackQueen
+              Rook -> ChessIcons.BlackRook
+              Bishop -> ChessIcons.BlackBishop
+              Knight -> ChessIcons.BlackKnight
+              Pawn -> ChessIcons.BlackPawn
+            }
+        White ->
+            when (rank) {
+              King -> ChessIcons.WhiteKing
+              Queen -> ChessIcons.WhiteQueen
+              Rook -> ChessIcons.WhiteRook
+              Bishop -> ChessIcons.WhiteBishop
+              Knight -> ChessIcons.WhiteKnight
+              Pawn -> ChessIcons.WhitePawn
+            }
       }
 
-  val whiteIcon =
-      when (rank) {
-        King -> ChessIcons.WhiteKing
-        Queen -> ChessIcons.WhiteQueen
-        Rook -> ChessIcons.WhiteRook
-        Bishop -> ChessIcons.WhiteBishop
-        Knight -> ChessIcons.WhiteKnight
-        Pawn -> ChessIcons.WhitePawn
-      }
-
-  val blackIcon =
-      when (rank) {
-        King -> ChessIcons.BlackKing
-        Queen -> ChessIcons.BlackQueen
-        Rook -> ChessIcons.BlackRook
-        Bishop -> ChessIcons.BlackBishop
-        Knight -> ChessIcons.BlackKnight
-        Pawn -> ChessIcons.BlackPawn
-      }
-  return RankResources(contentDescription, whiteIcon, blackIcon)
-}
-
-@Composable
-private fun GetRankResources(color: ChessBoardState.Color): String {
-
-  val strings = LocalLocalizedStrings.current
-
-  return when (color) {
-    ChessBoardState.Color.White -> strings.boardColorWhite
-    ChessBoardState.Color.Black -> strings.boardColorBlack
+fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String {
+  return when (this) {
+    Black -> strings.boardColorBlack
+    White -> strings.boardColorWhite
   }
 }
+
+fun ChessBoardState.Rank.contentDescription(strings: LocalizedStrings): String {
+  return when (this) {
+    King -> strings.boardPieceKing
+    Queen -> strings.boardPieceQueen
+    Rook -> strings.boardPieceRook
+    Bishop -> strings.boardPieceBishop
+    Knight -> strings.boardPieceKnight
+    Pawn -> strings.boardPiecePawn
+  }
+}
+
+/** Returns the [String] content description associated to the value of this [Piece]. */
+private val Piece.contentDescription: String
+  @Composable
+  get() {
+    val strings = LocalLocalizedStrings.current
+    val color = color.contentDescription(strings)
+
+    val rank = rank.contentDescription(strings)
+
+    return strings.boardPieceContentDescription(color, rank)
+  }

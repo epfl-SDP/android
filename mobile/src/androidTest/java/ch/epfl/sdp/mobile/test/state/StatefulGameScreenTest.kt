@@ -21,9 +21,9 @@ import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
 import ch.epfl.sdp.mobile.test.ui.game.play
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.Black
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
-import ch.epfl.sdp.mobile.ui.game.ClassicRank.*
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

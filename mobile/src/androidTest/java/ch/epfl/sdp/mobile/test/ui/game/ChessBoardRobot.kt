@@ -7,9 +7,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ClassicColor
-import ch.epfl.sdp.mobile.ui.game.ClassicRank
+import ch.epfl.sdp.mobile.ui.game.contentDescription
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -82,8 +80,8 @@ fun ChessBoardRobotInputScope.click(x: Int, y: Int, pointerId: Int = 0) {
 /**
  * Performs a drag gesture between two positions with the pointer with the given id.
  *
- * @param from the original [ClassicChessBoardState.Position].
- * @param to the target [ClassicChessBoardState.Position].
+ * @param from the original [ChessBoardState.Position].
+ * @param to the target [ChessBoardState.Position].
  * @param pointerId the identifier of the pointer.
  */
 fun ChessBoardRobotInputScope.drag(
@@ -129,10 +127,10 @@ class ChessBoardRobot(
    *
    * @param x the first coordinate of the cell.
    * @param y the second coordinate of the cell.
-   * @param color the [ClassicChessBoardState.Color] to check for.
-   * @param rank the [ClassicChessBoardState.Rank] to check for.
+   * @param color the [ChessBoardState.Color] to check for.
+   * @param rank the [ChessBoardState.Rank] to check for.
    */
-  fun assertHasPiece(x: Int, y: Int, color: ClassicColor, rank: ClassicRank) {
+  fun assertHasPiece(x: Int, y: Int, color: ChessBoardState.Color, rank: ChessBoardState.Rank) {
     val boardBounds = onChessBoard().fetchSemanticsNode().boundsInRoot
     val sizeInfo = BoardSizeInfo(onChessBoard())
     val matcher =

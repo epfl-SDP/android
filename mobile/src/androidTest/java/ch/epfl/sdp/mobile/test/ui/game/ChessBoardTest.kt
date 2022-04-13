@@ -6,11 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoard
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoardState.Piece
-import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
-import ch.epfl.sdp.mobile.ui.game.ClassicRank.Pawn
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.Pawn
+import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -21,7 +21,7 @@ class ChessBoardTest {
   @get:Rule val rule = createComposeRule()
 
   /**
-   * An implementation of [ClassicChessBoardState] which moves a single piece around the chessboard
+   * An implementation of [MovableChessBoardState] which moves a single piece around the chessboard
    * on drag and drops.
    *
    * @param piece the [Piece] which should be moved.
@@ -32,7 +32,7 @@ class ChessBoardTest {
             override val color = White
             override val rank = Pawn
           },
-  ) : ClassicChessBoardState {
+  ) : MovableChessBoardState<Piece> {
 
     var position: Position by mutableStateOf(Position(0, 0))
 
