@@ -22,10 +22,6 @@ open class TestPlayScreenState(
   override fun onMatchClick(match: ChessMatch) {
     onGameItemClickAction(match)
   }
-
-  // override fun onNewGameClick() {
-  //  onNewGameClickAction()
-  // }
 }
 
 object FakePlayScreenState : TestPlayScreenState({}, {}, emptyList())
