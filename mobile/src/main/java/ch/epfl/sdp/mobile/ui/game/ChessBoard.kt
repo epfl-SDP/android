@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -22,8 +23,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import ch.epfl.sdp.mobile.ui.game.ClassicColor.Black
 import ch.epfl.sdp.mobile.ui.game.ClassicColor.White
 import kotlin.math.roundToInt
@@ -232,4 +236,47 @@ private fun Piece(
       contentDescription = contentDescription,
       modifier = modifier,
   )
+}
+
+data class RankResources(
+    val contentDescription: String,
+    val whiteIcon: Painter,
+    val blackIcon: Painter,
+)
+
+@Composable
+private fun GetRankResources(rank: Rank): RankResources {
+
+  val strings = LocalLocalizedStrings.current
+
+  val contentDescription =
+      when (rank) {
+        King -> strings.boardPieceKing
+        Queen -> strings.boardPieceQueen
+        Rook -> strings.boardPieceRook
+        Bishop -> strings.boardPieceBishop
+        Knight -> strings.boardPieceKnight
+        Pawn -> strings.boardPiecePawn
+      }
+
+  val whiteIcon =
+      when (rank) {
+        King -> ChessIcons.WhiteKing
+        Queen -> ChessIcons.WhiteQueen
+        Rook -> ChessIcons.WhiteRook
+        Bishop -> ChessIcons.WhiteBishop
+        Knight -> ChessIcons.WhiteKnight
+        Pawn -> ChessIcons.WhitePawn
+      }
+
+  val blackIcon =
+      when (rank) {
+        King -> ChessIcons.BlackKing
+        Queen -> ChessIcons.BlackQueen
+        Rook -> ChessIcons.BlackRook
+        Bishop -> ChessIcons.BlackBishop
+        Knight -> ChessIcons.BlackKnight
+        Pawn -> ChessIcons.BlackPawn
+      }
+  return RankResources(contentDescription, whiteIcon, blackIcon)
 }
