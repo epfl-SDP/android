@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
-import ch.epfl.sdp.mobile.state.SnapshotClassicChessBoardState.SnapshotPiece
+import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
@@ -52,7 +52,7 @@ fun StatefulGameScreen(
 
   val gameScreenState =
       remember(actions, user, match, scope) {
-        SnapshotClassicChessBoardState(
+        SnapshotChessBoardState(
             actions = actions,
             user = user,
             match = match,
@@ -76,7 +76,7 @@ fun StatefulGameScreen(
  * @param match the match to display.
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
-class SnapshotClassicChessBoardState(
+class SnapshotChessBoardState(
     private val actions: StatefulGameScreenActions,
     private val user: AuthenticatedUser,
     private val match: Match,
