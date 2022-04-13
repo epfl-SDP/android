@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 
 /**
  * An interface that extend the interface [ChessBoardState] and offers some ways for the
- * [ChessBoard] to interact with it and indicate the user gestures.
+ * [ClassicChessBoard] to interact with it and indicate the user gestures.
  *
  * @param Piece the type of the [ChessBoardState.Piece].
  */
@@ -27,8 +27,8 @@ interface MovableChessBoardState<Piece : ChessBoardState.Piece> : ChessBoardStat
   fun onDropPiece(piece: Piece, endPosition: ChessBoardState.Position)
 
   /**
-   * A callback which will be called when the [ChessBoard] is clicked at the given position. A
-   * clicked [ChessBoard] might indicate that the user wants to play a piece.
+   * A callback which will be called when the [ClassicChessBoard] is clicked at the given position. A
+   * clicked [ClassicChessBoard] might indicate that the user wants to play a piece.
    *
    * @param position the place that was clicked on the board.
    */

@@ -95,7 +95,7 @@ fun ChessBoardRobotInputScope.drag(
 }
 
 /**
- * A robot which may be used to perform actions on a [ch.epfl.sdp.mobile.ui.game.ChessBoard]
+ * A robot which may be used to perform actions on a [ch.epfl.sdp.mobile.ui.game.ClassicChessBoard]
  * composable.
  *
  * @param rule the underlying [ComposeTestRule].

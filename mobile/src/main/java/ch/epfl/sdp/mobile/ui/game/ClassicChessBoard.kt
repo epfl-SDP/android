@@ -46,7 +46,7 @@ const val ChessBoardCells = 8
  * @param enabled true iff the [MovableChessBoardState] should allow for user interactions.
  */
 @Composable
-fun <Piece : ChessBoardState.Piece> ChessBoard(
+fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
     state: MovableChessBoardState<Piece>,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,

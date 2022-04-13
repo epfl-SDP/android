@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.game.ChessBoard
+import ch.epfl.sdp.mobile.ui.game.ClassicChessBoard
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
@@ -58,7 +58,7 @@ class ChessBoardTest {
   @Test
   fun draggingPawnAroundIsSuccessful() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)
@@ -72,7 +72,7 @@ class ChessBoardTest {
   @Test
   fun draggingPawnOutsideBoard_works() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)
@@ -85,7 +85,7 @@ class ChessBoardTest {
   @Test
   fun draggingPawnAround_withDisabledBoard_movesNothing() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state, enabled = false) }
+    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state, enabled = false) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)
@@ -98,7 +98,7 @@ class ChessBoardTest {
   @Test
   fun draggingPawnAround_whileBoardIsEnabled_dropsOnRightTarget() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)
@@ -115,7 +115,7 @@ class ChessBoardTest {
   @Test
   fun emptyDragGesture_doesNotMovePawn() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
-    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state) }
+    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)
@@ -128,7 +128,7 @@ class ChessBoardTest {
   fun disablingBoardDuringDrag_dropsPiece() = runTest {
     val state = SinglePieceSnapshotChessBoardState()
     var enabled by mutableStateOf(true)
-    val strings = rule.setContentWithLocalizedStrings { ChessBoard(state, enabled = enabled) }
+    val strings = rule.setContentWithLocalizedStrings { ClassicChessBoard(state, enabled = enabled) }
     val robot = ChessBoardRobot(rule, strings)
     robot.performInput {
       down(0, 0)

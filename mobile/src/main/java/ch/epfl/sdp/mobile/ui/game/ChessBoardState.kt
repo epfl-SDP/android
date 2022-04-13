@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.ui.game
 import androidx.compose.runtime.Stable
 
 /**
- * An interface which represents the state of a [ChessBoard] composable. It display the current
+ * An interface which represents the state of a [ClassicChessBoard] composable. It display the current
  * state of the game
  *
  * Each [ChessBoardState.Piece] has unique [ChessBoardState.Piece], which is used to display some
@@ -28,7 +28,7 @@ interface ChessBoardState<out Piece : ChessBoardState.Piece> {
   }
 
   /**
-   * A position for a piece on a [ChessBoard]. The top-left position has coordinates (0, 0), and the
+   * A position for a piece on a [ClassicChessBoard]. The top-left position has coordinates (0, 0), and the
    * x axis increases towards the right while the y axis increases towards the bottom.
    *
    * @param x the first coordinate of this position.
@@ -36,7 +36,7 @@ interface ChessBoardState<out Piece : ChessBoardState.Piece> {
    */
   data class Position(val x: Int, val y: Int)
 
-  /** An interface representing a [Piece] that may be displayed on a [ChessBoard]. */
+  /** An interface representing a [Piece] that may be displayed on a [ClassicChessBoard]. */
   @Stable
   interface Piece {
 

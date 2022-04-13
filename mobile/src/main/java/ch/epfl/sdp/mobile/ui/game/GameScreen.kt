@@ -63,7 +63,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             Player(White, state.white.name, state.white.message)
             Player(Black, state.black.name, state.black.message)
           }
-          ChessBoard(state)
+          ClassicChessBoard(state)
           Moves(state.moves, Modifier.fillMaxWidth())
         }
       },
