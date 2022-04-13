@@ -125,7 +125,7 @@ class SnapshotChessBoardState(
   }
 
   /**
-   * An implementation of [ClassicChessBoardState.Piece] which uses a [PieceIdentifier] to
+   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to
    * disambiguate different pieces.
    *
    * @param id the unique [PieceIdentifier].
@@ -181,11 +181,11 @@ class SnapshotChessBoardState(
   }
 
   /**
-   * Attempts to perform a move from the given [ClassicChessBoardState.Position] to the given
-   * [ClassicChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
+   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
+   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
    *
-   * @param from the start [ClassicChessBoardState.Position].
-   * @param to the end [ClassicChessBoardState.Position].
+   * @param from the start [ChessBoardState.Position].
+   * @param to the end [ChessBoardState.Position].
    */
   private fun tryPerformMove(
       from: ChessBoardState.Position,
@@ -219,7 +219,7 @@ class SnapshotChessBoardState(
     get() = game.serialize().map(::Move)
 }
 
-/** Maps a game engine [Position] to a [ClassicChessBoardState.Position] */
+/** Maps a game engine [Position] to a [ChessBoardState.Position] */
 private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
