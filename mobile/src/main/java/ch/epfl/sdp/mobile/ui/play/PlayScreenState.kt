@@ -1,13 +1,9 @@
 package ch.epfl.sdp.mobile.ui.play
 
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /** Interface that represents state of the PlayScreen */
 interface PlayScreenState<M : ChessMatch> {
-
-  /** The current [AuthenticatedUser] */
-  val user: AuthenticatedUser
 
   /** Callable upon actioning button for local games */
   fun onLocalGameClick()

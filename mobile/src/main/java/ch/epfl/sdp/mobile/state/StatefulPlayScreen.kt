@@ -170,16 +170,20 @@ private fun info(match: Match): Flow<MatchInfo> {
 
 /**
  * Implementation of the PlayScreenState
- * @param onNewGameClick callback function for the new game button
+ * @param onLocalGameClickAction The State for the callable lambda to navigate to a certain local
+ * game screen
+ * @param onOnlineGameClickAction The State for the callable lambda to navigate to
+ * [PrepareGameScreen] screen
+ * @param onMatchClickAction The State for the callback function to navigate to match on click
  * @param user authenticated user
  * @param chessFacade [ChessFacade] to fetch the matches
  * @param scope for coroutines
  */
 private class PlayScreenStateImpl(
-    override val user: AuthenticatedUser,
     onLocalGameClickAction: State<(match: Match) -> Unit>,
     onOnlineGameClickAction: State<() -> Unit>,
     onMatchClickAction: State<(ChessMatchAdapter) -> Unit>,
+    private val user: AuthenticatedUser,
     private val chessFacade: ChessFacade,
     private val scope: CoroutineScope,
 ) : PlayScreenState<ChessMatchAdapter> {
