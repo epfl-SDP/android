@@ -280,3 +280,14 @@ private fun GetRankResources(rank: Rank): RankResources {
       }
   return RankResources(contentDescription, whiteIcon, blackIcon)
 }
+
+@Composable
+private fun GetRankResources(color: ChessBoardState.Color): String {
+
+  val strings = LocalLocalizedStrings.current
+
+  return when (color) {
+    ChessBoardState.Color.White -> strings.boardColorWhite
+    ChessBoardState.Color.Black -> strings.boardColorBlack
+  }
+}
