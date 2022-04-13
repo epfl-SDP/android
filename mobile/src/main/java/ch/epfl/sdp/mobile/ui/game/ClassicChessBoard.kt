@@ -251,6 +251,7 @@ private val Piece.icon: Painter
             }
       }
 
+/** Return the associated content description [String] for [ChessBoardState.Color] */
 fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String {
   return when (this) {
     Black -> strings.boardColorBlack
@@ -258,6 +259,7 @@ fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String 
   }
 }
 
+/** Return the associated content description [String] for [ChessBoardState.Rank] */
 fun ChessBoardState.Rank.contentDescription(strings: LocalizedStrings): String {
   return when (this) {
     King -> strings.boardPieceKing
