@@ -57,7 +57,7 @@ class AuthenticationScreenTest {
   }
 
   @Test
-  fun Given_authenticationSignUpScreen_When_badPasswordIsInserted_Then_aFailureBadPasswordMessageAppears() {
+  fun given_authenticationSignUpScreen_when_badPasswordIsInserted_then_aFailureBadPasswordMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
     val authenticationFacade = AuthenticationFacade(auth, store)
@@ -78,7 +78,7 @@ class AuthenticationScreenTest {
   }
 
   @Test
-  fun Given_authenticationSignUpScreen_When_invalidEmailIsInserted_Then_aFailureInvalidEmailFormatMessageAppears() {
+  fun given_authenticationSignUpScreen_when_invalidEmailIsInserted_then_aFailureInvalidEmailFormatMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
     val authenticationFacade = AuthenticationFacade(auth, store)
@@ -99,7 +99,7 @@ class AuthenticationScreenTest {
   }
 
   @Test
-  fun Given_authenticationSignUpScreen_When_signUpWithExistingEmailOccurs_Then_aFailureExistingAccountMessageAppears() {
+  fun given_authenticationSignUpScreen_when_signUpWithExistingEmailOccurs_then_aFailureExistingAccountMessageAppears() {
     val auth = buildAuth { user("fouad.mahmoud@epfl.ch", "password") }
     val store = emptyStore()
     val authenticationFacade = AuthenticationFacade(auth, store)
@@ -120,7 +120,7 @@ class AuthenticationScreenTest {
   }
 
   @Test
-  fun Given_authenticationSignInScreen_When_incorrectUserPasswordIsInserted_Then_aFailureIncorrectPasswordMessageAppears() {
+  fun given_authenticationSignInScreen_when_incorrectUserPasswordIsInserted_then_aFailureIncorrectPasswordMessageAppears() {
     val auth = buildAuth { user("fouad.mahmoud@epfl.ch", "password") }
     val store = emptyStore()
     val authenticationFacade = AuthenticationFacade(auth, store)
@@ -141,7 +141,7 @@ class AuthenticationScreenTest {
   }
 
   @Test
-  fun Given_authenticationSignInScreen_When_unregisteredEmailIsTyped_Then_aFailureInvalidUserMessageAppears() {
+  fun given_authenticationSignInScreen_when_unregisteredEmailIsTyped_then_aFailureInvalidUserMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
     val authenticationFacade = AuthenticationFacade(auth, store)

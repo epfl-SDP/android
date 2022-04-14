@@ -47,7 +47,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun Given_nonEmptyAuth_When_theEnteredPasswordIsIncorrect_Then_aFailureIncorrectPasswordOccurs() {
+  fun given_nonEmptyAuth_when_theEnteredPasswordIsIncorrect_then_aFailureIncorrectPasswordOccurs() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password") }
       val firestore = emptyStore()
@@ -60,7 +60,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun Given_emptyAuth_When_theTypedPasswordIsWeak_Then_aFailureBadPasswordOccurs() {
+  fun given_emptyAuth_when_theTypedPasswordIsWeak_then_aFailureBadPasswordOccurs() {
     runTest {
       val auth = emptyAuth()
       val firestore = emptyStore()
@@ -73,7 +73,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun Given_emptyAuth_When_theTypedEmailIsMalformed_Then_aFailureIncorrectEmailFormatOccurs() {
+  fun given_emptyAuth_when_theTypedEmailIsMalformed_then_aFailureIncorrectEmailFormatOccurs() {
     runTest {
       val auth = emptyAuth()
       val firestore = emptyStore()
@@ -86,7 +86,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun Given_nonEmptyAuth_When_theEmailAccountExists_Then_aFailureExistingAccountOccurs() {
+  fun given_nonEmptyAuth_when_theEmailAccountExists_then_aFailureExistingAccountOccurs() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password") }
       val firestore = emptyStore()
