@@ -84,12 +84,17 @@ fun StatefulHome(
             contentPadding = paddingValues,
         )
       }
-      composable(SettingsRoute) { StatefulSettingsScreen(
-        user=user,
-        modifier=Modifier.fillMaxSize(),
-        openEditProfileName = { controller.navigate(SettingEditProfileNameRoute)}) }
+      composable(SettingsRoute) {
+        StatefulSettingsScreen(
+            user = user,
+            modifier = Modifier.fillMaxSize(),
+            openEditProfileName = { controller.navigate(SettingEditProfileNameRoute) })
+      }
       dialog(SettingEditProfileNameRoute) {
-        StatefulEditProfileDialog(user)
+        StatefulEditProfileDialog(
+            user = user,
+            onSave = { controller.navigate(SettingsRoute) },
+            onCancle = { controller.navigate(SettingsRoute) })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulProfileScreen(

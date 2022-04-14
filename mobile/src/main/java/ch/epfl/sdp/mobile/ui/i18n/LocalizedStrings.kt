@@ -43,7 +43,6 @@ interface LocalizedStrings {
   val settingEditCancle: String
   val settingProfileName: String
 
-
   val boardColorBlack: String
   val boardColorWhite: String
   val boardPieceKing: String

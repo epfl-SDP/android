@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
-import com.google.android.filament.Material
 
 @Composable
 fun EditProfileNameDialog(
@@ -25,15 +24,14 @@ fun EditProfileNameDialog(
         modifier = modifier,
         cancelContent = { Text(text = strings.settingEditCancle) },
         confirmContent = { Text(text = strings.settingEditSave) },
-        onCancelClick = {},
-        onConfirmClick = {}) {
-      Column(modifier = modifier.padding(16.dp)){
-        Text(strings.settingProfileName, style= MaterialTheme.typography.subtitle1)
+        onCancelClick = state::onCancleClick,
+        onConfirmClick = state::onSaveClick) {
+      Column(modifier = modifier.padding(16.dp)) {
+        Text(strings.settingProfileName, style = MaterialTheme.typography.subtitle1)
         TextField(
-          value = state.name,
-          modifier = Modifier.fillMaxWidth(),
-          onValueChange = { state.name = it }
-        )
+            value = state.name,
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { state.name = it })
       }
     }
   }

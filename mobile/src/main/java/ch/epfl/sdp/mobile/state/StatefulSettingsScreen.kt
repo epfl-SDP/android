@@ -9,8 +9,8 @@ import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 class AuthenticatedUserProfileScreenState(
-  user: AuthenticatedUser,
-  openEditProfileNameAction: State<() -> Unit>
+    user: AuthenticatedUser,
+    openEditProfileNameAction: State<() -> Unit>
 ) : SettingScreenState {
   override val email = user.email
   override val pastGamesCount = 0
@@ -21,7 +21,6 @@ class AuthenticatedUserProfileScreenState(
   override val emoji = user.emoji
   override val followed = user.followed
   val openEditProfileNameAction by openEditProfileNameAction
-
 
   override fun onSettingsClick() {}
   override fun openEditProfileName() {
@@ -44,6 +43,7 @@ fun StatefulSettingsScreen(
 ) {
   val currentOpenEditProfileName = rememberUpdatedState(openEditProfileName)
 
-  val state = remember(user) { AuthenticatedUserProfileScreenState(user, currentOpenEditProfileName) }
+  val state =
+      remember(user) { AuthenticatedUserProfileScreenState(user, currentOpenEditProfileName) }
   SettingsScreen(state, modifier)
 }

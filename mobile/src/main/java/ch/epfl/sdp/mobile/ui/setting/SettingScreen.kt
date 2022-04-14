@@ -40,23 +40,23 @@ fun SettingsScreen(
   val elevation by animateDpAsState(targetElevation)
 
   UserScreen(
-    header = {
-      SettingHeader(
-        state = state,
-        modifier = Modifier.padding(vertical = 16.dp),
-      )
-    },
-    profileTabBar = {
-      SettingTabBar(
-        state = tabBarState,
-        modifier = Modifier.fillMaxWidth(),
-        elevation = elevation,
-      )
-    },
-    matches = state.matches,
-    onMatchClick = {},
-    lazyColumnState = lazyColumnState,
-    modifier = modifier)
+      header = {
+        SettingHeader(
+            state = state,
+            modifier = Modifier.padding(vertical = 16.dp),
+        )
+      },
+      profileTabBar = {
+        SettingTabBar(
+            state = tabBarState,
+            modifier = Modifier.fillMaxWidth(),
+            elevation = elevation,
+        )
+      },
+      matches = state.matches,
+      onMatchClick = {},
+      lazyColumnState = lazyColumnState,
+      modifier = modifier)
 }
 
 /**
@@ -78,10 +78,9 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Row(horizontalArrangement = Arrangement.Center) {
         Text(state.name, style = MaterialTheme.typography.h5)
-        IconButton(
-          onClick = state::openEditProfileName,
-          modifier = Modifier.size(35.dp)
-        ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+        IconButton(onClick = state::openEditProfileName, modifier = Modifier.size(35.dp)) {
+          Icon(Icons.Default.Edit, strings.profileEditIcon)
+        }
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
