@@ -18,7 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class ChessBoardStateTest {
+class ClassicChessBoardStateTest {
 
   @Test
   fun selectingPiece_displaysAvailableMoves() = runTest {
