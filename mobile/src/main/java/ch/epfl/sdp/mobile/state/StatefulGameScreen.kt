@@ -125,8 +125,8 @@ class SnapshotChessBoardState(
   }
 
   /**
-   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to
-   * disambiguate different pieces.
+   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
+   * different pieces.
    *
    * @param id the unique [PieceIdentifier].
    * @param color the color for the piece.
