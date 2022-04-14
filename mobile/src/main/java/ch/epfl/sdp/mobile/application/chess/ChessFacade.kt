@@ -11,7 +11,9 @@ import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.withContext
 
 /**
  * An interface which represents all the endpoints and available features for online chess
@@ -102,7 +104,8 @@ private data class StoreMatch(
 
   private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
 
-  override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
+  override val game =
+      documentFlow.map { it?.moves ?: emptyList() }.mapToGame().buffer().flowOn(Dispatchers.IO)
 
   override val white =
       documentFlow.map { it?.whiteId }.flatMapLatest {
@@ -113,7 +116,8 @@ private data class StoreMatch(
         it?.let(this@StoreMatch::profile) ?: flowOf(null)
       }
 
-  override suspend fun update(game: Game) {
-    store.collection("games").document(id).update { this["moves"] = game.serialize() }
-  }
+  override suspend fun update(game: Game) =
+      withContext(Dispatchers.IO) {
+        store.collection("games").document(id).update { this["moves"] = game.serialize() }
+      }
 }
