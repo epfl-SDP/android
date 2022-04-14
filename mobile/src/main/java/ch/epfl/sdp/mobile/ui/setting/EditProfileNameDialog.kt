@@ -11,6 +11,12 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
+/**
+ * Component for the Setting profile screen
+ *
+ * @param state the [EditProfileNameDialogState] as an argument.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun EditProfileNameDialog(
     state: EditProfileNameDialogState,
