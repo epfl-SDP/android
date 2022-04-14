@@ -1,10 +1,16 @@
 package ch.epfl.sdp.mobile.ui.play
 
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
+
 /** Interface that represents state of the PlayScreen */
-interface PlayScreenState {
+interface PlayScreenState<M : ChessMatch> {
 
   /* Callable upon actioning button */
-  val onNewGameClick: () -> Unit
+  fun onNewGameClick()
 
-  /* TODO: add necessary attributes: games log... */
+  /** Action to execute when clicked on match item in list */
+  fun onMatchClick(match: M)
+
+  /** List of matches of current user */
+  val matches: List<M>
 }
