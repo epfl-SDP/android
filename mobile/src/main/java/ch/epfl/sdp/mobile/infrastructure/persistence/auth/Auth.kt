@@ -39,7 +39,6 @@ interface Auth {
      */
     object FailureInvalidUser : AuthenticationResult
 
-    // TODO : Some specific failures could be added here, like FailureBadPassword, etc.
   }
 
   /**
