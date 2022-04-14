@@ -26,5 +26,4 @@ enum class AuthenticationResult {
    */
   FailureInvalidUser,
 
-  // TODO : Some specific failures could be added here, like FailureBadPassword, etc.
 }
