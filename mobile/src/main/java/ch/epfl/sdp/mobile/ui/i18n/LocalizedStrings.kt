@@ -39,6 +39,11 @@ interface LocalizedStrings {
   val profileYourTurn: String
   val profileOthersTurn: String
 
+  val settingEditSave: String
+  val settingEditCancle: String
+  val settingProfileName: String
+
+
   val boardColorBlack: String
   val boardColorWhite: String
   val boardPieceKing: String

@@ -40,23 +40,23 @@ fun SettingsScreen(
   val elevation by animateDpAsState(targetElevation)
 
   UserScreen(
-      header = {
-        SettingHeader(
-            state = state,
-            modifier = Modifier.padding(vertical = 16.dp),
-        )
-      },
-      profileTabBar = {
-        SettingTabBar(
-            state = tabBarState,
-            modifier = Modifier.fillMaxWidth(),
-            elevation = elevation,
-        )
-      },
-      matches = state.matches,
-      onMatchClick = {},
-      lazyColumnState = lazyColumnState,
-      modifier = modifier)
+    header = {
+      SettingHeader(
+        state = state,
+        modifier = Modifier.padding(vertical = 16.dp),
+      )
+    },
+    profileTabBar = {
+      SettingTabBar(
+        state = tabBarState,
+        modifier = Modifier.fillMaxWidth(),
+        elevation = elevation,
+      )
+    },
+    matches = state.matches,
+    onMatchClick = {},
+    lazyColumnState = lazyColumnState,
+    modifier = modifier)
 }
 
 /**
@@ -67,6 +67,7 @@ fun SettingsScreen(
  */
 @Composable
 fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
 
   Column(
       modifier = modifier,
@@ -75,7 +76,13 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
   ) {
     SettingPicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(state.name, style = MaterialTheme.typography.h5)
+      Row(horizontalArrangement = Arrangement.Center) {
+        Text(state.name, style = MaterialTheme.typography.h5)
+        IconButton(
+          onClick = state::openEditProfileName,
+          modifier = Modifier.size(35.dp)
+        ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+      }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
     SettingsButton(onClick = state::onSettingsClick)
@@ -99,7 +106,7 @@ fun SettingPicture(
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
-        onClick = state::onEditClick,
+        onClick = state::onSettingsClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
                 .shadow(2.dp, CircleShape)

@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -9,8 +8,10 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
-class AuthenticatedUserProfileScreenState(private val user: AuthenticatedUser) :
-    SettingScreenState {
+class AuthenticatedUserProfileScreenState(
+  user: AuthenticatedUser,
+  openEditProfileNameAction: State<() -> Unit>
+) : SettingScreenState {
   override val email = user.email
   override val pastGamesCount = 0
   override val puzzlesCount = 0
@@ -19,22 +20,30 @@ class AuthenticatedUserProfileScreenState(private val user: AuthenticatedUser) :
   override val name = user.name
   override val emoji = user.emoji
   override val followed = user.followed
+  val openEditProfileNameAction by openEditProfileNameAction
+
 
   override fun onSettingsClick() {}
-  override fun onEditClick() {}
+  override fun openEditProfileName() {
+    openEditProfileNameAction()
+  }
 }
 
 /**
  * A stateful composable to visit setting page of the loged-in user
  *
  * @param user the current logged-in user.
+ * @param navigateToProfileNameEdit Callable lambda to navigate to the profile Edit popup
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
+    openEditProfileName: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  val state = remember(user) { AuthenticatedUserProfileScreenState(user) }
+  val currentOpenEditProfileName = rememberUpdatedState(openEditProfileName)
+
+  val state = remember(user) { AuthenticatedUserProfileScreenState(user, currentOpenEditProfileName) }
   SettingsScreen(state, modifier)
 }

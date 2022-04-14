@@ -48,6 +48,10 @@ object English : LocalizedStrings {
   override val profileYourTurn = "Your turn to play!"
   override val profileOthersTurn = "Their turn to play."
 
+  override val settingEditSave = "Save".uppercase()
+  override val settingEditCancle = "Cancle".uppercase()
+  override val settingProfileName = "Profile Name"
+
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
