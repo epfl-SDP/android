@@ -8,11 +8,11 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 /**
  * Deserializes and creates a [Game] from a [List] of [String]s in long algebraic notation
  *
+ * @param initial the initial [Game] to which the deserialized moves are appended.
  * @return The deserialized [Game]
  */
-fun List<String>.deserialize(): Game {
-  var game = Game.create()
-
+fun List<String>.deserialize(initial: Game = Game.create()): Game {
+  var game = initial
   for (move in this) {
     val (position, delta) = parseStringToMove(move)
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(position, delta) ?: game

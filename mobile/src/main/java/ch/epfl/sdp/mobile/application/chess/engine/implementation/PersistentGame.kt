@@ -48,7 +48,7 @@ data class PersistentGame(
           copy(
               previous = this to action,
               nextPlayer = nextPlayer.other(),
-              boards = boards.add(nextBoard),
+              boards = boards.add(nextBoard.toBoard()), // Flatten the Board.
           )
         }
       }
