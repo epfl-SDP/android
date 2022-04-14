@@ -20,7 +20,7 @@ class StatefulProfileScreenTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun Given_statefulProfileScreen_When_profileHasPastGames_Then_theyAreDisplayedOnScreen() {
+  fun given_statefulProfileScreen_when_profileHasPastGames_then_theyAreDisplayedOnScreen() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val store = buildStore {
