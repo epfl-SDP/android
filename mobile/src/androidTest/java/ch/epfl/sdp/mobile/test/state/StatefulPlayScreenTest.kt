@@ -84,14 +84,12 @@ class StatefulPlayScreenTest {
     }
 
     val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
 
     facade.signInWithEmail("email@example.org", "password")
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) {
+          ProvideTestFacades(auth, store) {
             StatefulPlayScreen(
                 user = userAuthenticated,
                 onGameItemClick = {},

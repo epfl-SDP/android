@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
@@ -21,8 +22,13 @@ import kotlinx.coroutines.withContext
  *
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
+ * @param ioDispatcher the [CoroutineDispatcher] which will be used to perform some I/O operations.
  */
-class ChessFacade(private val auth: Auth, private val store: Store) {
+class ChessFacade(
+    private val auth: Auth,
+    private val store: Store,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
 
   /**
    * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
@@ -34,7 +40,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
     val document = store.collection("games").document()
     document.set(ChessDocument(whiteId = user.uid, blackId = user.uid))
-    return StoreMatch(document.id, store)
+    return StoreMatch(document.id, store, ioDispatcher)
   }
 
   /**
@@ -48,7 +54,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   suspend fun createMatch(white: Profile, black: Profile): Match {
     val document = store.collection("games").document()
     document.set(ChessDocument(whiteId = white.uid, blackId = black.uid))
-    return StoreMatch(document.id, store)
+    return StoreMatch(document.id, store, ioDispatcher)
   }
 
   /**
@@ -57,7 +63,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @param id the unique identifier for this [Match].
    */
   fun match(id: String): Match {
-    return StoreMatch(id, store)
+    return StoreMatch(id, store, ioDispatcher)
   }
 
   /**
@@ -83,7 +89,9 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
 
   private fun Query.asMatchListFlow(): Flow<List<Match>> {
     return this.asFlow<ChessDocument>().map {
-      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
+      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid ->
+        StoreMatch(uid, store, ioDispatcher)
+      }
     }
   }
 }
@@ -91,6 +99,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
 private data class StoreMatch(
     override val id: String,
     private val store: Store,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : Match {
 
   fun profile(
@@ -105,7 +114,7 @@ private data class StoreMatch(
   private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
 
   override val game =
-      documentFlow.map { it?.moves ?: emptyList() }.mapToGame().buffer().flowOn(Dispatchers.IO)
+      documentFlow.map { it?.moves ?: emptyList() }.mapToGame().buffer().flowOn(ioDispatcher)
 
   override val white =
       documentFlow.map { it?.whiteId }.flatMapLatest {
@@ -117,7 +126,7 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) =
-      withContext(Dispatchers.IO) {
+      withContext(ioDispatcher) {
         store.collection("games").document(id).update { this["moves"] = game.serialize() }
       }
 }
