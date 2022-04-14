@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * A stateful implementation of the PlayScreen
+ * A stateful implementation of the [PlayScreen]
  * @param user the Authenticated user
  * @param onGameItemClick callback function to navigate to game on click
  * @param navigateToPrepareGame Callable lambda to navigate to [PrepareGameScreen] screen
@@ -92,7 +92,7 @@ private fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     }
 
 /**
- * Gives higher order function to decide the MatchResult
+ * Gives higher order function to decide the [MatchResult]
  * @param userColor color of the current user
  */
 private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
@@ -128,7 +128,7 @@ data class ChessMatchAdapter(
 ) : ChessMatch {}
 
 /**
- * Fetches the matches from the facade and convert it to a list of MatchInfos
+ * Fetches the matches from the facade and convert it to a list of [MatchInfo]s
  * @param currentUser the current authenticated user
  * @param facade the faced we fetch the matches
  */
@@ -142,7 +142,7 @@ private fun fetchForUser(
 
 /**
  * Extract the data from the subflows of black and white and combine all the information in
- * MatchInfo
+ * [MatchInfo]
  * @param match a [Match] to extract the informations
  */
 private fun info(match: Match): Flow<MatchInfo> {
@@ -169,7 +169,7 @@ private fun info(match: Match): Flow<MatchInfo> {
 }
 
 /**
- * Implementation of the PlayScreenState
+ * Implementation of the [PlayScreenState]
  * @param onLocalGameClickAction The State for the callable lambda to navigate to a certain local
  * game screen
  * @param onOnlineGameClickAction The State for the callable lambda to navigate to
