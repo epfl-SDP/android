@@ -87,7 +87,8 @@ fun StatefulHome(
         StatefulPlayScreen(
             user = user,
             onGameItemClick = onGameItemClick,
-            navigateToGame = { controller.navigate(PrepareGameRoute) },
+            navigateToLocalGame = { match -> controller.navigate("$GameRoute/${match.id}") },
+            navigateToPrepareGame = { controller.navigate(PrepareGameRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }

@@ -11,7 +11,7 @@ import androidx.compose.runtime.Stable
  *
  * @param Piece the type of the [ChessBoardState.Piece].
  */
-interface ChessBoardState<Piece : ChessBoardState.Piece> {
+interface ChessBoardState<out Piece : ChessBoardState.Piece> {
 
   /** The different ranks which may be displayed by a chess board. */
   enum class Rank {
