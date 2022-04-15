@@ -45,7 +45,8 @@ class ChessScene<Piece : ChessBoardState.Piece>(
               autoScale = true,
           ) { renderableInstance ->
             // Once loaded compute the board size
-            val boardBoundingBox = renderableInstance.filamentAsset?.boundingBox!!
+            val filamentAsset = renderableInstance.filamentAsset ?: return@loadModelAsync
+            val boardBoundingBox = filamentAsset.boundingBox
 
             // Get height (on y axe) of the board
             // Double the value to get the total height of the box

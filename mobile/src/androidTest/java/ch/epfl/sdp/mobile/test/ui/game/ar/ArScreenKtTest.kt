@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.test.ui.ar
+package ch.epfl.sdp.mobile.test.ui.game.ar
 
 import android.Manifest
 import android.app.Activity
