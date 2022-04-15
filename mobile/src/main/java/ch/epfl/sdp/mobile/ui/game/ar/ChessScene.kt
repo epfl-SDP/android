@@ -64,7 +64,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         }
   }
 
-
   /**
    * Load a chess [piece] and place it to a given [position] relative to the parent (aka the
    * chessboard)
@@ -89,7 +88,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
           }
 
           // Rotate the black knight to be faced inside the board
-          if (piece.rank == Rank.Knight && piece.color == Color.Black) {
+          if (piece.rank == Knight && piece.color == Black) {
             modelRotation = Rotation(0f, 180f, 0f)
           }
         }
@@ -98,7 +97,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   }
 
   /** Scale the whole scene with the given [value] */
-  fun scale(value: Float) {
+  internal fun scale(value: Float) {
     boardNode.scale(value)
   }
 
@@ -107,24 +106,24 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     private const val BoardBorderSize = 2.2f
   }
 
+  /** Transform a [Rank] into the corresponding model's path */
   private val Rank.arModelPath: String
     get() =
-      when (this) {
-        King -> ChessModels.King
-        Bishop -> ChessModels.Bishop
-        Pawn -> ChessModels.Pawn
-        Knight -> ChessModels.Knight
-        Queen -> ChessModels.Queen
-        Rook -> ChessModels.Rook
-      }
+        when (this) {
+          King -> ChessModels.King
+          Bishop -> ChessModels.Bishop
+          Pawn -> ChessModels.Pawn
+          Knight -> ChessModels.Knight
+          Queen -> ChessModels.Queen
+          Rook -> ChessModels.Rook
+        }
 
   // TODO Use Color instead of Vector
+  /** Convert the [Color] into a color that can be used by the AR renderer */
   private val Color.colorVector: Vector3
     get() =
-      when (this) {
-        Black -> PawniesArColors.Black
-        White -> PawniesArColors.White
-      }
-
+        when (this) {
+          Black -> PawniesArColors.Black
+          White -> PawniesArColors.White
+        }
 }
-

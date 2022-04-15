@@ -106,7 +106,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate(ArRoute) },
+                onShowAr = { controller.navigate("$ArRoute/{id}") },
             )
         StatefulGameScreen(
             actions = actions,
@@ -116,7 +116,10 @@ fun StatefulHome(
             paddingValues = paddingValues,
         )
       }
-      composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
+      composable("$ArRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
+        StatefulArScreen(Modifier.fillMaxSize(), id)
+      }
     }
   }
 }
