@@ -59,8 +59,4 @@ class SnapshotArChessBoardState(
 ) : ArGameScreenState<SnapshotPiece>, BasicSnapshotBoardState(match, scope) {
 
   override val chessScene: ChessScene<SnapshotPiece> = ChessScene(context, lifecycleScope, pieces)
-
-  override fun scale(value: Float) {
-    chessScene.scale(value)
-  }
 }

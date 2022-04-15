@@ -13,7 +13,4 @@ interface ArGameScreenState<Piece : ChessBoardState.Piece> : ChessBoardState<Pie
 
   /** The scene that will be display in AR */
   val chessScene: ChessScene<Piece>
-
-  /** Scale the whole scene with the given [value] */
-  fun scale(value: Float)
 }
