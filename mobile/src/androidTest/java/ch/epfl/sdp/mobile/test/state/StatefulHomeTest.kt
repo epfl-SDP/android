@@ -291,7 +291,7 @@ class StatefulHomeTest {
   fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
+      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
     }
 
     val authFacade = AuthenticationFacade(auth, store)
