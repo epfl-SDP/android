@@ -27,7 +27,6 @@ fun EditProfileNameDialog(
     val strings = LocalLocalizedStrings.current
 
     Dialog(
-        modifier = modifier,
         cancelContent = { Text(text = strings.settingEditCancle) },
         confirmContent = { Text(text = strings.settingEditSave) },
         onCancelClick = state::onCancleClick,
