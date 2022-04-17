@@ -11,9 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.GameScreen
-import ch.epfl.sdp.mobile.ui.game.GameScreenState
+import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move

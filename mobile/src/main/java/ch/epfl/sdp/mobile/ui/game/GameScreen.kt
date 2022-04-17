@@ -20,8 +20,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green500
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
 import ch.epfl.sdp.mobile.ui.WhiteKing
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import com.google.accompanist.flowlayout.FlowRow
@@ -64,7 +63,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             Player(White, state.white.name, state.white.message)
             Player(Black, state.black.name, state.black.message)
           }
-          ChessBoard(state)
+          ClassicChessBoard(state)
           Moves(state.moves, Modifier.fillMaxWidth())
         }
       },
