@@ -88,13 +88,13 @@ fun StatefulHome(
         StatefulSettingsScreen(
             user = user,
             modifier = Modifier.fillMaxSize(),
-            openEditProfileName = { controller.navigate(SettingEditProfileNameRoute) })
+            onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) })
       }
       dialog(SettingEditProfileNameRoute) {
         StatefulEditProfileDialog(
             user = user,
             onSave = { controller.popBackStack() },
-            onCancle = { controller.popBackStack() })
+            onCancel = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulProfileScreen(

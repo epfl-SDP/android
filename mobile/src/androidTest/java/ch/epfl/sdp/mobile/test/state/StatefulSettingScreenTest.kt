@@ -24,14 +24,14 @@ class StatefulSettingScreenTest {
     every { user.emoji } returns "test"
     every { user.uid } returns "test"
     every { user.followed } returns false
-    var state = false
+    var functionCalled = false
 
-    val mockFunction = { state = true }
+    val openProfileEditNameMock = { functionCalled = true }
 
-    rule.setContent { StatefulSettingsScreen(user, mockFunction) }
+    rule.setContent { StatefulSettingsScreen(user, openProfileEditNameMock) }
 
     rule.onNodeWithTag("editProfileName").performClick()
 
-    assertThat(state).isTrue()
+    assertThat(functionCalled).isTrue()
   }
 }

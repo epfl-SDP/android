@@ -27,7 +27,7 @@ class SettingScreenTest {
     override val puzzlesCount = 12
 
     override fun onSettingsClick() = Unit
-    override fun openEditProfileName() = Unit
+    override fun onEditProfileNameClick() = Unit
 
     override val backgroundColor = Color.Default
     override val name = "Example"

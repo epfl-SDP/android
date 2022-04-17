@@ -35,13 +35,12 @@ fun EditProfileNameDialog(
     val strings = LocalLocalizedStrings.current
 
     Dialog(
-      cancelContent = { Text(text = strings.settingEditCancle) },
-      confirmContent = { Text(text = strings.settingEditSave) },
-      onCancelClick = state::onCancleClick,
-      onConfirmClick = state::onSaveClick
-    ) {
+        cancelContent = { Text(text = strings.settingEditCancel) },
+        confirmContent = { Text(text = strings.settingEditSave) },
+        onCancelClick = state::onCancelClick,
+        onConfirmClick = state::onSaveClick) {
       Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(strings.settingProfileName, style = MaterialTheme.typography.subtitle1)
+        Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
 
         TextField(
             value = state.name,

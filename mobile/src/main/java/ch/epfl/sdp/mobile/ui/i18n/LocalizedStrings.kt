@@ -40,8 +40,8 @@ interface LocalizedStrings {
   val profileOthersTurn: String
 
   val settingEditSave: String
-  val settingEditCancle: String
-  val settingProfileName: String
+  val settingEditCancel: String
+  val settingProfileNameLabel: String
 
   val boardColorBlack: String
   val boardColorWhite: String

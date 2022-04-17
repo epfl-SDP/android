@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.state
 
+import androidx.compose.foundation.MutatePriority
+import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialog
@@ -13,29 +15,35 @@ import kotlinx.coroutines.launch
  * @param user the current [AuthenticatedUser].
  * @param scope the coroutine scope.
  * @param onSave the callback called after we saved the changes.
- * @param onCancle the callback called when we click the cancle button.
+ * @param onCancel the callback called when we click the cancel button.
  */
 class EditProfileNameDialogStateImpl(
     user: AuthenticatedUser,
     private val scope: CoroutineScope,
     onSaveAction: State<() -> Unit>,
-    onCancleAction: State<() -> Unit>
+    onCancelAction: State<() -> Unit>
 ) : EditProfileNameDialogState {
   private var user by mutableStateOf(user)
   private val onSaveAction by onSaveAction
-  private val onCancleAction by onCancleAction
+  private val onCancelAction by onCancelAction
 
   override var name by mutableStateOf(user.name)
+
+  /**
+   * A [MutatorMutex] which enforces mutual exclusion of update profile name requests. Performing a
+   * new request (by clicking the button) will cancel the currently pending request.
+   */
+  private val mutex = MutatorMutex()
 
   override fun onSaveClick() {
     scope.launch {
       user.update { name(name) }
-      onSaveAction()
+      mutex.mutate(MutatePriority.UserInput) { onSaveAction() }
     }
   }
 
-  override fun onCancleClick() {
-    onCancleAction()
+  override fun onCancelClick() {
+    onCancelAction()
   }
 }
 
@@ -45,17 +53,17 @@ class EditProfileNameDialogStateImpl(
  *
  * @param user the current [AuthenticatedUser].
  * @param onSave the callback called after we saved the changes.
- * @param onCancle the callback called when we click the cancle button.
+ * @param onCancel the callback called when we click the cancel button.
  */
 @Composable
-fun StatefulEditProfileDialog(user: AuthenticatedUser, onSave: () -> Unit, onCancle: () -> Unit) {
+fun StatefulEditProfileDialog(user: AuthenticatedUser, onSave: () -> Unit, onCancel: () -> Unit) {
   val scope = rememberCoroutineScope()
   val onSaveAction = rememberUpdatedState(onSave)
-  val onCancleAction = rememberUpdatedState(onCancle)
+  val onCancelAction = rememberUpdatedState(onCancel)
 
   val state =
-      remember(user, scope, onCancleAction, onCancleAction) {
-        EditProfileNameDialogStateImpl(user, scope, onSaveAction, onCancleAction)
+      remember(user, scope, onSaveAction, onCancelAction) {
+        EditProfileNameDialogStateImpl(user, scope, onSaveAction, onCancelAction)
       }
 
   EditProfileNameDialog(state)

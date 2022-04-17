@@ -316,11 +316,11 @@ class StatefulHomeTest {
     rule.onAllNodesWithText("test").assertCountEquals(2)
     rule.onAllNodesWithText("test")[1].performTextInput("test2")
     rule.onNodeWithText(strings.settingEditSave).performClick()
-    rule.onAllNodesWithText("test").assertCountEquals(1)
+    rule.onNodeWithText("test2").assertIsDisplayed()
   }
 
   @Test
-  fun given_userIsLoggedIn_when_editProfileName_then_cancleWithoutSave() = runTest {
+  fun given_userIsLoggedIn_when_editProfileName_then_cancelWithoutSave() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
       collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
@@ -345,7 +345,7 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithTag("editProfileName").assertExists()
     rule.onNodeWithTag("editProfileName").performClick()
-    rule.onNodeWithText(strings.settingEditCancle).performClick()
-    rule.onAllNodesWithText("test").assertCountEquals(1)
+    rule.onNodeWithText(strings.settingEditCancel).performClick()
+    rule.onNodeWithText("test2").assertIsDisplayed()
   }
 }

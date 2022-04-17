@@ -8,8 +8,10 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
-class SettingsScreenState(user: AuthenticatedUser, onEditProfileNameClickAction: State<() -> Unit>) :
-    SettingScreenState {
+class SettingsScreenState(
+    user: AuthenticatedUser,
+    onEditProfileNameClickAction: State<() -> Unit>
+) : SettingScreenState {
   override val email = user.email
   override val pastGamesCount = 0
   override val puzzlesCount = 0
@@ -36,11 +38,11 @@ class SettingsScreenState(user: AuthenticatedUser, onEditProfileNameClickAction:
 @Composable
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
-    openEditProfileName: () -> Unit,
+    onEditProfileNameClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  val currentOpenEditProfileName = rememberUpdatedState(openEditProfileName)
+  val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
 
-  val state = remember(user) { SettingsScreenState(user, currentOpenEditProfileName) }
+  val state = remember(user) { SettingsScreenState(user, currentOnEditProfileNameClick) }
   SettingsScreen(state, modifier)
 }

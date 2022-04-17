@@ -77,12 +77,14 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
   ) {
     SettingPicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+      Row(
+          horizontalArrangement = Arrangement.Center,
+          verticalAlignment = Alignment.CenterVertically) {
         Text(state.name, style = MaterialTheme.typography.h5)
         IconButton(
             onClick = state::onEditProfileNameClick,
-            modifier = Modifier.size(35.dp).testTag("editProfileName")) {
-          Icon(Icons.Default.Edit, strings.profileEditIcon)
+            modifier = Modifier.testTag("editProfileName")) {
+          Icon(Icons.Default.Edit, strings.profileEditIcon, modifier = Modifier.size(24.dp))
         }
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
