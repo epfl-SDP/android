@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
-class AuthenticatedUserProfileScreenState(
+class SettingsScreenState(
     user: AuthenticatedUser,
     openEditProfileNameAction: State<() -> Unit>
 ) : SettingScreenState {
@@ -32,7 +32,7 @@ class AuthenticatedUserProfileScreenState(
  * A stateful composable to visit setting page of the loged-in user
  *
  * @param user the current logged-in user.
- * @param navigateToProfileNameEdit Callable lambda to navigate to the profile Edit popup
+ * @param openEditProfileName Callable lambda to navigate to the profile Edit popup
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -44,6 +44,6 @@ fun StatefulSettingsScreen(
   val currentOpenEditProfileName = rememberUpdatedState(openEditProfileName)
 
   val state =
-      remember(user) { AuthenticatedUserProfileScreenState(user, currentOpenEditProfileName) }
+      remember(user) { SettingsScreenState(user, currentOpenEditProfileName) }
   SettingsScreen(state, modifier)
 }

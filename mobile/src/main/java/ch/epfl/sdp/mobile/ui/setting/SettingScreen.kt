@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
@@ -78,7 +79,7 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Row(horizontalArrangement = Arrangement.Center) {
         Text(state.name, style = MaterialTheme.typography.h5)
-        IconButton(onClick = state::openEditProfileName, modifier = Modifier.size(35.dp)) {
+        IconButton(onClick = state::openEditProfileName, modifier = Modifier.size(35.dp).testTag("editProfileName")) {
           Icon(Icons.Default.Edit, strings.profileEditIcon)
         }
       }
