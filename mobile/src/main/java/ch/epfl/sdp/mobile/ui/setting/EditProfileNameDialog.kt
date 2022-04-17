@@ -12,7 +12,7 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
 /**
- * Component for the Setting profile screen
+ * Component for display a Dialog to edit the profile name
  *
  * @param state the [EditProfileNameDialogState] as an argument.
  * @param modifier the [Modifier] for this composable.
@@ -23,16 +23,26 @@ fun EditProfileNameDialog(
     modifier: Modifier = Modifier,
 ) {
 
+  /*
+   A bug in Compose's navigation component makes the system window shrink to the measured size of
+   the dialog when it's filled for the first time. On the following recompositions, this new size
+   is applied as the constraints to the root of the hierarchy and some elements might not be able
+   to occupy some space they need.
+   Applying Modifier.fillMaxSize() makes sure we "reserve" this space and that the window will
+   never force us to shrink our content.
+  */
   Box(modifier.fillMaxSize(), Alignment.Center) {
     val strings = LocalLocalizedStrings.current
 
     Dialog(
-        cancelContent = { Text(text = strings.settingEditCancle) },
-        confirmContent = { Text(text = strings.settingEditSave) },
-        onCancelClick = state::onCancleClick,
-        onConfirmClick = state::onSaveClick) {
-      Column(modifier = modifier.padding(16.dp)) {
+      cancelContent = { Text(text = strings.settingEditCancle) },
+      confirmContent = { Text(text = strings.settingEditSave) },
+      onCancelClick = state::onCancleClick,
+      onConfirmClick = state::onSaveClick
+    ) {
+      Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(strings.settingProfileName, style = MaterialTheme.typography.subtitle1)
+
         TextField(
             value = state.name,
             modifier = Modifier.fillMaxWidth(),

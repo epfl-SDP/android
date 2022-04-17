@@ -77,10 +77,10 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
   ) {
     SettingPicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Row(horizontalArrangement = Arrangement.Center) {
+      Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Text(state.name, style = MaterialTheme.typography.h5)
         IconButton(
-            onClick = state::openEditProfileName,
+            onClick = state::onEditProfileNameClick,
             modifier = Modifier.size(35.dp).testTag("editProfileName")) {
           Icon(Icons.Default.Edit, strings.profileEditIcon)
         }

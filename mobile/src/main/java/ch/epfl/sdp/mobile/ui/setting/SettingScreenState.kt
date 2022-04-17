@@ -23,5 +23,5 @@ interface SettingScreenState : Person {
   fun onSettingsClick()
 
   /** On edit profile name button clicked */
-  fun openEditProfileName()
+  fun onEditProfileNameClick()
 }

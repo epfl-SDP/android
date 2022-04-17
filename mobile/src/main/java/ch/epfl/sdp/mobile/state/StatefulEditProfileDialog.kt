@@ -21,9 +21,9 @@ class EditProfileNameDialogStateImpl(
     onSaveAction: State<() -> Unit>,
     onCancleAction: State<() -> Unit>
 ) : EditProfileNameDialogState {
-  var user by mutableStateOf(user)
-  val onSaveAction by onSaveAction
-  val onCancleAction by onCancleAction
+  private var user by mutableStateOf(user)
+  private val onSaveAction by onSaveAction
+  private val onCancleAction by onCancleAction
 
   override var name by mutableStateOf(user.name)
 
