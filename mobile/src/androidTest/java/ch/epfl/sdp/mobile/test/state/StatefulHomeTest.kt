@@ -303,11 +303,9 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          val controller = rememberNavController()
           ProvideFacades(authFacade, socialFacade, chessFacade) {
             StatefulHome(
                 user = user,
-                controller = controller,
             )
           }
         }
