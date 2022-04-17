@@ -316,7 +316,7 @@ class StatefulHomeTest {
     rule.onAllNodesWithText("test").assertCountEquals(2)
     rule.onAllNodesWithText("test")[1].performTextInput("test2")
     rule.onNodeWithText(strings.settingEditSave).performClick()
-    rule.onNodeWithText("test2").assertIsDisplayed()
+    rule.onNodeWithText("test").assertIsDisplayed()
   }
 
   @Test
