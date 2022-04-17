@@ -288,17 +288,10 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_userIsLogged_when_clickOnEditProfileName_then_expectedBehavior() = runTest {
+  fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("users") {
-        document("1", ProfileDocument("1", name = "test2"))
-        document("2", ProfileDocument("2", name = "test"))
-      }
-      collection("games") {
-        document(
-          "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
-      }
+      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
     }
 
     val authFacade = AuthenticationFacade(auth, store)
@@ -309,20 +302,54 @@ class StatefulHomeTest {
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
-      rule.setContentWithLocalizedStrings {
-        val controller = rememberNavController()
-        ProvideFacades(authFacade, socialFacade, chessFacade) {
-          StatefulHome(
-            user = user,
-            controller = controller,
-          )
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
         }
-      }
 
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.profileMatchTitle("test")).assertExists()
-    rule.onNodeWithText(strings.profileMatchTitle("test")).performClick()
-    rule.onNodeWithText("test2").assertExists()
-    rule.onNodeWithText("test").assertExists()
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithTag("editProfileName").assertExists()
+    rule.onNodeWithTag("editProfileName").performClick()
+    rule.onAllNodesWithText("test").assertCountEquals(2)
+    rule.onAllNodesWithText("test")[1].performTextInput("test2")
+    rule.onNodeWithText(strings.settingEditSave).performClick()
+    rule.onAllNodesWithText("test").assertCountEquals(1)
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_editProfileName_then_cancleWithoutSave() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithTag("editProfileName").assertExists()
+    rule.onNodeWithTag("editProfileName").performClick()
+    rule.onNodeWithText(strings.settingEditCancle).performClick()
+    rule.onAllNodesWithText("test").assertCountEquals(1)
   }
 }
