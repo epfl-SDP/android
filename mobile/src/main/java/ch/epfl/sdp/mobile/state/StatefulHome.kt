@@ -18,7 +18,7 @@ private const val SocialRoute = "social"
 private const val SettingsRoute = "settings"
 
 /** The route associated to editing button on the setting screen. */
-private const val SettingEditProfileNameRoute = "/profile-name/edit"
+private const val SettingEditProfileNameRoute = "profile-name/edit"
 
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
