@@ -31,7 +31,7 @@ private class MutableGameScope(var game: Game) : GameScope {
   }
 
   override fun tryMove(from: Position, delta: Delta) {
-    val action = Action(from, delta)
+    val action = Action.Move(from, delta)
     nextStepAsMovePieceOrNull?.move?.invoke(action).tryUpdate()
   }
 }

@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.application.chess.notation
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
@@ -15,7 +16,7 @@ fun List<String>.deserialize(initial: Game = Game.create()): Game {
   var game = initial
   for (move in this) {
     val (position, delta) = parseStringToMove(move)
-    val action = Action(position, delta)
+    val action = Move(position, delta)
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(action) ?: game
   }
   return game

@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Piece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.combine
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.remove
@@ -48,7 +49,7 @@ fun BoardSequence<Piece<Role>>.delta(
   val target = from + delta ?: return@sequence // Stop if out of bounds.
   val piece = board[target]
   if (piece == null || (includeAdversary && piece.color == Adversary)) {
-    yield(Action(from, delta) to move(from, delta))
+    yield(Move(from, delta) to move(from, delta))
   }
 }
 
@@ -104,7 +105,7 @@ private fun BoardSequence<Piece<Role>>.repeatDirection(
     val delta = direction * (i + 1)
     val target = from + delta ?: return@sequence // Stop if out of bounds.
     val piece = board[target]
-    val action = Action(from, delta)
+    val action = Move(from, delta)
     if (piece != null) {
       if (includeAdversary && piece.color == Adversary) {
         yield(action to move(from, delta))
@@ -209,7 +210,7 @@ private fun BoardSequence<Piece<Role>>.castling(
 
   // We can perform the castling.
   yield(
-      Action(kingStart, kingEnd - kingStart) to
+      Move(kingStart, kingEnd - kingStart) to
           combine(
               move(kingStart, kingEnd - kingStart),
               move(rookStart, rookEnd - rookStart),
@@ -247,7 +248,7 @@ fun BoardSequence<Piece<Role>>.enPassant(
   if (drop(1).any { it[adversaryStart] != adversary }) return@sequence
 
   yield(
-      Action(position, adversaryStep - position) to
+      Move(position, adversaryStep - position) to
           combine(
               remove(neighbour),
               move(position, adversaryStep - position),

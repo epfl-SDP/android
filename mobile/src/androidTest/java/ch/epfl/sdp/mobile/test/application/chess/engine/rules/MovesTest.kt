@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentPiec
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.*
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Allied
 import com.google.common.truth.Truth.assertThat
@@ -35,7 +36,7 @@ class MovesTest {
     val position = Position(0, 0)
     val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.delta(Position(0, 0), x = 1, y = 2).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(position, Delta(1, 2)))
+    assertThat(actions.asIterable()).containsExactly(Move(position, Delta(1, 2)))
   }
 
   @Test
@@ -44,7 +45,7 @@ class MovesTest {
     val to = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.delta(from, x = 1, y = 1).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, 1)))
   }
 
   @Test
@@ -78,7 +79,7 @@ class MovesTest {
     val from = Position(0, 6)
     val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.doubleUp(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(0, -2)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(0, -2)))
   }
 
   @Test
@@ -95,7 +96,7 @@ class MovesTest {
     val left = Position(0, 0)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(-1, -1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(-1, -1)))
   }
 
   @Test
@@ -104,7 +105,7 @@ class MovesTest {
     val right = Position(2, 0)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(right, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, -1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, -1)))
   }
 
   @Test
@@ -139,7 +140,7 @@ class MovesTest {
     val to = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.diagonals(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, 1)))
   }
 
   @Test
@@ -186,7 +187,7 @@ class MovesTest {
           )
         }
     val actions = board.rightCastling().map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(Position(4, 7), Delta(2, 0)))
+    assertThat(actions.asIterable()).containsExactly(Move(Position(4, 7), Delta(2, 0)))
   }
 
   @Test
@@ -325,7 +326,7 @@ class MovesTest {
           )
         }
     val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(Position(0, 3), Delta(1, -1)))
+    assertThat(actions.asIterable()).containsExactly(Move(Position(0, 3), Delta(1, -1)))
   }
 
   @Test

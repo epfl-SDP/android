@@ -206,7 +206,7 @@ class SnapshotChessBoardState(
     if (currentPlayingId == user.uid) {
       // TODO: Update game locally first, then verify upload was successful?
       scope.launch {
-        val action = Action(Position(from.x, from.y), Delta(to.x - from.x, to.y - from.y))
+        val action = Action.Move(Position(from.x, from.y), Delta(to.x - from.x, to.y - from.y))
         val newGame = step.move(action)
         match.update(newGame)
       }
