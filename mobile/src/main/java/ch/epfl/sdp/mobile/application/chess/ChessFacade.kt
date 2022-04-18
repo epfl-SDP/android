@@ -113,8 +113,7 @@ private data class StoreMatch(
 
   private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
 
-  override val game =
-      documentFlow.map { it?.moves ?: emptyList() }.mapToGame().flowOn(ioDispatcher)
+  override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame().flowOn(ioDispatcher)
 
   override val white =
       documentFlow.map { it?.whiteId }.flatMapLatest {
