@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.authentication
 
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User as FacadeUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
@@ -37,16 +38,13 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
       block: suspend () -> Auth.AuthenticationResult,
   ): AuthenticationResult {
     return when (block()) {
-      is Auth.AuthenticationResult.Success -> AuthenticationResult.Success
-      Auth.AuthenticationResult.FailureInternal -> AuthenticationResult.Failure
-      Auth.AuthenticationResult.FailureBadPassword -> AuthenticationResult.FailureBadPassword
-      Auth.AuthenticationResult.FailureExistingAccount ->
-          AuthenticationResult.FailureExistingAccount
-      Auth.AuthenticationResult.FailureIncorrectEmailFormat ->
-          AuthenticationResult.FailureIncorrectEmailFormat
-      Auth.AuthenticationResult.FailureIncorrectPassword ->
-          AuthenticationResult.FailureIncorrectPassword
-      Auth.AuthenticationResult.FailureInvalidUser -> AuthenticationResult.FailureInvalidUser
+      is Success -> AuthenticationResult.Success
+      Failure.Internal -> AuthenticationResult.Failure
+      Failure.BadPassword -> AuthenticationResult.FailureBadPassword
+      Failure.ExistingAccount -> AuthenticationResult.FailureExistingAccount
+      Failure.IncorrectEmailFormat -> AuthenticationResult.FailureIncorrectEmailFormat
+      Failure.IncorrectPassword -> AuthenticationResult.FailureIncorrectPassword
+      Failure.InvalidUser -> AuthenticationResult.FailureInvalidUser
     }
   }
 

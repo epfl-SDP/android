@@ -25,6 +25,4 @@ enum class AuthenticationResult {
    * Indicates that the user account corresponding to an email does not exist or has been disabled.
    */
   FailureInvalidUser,
-
-  // TODO : Some specific failures could be added here, like FailureBadPassword, etc.
 }

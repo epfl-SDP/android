@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult
-import ch.epfl.sdp.mobile.infrastructure.persistence.auth.AuthenticationMode
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import com.google.firebase.auth.*
 import com.google.firebase.auth.FirebaseAuth as ActualFirebaseAuth
@@ -32,14 +31,24 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
             .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
             .map { it?.let(::FirebaseUser) }
 
+  /** An enumeration representing the [AuthenticationMode] that a user chose. */
+  private enum class AuthenticationMode {
+
+    /** The mode in which a user wants to login to their existing account. */
+    SignIn,
+
+    /** The mode in which a user wants to create a new account. */
+    SignUp,
+  }
+
   /**
    * Runs the [block] and maps the resulting [AuthResult] to an [AuthenticationResult].
    *
    * @param block the block of code which is used to interact with Firebase.
    */
   private suspend fun authenticate(
-      block: suspend () -> AuthResult?,
       mode: AuthenticationMode,
+      block: suspend () -> AuthResult?,
   ): AuthenticationResult =
       try {
         val result = block()
@@ -47,16 +56,16 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
         AuthenticationResult.Success(user)
       } catch (other: Throwable) {
         when (other) {
-          is FirebaseAuthWeakPasswordException -> AuthenticationResult.FailureBadPassword
+          is FirebaseAuthWeakPasswordException -> AuthenticationResult.Failure.BadPassword
           is FirebaseAuthInvalidCredentialsException ->
               when (mode) {
-                AuthenticationMode.SignIn -> AuthenticationResult.FailureIncorrectPassword
-                AuthenticationMode.SignUp -> AuthenticationResult.FailureIncorrectEmailFormat
-                else -> AuthenticationResult.FailureInternal
+                AuthenticationMode.SignIn -> AuthenticationResult.Failure.IncorrectPassword
+                AuthenticationMode.SignUp -> AuthenticationResult.Failure.IncorrectEmailFormat
+                else -> AuthenticationResult.Failure.Internal
               }
-          is FirebaseAuthUserCollisionException -> AuthenticationResult.FailureExistingAccount
-          is FirebaseAuthInvalidUserException -> AuthenticationResult.FailureInvalidUser
-          else -> AuthenticationResult.FailureInternal
+          is FirebaseAuthUserCollisionException -> AuthenticationResult.Failure.ExistingAccount
+          is FirebaseAuthInvalidUserException -> AuthenticationResult.Failure.InvalidUser
+          else -> AuthenticationResult.Failure.Internal
         }
       }
 
@@ -64,16 +73,17 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
       email: String,
       password: String,
   ): AuthenticationResult =
-      authenticate(
-          { actual.signInWithEmailAndPassword(email, password).await() }, AuthenticationMode.SignIn)
+      authenticate(AuthenticationMode.SignIn) {
+        actual.signInWithEmailAndPassword(email, password).await()
+      }
 
   override suspend fun signUpWithEmail(
       email: String,
       password: String,
   ): AuthenticationResult =
-      authenticate(
-          { actual.createUserWithEmailAndPassword(email, password).await() },
-          AuthenticationMode.SignUp)
+      authenticate(AuthenticationMode.SignUp) {
+        actual.createUserWithEmailAndPassword(email, password).await()
+      }
 
   override suspend fun signOut() {
     actual.signOut()
