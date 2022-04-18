@@ -7,6 +7,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.contentDescription
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -94,7 +95,7 @@ fun ChessBoardRobotInputScope.drag(
 }
 
 /**
- * A robot which may be used to perform actions on a [ch.epfl.sdp.mobile.ui.game.ChessBoard]
+ * A robot which may be used to perform actions on a [ch.epfl.sdp.mobile.ui.game.ClassicChessBoard]
  * composable.
  *
  * @param rule the underlying [ComposeTestRule].

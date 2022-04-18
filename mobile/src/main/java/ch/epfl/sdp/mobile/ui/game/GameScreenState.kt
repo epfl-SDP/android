@@ -9,7 +9,7 @@ import androidx.compose.runtime.Stable
  * @param Piece the type of the pieces of the underlying [ChessBoardState].
  */
 @Stable
-interface GameScreenState<Piece : ChessBoardState.Piece> : ChessBoardState<Piece> {
+interface GameScreenState<Piece : ChessBoardState.Piece> : MovableChessBoardState<Piece> {
 
   /**
    * A class representing a [Move] that's been performed by one of the players.

@@ -6,11 +6,11 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
+import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,7 +19,7 @@ class GameScreenTest {
 
   private class SnapshotGameScreenState :
       GameScreenState<Piece>,
-      ChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
+      MovableChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
     override val moves: List<Move>
       get() =
           listOf(
