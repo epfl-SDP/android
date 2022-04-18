@@ -53,5 +53,15 @@ sealed interface Action {
       override val from: Position,
       override val delta: Delta,
       val rank: Rank,
-  ) : Action
+  ) : Action {
+
+    /**
+     * A convenience constructor for the [Promote] action.
+     *
+     * @param from the start position.
+     * @param to the end position.
+     * @param rank the chosen [Rank]
+     */
+    constructor(from: Position, to: Position, rank: Rank) : this(from, to - from, rank)
+  }
 }

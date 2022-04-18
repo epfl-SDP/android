@@ -6,8 +6,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.Piece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.combine
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.remove
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Allied
@@ -49,7 +51,34 @@ fun BoardSequence<Piece<Role>>.delta(
   val target = from + delta ?: return@sequence // Stop if out of bounds.
   val piece = board[target]
   if (piece == null || (includeAdversary && piece.color == Adversary)) {
-    yield(Move(from, delta) to move(from, delta))
+    yield(Move(from, delta) to move(from, target))
+  }
+}
+
+/**
+ * A [Moves] that will be performed by pawns which try to move up (without eating existing pieces),
+ * and ends up promoting the piece when it ends on the last row.
+ *
+ * @param from the original [Position].
+ */
+fun BoardSequence<Piece<Role>>.moveUpOrPromote(
+    from: Position,
+): Moves<Piece<Role>> = sequence {
+  val target = from + Delta(x = 0, y = -1) ?: return@sequence
+  if (target.y != 1) {
+    // If we're not targeting the last row, perform a standard delta move.
+    yieldAll(delta(from, x = 0, y = -1, includeAdversary = false))
+  } else {
+    val piece = first()[from] ?: return@sequence // We need to be moving from a piece.
+    if (first()[target] != null) return@sequence // We must not end on an existing piece.
+
+    // Compute the identifier of the promoted piece.
+    val id = first().maxOf { (_, piece) -> piece.id }.inc()
+
+    // Yield one action for each promotion choice.
+    for (rank in listOf(Bishop, Knight, Queen, Rook)) {
+      yield(Promote(from, target, rank) to promote(from, target, piece.copy(id = id, rank = rank)))
+    }
   }
 }
 
@@ -108,11 +137,11 @@ private fun BoardSequence<Piece<Role>>.repeatDirection(
     val action = Move(from, delta)
     if (piece != null) {
       if (includeAdversary && piece.color == Adversary) {
-        yield(action to move(from, delta))
+        yield(action to move(from, target))
       }
       return@sequence
     }
-    yield(action to move(from, delta))
+    yield(action to move(from, target))
   }
 }
 
@@ -212,8 +241,8 @@ private fun BoardSequence<Piece<Role>>.castling(
   yield(
       Move(kingStart, kingEnd - kingStart) to
           combine(
-              move(kingStart, kingEnd - kingStart),
-              move(rookStart, rookEnd - rookStart),
+              move(kingStart, kingEnd),
+              move(rookStart, rookEnd),
           ),
   )
 }
@@ -251,7 +280,7 @@ fun BoardSequence<Piece<Role>>.enPassant(
       Move(position, adversaryStep - position) to
           combine(
               remove(neighbour),
-              move(position, adversaryStep - position),
+              move(position, adversaryStep),
           ),
   )
 }

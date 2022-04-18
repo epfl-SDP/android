@@ -1,10 +1,6 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine.implementation
 
-import ch.epfl.sdp.mobile.application.chess.engine.Board
-import ch.epfl.sdp.mobile.application.chess.engine.Piece
-import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentPieceIdentifier
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import com.google.common.truth.Truth.assertThat
@@ -12,7 +8,7 @@ import org.junit.Test
 
 class PersistentBoardTest {
 
-  private val pawn = Piece(Unit, Rank.Pawn, PersistentPieceIdentifier(0))
+  private val pawn = Piece(Unit, Rank.Pawn, PieceIdentifier(0))
 
   @Test
   fun emptyBoard_hasNoPiece() {

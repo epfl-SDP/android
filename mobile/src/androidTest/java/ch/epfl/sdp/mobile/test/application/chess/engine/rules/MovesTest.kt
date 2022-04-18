@@ -1,11 +1,7 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine.rules
 
-import ch.epfl.sdp.mobile.application.chess.engine.Board
-import ch.epfl.sdp.mobile.application.chess.engine.Delta
-import ch.epfl.sdp.mobile.application.chess.engine.Piece
-import ch.epfl.sdp.mobile.application.chess.engine.Position
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.*
@@ -17,12 +13,12 @@ import org.junit.Test
 
 class MovesTest {
 
-  private val adversaryKing = Piece(Adversary, King, PersistentPieceIdentifier(0))
-  private val adversaryPawn = Piece(Adversary, Pawn, PersistentPieceIdentifier(0))
-  private val adversaryRook = Piece(Adversary, Rook, PersistentPieceIdentifier(0))
-  private val alliedKing = Piece(Allied, King, PersistentPieceIdentifier(0))
-  private val alliedPawn = Piece(Allied, Pawn, PersistentPieceIdentifier(0))
-  private val alliedRook = Piece(Allied, Rook, PersistentPieceIdentifier(0))
+  private val adversaryKing = Piece(Adversary, King, PieceIdentifier(0))
+  private val adversaryPawn = Piece(Adversary, Pawn, PieceIdentifier(0))
+  private val adversaryRook = Piece(Adversary, Rook, PieceIdentifier(0))
+  private val alliedKing = Piece(Allied, King, PieceIdentifier(0))
+  private val alliedPawn = Piece(Allied, Pawn, PieceIdentifier(0))
+  private val alliedRook = Piece(Allied, Rook, PieceIdentifier(0))
 
   @Test
   fun delta_outOfBounds_hasNoActions() {
