@@ -15,7 +15,8 @@ fun List<String>.deserialize(initial: Game = Game.create()): Game {
   var game = initial
   for (move in this) {
     val (position, delta) = parseStringToMove(move)
-    game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(position, delta) ?: game
+    val action = Action(position, delta)
+    game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(action) ?: game
   }
   return game
 }

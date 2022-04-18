@@ -4,6 +4,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.Position
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 
 /**
  * An interface which provides some easy-to-use access to some operations which may be performed on
@@ -30,7 +31,8 @@ private class MutableGameScope(var game: Game) : GameScope {
   }
 
   override fun tryMove(from: Position, delta: Delta) {
-    nextStepAsMovePieceOrNull?.move?.invoke(from, delta).tryUpdate()
+    val action = Action(from, delta)
+    nextStepAsMovePieceOrNull?.move?.invoke(action).tryUpdate()
   }
 }
 

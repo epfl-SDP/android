@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.*
@@ -205,11 +206,8 @@ class SnapshotChessBoardState(
     if (currentPlayingId == user.uid) {
       // TODO: Update game locally first, then verify upload was successful?
       scope.launch {
-        val newGame =
-            step.move(
-                Position(from.x, from.y),
-                Delta(to.x - from.x, to.y - from.y),
-            )
+        val action = Action(Position(from.x, from.y), Delta(to.x - from.x, to.y - from.y))
+        val newGame = step.move(action)
         match.update(newGame)
       }
     }
