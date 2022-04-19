@@ -116,7 +116,7 @@ fun StatefulHome(
       }
       composable("$ArRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
-        StatefulArScreen(id, Modifier.fillMaxSize())
+        StatefulArScreen(user, id, Modifier.fillMaxSize())
       }
     }
   }

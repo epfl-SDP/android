@@ -53,7 +53,7 @@ class StatefulArScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulArScreen("gameId") }
+          ProvideFacades(authApi, social, chess) { StatefulArScreen(user1, "gameId") }
         }
 
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()

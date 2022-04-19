@@ -8,6 +8,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.viewinterop.AndroidView
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
@@ -22,7 +23,7 @@ private const val BoardScale = 0.2f
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
-    state: ArGameScreenState<Piece>,
+    state: GameScreenState<Piece>,
     modifier: Modifier = Modifier
 ) {
   val view = LocalView.current
