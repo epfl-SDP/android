@@ -9,14 +9,14 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.state.BasicSnapshotBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.ar.ArChessBoard
+import ch.epfl.sdp.mobile.ui.game.ar.ArChessBoardScreen
 import ch.epfl.sdp.mobile.ui.game.ar.ArGameScreenState
 import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * A composable that make [ArChessBoard] stateful
+ * A composable that make [ArChessBoardScreen] stateful
  *
  * @param id the identifier for the match.
  * @param modifier the [Modifier] for the composable.
@@ -39,7 +39,7 @@ fun StatefulArScreen(
         SnapshotArChessBoardState(context, lifecycleScope, match, scope)
       }
 
-  ArChessBoard(gameScreenState, modifier)
+  ArChessBoardScreen(gameScreenState, modifier)
 }
 
 /**

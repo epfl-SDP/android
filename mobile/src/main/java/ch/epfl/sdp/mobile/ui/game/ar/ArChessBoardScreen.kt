@@ -9,6 +9,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
+import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
 
 private const val BoardScale = 0.2f
@@ -20,12 +21,14 @@ private const val BoardScale = 0.2f
  * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-fun <Piece : ChessBoardState.Piece> ArChessBoard(
+fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
     state: ArGameScreenState<Piece>,
     modifier: Modifier = Modifier
 ) {
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
+
+  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
 
   // Keep the screen on only for this composable
   DisposableEffect(view) {
@@ -39,8 +42,13 @@ fun <Piece : ChessBoardState.Piece> ArChessBoard(
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        // Scale the whole scene to the desired size
-        state.chessScene.scale(BoardScale)
+        chessScene =
+            ChessScene(context, view.lifecycleScope, state.pieces).apply {
+              // Scale the whole scene to the desired size
+              scale(BoardScale)
+            }
+
+        // chessScene.scale(BoardScale)
 
         /**
          * If not already in the scene, the board will be added. Update the board anchor with the
@@ -50,7 +58,9 @@ fun <Piece : ChessBoardState.Piece> ArChessBoard(
          */
         fun anchorOrMoveBoard(anchor: Anchor) {
 
-          state.chessScene.let {
+          val currentChessScene = chessScene ?: return
+
+          currentChessScene.let {
             // Add only one instance of the node
             if (!arSceneView.children.contains(it.boardNode)) {
               arSceneView.addChild(it.boardNode)
