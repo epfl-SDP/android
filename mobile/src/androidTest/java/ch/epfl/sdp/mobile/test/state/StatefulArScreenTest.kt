@@ -21,6 +21,7 @@ import ch.epfl.sdp.mobile.state.StatefulArScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.state.Utils.withCanceledIntents
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -59,20 +60,6 @@ class StatefulArScreenTest {
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
   }
 
-  /**
-   * Executes the given [block] by returning an [ActivityResult] with the code
-   * [Activity.RESULT_CANCELED] each time an intent is triggered. This simulates devices which do
-   * not support AR.
-   *
-   * @param block the block of code to execute.
-   */
-  private inline fun withCanceledIntents(block: () -> Unit) {
-    try {
-      init()
-      intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_CANCELED, null))
-      block()
-    } finally {
-      release()
-    }
-  }
+
+
 }
