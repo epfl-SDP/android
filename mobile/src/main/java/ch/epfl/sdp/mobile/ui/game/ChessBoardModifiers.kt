@@ -131,8 +131,7 @@ fun Modifier.check(
 private const val SelectionDurationMillis = DefaultDurationMillis * 4
 
 /**
- * A [Modifier] which draws an animated dashed border for the provide
- * [ChessBoardState.Position].
+ * A [Modifier] which draws an animated dashed border for the provide [ChessBoardState.Position].
  *
  * @param position the position that should be drawn.
  * @param color the [Color] of the animated border.

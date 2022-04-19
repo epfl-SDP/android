@@ -1,12 +1,8 @@
 package ch.epfl.sdp.mobile.test.state
 
 import android.Manifest
-import android.app.Activity
-import android.app.Instrumentation.ActivityResult
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.*
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.rule.GrantPermissionRule.grant
 import ch.epfl.sdp.mobile.application.ChessDocument
@@ -59,7 +55,4 @@ class StatefulArScreenTest {
 
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
   }
-
-
-
 }
