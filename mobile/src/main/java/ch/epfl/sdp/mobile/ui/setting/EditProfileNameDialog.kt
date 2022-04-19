@@ -39,7 +39,7 @@ fun EditProfileNameDialog(
         confirmContent = { Text(text = strings.settingEditSave) },
         onCancelClick = state::onCancelClick,
         onConfirmClick = state::onSaveClick) {
-      Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
 
         TextField(
