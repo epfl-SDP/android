@@ -74,7 +74,7 @@ class AuthenticationScreenTest {
     robot.email("a@epfl.ch")
     robot.password("weak")
     rule.onNodeWithText(strings.authenticatePerformRegister).performClick()
-    rule.onNodeWithText(strings.authenticationBadPasswordFailure).assertExists()
+    rule.onNodeWithText(strings.authenticateBadPasswordFailure).assertExists()
   }
 
   @Test
@@ -95,7 +95,7 @@ class AuthenticationScreenTest {
     robot.email("a")
     robot.password("password")
     rule.onNodeWithText(strings.authenticatePerformRegister).performClick()
-    rule.onNodeWithText(strings.authenticationWrongEmailFormatFailure).assertExists()
+    rule.onNodeWithText(strings.authenticateWrongEmailFormatFailure).assertExists()
   }
 
   @Test
@@ -116,7 +116,7 @@ class AuthenticationScreenTest {
     robot.email("fouad.mahmoud@epfl.ch")
     robot.password("password")
     rule.onNodeWithText(strings.authenticatePerformRegister).performClick()
-    rule.onNodeWithText(strings.authenticationExistingAccountFailure).assertExists()
+    rule.onNodeWithText(strings.authenticateExistingAccountFailure).assertExists()
   }
 
   @Test
@@ -137,7 +137,7 @@ class AuthenticationScreenTest {
     robot.email("fouad.mahmoud@epfl.ch")
     robot.password("wrong")
     rule.onNodeWithText(strings.authenticatePerformLogIn).performClick()
-    rule.onNodeWithText(strings.authenticationIncorrectPasswordFailure).assertExists()
+    rule.onNodeWithText(strings.authenticateIncorrectPasswordFailure).assertExists()
   }
 
   @Test
@@ -158,7 +158,7 @@ class AuthenticationScreenTest {
     robot.email("fouad.mahmoud@epfl.ch")
     robot.password("password")
     rule.onNodeWithText(strings.authenticatePerformLogIn).performClick()
-    rule.onNodeWithText(strings.authenticationInvalidUserFailure).assertExists()
+    rule.onNodeWithText(strings.authenticateInvalidUserFailure).assertExists()
   }
 
   @Test

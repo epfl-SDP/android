@@ -20,11 +20,11 @@ interface LocalizedStrings {
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
-  val authenticationBadPasswordFailure: String
-  val authenticationWrongEmailFormatFailure: String
-  val authenticationInvalidUserFailure: String
-  val authenticationIncorrectPasswordFailure: String
-  val authenticationExistingAccountFailure: String
+  val authenticateBadPasswordFailure: String
+  val authenticateWrongEmailFormatFailure: String
+  val authenticateInvalidUserFailure: String
+  val authenticateIncorrectPasswordFailure: String
+  val authenticateExistingAccountFailure: String
   val authenticateOr: String
 
   val arContentDescription: String

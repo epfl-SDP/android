@@ -69,13 +69,13 @@ class AuthenticationApiAuthenticationScreenState(
               AuthenticationResult.Success -> null
               AuthenticationResult.Failure -> strings.authenticateErrorFailure
               AuthenticationResult.FailureIncorrectEmailFormat ->
-                  strings.authenticationWrongEmailFormatFailure
-              AuthenticationResult.FailureBadPassword -> strings.authenticationBadPasswordFailure
-              AuthenticationResult.FailureInvalidUser -> strings.authenticationInvalidUserFailure
+                  strings.authenticateWrongEmailFormatFailure
+              AuthenticationResult.FailureBadPassword -> strings.authenticateBadPasswordFailure
+              AuthenticationResult.FailureInvalidUser -> strings.authenticateInvalidUserFailure
               AuthenticationResult.FailureIncorrectPassword ->
-                  strings.authenticationIncorrectPasswordFailure
+                  strings.authenticateIncorrectPasswordFailure
               AuthenticationResult.FailureExistingAccount ->
-                  strings.authenticationExistingAccountFailure
+                  strings.authenticateExistingAccountFailure
             }
       }
     }
