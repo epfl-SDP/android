@@ -1,3 +1,4 @@
+/*
 package ch.epfl.sdp.mobile.ui.ar
 
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
@@ -17,3 +18,4 @@ class ArBoardTest {
     assertEquals(-5f, arPosition.z)
   }
 }
+*/

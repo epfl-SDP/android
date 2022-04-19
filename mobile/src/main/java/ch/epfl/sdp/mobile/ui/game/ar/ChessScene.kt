@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
 import com.google.ar.sceneform.math.Vector3
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
+import io.github.sceneview.math.Position as ArPosition
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
 
@@ -29,10 +30,10 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     private val lifecycleScope: LifecycleCoroutineScope,
     board: Map<Position, Piece>,
 ) {
-
-  private lateinit var arBoard: ArBoard
-
   val boardNode: ArModelNode
+
+  private var boardHeight: Float = 0f
+  private var boardHalfSize: Float = 0f
 
   init {
     boardNode =
@@ -50,10 +51,8 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
             // Get height (on y axe) of the board
             // Double the value to get the total height of the box
-            val boardYOffset = 2 * boardBoundingBox.halfExtent[1]
-            val boardHalfSize = boardBoundingBox.halfExtent[0]
-
-            arBoard = ArBoard(BoardBorderSize, boardYOffset, boardHalfSize)
+            boardHeight = 2 * boardBoundingBox.halfExtent[1]
+            boardHalfSize = boardBoundingBox.halfExtent[0]
 
             // Initialize all pieces
             for ((position, piece) in board) {
@@ -76,7 +75,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     val path = piece.rank.arModelPath
 
     val model =
-        ModelNode(position = arBoard.toArPosition(position)).apply {
+        ModelNode(position = toArPosition(position)).apply {
           // Load the piece
           loadModelAsync(
               context = context, glbFileLocation = path, coroutineScope = lifecycleScope) {
@@ -105,6 +104,18 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   companion object {
     // This value cannot be computed, it's chosen by guess
     private const val BoardBorderSize = 2.2f
+  }
+
+  /** For the given [Position] and transform it into AR board [ArPosition] */
+  private fun toArPosition(position: Position): ArPosition {
+
+    val cellSize = (boardHalfSize - BoardBorderSize) / 4
+    val cellCenter = cellSize / 2
+
+    fun transform(value: Int): Float {
+      return -boardHalfSize + BoardBorderSize + value * cellSize + cellCenter
+    }
+    return ArPosition(x = transform(position.x), y = boardHeight, z = transform(position.y))
   }
 
   /** Transform a [Rank] into the corresponding model's path */
