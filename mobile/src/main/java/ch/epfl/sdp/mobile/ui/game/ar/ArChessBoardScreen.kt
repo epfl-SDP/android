@@ -49,8 +49,6 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
               scale(BoardScale)
             }
 
-        // chessScene.scale(BoardScale)
-
         /**
          * If not already in the scene, the board will be added. Update the board anchor with the
          * given one and change the displayed position
