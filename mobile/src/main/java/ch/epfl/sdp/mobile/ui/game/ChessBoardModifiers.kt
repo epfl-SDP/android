@@ -89,7 +89,7 @@ fun Modifier.grid(
 }
 
 /**
- * A [Modifier] which draws a [Set] of [ClassicChessBoardState.Position].
+ * A [Modifier] which draws a [Set] of [ChessBoardState.Position].
  *
  * @param positions the positions to draw on the component.
  * @param color the [Color] of the circles.
@@ -132,7 +132,7 @@ private const val SelectionDurationMillis = DefaultDurationMillis * 4
 
 /**
  * A [Modifier] which draws an animated dashed border for the provide
- * [ClassicChessBoardState.Position].
+ * [ChessBoardState.Position].
  *
  * @param position the position that should be drawn.
  * @param color the [Color] of the animated border.
@@ -178,7 +178,7 @@ fun Modifier.selection(
 }
 
 /**
- * A [Modifier] which calls [onDraw] for each cell passed as a [ClassicChessBoardState.Position].
+ * A [Modifier] which calls [onDraw] for each cell passed as a [ChessBoardState.Position].
  *
  * @param positions the [Set] of position which should be drawn.
  * @param cells the number of cells which should be displayed per side.
