@@ -219,6 +219,11 @@ class SnapshotChessBoardState(
     get() = game.serialize().map(::Move)
 }
 
+/** Maps a game engine [Position] to a [ChessBoardState.Position] */
+fun Position.toPosition(): ChessBoardState.Position {
+  return ChessBoardState.Position(this.x, this.y)
+}
+
 fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
@@ -237,9 +242,4 @@ fun Piece<Color>.toPiece(): SnapshotPiece {
       }
 
   return SnapshotPiece(id = this.id, rank = rank, color = color)
-}
-
-/** Maps a game engine [Position] to a [ChessBoardState.Position] */
-fun Position.toPosition(): ChessBoardState.Position {
-  return ChessBoardState.Position(this.x, this.y)
 }
