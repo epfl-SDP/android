@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.application.chess.notation
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.parser.NotationCombinators.action
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
@@ -15,8 +15,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 fun List<String>.deserialize(initial: Game = Game.create()): Game {
   var game = initial
   for (move in this) {
-    val (position, delta) = parseStringToMove(move)
-    val action = Move(position, delta)
+    val (_, action) = action().parse(move).singleOrNull() ?: continue
     game = (game.nextStep as? NextStep.MovePiece)?.move?.invoke(action) ?: game
   }
   return game
@@ -39,27 +38,6 @@ fun Game.serialize(): List<String> {
   }
 
   return sequence.toList().asReversed()
-}
-
-/** Parsing string to moves */
-private fun parseStringToMove(move: String): Pair<Position, Delta> {
-
-  val length = move.length
-  val fromStr = move.subSequence(length - 5, length - 3).toString()
-  val toStr = move.subSequence(length - 2, length).toString()
-
-  val from = chessNotationToPosition(fromStr)
-  val to = chessNotationToPosition(toStr)
-  val delta = Delta(to.x - from.x, to.y - from.y)
-
-  return from to delta
-}
-
-private fun chessNotationToPosition(pos: String): Position {
-  val x = pos[0].code - 'a'.code
-  val y = (ChessBoardCells - 1) - (pos[1].code - '1'.code)
-
-  return Position(x, y)
 }
 
 /** Parsing moves to string */
