@@ -220,11 +220,11 @@ class SnapshotChessBoardState(
 }
 
 /** Maps a game engine [Position] to a [ChessBoardState.Position] */
-fun Position.toPosition(): ChessBoardState.Position {
+private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
 
-fun Piece<Color>.toPiece(): SnapshotPiece {
+private fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
       when (this.rank) {
         Rank.King -> ChessBoardState.Rank.King
