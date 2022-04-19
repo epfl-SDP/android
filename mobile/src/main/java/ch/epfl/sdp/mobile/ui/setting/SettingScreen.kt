@@ -84,7 +84,10 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
         IconButton(
             onClick = state::onEditProfileNameClick,
             modifier = Modifier.testTag("editProfileName")) {
-          Icon(Icons.Default.Edit, strings.profileEditIcon, modifier = Modifier.size(24.dp))
+          Icon(
+              Icons.Default.Edit,
+              contentDescription = strings.profileEditIcon,
+              modifier = Modifier.size(24.dp))
         }
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)

@@ -91,7 +91,7 @@ fun StatefulHome(
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) })
       }
       dialog(SettingEditProfileNameRoute) {
-        StatefulEditProfileDialog(
+        StatefulEditProfileNameDialog(
             user = user,
             onSave = { controller.popBackStack() },
             onCancel = { controller.popBackStack() })

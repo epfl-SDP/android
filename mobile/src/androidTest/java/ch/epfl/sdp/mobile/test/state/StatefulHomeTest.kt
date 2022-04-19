@@ -346,6 +346,6 @@ class StatefulHomeTest {
     rule.onNodeWithTag("editProfileName").assertExists()
     rule.onNodeWithTag("editProfileName").performClick()
     rule.onNodeWithText(strings.settingEditCancel).performClick()
-    rule.onNodeWithText("test2").assertIsDisplayed()
+    rule.onNodeWithText("test").assertIsDisplayed()
   }
 }

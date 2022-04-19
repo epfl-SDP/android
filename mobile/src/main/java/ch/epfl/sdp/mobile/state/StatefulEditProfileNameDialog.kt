@@ -18,12 +18,11 @@ import kotlinx.coroutines.launch
  * @param onCancel the callback called when we click the cancel button.
  */
 class EditProfileNameDialogStateImpl(
-    user: AuthenticatedUser,
+    private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
     onSaveAction: State<() -> Unit>,
     onCancelAction: State<() -> Unit>
 ) : EditProfileNameDialogState {
-  private var user by mutableStateOf(user)
   private val onSaveAction by onSaveAction
   private val onCancelAction by onCancelAction
 
@@ -37,8 +36,10 @@ class EditProfileNameDialogStateImpl(
 
   override fun onSaveClick() {
     scope.launch {
-      user.update { name(name) }
-      mutex.mutate(MutatePriority.UserInput) { onSaveAction() }
+      mutex.mutate(MutatePriority.UserInput) {
+        user.update { name(name) }
+        onSaveAction()
+      }
     }
   }
 
@@ -56,7 +57,11 @@ class EditProfileNameDialogStateImpl(
  * @param onCancel the callback called when we click the cancel button.
  */
 @Composable
-fun StatefulEditProfileDialog(user: AuthenticatedUser, onSave: () -> Unit, onCancel: () -> Unit) {
+fun StatefulEditProfileNameDialog(
+    user: AuthenticatedUser,
+    onSave: () -> Unit,
+    onCancel: () -> Unit
+) {
   val scope = rememberCoroutineScope()
   val onSaveAction = rememberUpdatedState(onSave)
   val onCancelAction = rememberUpdatedState(onCancel)
