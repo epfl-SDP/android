@@ -21,7 +21,7 @@ class DslTest {
     val auth = emptyAuth()
     val result = auth.signInWithEmail("email@epfl.ch", "password")
 
-    assertThat(result).isEqualTo(FailureInvalidUser)
+    assertThat(result).isEqualTo(Failure.InvalidUser)
   }
 
   @Test
@@ -37,7 +37,7 @@ class DslTest {
     val auth = buildAuth { user("alexandre.piveteau@epfl.ch", "password") }
     val result = auth.signUpWithEmail("alexandre.piveteau@epfl.ch", "password")
 
-    assertThat(result).isEqualTo(FailureExistingAccount)
+    assertThat(result).isEqualTo(Failure.ExistingAccount)
   }
 
   @Test
@@ -63,7 +63,7 @@ class DslTest {
     val auth = buildAuth { user("alexandre.piveteau@epfl.ch", "password") }
     val result = auth.signInWithEmail("alexandre.piveteau@epfl.ch", "bad")
 
-    assertThat(result).isEqualTo(FailureIncorrectPassword)
+    assertThat(result).isEqualTo(Failure.IncorrectPassword)
   }
 
   @Test

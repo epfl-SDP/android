@@ -44,6 +44,7 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
   /**
    * Runs the [block] and maps the resulting [AuthResult] to an [AuthenticationResult].
    *
+   * @param mode the [AuthenticationMode] used to authenticate.
    * @param block the block of code which is used to interact with Firebase.
    */
   private suspend fun authenticate(
@@ -61,7 +62,6 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
               when (mode) {
                 AuthenticationMode.SignIn -> AuthenticationResult.Failure.IncorrectPassword
                 AuthenticationMode.SignUp -> AuthenticationResult.Failure.IncorrectEmailFormat
-                else -> AuthenticationResult.Failure.Internal
               }
           is FirebaseAuthUserCollisionException -> AuthenticationResult.Failure.ExistingAccount
           is FirebaseAuthInvalidUserException -> AuthenticationResult.Failure.InvalidUser

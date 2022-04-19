@@ -72,7 +72,7 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
       password: String,
   ): AuthenticationResult = authenticate {
     val result = auth.signUpWithEmail(email, password)
-    if (result is Auth.AuthenticationResult.Success && result.user != null) {
+    if (result is Success && result.user != null) {
       store.collection("users").document(result.user.uid).set(ProfileDocument(name = name))
     }
     result

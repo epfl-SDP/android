@@ -125,7 +125,8 @@ class AuthenticationFacadeTest {
     val auth = mockk<Auth>()
     val firestore = emptyStore()
 
-    coEvery { auth.signUpWithEmail(any(), any()) } returns Auth.AuthenticationResult.FailureInternal
+    coEvery { auth.signUpWithEmail(any(), any()) } returns
+        Auth.AuthenticationResult.Failure.Internal
 
     val facade = AuthenticationFacade(auth, firestore)
 
