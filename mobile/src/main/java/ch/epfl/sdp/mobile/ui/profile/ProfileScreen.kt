@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
-import ch.epfl.sdp.mobile.ui.social.*
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches

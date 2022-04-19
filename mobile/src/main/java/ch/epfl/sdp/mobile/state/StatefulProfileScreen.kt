@@ -13,7 +13,7 @@ class FetchedUserProfileScreenState(
 ) : ProfileScreenState {
   override val email = ""
   override val pastGamesCount = matches.size
-  override var matches = matches
+  override val matches = matches
   override val backgroundColor = user.backgroundColor
   override val name = user.name
   override val emoji = user.emoji

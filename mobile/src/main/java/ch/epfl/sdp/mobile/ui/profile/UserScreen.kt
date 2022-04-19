@@ -54,16 +54,15 @@ fun UserScreen(
     item { header() }
     stickyHeader { profileTabBar() }
     items(matches) { match ->
-      val title = strings.profileMatchTitle(match.adversary)
       val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
-      Match(title, subtitle, ChessIcons.WhiteKing)
+      Match(match.adversary, subtitle, ChessIcons.WhiteKing)
     }
   }
 }
 
 /**
- * Composes a Match log using a match [title], [subtitle] and an [icon]
- * @param title match title
+ * Composes a Match log using a match [adversary], [subtitle] and an [icon]
+ * @param adversary the adversary of the current player's name
  * @param subtitle match subtitle info
  * @param icon match icon
  * @param modifier the [Modifier] for this composable.
@@ -71,14 +70,11 @@ fun UserScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Match(
-    title: String,
+    adversary: String,
     subtitle: String,
     icon: Painter,
     modifier: Modifier = Modifier,
 ) {
-  val titles = title.split(' ', limit = 2)
-  val profileAgainst = titles[0]
-  val profileOpponent = titles[1]
   ListItem(
       modifier = modifier,
       icon = { Icon(icon, null, modifier = Modifier.size(40.dp)) },
@@ -86,10 +82,10 @@ fun Match(
         Text(
             buildAnnotatedString {
               withStyle(style = SpanStyle(color = PawniesColors.Green800)) {
-                append("$profileAgainst ")
+                append(LocalLocalizedStrings.current.profileAgainst)
               }
               withStyle(style = SpanStyle(color = PawniesColors.Green500, fontWeight = SemiBold)) {
-                append(profileOpponent)
+                append(adversary)
               }
             },
             style = MaterialTheme.typography.body1)

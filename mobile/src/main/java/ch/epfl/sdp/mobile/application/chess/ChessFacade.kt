@@ -10,8 +10,6 @@ import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import ch.epfl.sdp.mobile.ui.social.*
-import java.util.*
 import kotlinx.coroutines.flow.*
 
 /**
