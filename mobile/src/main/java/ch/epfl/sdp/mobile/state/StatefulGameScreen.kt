@@ -124,10 +124,9 @@ class SnapshotChessBoardState(
     scope.launch { match.black.collect { blackProfile = it } }
   }
 
-  /* */
   /**
-   * An implementation of [ClassicChessBoardState.Piece] which uses a [PieceIdentifier] to
-   * disambiguate different pieces.
+   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
+   * different pieces.
    *
    * @param id the unique [PieceIdentifier].
    * @param color the color for the piece.
@@ -182,11 +181,11 @@ class SnapshotChessBoardState(
   }
 
   /**
-   * Attempts to perform a move from the given [ClassicChessBoardState.Position] to the given
-   * [ClassicChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
+   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
+   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
    *
-   * @param from the start [ClassicChessBoardState.Position].
-   * @param to the end [ClassicChessBoardState.Position].
+   * @param from the start [ChessBoardState.Position].
+   * @param to the end [ChessBoardState.Position].
    */
   private fun tryPerformMove(
       from: ChessBoardState.Position,
