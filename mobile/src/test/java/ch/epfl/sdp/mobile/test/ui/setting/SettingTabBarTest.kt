@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest.ui.setting
+package ch.epfl.sdp.mobile.test.ui.setting
 
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -9,7 +9,10 @@ import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class SettingTabBarTest {
 
   @get:Rule val rule = createComposeRule()

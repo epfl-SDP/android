@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest.ui.profile
+package ch.epfl.sdp.mobile.test.ui.profile
 
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -11,7 +11,10 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Tie
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class UserScreenTest {
 
   @get:Rule val rule = createComposeRule()
