@@ -61,6 +61,8 @@ fun StatefulGameScreen(
         )
       }
 
+  StatefulPromoteDialog(gameScreenState)
+
   GameScreen(
       state = gameScreenState,
       modifier = modifier,
@@ -69,8 +71,33 @@ fun StatefulGameScreen(
 }
 
 /**
- * An implementation of [GameScreenState] that starts with default chess positions, can move pieces
- * and has a static move list.
+ * A composable which displays a full-screen dialog for the [PromotionState].
+ *
+ * @param state the [PromotionState] which backs this dialog.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+private fun StatefulPromoteDialog(
+    state: PromotionState,
+    modifier: Modifier = Modifier,
+) {
+  if (state.choices.isNotEmpty()) {
+    PromoteDialog(
+        // Always use the Black color to remain consistent with Figma ?
+        color = ChessBoardState.Color.Black,
+        selected = state.selection,
+        onSelectRank = state::onSelect,
+        onConfirm = state::onConfirm,
+        confirmEnabled = state.confirmEnabled,
+        choices = state.choices,
+        modifier = modifier,
+    )
+  }
+}
+
+/**
+ * An implementation of [GameScreenState] and [PromotionState] that starts with default chess
+ * positions, can move pieces and has a static move list.
  *
  * @param actions the actions to perform when navigating.
  * @param user the currently authenticated user.
@@ -82,7 +109,7 @@ class SnapshotChessBoardState(
     private val user: AuthenticatedUser,
     private val match: Match,
     private val scope: CoroutineScope,
-) : GameScreenState<SnapshotPiece> {
+) : GameScreenState<SnapshotPiece>, PromotionState {
 
   // TODO : Implement these things.
   override var listening by mutableStateOf(false)
@@ -205,12 +232,55 @@ class SnapshotChessBoardState(
 
     if (currentPlayingId == user.uid) {
       // TODO: Update game locally first, then verify upload was successful?
-      scope.launch {
-        val action = Action.Move(Position(from.x, from.y), Delta(to.x - from.x, to.y - from.y))
-        val newGame = step.move(action)
-        match.update(newGame)
+      val actions =
+          game.actions(Position(from.x, from.y))
+              .filter { it.from + it.delta == Position(to.x, to.y) }
+              .toList()
+      if (actions.size == 1) {
+        scope.launch {
+          val newGame = step.move(actions.first())
+          match.update(newGame)
+        }
+      } else {
+        promotionFrom = from
+        promotionTo = to
+        choices = actions.filterIsInstance<Action.Promote>().map { it.rank.toRank() }
       }
     }
+  }
+
+  // Promotion management.
+
+  override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())
+    private set
+
+  override val confirmEnabled: Boolean
+    get() = selection != null
+
+  override var selection: ChessBoardState.Rank? by mutableStateOf(null)
+    private set
+
+  private var promotionFrom by mutableStateOf(ChessBoardState.Position(0, 0))
+  private var promotionTo by mutableStateOf(ChessBoardState.Position(0, 0))
+
+  override fun onConfirm() {
+    val rank = selection ?: return
+    val action =
+        Action.Promote(
+            from = Position(promotionFrom.x, promotionFrom.y),
+            to = Position(promotionTo.x, promotionTo.y),
+            rank = rank.toGameRank(),
+        )
+    val step = game.nextStep as? NextStep.MovePiece ?: return
+    scope.launch {
+      val newGame = step.move(action)
+      match.update(newGame)
+      choices = emptyList()
+    }
+  }
+
+  override fun onSelect(rank: ChessBoardState.Rank) {
+    selection = if (rank == selection) null else rank
   }
 
   override val moves: List<Move>
@@ -221,6 +291,28 @@ class SnapshotChessBoardState(
 private fun Position.toPosition(): ChessBoardState.Position {
   return ChessBoardState.Position(this.x, this.y)
 }
+
+/** Maps a game engine [Rank] to a [ChessBoardState.Rank]. */
+private fun Rank.toRank(): ChessBoardState.Rank =
+    when (this) {
+      Rank.King -> ChessBoardState.Rank.King
+      Rank.Queen -> ChessBoardState.Rank.Queen
+      Rank.Rook -> ChessBoardState.Rank.Rook
+      Rank.Bishop -> ChessBoardState.Rank.Bishop
+      Rank.Knight -> ChessBoardState.Rank.Knight
+      Rank.Pawn -> ChessBoardState.Rank.Pawn
+    }
+
+/** Maps a [ChessBoardState.Rank] to a game engine [Rank]. */
+private fun ChessBoardState.Rank.toGameRank(): Rank =
+    when (this) {
+      ChessBoardState.Rank.King -> Rank.King
+      ChessBoardState.Rank.Queen -> Rank.Queen
+      ChessBoardState.Rank.Rook -> Rank.Rook
+      ChessBoardState.Rank.Bishop -> Rank.Bishop
+      ChessBoardState.Rank.Knight -> Rank.Knight
+      ChessBoardState.Rank.Pawn -> Rank.Pawn
+    }
 
 private fun Piece<Color>.toPiece(): SnapshotPiece {
   val rank =
