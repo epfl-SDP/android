@@ -42,6 +42,7 @@ android {
   kotlinOptions { jvmTarget = JavaVersion.VERSION_1_8.toString() }
 
   testCoverage { jacocoVersion = libs.versions.jacoco.get() }
+  testOptions { unitTests { isIncludeAndroidResources = true } }
 }
 
 tasks.withType<KotlinCompile>().configureEach {
@@ -72,6 +73,9 @@ dependencies {
   androidTestImplementation(libs.kotlin.reflect)
   debugImplementation(libs.compose.ui.test.manifest)
   debugImplementation(libs.compose.ui.tooling.tooling)
+
+  testImplementation("org.robolectric:robolectric:4.7.3")
+  testImplementation(libs.compose.ui.test.junit4)
 
   // Firebase
   implementation(platform(libs.firebase.bom))
