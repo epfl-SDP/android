@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest.ui
+package ch.epfl.sdp.mobile.sharedTest.ui
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule

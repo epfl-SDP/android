@@ -5,7 +5,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import ch.epfl.sdp.mobile.androidTest.ui.AbstractRobot
+import ch.epfl.sdp.mobile.sharedTest.ui.AbstractRobot
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.contentDescription
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings

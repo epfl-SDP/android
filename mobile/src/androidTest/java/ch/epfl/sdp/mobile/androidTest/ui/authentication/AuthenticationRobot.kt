@@ -3,8 +3,8 @@ package ch.epfl.sdp.mobile.androidTest.ui.authentication
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import ch.epfl.sdp.mobile.androidTest.ui.AbstractRobot
 import ch.epfl.sdp.mobile.androidTest.ui.home.FollowingSectionRobot
+import ch.epfl.sdp.mobile.sharedTest.ui.AbstractRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**

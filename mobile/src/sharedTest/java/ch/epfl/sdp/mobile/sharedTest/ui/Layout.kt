@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest.ui
+package ch.epfl.sdp.mobile.sharedTest.ui
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect

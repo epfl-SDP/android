@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.androidTest.ui.home
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performClick
-import ch.epfl.sdp.mobile.androidTest.ui.AbstractRobot
+import ch.epfl.sdp.mobile.sharedTest.ui.AbstractRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
