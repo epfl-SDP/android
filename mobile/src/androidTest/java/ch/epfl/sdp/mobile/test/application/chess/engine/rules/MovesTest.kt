@@ -88,8 +88,8 @@ class MovesTest {
 
   @Test
   fun sideTakes_left_hasOneAction() {
-    val from = Position(1, 1)
-    val left = Position(0, 0)
+    val from = Position(2, 2)
+    val left = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Move(from, Delta(-1, -1)))
@@ -97,8 +97,8 @@ class MovesTest {
 
   @Test
   fun sideTakes_right_hasOneAction() {
-    val from = Position(1, 1)
-    val right = Position(2, 0)
+    val from = Position(2, 2)
+    val right = Position(3, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(right, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, -1)))

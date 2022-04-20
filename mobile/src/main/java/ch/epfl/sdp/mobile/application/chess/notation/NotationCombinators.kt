@@ -35,13 +35,12 @@ object NotationCombinators {
    */
   private fun rank(): Parser<String, Rank> =
       combine(
-              char('K').map { Rank.King },
-              char('Q').map { Rank.Queen },
-              char('R').map { Rank.Rook },
-              char('B').map { Rank.Bishop },
-              char('N').map { Rank.Knight },
-          )
-          .orElse { Rank.Pawn }
+          char('K').map { Rank.King },
+          char('Q').map { Rank.Queen },
+          char('R').map { Rank.Rook },
+          char('B').map { Rank.Bishop },
+          char('N').map { Rank.Knight },
+      )
 
   /** A [Parser] which eats a `-` or an `x` character. */
   private fun moveSeparator(): Parser<String, Char> = char('-') or char('x')
@@ -49,6 +48,7 @@ object NotationCombinators {
   /** A [Parser] for a [Move] action. */
   private fun move(): Parser<String, Move> =
       rank()
+          .orElse { Rank.Pawn }
           .flatMap {
             position().flatMap { from ->
               moveSeparator().flatMap { position().map { to -> Move(from, to) } }
