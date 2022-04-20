@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
+
 /**
  * A [Board] contains a bunch of [Piece] positioned in a certain way.
  *
@@ -28,5 +30,18 @@ interface Board<Piece : Any> : Iterable<Pair<Position, Piece>> {
 
     /** The size of a [Board]. */
     const val Size = 8
+  }
+}
+
+/**
+ * Copies the pieces from this [Board] into a new [Board]. The resulting [Board] is guaranteed to be
+ * immutable, and is created by copying all the pieces from the previous board.
+ *
+ * @param Piece the type of the pieces which are present in a board.
+ * @return a new [Board] copy.
+ */
+fun <Piece : Any> Board<Piece>.toBoard(): Board<Piece> = buildBoard {
+  for ((position, piece) in this@toBoard) {
+    set(position, piece)
   }
 }
