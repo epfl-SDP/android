@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest.ui.setting
+package ch.epfl.sdp.mobile.test.ui.setting
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
@@ -16,7 +16,10 @@ import ch.epfl.sdp.mobile.ui.social.Tie
 import ch.epfl.sdp.mobile.ui.social.Win
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
