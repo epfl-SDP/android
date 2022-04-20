@@ -19,9 +19,29 @@ interface Auth {
     data class Success(val user: User?) : AuthenticationResult
 
     /** Indicates that there was a failure during authentication. */
-    object FailureInternal : AuthenticationResult
+    sealed interface Failure : AuthenticationResult {
 
-    // TODO : Some specific failures could be added here, like FailureBadPassword, etc.
+      /** Indicates that there was a failure during authentication. */
+      object Internal : Failure
+
+      /** Indicates that the password the user chose for their account is not strong enough. */
+      object BadPassword : Failure
+
+      /** Indicates that the email the user typed is malformed. */
+      object IncorrectEmailFormat : Failure
+
+      /** Indicates that an account already exists with the given email. */
+      object ExistingAccount : Failure
+
+      /** Indicates that the given password associated to an email is incorrect. */
+      object IncorrectPassword : Failure
+
+      /**
+       * Indicates that the user account corresponding to an email does not exist or has been
+       * disabled.
+       */
+      object InvalidUser : Failure
+    }
   }
 
   /**
