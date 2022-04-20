@@ -20,10 +20,7 @@ import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.*
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 class AuthenticationScreenTest {
 
   private class SnapshotAuthenticationScreenState : AuthenticationScreenState {
