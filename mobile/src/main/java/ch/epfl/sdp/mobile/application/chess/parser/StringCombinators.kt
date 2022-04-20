@@ -6,11 +6,6 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 /** An object which contains some convenience parser combinators for [String]. */
 object StringCombinators {
 
-  /** Parses an empty [String] and succeeds. */
-  fun empty(): Parser<String, String> = Parser {
-    if (it.isEmpty()) setOf(Parser.Result(it, it)) else emptySet()
-  }
-
   /** Parses the first [Char] of a [String], if it's not empty. */
   fun char(): Parser<String, Char> = Parser {
     if (it.isNotEmpty()) {
