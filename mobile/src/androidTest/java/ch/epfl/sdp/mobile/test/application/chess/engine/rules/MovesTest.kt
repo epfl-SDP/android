@@ -87,7 +87,7 @@ class MovesTest {
   }
 
   @Test
-  fun sideTakes_left_hasOneAction() {
+  fun sideTakes_left_hasOneMoveAction() {
     val from = Position(2, 2)
     val left = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
@@ -96,12 +96,64 @@ class MovesTest {
   }
 
   @Test
-  fun sideTakes_right_hasOneAction() {
+  fun given_pawnOnPenultimateRow_when_adversaryOnLeft_then_canPromote() {
+    val from = Position(1, 1)
+    val left = Position(0, 0)
+    val board =
+        sequenceOf(
+            buildBoard<Piece<Role>> {
+              set(from, alliedPawn)
+              set(left, adversaryPawn)
+            },
+        )
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.toSet())
+        .containsExactly(
+            Action.Promote(from, left, Bishop),
+            Action.Promote(from, left, Knight),
+            Action.Promote(from, left, Queen),
+            Action.Promote(from, left, Rook),
+        )
+  }
+
+  @Test
+  fun given_noPawn_when_adversaryOnLeft_then_canNotPromote() {
+    val from = Position(1, 1)
+    val left = Position(0, 0)
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
+
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.toSet()).isEmpty()
+  }
+
+  @Test
+  fun sideTakes_right_hasOneMoveAction() {
     val from = Position(2, 2)
     val right = Position(3, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(right, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, -1)))
+  }
+
+  @Test
+  fun given_pawnOnPenultimateRow_when_adversaryOnRight_then_canPromote() {
+    val from = Position(1, 1)
+    val right = Position(2, 0)
+    val board =
+        sequenceOf(
+            buildBoard<Piece<Role>> {
+              set(from, alliedPawn)
+              set(right, adversaryPawn)
+            },
+        )
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.toSet())
+        .containsExactly(
+            Action.Promote(from, right, Bishop),
+            Action.Promote(from, right, Knight),
+            Action.Promote(from, right, Queen),
+            Action.Promote(from, right, Rook),
+        )
   }
 
   @Test
