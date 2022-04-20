@@ -11,13 +11,13 @@ interface SettingScreenState : Person {
   val email: String
 
   /** Number of past games */
-  var pastGamesCount: Int
+  val pastGamesCount: Int
 
   /** Number of puzzles */
   val puzzlesCount: Int
 
   /** List of chess matches */
-  var matches: List<ChessMatch>
+  val matches: List<ChessMatch>
 
   /** On settings button clicked */
   fun onSettingsClick()

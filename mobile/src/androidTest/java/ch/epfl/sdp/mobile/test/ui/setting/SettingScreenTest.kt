@@ -21,9 +21,9 @@ class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestSettingScreenState(override var matches: List<ChessMatch>) : SettingScreenState {
+  open class TestSettingScreenState(override val matches: List<ChessMatch>) : SettingScreenState {
     override val email = "example@epfl.ch"
-    override var pastGamesCount = 10
+    override val pastGamesCount = 10
     override val puzzlesCount = 12
 
     override fun onEditClick() = Unit

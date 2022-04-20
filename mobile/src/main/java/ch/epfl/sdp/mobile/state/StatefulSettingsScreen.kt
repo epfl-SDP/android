@@ -24,8 +24,10 @@ class AuthenticatedUserProfileScreenState(
 ) : SettingScreenState {
   override val email = user.email
   override var pastGamesCount by mutableStateOf(0)
+    private set
   override val puzzlesCount = 0
   override var matches by mutableStateOf(emptyList<ChessMatch>())
+    private set
 
   init {
     scope.launch {
