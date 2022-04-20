@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Allied
 import com.google.common.truth.Truth.assertThat
@@ -63,10 +64,10 @@ class MovesTest {
             .map { it.first }
     assertThat(actions.toSet())
         .containsExactly(
-            Action.Promote(from, to, Bishop),
-            Action.Promote(from, to, Knight),
-            Action.Promote(from, to, Queen),
-            Action.Promote(from, to, Rook),
+            Promote(from, to, Bishop),
+            Promote(from, to, Knight),
+            Promote(from, to, Queen),
+            Promote(from, to, Rook),
         )
   }
 
@@ -126,10 +127,10 @@ class MovesTest {
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.toSet())
         .containsExactly(
-            Action.Promote(from, left, Bishop),
-            Action.Promote(from, left, Knight),
-            Action.Promote(from, left, Queen),
-            Action.Promote(from, left, Rook),
+            Promote(from, left, Bishop),
+            Promote(from, left, Knight),
+            Promote(from, left, Queen),
+            Promote(from, left, Rook),
         )
   }
 
@@ -166,10 +167,10 @@ class MovesTest {
     val actions = board.sideTakes(from).map { it.first }
     assertThat(actions.toSet())
         .containsExactly(
-            Action.Promote(from, right, Bishop),
-            Action.Promote(from, right, Knight),
-            Action.Promote(from, right, Queen),
-            Action.Promote(from, right, Rook),
+            Promote(from, right, Bishop),
+            Promote(from, right, Knight),
+            Promote(from, right, Queen),
+            Promote(from, right, Rook),
         )
   }
 
