@@ -54,6 +54,23 @@ class MovesTest {
   }
 
   @Test
+  fun given_pawnOnPenultimateRow_when_movesUp_then_canPromote() {
+    val from = Position(0, 1)
+    val to = Position(0, 0)
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(from, alliedPawn) })
+    val actions =
+        board.delta(from = from, x = 0, y = -1, includeAdversary = false, promotionAllowed = true)
+            .map { it.first }
+    assertThat(actions.toSet())
+        .containsExactly(
+            Action.Promote(from, to, Bishop),
+            Action.Promote(from, to, Knight),
+            Action.Promote(from, to, Queen),
+            Action.Promote(from, to, Rook),
+        )
+  }
+
+  @Test
   fun doubleUp_fromIncorrectRow_hasNoActions() {
     val from = Position(3, 3)
     val board = sequenceOf(emptyBoard<Piece<Role>>())
