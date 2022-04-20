@@ -61,9 +61,9 @@ class SettingScreenTest {
   fun scroll_makesMatchesVisible() {
     rule.setContentWithLocalizedStrings { SettingsScreen(FakeSetttingScreenState) }
 
-    rule.onRoot().performTouchInput { swipeUp() }
-    rule.onAllNodesWithText("Konor", substring = true)
-        .assertAny(SemanticsMatcher("exists") { true })
+    rule.onNode(hasScrollAction())
+        .performScrollToNode(hasText("Konor", substring = true))
+        .assertExists()
   }
 
   private fun testMatchResult(
@@ -74,8 +74,7 @@ class SettingScreenTest {
     val state = TestSettingScreenState(List(20) { match })
     val strings = rule.setContentWithLocalizedStrings { SettingsScreen(state) }
 
-    rule.onRoot().performTouchInput { swipeUp() }
-    rule.onAllNodesWithText(expected(strings)).assertAny(SemanticsMatcher("exists") { true })
+    rule.onNode(hasScrollAction()).performScrollToNode(hasText(expected(strings))).assertExists()
   }
 
   @Test
