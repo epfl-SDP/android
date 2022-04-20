@@ -39,45 +39,50 @@ typealias Moves<P> = Sequence<Pair<Action, Effect<P>>>
  * @param x the delta on the x axis.
  * @param y the delta on the y axis.
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
+ * @param promotionAllowed true if the [Moves] should include promotion of the piece.
  */
 fun BoardSequence<Piece<Role>>.delta(
     from: Position,
     x: Int,
     y: Int,
     includeAdversary: Boolean = true,
+    promotionAllowed: Boolean = false,
 ): Moves<Piece<Role>> = sequence {
   val board = first()
   val delta = Delta(x, y)
   val target = from + delta ?: return@sequence // Stop if out of bounds.
   val piece = board[target]
   if (piece == null || (includeAdversary && piece.color == Adversary)) {
-    yield(Move(from, delta) to move(from, target))
+    yieldMoveOrPromote(board, from, target, promotionAllowed = promotionAllowed)
   }
 }
 
 /**
- * A [Moves] that will be performed by pawns which try to move up (without eating existing pieces),
- * and ends up promoting the piece when it ends on the last row.
+ * Yields a [Move] or a [Promote] action, depending on the value of the [promote] argument.
  *
- * @param from the original [Position].
+ * @param Color the color of the pieces.
+ * @param board the current [Board] state.
+ * @param from the start [Position].
+ * @param to the target [Position].
+ * @param promotionAllowed true iff the promotion action is allowed.
  */
-fun BoardSequence<Piece<Role>>.moveUpOrPromote(
+private suspend fun <Color> SequenceScope<Pair<Action, Effect<Piece<Color>>>>.yieldMoveOrPromote(
+    board: Board<Piece<Color>>,
     from: Position,
-): Moves<Piece<Role>> = sequence {
-  val target = from + Delta(x = 0, y = -1) ?: return@sequence
-  if (target.y != 1) {
-    // If we're not targeting the last row, perform a standard delta move.
-    yieldAll(delta(from, x = 0, y = -1, includeAdversary = false))
+    to: Position,
+    promotionAllowed: Boolean,
+) {
+  val isOnLastRow = to.y == 0
+  if (!isOnLastRow || !promotionAllowed) {
+    yield(Move(from, to) to move(from, to))
   } else {
-    val piece = first()[from] ?: return@sequence // We need to be moving from a piece.
-    if (first()[target] != null) return@sequence // We must not end on an existing piece.
-
+    // Retrieve the origin piece.
+    val piece = board[from] ?: return
     // Compute the identifier of the promoted piece.
-    val id = first().maxOf { (_, piece) -> piece.id }.inc()
-
+    val id = board.maxOf { (_, piece) -> piece.id }.inc()
     // Yield one action for each promotion choice.
     for (rank in listOf(Bishop, Knight, Queen, Rook)) {
-      yield(Promote(from, target, rank) to promote(from, target, piece.copy(id = id, rank = rank)))
+      yield(Promote(from, to, rank) to promote(from, to, piece.copy(id = id, rank = rank)))
     }
   }
 }
@@ -110,8 +115,10 @@ fun BoardSequence<Piece<Role>>.sideTakes(
     from: Position,
 ): Moves<Piece<Role>> = sequence {
   val board = first()
-  if (board[Position(from.x - 1, from.y - 1)] != null) yieldAll(delta(from, -1, -1))
-  if (board[Position(from.x + 1, from.y - 1)] != null) yieldAll(delta(from, 1, -1))
+  if (board[Position(from.x - 1, from.y - 1)] != null)
+      yieldAll(delta(from, -1, -1, promotionAllowed = true))
+  if (board[Position(from.x + 1, from.y - 1)] != null)
+      yieldAll(delta(from, 1, -1, promotionAllowed = true))
 }
 
 /**

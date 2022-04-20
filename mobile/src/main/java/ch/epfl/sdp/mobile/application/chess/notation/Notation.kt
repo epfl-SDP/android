@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.application.chess.notation
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.parser.NotationCombinators.action
+import ch.epfl.sdp.mobile.application.chess.notation.NotationCombinators.action
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
