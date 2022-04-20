@@ -49,8 +49,8 @@ object Combinators {
    * @receiver the [Parser] which will be mapped.
    * @param f the function used to map the results.
    */
-  inline fun <I, O1, O2> Parser<I, O1>.map(
-      crossinline f: (O1) -> O2,
+  /* inline */ fun <I, O1, O2> Parser<I, O1>.map(
+      /* crossinline */ f: (O1) -> O2,
   ): Parser<I, O2> = Parser {
     parse(it).mapTo(mutableSetOf()) { r -> Result(r.remaining, f(r.output)) }
   }
@@ -65,8 +65,8 @@ object Combinators {
    * @receiver the [Parser] which will be mapped.
    * @param f the function used to flat-map the current output to select the next combinator.
    */
-  inline fun <I, O1, O2> Parser<I, O1>.flatMap(
-      crossinline f: (O1) -> Parser<I, O2>,
+  /* inline */ fun <I, O1, O2> Parser<I, O1>.flatMap(
+      /* crossinline */ f: (O1) -> Parser<I, O2>,
   ): Parser<I, O2> = Parser {
     parse(it).flatMapTo(mutableSetOf()) { r -> f(r.output).parse(r.remaining) }
   }
@@ -78,8 +78,8 @@ object Combinators {
    * @param O the type of the output.
    * @param lazyDefaultValue the lambda which computes the default value.
    */
-  inline fun <I, O> Parser<I, O>.orElse(
-      crossinline lazyDefaultValue: (I) -> O,
+  /* inline */ fun <I, O> Parser<I, O>.orElse(
+      /* crossinline */ lazyDefaultValue: (I) -> O,
   ): Parser<I, O> = Parser { parse(it).ifEmpty { setOf(Result(it, lazyDefaultValue(it))) } }
 
   /**
