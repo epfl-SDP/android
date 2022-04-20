@@ -1,9 +1,6 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine
 
-import ch.epfl.sdp.mobile.application.chess.engine.Delta
-import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.Position
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 
 /**
@@ -14,6 +11,12 @@ interface GameScope {
 
   /** Tries to move a piece from the current [Position] with the provided [Delta]. */
   fun tryMove(from: Position, delta: Delta)
+
+  /**
+   * Tries to promote a piece from the current [Position] with the provided [Delta] to the given
+   * [Rank].
+   */
+  fun tryPromote(from: Position, delta: Delta, rank: Rank)
 
   /** An alias to [tryMove]. */
   operator fun Position.plusAssign(delta: Delta) = tryMove(this, delta)
@@ -32,6 +35,11 @@ private class MutableGameScope(var game: Game) : GameScope {
 
   override fun tryMove(from: Position, delta: Delta) {
     val action = Action.Move(from, delta)
+    nextStepAsMovePieceOrNull?.move?.invoke(action).tryUpdate()
+  }
+
+  override fun tryPromote(from: Position, delta: Delta, rank: Rank) {
+    val action = Action.Promote(from, delta, rank)
     nextStepAsMovePieceOrNull?.move?.invoke(action).tryUpdate()
   }
 }

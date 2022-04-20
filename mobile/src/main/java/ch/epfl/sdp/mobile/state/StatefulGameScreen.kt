@@ -265,6 +265,7 @@ class SnapshotChessBoardState(
 
   override fun onConfirm() {
     val rank = selection ?: return
+    selection = null
     val action =
         Action.Promote(
             from = Position(promotionFrom.x, promotionFrom.y),
