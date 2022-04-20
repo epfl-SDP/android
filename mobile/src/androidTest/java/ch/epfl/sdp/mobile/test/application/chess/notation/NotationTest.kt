@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.test.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.notation.deserialize
-import ch.epfl.sdp.mobile.application.chess.notation.serialize
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.parseGame
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
@@ -16,7 +16,7 @@ class NotationTest {
     val foolsMate = Game.create().play(FoolsMate)
 
     val foolsMateBoard = foolsMate.board
-    val serializedDeserializedBoard = foolsMate.serialize().deserialize().board
+    val serializedDeserializedBoard = parseGame(foolsMate.toExtendedNotation()).board
 
     assertThat(serializedDeserializedBoard).isEqualTo(foolsMateBoard)
   }
@@ -26,7 +26,7 @@ class NotationTest {
     val staleMate = Game.create().play(Stalemate)
 
     val foolsMateBoard = staleMate.board
-    val serializedDeserializedBoard = staleMate.serialize().deserialize().board
+    val serializedDeserializedBoard = parseGame(staleMate.toExtendedNotation()).board
 
     assertThat(serializedDeserializedBoard).isEqualTo(foolsMateBoard)
   }

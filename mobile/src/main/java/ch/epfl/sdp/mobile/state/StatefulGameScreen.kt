@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.serialize
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
@@ -214,7 +214,7 @@ class SnapshotChessBoardState(
   }
 
   override val moves: List<Move>
-    get() = game.serialize().map(::Move)
+    get() = game.toExtendedNotation().map(::Move)
 }
 
 /** Maps a game engine [Position] to a [ChessBoardState.Position] */

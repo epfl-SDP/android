@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.parseGame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -26,8 +27,8 @@ fun Flow<List<String>>.mapToGame(): Flow<Game> = flow {
   collect { list ->
     val prefix = prefixLength(moves, list)
     game =
-        if (prefix == moves.size) list.drop(prefix).deserialize(initial = game) // Incremental.
-        else list.deserialize()
+        if (prefix == moves.size) parseGame(list.drop(prefix), initial = game) // Incremental.
+        else parseGame(list)
     moves = list
     emit(game)
   }
