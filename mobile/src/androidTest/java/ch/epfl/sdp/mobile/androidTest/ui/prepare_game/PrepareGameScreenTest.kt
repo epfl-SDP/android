@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import ch.epfl.sdp.mobile.state.ProfileAdapter
 import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.state.ProfileAdapter
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.ColorChoice

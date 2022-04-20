@@ -1,10 +1,10 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake
 
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
-import ch.epfl.sdp.mobile.androidTest.assertThrows
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.sharedTest.assertThrows
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentId
 import kotlinx.coroutines.flow.Flow

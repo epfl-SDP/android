@@ -1,11 +1,11 @@
 package ch.epfl.sdp.mobile.androidTest.application.chess.notation
 
+import ch.epfl.sdp.mobile.androidTest.application.chess.engine.play
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.chess.notation.serialize
-import ch.epfl.sdp.mobile.androidTest.application.chess.engine.play
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map

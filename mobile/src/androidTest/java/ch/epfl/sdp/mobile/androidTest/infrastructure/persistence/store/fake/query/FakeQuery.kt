@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.query
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.FakeQuerySnapshot
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.query.WhereFakeQueryDecorator.Filter.where
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.query.WhereFakeQueryDecorator.Filter.whereArray
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import kotlinx.coroutines.flow.Flow
 
 /**

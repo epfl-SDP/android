@@ -1,14 +1,14 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
-import ch.epfl.sdp.mobile.androidTest.combineOrEmpty
-import ch.epfl.sdp.mobile.androidTest.getOrPut
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.DocumentBuilder
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.query.FakeQuery
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.serialization.fromObject
-import ch.epfl.sdp.mobile.androidTest.updateAndGetWithValue
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
+import ch.epfl.sdp.mobile.sharedTest.combineOrEmpty
+import ch.epfl.sdp.mobile.sharedTest.getOrPut
+import ch.epfl.sdp.mobile.sharedTest.updateAndGetWithValue
 import java.util.*
 import kotlin.reflect.KClass
 import kotlinx.collections.immutable.PersistentMap

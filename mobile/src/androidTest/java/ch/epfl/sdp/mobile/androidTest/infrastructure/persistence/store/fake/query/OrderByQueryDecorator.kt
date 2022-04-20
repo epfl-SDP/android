@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.query
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.FakeDocumentSnapshot
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.FakeQuerySnapshot
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import kotlin.Comparator
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

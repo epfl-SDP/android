@@ -1,5 +1,10 @@
 package ch.epfl.sdp.mobile.androidTest.application
 
+import ch.epfl.sdp.mobile.androidTest.application.chess.engine.play
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -9,11 +14,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
-import ch.epfl.sdp.mobile.androidTest.application.chess.engine.play
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

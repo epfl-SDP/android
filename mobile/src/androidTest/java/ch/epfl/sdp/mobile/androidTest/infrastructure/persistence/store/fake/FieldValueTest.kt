@@ -1,10 +1,10 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake
 
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayRemove
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

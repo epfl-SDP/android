@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentSnapshot
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.serialization.toObject
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentSnapshot
 import kotlin.reflect.KClass
 
 /**

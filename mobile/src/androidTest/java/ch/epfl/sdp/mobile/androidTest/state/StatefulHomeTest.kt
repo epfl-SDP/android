@@ -5,6 +5,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.compose.rememberNavController
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
@@ -14,11 +19,6 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

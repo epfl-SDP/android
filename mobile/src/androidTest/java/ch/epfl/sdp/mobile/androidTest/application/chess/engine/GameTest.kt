@@ -1,13 +1,13 @@
 package ch.epfl.sdp.mobile.androidTest.application.chess.engine
 
+import ch.epfl.sdp.mobile.androidTest.application.chess.engine.Games.FoolsMate
+import ch.epfl.sdp.mobile.androidTest.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.King
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.Rook
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.androidTest.application.chess.engine.Games.FoolsMate
-import ch.epfl.sdp.mobile.androidTest.application.chess.engine.Games.Stalemate
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

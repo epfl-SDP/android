@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.fake
 
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.AuthBuilder
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.AuthBuilder
 import java.util.*
 import kotlinx.coroutines.flow.*
 

@@ -1,15 +1,15 @@
 package ch.epfl.sdp.mobile.androidTest.application
 
-import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.ProfileDocument
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.social.SocialFacade
 import com.google.common.truth.Truth
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first

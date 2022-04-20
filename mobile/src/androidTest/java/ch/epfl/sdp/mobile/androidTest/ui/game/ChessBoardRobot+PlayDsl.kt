@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.androidTest.ui.game
 
+import ch.epfl.sdp.mobile.androidTest.application.chess.engine.GameScope
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.androidTest.application.chess.engine.GameScope
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
 /**

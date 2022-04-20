@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake
 
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.CollectionBuilder
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.CollectionBuilder
 
 /**
  * An implementation of a [Store] which delegates its implementation to an inner fake document. This

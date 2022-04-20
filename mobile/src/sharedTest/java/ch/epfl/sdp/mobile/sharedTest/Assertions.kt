@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest
+package ch.epfl.sdp.mobile.sharedTest
 
 import com.google.common.truth.Truth
 import org.junit.Assert

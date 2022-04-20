@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.fake.FakeAuth
+import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 
 /** Creates an in-memory implementation of [Auth], which can't fail. */
 fun emptyAuth(): Auth = FakeAuth()

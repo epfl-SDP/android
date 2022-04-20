@@ -2,8 +2,8 @@
 
 package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.fake.FakeStore
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import kotlin.reflect.KClass
 
 /** Builds and returns a [Store] with no data. */

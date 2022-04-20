@@ -2,15 +2,6 @@ package ch.epfl.sdp.mobile.androidTest.state
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
-import ch.epfl.sdp.mobile.application.ChessDocument
-import ch.epfl.sdp.mobile.application.ProfileDocument
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.state.ProvideFacades
-import ch.epfl.sdp.mobile.state.StatefulGameScreen
-import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.androidTest.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.androidTest.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
@@ -20,6 +11,15 @@ import ch.epfl.sdp.mobile.androidTest.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.androidTest.ui.game.click
 import ch.epfl.sdp.mobile.androidTest.ui.game.drag
 import ch.epfl.sdp.mobile.androidTest.ui.game.play
+import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.state.StatefulGameScreen
+import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White

@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
-import ch.epfl.sdp.mobile.androidTest.suspendForever
+import ch.epfl.sdp.mobile.sharedTest.suspendForever
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

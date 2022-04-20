@@ -1,11 +1,11 @@
 package ch.epfl.sdp.mobile.androidTest.state
 
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
-import ch.epfl.sdp.mobile.state.AuthenticationApiAuthenticationScreenState as AuthApiAuthenticationScreenState
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.SuspendingAuth
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
+import ch.epfl.sdp.mobile.state.AuthenticationApiAuthenticationScreenState as AuthApiAuthenticationScreenState
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.*
 import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings

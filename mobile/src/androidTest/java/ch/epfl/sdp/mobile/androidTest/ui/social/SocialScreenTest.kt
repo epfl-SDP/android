@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformFollow
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchEmptyTitle
 import ch.epfl.sdp.mobile.ui.social.Person

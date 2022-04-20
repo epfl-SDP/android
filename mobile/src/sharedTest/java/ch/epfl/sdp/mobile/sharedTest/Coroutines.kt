@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest
+package ch.epfl.sdp.mobile.sharedTest
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

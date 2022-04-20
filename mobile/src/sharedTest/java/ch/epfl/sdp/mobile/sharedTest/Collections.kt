@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest
+package ch.epfl.sdp.mobile.sharedTest
 
 import kotlinx.collections.immutable.PersistentMap
 

@@ -1,5 +1,10 @@
 package ch.epfl.sdp.mobile.androidTest.application
 
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -9,11 +14,6 @@ import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk

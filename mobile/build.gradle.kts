@@ -29,6 +29,13 @@ android {
     release { isMinifyEnabled = false }
   }
 
+  sourceSets {
+    // Share some code between the test and androidTest source sets.
+    val sharedTestDir = "src/sharedTest/java"
+    maybeCreate("test").java { srcDir(sharedTestDir) }
+    maybeCreate("androidTest").java { srcDir(sharedTestDir) }
+  }
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -76,6 +83,7 @@ dependencies {
 
   testImplementation("org.robolectric:robolectric:4.7.3")
   testImplementation(libs.compose.ui.test.junit4)
+  testImplementation(libs.kotlin.reflect)
 
   // Firebase
   implementation(platform(libs.firebase.bom))
