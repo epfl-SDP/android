@@ -1,10 +1,7 @@
 package ch.epfl.sdp.mobile.androidTest.state
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.androidTest.ui.game.ChessBoardRobot
-import ch.epfl.sdp.mobile.androidTest.ui.game.click
-import ch.epfl.sdp.mobile.androidTest.ui.game.drag
-import ch.epfl.sdp.mobile.androidTest.ui.game.play
+import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -17,6 +14,10 @@ import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.sharedTest.ui.game.ChessBoardRobot
+import ch.epfl.sdp.mobile.sharedTest.ui.game.click
+import ch.epfl.sdp.mobile.sharedTest.ui.game.drag
+import ch.epfl.sdp.mobile.sharedTest.ui.game.play
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulGameScreen
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions

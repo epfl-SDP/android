@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.androidTest.state
+package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.runtime.remember
 import androidx.compose.ui.test.*
@@ -25,7 +25,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class StatefulFollowingScreenTest {
   @get:Rule val rule = createComposeRule()
 

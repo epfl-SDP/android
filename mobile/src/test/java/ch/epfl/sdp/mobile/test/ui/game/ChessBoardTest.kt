@@ -6,12 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.sharedTest.ui.game.ChessBoardRobot
+import ch.epfl.sdp.mobile.sharedTest.ui.game.SinglePieceSnapshotChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.Pawn
 import ch.epfl.sdp.mobile.ui.game.ClassicChessBoard
-import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -23,41 +22,6 @@ import org.robolectric.RobolectricTestRunner
 class ChessBoardTest {
 
   @get:Rule val rule = createComposeRule()
-
-  /**
-   * An implementation of [MovableChessBoardState] which moves a single piece around the chessboard
-   * on drag and drops.
-   *
-   * @param piece the [Piece] which should be moved.
-   */
-  class SinglePieceSnapshotChessBoardState(
-      private val piece: Piece =
-          object : Piece {
-            override val color = White
-            override val rank = Pawn
-          },
-  ) : MovableChessBoardState<Piece> {
-
-    var position: Position by mutableStateOf(Position(0, 0))
-
-    override val selectedPosition: Position? = null
-    override val checkPosition: Position? = null
-
-    override val pieces: Map<Position, Piece>
-      get() = mapOf(position to piece)
-
-    override val availableMoves: Set<Position>
-      get() = emptySet()
-
-    override fun onDropPiece(
-        piece: Piece,
-        endPosition: Position,
-    ) {
-      position = endPosition
-    }
-
-    override fun onPositionClick(position: Position) = Unit
-  }
 
   @Test
   fun draggingPawnAroundIsSuccessful() = runTest {
