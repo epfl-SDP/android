@@ -68,6 +68,14 @@ class AuthenticationApiAuthenticationScreenState(
             when (result) {
               AuthenticationResult.Success -> null
               AuthenticationResult.Failure -> strings.authenticateErrorFailure
+              AuthenticationResult.FailureIncorrectEmailFormat ->
+                  strings.authenticateWrongEmailFormatFailure
+              AuthenticationResult.FailureBadPassword -> strings.authenticateBadPasswordFailure
+              AuthenticationResult.FailureInvalidUser -> strings.authenticateInvalidUserFailure
+              AuthenticationResult.FailureIncorrectPassword ->
+                  strings.authenticateIncorrectPasswordFailure
+              AuthenticationResult.FailureExistingAccount ->
+                  strings.authenticateExistingAccountFailure
             }
       }
     }
