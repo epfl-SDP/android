@@ -1,8 +1,7 @@
 package ch.epfl.sdp.mobile.sharedTest.ui.authentication
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextInput
 import ch.epfl.sdp.mobile.sharedTest.ui.AbstractRobot
 import ch.epfl.sdp.mobile.sharedTest.ui.home.FollowingSectionRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -48,11 +47,6 @@ class SignInRobot(
     strings: LocalizedStrings,
 ) : AuthenticationRobot(rule, strings) {
 
-  init {
-    onNodeWithLocalizedText { authenticatePerformLogIn }.assertExists()
-    onNodeWithLocalizedText { authenticateSwitchToRegister }.assertExists()
-  }
-
   /**
    * Switches to the sign-up screen.
    *
@@ -60,6 +54,7 @@ class SignInRobot(
    * @return the [SignUpRobot] which should be used.
    */
   inline fun switchToRegister(block: SignUpRobot.() -> Unit = {}): SignUpRobot {
+    onNode(hasScrollAction()).performScrollToNode(hasText(strings.authenticateSwitchToRegister))
     onNodeWithLocalizedText { authenticateSwitchToRegister }.performClick()
     return switchTo(::SignUpRobot, block)
   }
@@ -71,6 +66,7 @@ class SignInRobot(
    * @return the [FollowingSectionRobot] which should be used.
    */
   inline fun performSignIn(block: FollowingSectionRobot.() -> Unit = {}): FollowingSectionRobot {
+    onNode(hasScrollAction()).performScrollToNode(hasText(strings.authenticatePerformLogIn))
     onNodeWithLocalizedText { authenticatePerformLogIn }.performClick()
     return switchTo(::FollowingSectionRobot, block)
   }
@@ -86,11 +82,6 @@ class SignUpRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
 ) : AuthenticationRobot(rule, strings) {
-
-  init {
-    onNodeWithLocalizedText { authenticatePerformRegister }.assertExists()
-    onNodeWithLocalizedText { authenticateSwitchToLogIn }.assertExists()
-  }
 
   /**
    * Sets the name text field.
@@ -108,6 +99,7 @@ class SignUpRobot(
    * @return the [SignInRobot] which should be used.
    */
   inline fun switchToLogIn(block: SignInRobot.() -> Unit = {}): SignInRobot {
+    onNode(hasScrollAction()).performScrollToNode(hasText(strings.authenticateSwitchToLogIn))
     onNodeWithLocalizedText { authenticateSwitchToLogIn }.performClick()
     return switchTo(::SignInRobot, block)
   }
@@ -119,6 +111,7 @@ class SignUpRobot(
    * @return the [FollowingSectionRobot] which should be used.
    */
   inline fun performSignUp(block: FollowingSectionRobot.() -> Unit = {}): FollowingSectionRobot {
+    onNode(hasScrollAction()).performScrollToNode(hasText(strings.authenticatePerformRegister))
     onNodeWithLocalizedText { authenticatePerformRegister }.performClick()
     return switchTo(::FollowingSectionRobot, block)
   }

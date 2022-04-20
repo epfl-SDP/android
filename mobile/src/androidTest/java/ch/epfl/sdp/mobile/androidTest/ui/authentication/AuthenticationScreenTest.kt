@@ -20,7 +20,10 @@ import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class AuthenticationScreenTest {
 
   private class SnapshotAuthenticationScreenState : AuthenticationScreenState {
@@ -49,10 +52,8 @@ class AuthenticationScreenTest {
   fun toggle_switchesToLogIn() {
     val state = SnapshotAuthenticationScreenState()
     val strings = rule.setContentWithLocalizedStrings { AuthenticationScreen(state) }
-    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
     robot.switchToLogIn {
-      onRoot().performTouchInput { swipeUp() }
       onNodeWithLocalizedText { authenticatePerformRegister }.assertDoesNotExist()
     }
   }
@@ -70,11 +71,10 @@ class AuthenticationScreenTest {
             StatefulAuthenticationScreen()
           }
         }
-    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
     robot.email("a@epfl.ch")
     robot.password("weak")
-    rule.onNodeWithText(strings.authenticatePerformRegister).performClick()
+    robot.performSignUp()
     rule.onNodeWithText(strings.authenticateBadPasswordFailure).assertExists()
   }
 
@@ -91,11 +91,10 @@ class AuthenticationScreenTest {
             StatefulAuthenticationScreen()
           }
         }
-    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
     robot.email("a")
     robot.password("password")
-    rule.onNodeWithText(strings.authenticatePerformRegister).performClick()
+    robot.performSignUp()
     rule.onNodeWithText(strings.authenticateWrongEmailFormatFailure).assertExists()
   }
 
@@ -112,11 +111,10 @@ class AuthenticationScreenTest {
             StatefulAuthenticationScreen()
           }
         }
-    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
     robot.email("fouad.mahmoud@epfl.ch")
     robot.password("password")
-    rule.onNodeWithText(strings.authenticatePerformRegister).performClick()
+    robot.performSignUp()
     rule.onNodeWithText(strings.authenticateExistingAccountFailure).assertExists()
   }
 
@@ -133,11 +131,10 @@ class AuthenticationScreenTest {
             StatefulAuthenticationScreen()
           }
         }
-    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings).switchToLogIn()
     robot.email("fouad.mahmoud@epfl.ch")
     robot.password("wrong")
-    rule.onNodeWithText(strings.authenticatePerformLogIn).performClick()
+    robot.performSignIn()
     rule.onNodeWithText(strings.authenticateIncorrectPasswordFailure).assertExists()
   }
 
@@ -154,11 +151,10 @@ class AuthenticationScreenTest {
             StatefulAuthenticationScreen()
           }
         }
-    rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings).switchToLogIn()
     robot.email("fouad.mahmoud@epfl.ch")
     robot.password("password")
-    rule.onNodeWithText(strings.authenticatePerformLogIn).performClick()
+    robot.performSignIn()
     rule.onNodeWithText(strings.authenticateInvalidUserFailure).assertExists()
   }
 
@@ -175,7 +171,7 @@ class AuthenticationScreenTest {
   fun modeSwitchedTwice_preservesInput() {
     val state = SnapshotAuthenticationScreenState()
     val strings = rule.setContentWithLocalizedStrings { AuthenticationScreen(state) }
-    rule.onRoot().performTouchInput { swipeUp() }
+
     SignUpRobot(rule, strings)
         .apply {
           email("alexandre.piveteau@epfl.ch")
@@ -184,7 +180,6 @@ class AuthenticationScreenTest {
         }
         .switchToLogIn()
         .switchToRegister {
-          onRoot().performTouchInput { swipeUp() }
           onNodeWithText("alexandre.piveteau@epfl.ch").assertExists()
           onNodeWithText("Alexandre Piveteau").assertExists()
           onNodeWithText("Password").assertExists()
