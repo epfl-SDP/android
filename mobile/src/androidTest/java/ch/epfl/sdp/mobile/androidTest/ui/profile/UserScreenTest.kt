@@ -4,7 +4,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch

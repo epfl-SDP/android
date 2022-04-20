@@ -4,7 +4,7 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 import org.junit.Rule

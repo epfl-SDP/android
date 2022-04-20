@@ -3,8 +3,8 @@ package ch.epfl.sdp.mobile.androidTest.ui.profile
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.application.Profile.Color
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen

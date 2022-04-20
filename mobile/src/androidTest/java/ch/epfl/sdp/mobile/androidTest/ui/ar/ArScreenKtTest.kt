@@ -9,8 +9,8 @@ import androidx.test.espresso.intent.Intents.*
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.rule.GrantPermissionRule.grant
-import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.state.HomeActivity
 import ch.epfl.sdp.mobile.ui.ar.ArScreen
 import org.junit.Rule

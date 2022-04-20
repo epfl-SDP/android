@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.authentication.PasswordTextField
 import org.junit.Rule
 import org.junit.Test

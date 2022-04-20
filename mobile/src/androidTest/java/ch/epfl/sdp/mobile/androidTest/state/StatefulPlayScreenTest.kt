@@ -3,17 +3,18 @@ package ch.epfl.sdp.mobile.androidTest.state
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPlayScreen
 import com.google.common.truth.Truth
@@ -23,7 +24,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class StatefulPlayScreenTest {
   @get:Rule val rule = createComposeRule()
 

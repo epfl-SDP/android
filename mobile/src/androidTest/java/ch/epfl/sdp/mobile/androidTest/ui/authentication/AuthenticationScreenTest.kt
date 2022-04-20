@@ -5,13 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.androidTest.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.androidTest.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.sharedTest.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.sharedTest.state.setContentWithLocalizedStrings
+import ch.epfl.sdp.mobile.sharedTest.ui.authentication.SignUpRobot
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulAuthenticationScreen
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreen
@@ -19,7 +20,10 @@ import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState.Mode.*
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class AuthenticationScreenTest {
 
   private class SnapshotAuthenticationScreenState : AuthenticationScreenState {
