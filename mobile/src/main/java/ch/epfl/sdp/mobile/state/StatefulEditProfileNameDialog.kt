@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
  *
  * @param user the current [AuthenticatedUser].
  * @param scope the coroutine scope.
- * @param onSave the callback called after we saved the changes.
- * @param onCancel the callback called when we click the cancel button.
+ * @param onSaveAction the callback called after we saved the changes.
+ * @param onCancelAction the callback called when we click the cancel button.
  */
 class EditProfileNameDialogStateImpl(
     private val user: AuthenticatedUser,
