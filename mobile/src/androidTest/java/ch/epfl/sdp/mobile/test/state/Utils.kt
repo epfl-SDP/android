@@ -12,7 +12,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
  *
  * @param block the block of code to execute.
  */
-fun withCanceledIntents(block: () -> Unit) {
+inline fun withCanceledIntents(block: () -> Unit) {
   try {
     Intents.init()
     Intents.intending(IntentMatchers.anyIntent())
