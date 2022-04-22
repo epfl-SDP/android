@@ -43,9 +43,9 @@ fun EditProfileNameDialog(
         Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
 
         TextField(
-            value = state.name,
+            value = state.userName,
             modifier = Modifier.fillMaxWidth(),
-            onValueChange = { state.name = it })
+            onValueChange = { state.userName = it })
       }
     }
   }
