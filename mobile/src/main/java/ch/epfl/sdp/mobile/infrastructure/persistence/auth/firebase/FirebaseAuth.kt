@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
-import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.*
 import com.google.firebase.auth.FirebaseAuth as ActualFirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import kotlinx.coroutines.channels.BufferOverflow
@@ -31,12 +31,24 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
             .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
             .map { it?.let(::FirebaseUser) }
 
+  /** An enumeration representing the [AuthenticationMode] that a user chose. */
+  private enum class AuthenticationMode {
+
+    /** The mode in which a user wants to login to their existing account. */
+    SignIn,
+
+    /** The mode in which a user wants to create a new account. */
+    SignUp,
+  }
+
   /**
    * Runs the [block] and maps the resulting [AuthResult] to an [AuthenticationResult].
    *
+   * @param mode the [AuthenticationMode] used to authenticate.
    * @param block the block of code which is used to interact with Firebase.
    */
   private suspend fun authenticate(
+      mode: AuthenticationMode,
       block: suspend () -> AuthResult?,
   ): AuthenticationResult =
       try {
@@ -44,22 +56,34 @@ class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
         val user = result?.user?.let(::FirebaseUser)
         AuthenticationResult.Success(user)
       } catch (other: Throwable) {
-        AuthenticationResult.FailureInternal
+        when (other) {
+          is FirebaseAuthWeakPasswordException -> AuthenticationResult.Failure.BadPassword
+          is FirebaseAuthInvalidCredentialsException ->
+              when (mode) {
+                AuthenticationMode.SignIn -> AuthenticationResult.Failure.IncorrectPassword
+                AuthenticationMode.SignUp -> AuthenticationResult.Failure.IncorrectEmailFormat
+              }
+          is FirebaseAuthUserCollisionException -> AuthenticationResult.Failure.ExistingAccount
+          is FirebaseAuthInvalidUserException -> AuthenticationResult.Failure.InvalidUser
+          else -> AuthenticationResult.Failure.Internal
+        }
       }
 
   override suspend fun signInWithEmail(
       email: String,
       password: String,
-  ): AuthenticationResult = authenticate {
-    actual.signInWithEmailAndPassword(email, password).await()
-  }
+  ): AuthenticationResult =
+      authenticate(AuthenticationMode.SignIn) {
+        actual.signInWithEmailAndPassword(email, password).await()
+      }
 
   override suspend fun signUpWithEmail(
       email: String,
       password: String,
-  ): AuthenticationResult = authenticate {
-    actual.createUserWithEmailAndPassword(email, password).await()
-  }
+  ): AuthenticationResult =
+      authenticate(AuthenticationMode.SignUp) {
+        actual.createUserWithEmailAndPassword(email, password).await()
+      }
 
   override suspend fun signOut() {
     actual.signOut()

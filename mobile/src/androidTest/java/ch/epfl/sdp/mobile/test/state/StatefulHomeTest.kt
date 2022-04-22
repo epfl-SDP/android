@@ -41,7 +41,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    api.signUpWithEmail("email", "name", "password")
+    api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -60,7 +60,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    api.signUpWithEmail("email", "name", "password")
+    api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -79,7 +79,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    api.signUpWithEmail("email", "name", "password")
+    api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -99,7 +99,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -143,7 +143,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
 
-    authFacade.signUpWithEmail("email", "name", "password")
+    authFacade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
