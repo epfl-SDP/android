@@ -17,7 +17,6 @@ import ch.epfl.sdp.mobile.state.StatefulArScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.state.Utils.withCanceledIntents
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
