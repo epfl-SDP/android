@@ -20,7 +20,7 @@ interface SettingScreenState : Person {
   val matches: List<ChessMatch>
 
   /** On settings button clicked */
-  fun onSettingsClick()
+  fun onEditProfileImageClick()
 
   /** On edit profile name button clicked */
   fun onEditProfileNameClick()

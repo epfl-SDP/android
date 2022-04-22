@@ -10,7 +10,8 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 class SettingsScreenStateImpl(
     user: AuthenticatedUser,
-    onEditProfileNameClickAction: State<() -> Unit>
+    onEditProfileNameClickAction: State<() -> Unit>,
+    onEditProfileImageClickAction: State<() -> Unit>
 ) : SettingScreenState {
   override val email = user.email
   override val pastGamesCount = 0
@@ -21,8 +22,11 @@ class SettingsScreenStateImpl(
   override val emoji = user.emoji
   override val followed = user.followed
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
+  private val onEditProfileImageClickAction by onEditProfileImageClickAction
 
-  override fun onSettingsClick() {}
+  override fun onEditProfileImageClick() {
+    onEditProfileImageClickAction()
+  }
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
   }
@@ -32,17 +36,24 @@ class SettingsScreenStateImpl(
  * A stateful composable to visit setting page of the loged-in user
  *
  * @param user the current logged-in user.
- * @param onEditProfileNameClick Callable lambda to navigate to the profile Edit popup
+ * @param onEditProfileNameClick Callable lambda to navigate to the profile name edit popup
+ * @param onEditProfileImageClickAction Callable lambda to navigate to the profile image edit popup
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
     onEditProfileNameClick: () -> Unit,
+    onEditProfileImageClickAction: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
+  val currentOnEditProfileImageClickAction = rememberUpdatedState(onEditProfileImageClickAction)
 
-  val state = remember(user) { SettingsScreenStateImpl(user, currentOnEditProfileNameClick) }
+  val state =
+      remember(user) {
+        SettingsScreenStateImpl(
+            user, currentOnEditProfileNameClick, currentOnEditProfileImageClickAction)
+      }
   SettingsScreen(state, modifier)
 }
