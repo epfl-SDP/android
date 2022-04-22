@@ -100,8 +100,8 @@ fun StatefulHome(
             onSave = { controller.popBackStack() },
             onCancel = { controller.popBackStack() })
       }
-      dialog(SettingEditProfileNameRoute) {
-        StatefulEditProfileNameDialog(
+      dialog(SettingEditProfileImageRoute) {
+        StatefulEditProfileImageDialog(
           user = user,
           onSave = { controller.popBackStack() },
           onCancel = { controller.popBackStack() })

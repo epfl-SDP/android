@@ -4,6 +4,8 @@ import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialog
+import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialogState
 import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialog
 import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialogState
 import kotlinx.coroutines.CoroutineScope
