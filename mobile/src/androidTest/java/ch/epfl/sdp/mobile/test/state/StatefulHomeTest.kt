@@ -37,7 +37,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    api.signUpWithEmail("email", "name", "password")
+    api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -56,7 +56,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    api.signUpWithEmail("email", "name", "password")
+    api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -75,7 +75,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    api.signUpWithEmail("email", "name", "password")
+    api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -95,7 +95,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -139,7 +139,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
 
-    authFacade.signUpWithEmail("email", "name", "password")
+    authFacade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -183,6 +183,7 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
     rule.onNodeWithText("user2").performClick()
     rule.onNodeWithText(strings.prepareGamePlay).performClick()
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
@@ -211,7 +212,7 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.newGame).performClick()
-
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
     rule.onNodeWithText(strings.prepareGamePlay).performClick()
 
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertDoesNotExist()
@@ -241,11 +242,68 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
 
     rule.onNodeWithText("user2").assertExists()
     rule.onNodeWithText(strings.prepareGameCancel).performClick()
     rule.onNodeWithText("user2").assertDoesNotExist()
     rule.onNodeWithText(strings.newGame).assertExists()
+  }
+
+  @Test
+  fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
+      runTest {
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+    currentUser.follow(user2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
+    rule.onNodeWithText("user2").performClick()
+    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    rule.onNodeWithText("user2").assertExists()
+  }
+
+  @Test
+  fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayLocal).performClick()
+
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
   }
 
   @Test

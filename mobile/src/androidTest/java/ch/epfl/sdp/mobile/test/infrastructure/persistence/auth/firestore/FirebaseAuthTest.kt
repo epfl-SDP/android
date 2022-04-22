@@ -7,6 +7,8 @@ import com.google.common.truth.Truth.assertThat
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth as ActualFirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import io.mockk.every
 import io.mockk.mockk
@@ -116,6 +118,45 @@ class FirebaseAuthTest {
 
     val result = auth.signInWithEmail("email", "password")
 
-    assertThat(result).isEqualTo(Auth.AuthenticationResult.FailureInternal)
+    assertThat(result).isEqualTo(Auth.AuthenticationResult.Failure.Internal)
+  }
+
+  @Test
+  fun given_mockFirebaseAuthSignUp_when_weakPasswordExceptionOccurs_then_badPasswordFailureIsReturned() =
+      runTest {
+    val mock = mockk<ActualFirebaseAuth>()
+    val auth = FirebaseAuth(mock)
+    every { mock.createUserWithEmailAndPassword(any(), any()) } throws
+        FirebaseAuthWeakPasswordException("m", "m", null)
+
+    val result = auth.signUpWithEmail("email", "password")
+
+    assertThat(result).isEqualTo(Auth.AuthenticationResult.Failure.BadPassword)
+  }
+
+  @Test
+  fun given_mockFirebaseAuthSignUp_when_invalidCredentialsExceptionOccurs_then_incorrectEmailFormatFailureIsReturned() =
+      runTest {
+    val mock = mockk<ActualFirebaseAuth>()
+    val auth = FirebaseAuth(mock)
+    every { mock.createUserWithEmailAndPassword(any(), any()) } throws
+        FirebaseAuthInvalidCredentialsException("m", "m")
+
+    val result = auth.signUpWithEmail("email", "password")
+
+    assertThat(result).isEqualTo(Auth.AuthenticationResult.Failure.IncorrectEmailFormat)
+  }
+
+  @Test
+  fun given_mockFirebaseAuthSignIn_when_invalidCredentialsExceptionOccurs_then_incorrectPasswordFailureIsReturned() =
+      runTest {
+    val mock = mockk<ActualFirebaseAuth>()
+    val auth = FirebaseAuth(mock)
+    every { mock.signInWithEmailAndPassword(any(), any()) } throws
+        FirebaseAuthInvalidCredentialsException("m", "m")
+
+    val result = auth.signInWithEmail("email", "password")
+
+    assertThat(result).isEqualTo(Auth.AuthenticationResult.Failure.IncorrectPassword)
   }
 }
