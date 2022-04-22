@@ -10,7 +10,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
+<<<<<<< HEAD
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+=======
+>>>>>>> display-active-games
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore

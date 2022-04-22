@@ -36,6 +36,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
+<<<<<<< HEAD
    * Returns the [Match] associated to the given identifier.
    *
    * @param id the unique identifier for this [Match].
@@ -45,6 +46,8 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
+=======
+>>>>>>> display-active-games
    * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
    * player (or even himself)
    *
