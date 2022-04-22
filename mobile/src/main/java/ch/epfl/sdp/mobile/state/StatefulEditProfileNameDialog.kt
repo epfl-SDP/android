@@ -26,7 +26,7 @@ class EditProfileNameDialogStateImpl(
   private val onSaveAction by onSaveAction
   private val onCancelAction by onCancelAction
 
-  override var name by mutableStateOf(user.name)
+  override var userName by mutableStateOf(user.name)
 
   /**
    * A [MutatorMutex] which enforces mutual exclusion of update profile name requests. Performing a
@@ -37,7 +37,7 @@ class EditProfileNameDialogStateImpl(
   override fun onSaveClick() {
     scope.launch {
       mutex.mutate(MutatePriority.UserInput) {
-        user.update { name(name) }
+        user.update { name(userName) }
         onSaveAction()
       }
     }

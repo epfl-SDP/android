@@ -2,8 +2,8 @@ package ch.epfl.sdp.mobile.ui.setting
 
 /** State interface of the [EditProfileNameDialog] */
 interface EditProfileNameDialogState {
-  /** Name which will be changed */
-  var name: String
+  /** UserName which will be changed */
+  var userName: String
 
   /** Action to execute when clicking on the Save button */
   fun onSaveClick()
