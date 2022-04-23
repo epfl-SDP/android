@@ -10,19 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.Add
-import ch.epfl.sdp.mobile.ui.LocalPlay
-import ch.epfl.sdp.mobile.ui.OnlinePlay
-import ch.epfl.sdp.mobile.ui.PawniesIcons
+import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.profile.Match
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
- * Composable that composes the PlayScreen expanded to include history of matches
+ * Composable that composes the PlayScreen expanded to include history of matches.
  * @param M the type of the [Match].
- * @param state the [PlayScreenState] to manage composable content
- * @param key a function which uniquely identifies the list items.
+ * @param state the [PlayScreenState] to manage composable content.
  * @param modifier the [Modifier] for this composable.
+ * @param key a function which uniquely identifies the list items.
  * @param contentPadding The [PaddingValues] to apply to the content
  */
 @Composable
@@ -61,7 +58,11 @@ fun <M : ChessMatch> PlayScreen(
           verticalArrangement = Arrangement.Top,
           horizontalAlignment = Alignment.CenterHorizontally,
           contentPadding = innerPadding,
-      ) { items(state.matches, key) { match -> Match(match, { state.onMatchClick(match) }) } }
+      ) {
+        items(state.matches, key) { match ->
+          Match(match, ChessIcons.WhiteKing, { state.onMatchClick(match) })
+        }
+      }
     }
   }
 }

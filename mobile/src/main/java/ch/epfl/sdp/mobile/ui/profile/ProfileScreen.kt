@@ -21,15 +21,18 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
 
 /**
- * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
- * @param state state of the ProfileScreen
+ * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
+ *
+ * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] to apply to this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
     state: ProfileScreenState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
@@ -45,6 +48,7 @@ fun ProfileScreen(
         )
       },
       matches = state.matches,
+      contentPadding = contentPadding,
       onMatchClick = {},
       lazyColumnState = lazyColumnState,
       modifier = modifier)
@@ -52,8 +56,9 @@ fun ProfileScreen(
 
 /**
  * Composes the profile header given the profile [state]. Displays also the ProfilePicture,
- * SettingsButton, name and email of th user profile
- * @param state state of profile screen
+ * SettingsButton, name and email of th user profile.
+ *
+ * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -81,8 +86,9 @@ fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes the profile picture given its [state]
- * @param state state of profile screen
+ * Composes the profile picture given its [state].
+ *
+ * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -97,9 +103,9 @@ fun ProfilePicture(
 }
 
 /**
- * Composes the unfollow button
- * @param onClick callback function for the unfollow button.
+ * Composes the unfollow button.
  *
+ * @param onClick callback function for the unfollow button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -117,8 +123,9 @@ fun UnfollowButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes the challenge button
- * @param onClick call back method for challenge button
+ * Composes the challenge button.
+ *
+ * @param onClick call back method for challenge button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -137,11 +144,12 @@ fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes a Profile from puzzles and past games tab items
- * @param pastGamesCount total of the previous games
+ * Composes a Profile from puzzles and past games tab items.
+ *
+ * @param pastGamesCount total of the previous games.
  * @param modifier the [Modifier] for this composable.
- * @param backgroundColor of the tab bar
- * @param elevation elevation dp of the tab bar
+ * @param backgroundColor of the tab bar.
+ * @param elevation elevation dp of the tab bar.
  */
 @Composable
 fun ProfileTabBar(

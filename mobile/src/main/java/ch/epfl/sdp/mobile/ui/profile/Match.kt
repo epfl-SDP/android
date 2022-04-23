@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 
 /**
  * Composes a Match log using a match [adversary], [subtitle] and an [icon].
+ *
  * @param match the [ChessMatch] to compose.
  * @param icon match icon.
  * @param onClick callback function if clicked on the item.
@@ -56,9 +57,10 @@ fun Match(
 }
 
 /**
- * Chooses a subtitle given a [MatchResult] and number of moves [nMoves] of the match
- * @param matchResult result of the match
- * @param nMoves number of moves
+ * Chooses a subtitle given a [MatchResult] and number of moves [nMoves] of the match.
+ *
+ * @param matchResult result of the match.
+ * @param nMoves number of moves.
  */
 private fun chooseSubtitle(
     strings: LocalizedStrings,

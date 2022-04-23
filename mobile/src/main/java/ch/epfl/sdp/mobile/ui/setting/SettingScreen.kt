@@ -25,8 +25,9 @@ import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 
 /**
- * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
- * @param state state of the ProfileScreen
+ * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
+ *
+ * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
  */
@@ -41,37 +42,32 @@ fun SettingsScreen(
   val tabBarState = rememberSettingTabBarState(state.pastGamesCount, state.puzzlesCount)
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
-
-  Scaffold(
-      modifier = modifier,
-      content = { paddingValues ->
-        val totalPadding = paddingValues + contentPadding
-        UserScreen(
-            header = {
-              SettingHeader(
-                  state = state,
-                  modifier = Modifier.padding(vertical = 16.dp),
-              )
-            },
-            profileTabBar = {
-              SettingTabBar(
-                  state = tabBarState,
-                  modifier = Modifier.fillMaxWidth(),
-                  elevation = elevation,
-              )
-            },
-            matches = state.matches,
-            lazyColumnState = lazyColumnState,
-            modifier = modifier.fillMaxSize(),
-            contentPadding = totalPadding,
-            onMatchClick = {})
-      })
+  UserScreen(
+      header = {
+        SettingHeader(
+            state = state,
+            modifier = Modifier.padding(vertical = 16.dp),
+        )
+      },
+      profileTabBar = {
+        SettingTabBar(
+            state = tabBarState,
+            modifier = Modifier.fillMaxWidth(),
+            elevation = elevation,
+        )
+      },
+      matches = state.matches,
+      lazyColumnState = lazyColumnState,
+      modifier = modifier.fillMaxSize(),
+      contentPadding = contentPadding,
+      onMatchClick = {})
 }
 
 /**
  * Composes the settings header given the profile [SettingScreenState]. Displays also the
- * ProfilePicture, SettingsButton, name and email of the user's profile
- * @param state state of profile screen
+ * ProfilePicture, SettingsButton, name and email of the user's profile.
+ *
+ * @param state state of the profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -92,8 +88,9 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes the settings picture given its [state]
- * @param state state of setting screen
+ * Composes the settings picture given its [state].
+ *
+ * @param state state of the setting screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -120,8 +117,9 @@ fun SettingPicture(
 }
 
 /**
- * Composes the settings button
- * @param onClick call back method for settings button
+ * Composes the settings button.
+ *
+ * @param onClick callback method for the settings button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable

@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 
 /**
  * A Slot Component for Profile or Setting Screen.
+ *
  * @param header part of slot construct that comes into the header.
  * @param profileTabBar part of slot construct that represents the tab bar.
  * @param matches the part that is responsible for the list of all matches.
