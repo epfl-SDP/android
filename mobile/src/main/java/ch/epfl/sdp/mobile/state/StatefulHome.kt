@@ -26,6 +26,9 @@ private const val ProfileRoute = "profile"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
+/** The route associated to the play tab. */
+private const val PuzzlesRoute = "puzzles"
+
 /** The route associated to new game screen */
 private const val GameRoute = "match"
 
@@ -130,6 +133,7 @@ fun StatefulHome(
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
         StatefulArScreen(user, id, Modifier.fillMaxSize())
       }
+      composable(PuzzlesRoute) {}
     }
   }
 }
@@ -139,6 +143,7 @@ private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
       PlayRoute -> HomeSection.Play
+      PuzzlesRoute -> HomeSection.Puzzles
       else -> HomeSection.Social
     }
 
@@ -148,6 +153,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
+      HomeSection.Puzzles -> PuzzlesRoute
     }
 
 private fun hideBar(route: String?): Boolean {
