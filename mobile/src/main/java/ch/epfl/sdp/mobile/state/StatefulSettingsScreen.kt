@@ -31,12 +31,10 @@ class AuthenticatedUserProfileScreenState(
 
   init {
     scope.launch {
-      chessMatches(user, chessFacade)
-          .onEach {
-            matches = it
-            pastGamesCount = matches.size
-          }
-          .collect()
+      fetchForUser(user, chessFacade).collect { list ->
+        matches = list.map { createChessMatch(it, user) }
+        pastGamesCount = matches.size
+      }
     }
   }
   override val backgroundColor = Color.Orange

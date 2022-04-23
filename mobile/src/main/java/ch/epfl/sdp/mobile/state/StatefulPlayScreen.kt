@@ -109,7 +109,7 @@ private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
     }
 
 /** Intermediate State to simplify the data handling */
-private data class MatchInfo(
+data class MatchInfo(
     val id: String?,
     val movesCount: Int,
     val whiteId: String,
@@ -132,7 +132,7 @@ data class ChessMatchAdapter(
  * @param currentUser the current authenticated user
  * @param facade the faced we fetch the matches
  */
-private fun fetchForUser(
+fun fetchForUser(
     currentUser: AuthenticatedUser,
     facade: ChessFacade,
 ): Flow<List<MatchInfo>> =
@@ -220,7 +220,7 @@ private class PlayScreenStateImpl(
  * @param match [MatchInfo] intermediate datatype
  * @param user authenticated user
  */
-private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatchAdapter =
+fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatchAdapter =
     ChessMatchAdapter(
         adversary = if (user.uid == match.blackId) match.whiteName else match.blackName,
         matchResult =

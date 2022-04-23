@@ -28,6 +28,7 @@ import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
  * @param state state of the ProfileScreen
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
