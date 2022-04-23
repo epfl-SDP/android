@@ -21,8 +21,12 @@ enum class HomeSection(
 ) {
   /** The section to play a chess game */
   Play(PawniesIcons.SectionPlay, { sectionPlay }),
+
   /** The section which displays all the people we follow. */
   Social(PawniesIcons.SectionSocial, { sectionSocial }),
+
+  /** The section to play a chess puzzle game */
+  Puzzles(PawniesIcons.SectionPuzzles, { sectionPuzzles }),
 
   /** The section to manage our preferences. */
   Settings(PawniesIcons.SectionSettings, { sectionSettings }),

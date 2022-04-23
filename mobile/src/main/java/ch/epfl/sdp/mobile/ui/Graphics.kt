@@ -49,6 +49,9 @@ val PawniesIcons.SectionSettings
 val PawniesIcons.SectionPlay
   get() = Icons.Default.Games
 
+val PawniesIcons.SectionPuzzles
+  get() = Icons.Default.Games // TODO: Use puzzles icon
+
 val PawniesIcons.Add
   get() = Icons.Default.Add
 
