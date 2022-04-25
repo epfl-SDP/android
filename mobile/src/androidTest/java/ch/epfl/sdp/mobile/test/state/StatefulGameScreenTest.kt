@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
@@ -12,6 +14,7 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulGameScreen
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Promotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -638,5 +641,19 @@ class StatefulGameScreenTest {
     val robot = emptyGameAgainstOneselfRobot()
     robot.play(Stalemate)
     robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
+  }
+
+  @Test
+  fun playingUntilPromotion_displaysPromotedPiece() {
+    val robot = emptyGameAgainstOneselfRobot()
+    robot.play(Promotion)
+    robot
+        .onAllNodesWithContentDescription(
+            robot.strings.boardPieceContentDescription(
+                robot.strings.boardColorWhite,
+                robot.strings.boardPieceQueen,
+            ),
+        )
+        .assertCountEquals(2)
   }
 }
