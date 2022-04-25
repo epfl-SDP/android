@@ -311,9 +311,10 @@ class StatefulHomeTest {
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithTag("editProfileName").assertExists()
+    rule.onNodeWithContentDescription(strings.profileEditIcon).assertExists()
     rule.onNodeWithTag("editProfileName").performClick()
     rule.onAllNodesWithText("test").assertCountEquals(2)
+    // rule.onNode(hasText("test") and hasSetTextAction()).
     rule.onAllNodesWithText("test")[1].performTextInput("test2")
     rule.onNodeWithText(strings.settingEditSave).performClick()
     rule.onNodeWithText("test").assertIsDisplayed()
