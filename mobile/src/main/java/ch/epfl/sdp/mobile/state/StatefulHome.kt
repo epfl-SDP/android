@@ -82,11 +82,18 @@ fun StatefulHome(
         )
       }
       composable(SettingsRoute) {
-        StatefulSettingsScreen(user, Modifier.fillMaxSize(), paddingValues)
+        StatefulSettingsScreen(
+            user = user,
+            onMatchClick = onGameItemClick,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulProfileScreen(
-            backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
+            uid = backStackEntry.arguments?.getString("uid") ?: "",
+            onMatchClick = onGameItemClick,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       composable(PlayRoute) {
         StatefulPlayScreen(

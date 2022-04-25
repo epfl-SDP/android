@@ -19,6 +19,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 /**
  * Composes a Match log using a match [adversary], [subtitle] and an [icon].
  *
+ * @param C the type of the [ChessMatch].
  * @param match the [ChessMatch] to compose.
  * @param icon match icon.
  * @param onClick callback function if clicked on the item.
@@ -26,10 +27,10 @@ import ch.epfl.sdp.mobile.ui.social.*
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Match(
-    match: ChessMatch,
+fun <C: ChessMatch> Match(
+    match: C,
     icon: Painter,
-    onClick: (ChessMatch) -> Unit,
+    onClick: (C) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
