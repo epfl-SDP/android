@@ -6,8 +6,6 @@ import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialog
 import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialogState
-import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialog
-import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialogState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -20,10 +18,10 @@ import kotlinx.coroutines.launch
  * @param onCancelAction the callback called when we click the cancel button.
  */
 class EditProfileImageDialogStateImpl(
-  private val user: AuthenticatedUser,
-  private val scope: CoroutineScope,
-  onSaveAction: State<() -> Unit>,
-  onCancelAction: State<() -> Unit>
+    private val user: AuthenticatedUser,
+    private val scope: CoroutineScope,
+    onSaveAction: State<() -> Unit>,
+    onCancelAction: State<() -> Unit>
 ) : EditProfileImageDialogState {
   private val onSaveAction by onSaveAction
   private val onCancelAction by onCancelAction
@@ -60,18 +58,18 @@ class EditProfileImageDialogStateImpl(
  */
 @Composable
 fun StatefulEditProfileImageDialog(
-  user: AuthenticatedUser,
-  onSave: () -> Unit,
-  onCancel: () -> Unit
+    user: AuthenticatedUser,
+    onSave: () -> Unit,
+    onCancel: () -> Unit
 ) {
   val scope = rememberCoroutineScope()
   val onSaveAction = rememberUpdatedState(onSave)
   val onCancelAction = rememberUpdatedState(onCancel)
 
   val state =
-    remember(user, scope, onSaveAction, onCancelAction) {
-      EditProfileImageDialogStateImpl(user, scope, onSaveAction, onCancelAction)
-    }
+      remember(user, scope, onSaveAction, onCancelAction) {
+        EditProfileImageDialogStateImpl(user, scope, onSaveAction, onCancelAction)
+      }
 
   EditProfileImageDialog(state)
 }
