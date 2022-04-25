@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialog
 import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialogState
@@ -18,15 +19,15 @@ import kotlinx.coroutines.launch
  * @param onCancelAction the callback called when we click the cancel button.
  */
 class EditProfileImageDialogStateImpl(
-    private val user: AuthenticatedUser,
-    private val scope: CoroutineScope,
-    onSaveAction: State<() -> Unit>,
-    onCancelAction: State<() -> Unit>
+  private val user: AuthenticatedUser,
+  private val scope: CoroutineScope,
+  onSaveAction: State<() -> Unit>,
+  onCancelAction: State<() -> Unit>,
+  override var backgroundColor: Profile.Color,
+  override var emoji: String
 ) : EditProfileImageDialogState {
   private val onSaveAction by onSaveAction
   private val onCancelAction by onCancelAction
-
-  override var userName by mutableStateOf(user.name)
 
   /**
    * A [MutatorMutex] which enforces mutual exclusion of update profile image requests. Performing a
@@ -37,7 +38,6 @@ class EditProfileImageDialogStateImpl(
   override fun onSaveClick() {
     scope.launch {
       mutex.mutate(MutatePriority.UserInput) {
-        user.update { name(userName) }
         onSaveAction()
       }
     }
@@ -68,7 +68,10 @@ fun StatefulEditProfileImageDialog(
 
   val state =
       remember(user, scope, onSaveAction, onCancelAction) {
-        EditProfileImageDialogStateImpl(user, scope, onSaveAction, onCancelAction)
+        EditProfileImageDialogStateImpl(
+          user = user, scope = scope,
+          onSaveAction = onSaveAction,
+          onCancelAction = onCancelAction, backgroundColor = Profile.Color.Default, emoji =  ":)")
       }
 
   EditProfileImageDialog(state)
