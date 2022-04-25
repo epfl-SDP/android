@@ -51,7 +51,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOneKing_when_initChessScene_then_success() {
+  fun given_stateWithOneKing_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.Black
@@ -65,7 +65,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOneBishop_when_initChessScene_then_success() {
+  fun given_stateWithOneBishop_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.Black
@@ -79,7 +79,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOneKnight_when_initChessScene_then_success() {
+  fun given_stateWithOneKnight_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.Black
@@ -93,7 +93,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOnePawn_when_initChessScene_then_success() {
+  fun given_stateWithOnePawn_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.Black
@@ -107,7 +107,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOneQueen_when_initChessScene_then_success() {
+  fun given_stateWithOneQueen_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.Black
@@ -121,7 +121,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOneRook_when_initChessScene_then_success() {
+  fun given_stateWithOneRook_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.Black
@@ -135,7 +135,7 @@ class ChessSceneTest {
   }
 
   @Test
-  fun given_stateWithOneWhitePawn_when_initChessScene_then_success() {
+  fun given_stateWithOneWhitePawn_when_initChessScene_then_rootIsNotNull() {
     val piece =
         object : ChessBoardState.Piece {
           override val color = ChessBoardState.Color.White
