@@ -1,17 +1,23 @@
 package ch.epfl.sdp.mobile.ui.setting
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import backgroundColors
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
+import ch.epfl.sdp.mobile.ui.PawniesColors
+import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
 /**
@@ -45,7 +51,8 @@ fun EditProfileImageDialog(
       Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         EditSettingPicture(backgroundColor = state.backgroundColor, emoji = state.emoji)
         Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
-
+        LazyRow() { items(items = emojis) { item -> SelectEmojiItem(state, item) } }
+        LazyRow() { items(items= backgroundColors) { item -> SelectBackgroundColorItem(state, item)} }
       }
     }
   }
@@ -61,22 +68,47 @@ fun EditSettingPicture(backgroundColor: Color, emoji: String, modifier: Modifier
 
   Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
     Box(
-      modifier = modifier.size(118.dp).background(backgroundColor.toColor(), CircleShape),
-      contentAlignment = Alignment.Center,
+        modifier = modifier.size(118.dp).background(backgroundColor.toColor(), CircleShape),
+        contentAlignment = Alignment.Center,
     ) { Text(emoji, style = MaterialTheme.typography.h3) }
   }
-
 }
 
+/**
+ * Select Emoji Item
+ * @param state which is [EditProfileImageDialogState] and modifies it
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+fun SelectEmojiItem(
+    state: EditProfileImageDialogState,
+    emoji: String,
+    modifier: Modifier = Modifier
+) {
+  Box(
+      modifier =
+          if (state.emoji == emoji)
+              modifier
+                  .size(72.dp)
+                  .border(BorderStroke(4.dp, Green800), CircleShape)
+          else modifier.size(72.dp),
+      contentAlignment = Alignment.Center,
+  ) { Text(emoji, style = MaterialTheme.typography.h4) }
+}
 
 /**
-* Composes the edit the emoji
-* @param state which is [EditProfileImageDialogState] and modifies it
-* @param modifier the [Modifier] for this composable.
-*/
+ * Select Background color of profile Image
+ * @param state which is [EditProfileImageDialogState] and modifies it
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
-fun SelectEmoji(state: EditProfileImageDialogState, modifier: Modifier = Modifier) {
-  val items = listOf(":)", ":|", "^^")
-  LazyRow(items)
-
+fun SelectBackgroundColorItem(
+  state: EditProfileImageDialogState,
+  backgroundColor: Color,
+  modifier: Modifier = Modifier
+) {
+  Box(
+    modifier = modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape),
+    contentAlignment = Alignment.Center,
+  ) { }
 }

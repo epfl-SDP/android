@@ -71,7 +71,7 @@ fun StatefulEditProfileImageDialog(
         EditProfileImageDialogStateImpl(
           user = user, scope = scope,
           onSaveAction = onSaveAction,
-          onCancelAction = onCancelAction, backgroundColor = Profile.Color.Default, emoji =  ":)")
+          onCancelAction = onCancelAction, backgroundColor = Profile.Color.Default, emoji =  "😎")
       }
 
   EditProfileImageDialog(state)
