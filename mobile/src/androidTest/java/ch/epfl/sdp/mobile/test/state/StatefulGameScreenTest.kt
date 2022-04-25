@@ -1,9 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
-import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithContentDescription
-import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -14,6 +12,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -661,5 +660,17 @@ class StatefulGameScreenTest {
     val ranks = listOf(*Rank.values())
     val mapped = ranks.map { it.toChessBoardStateRank() }.map { it.toGameRank() }
     assertThat(mapped).isEqualTo(ranks)
+  }
+
+  @Test
+  fun given_promotionScreen_when_pressingRankTwice_then_confirmIsNotEnabled() {
+    val robot = emptyGameAgainstOneselfRobot()
+    robot.play(UntilPromotion)
+    robot.performInput {
+      drag(from = ChessBoardState.Position(7, 1), to = ChessBoardState.Position(6, 0))
+    }
+    robot.onNodeWithContentDescription(robot.strings.boardPieceQueen).performClick()
+    robot.onNodeWithContentDescription(robot.strings.boardPieceQueen).performClick()
+    robot.onNodeWithLocalizedText { robot.strings.gamePromoteConfirm }.assertIsNotEnabled()
   }
 }
