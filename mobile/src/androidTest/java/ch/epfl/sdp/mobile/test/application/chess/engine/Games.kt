@@ -38,8 +38,8 @@ object Games {
     Position(2, 0) += Delta(2, 2)
   }
 
-  /** A simple game where the white player promotes a pawn to a queen, and eats a black rook. */
-  val Promotion: GameScope.() -> Unit = {
+  /** A simple game where the white player promotes a pawn to the given rank. */
+  fun promote(rank: Rank = Rank.Queen): GameScope.() -> Unit = {
     Position(7, 6) += Delta(0, -2)
     Position(6, 1) += Delta(0, 2)
     Position(7, 4) += Delta(-1, -1)
@@ -48,8 +48,6 @@ object Games {
     Position(0, 2) += Delta(0, 1)
     Position(6, 2) += Delta(1, -1)
     Position(0, 3) += Delta(0, 1)
-    tryPromote(Position(7, 1), Delta(-1, -1), Rank.Queen)
-    Position(0, 4) += Delta(0, 4)
-    Position(6, 0) += Delta(1, 0)
+    tryPromote(Position(7, 1), Delta(-1, -1), rank = rank)
   }
 }

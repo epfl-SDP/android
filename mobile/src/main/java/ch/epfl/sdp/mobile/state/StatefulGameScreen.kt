@@ -244,7 +244,7 @@ class SnapshotChessBoardState(
       } else {
         promotionFrom = from
         promotionTo = to
-        choices = actions.filterIsInstance<Action.Promote>().map { it.rank.toRank() }
+        choices = actions.filterIsInstance<Action.Promote>().map { it.rank.toChessBoardStateRank() }
       }
     }
   }
@@ -294,7 +294,7 @@ private fun Position.toPosition(): ChessBoardState.Position {
 }
 
 /** Maps a game engine [Rank] to a [ChessBoardState.Rank]. */
-private fun Rank.toRank(): ChessBoardState.Rank =
+fun Rank.toChessBoardStateRank(): ChessBoardState.Rank =
     when (this) {
       Rank.King -> ChessBoardState.Rank.King
       Rank.Queen -> ChessBoardState.Rank.Queen
@@ -305,7 +305,7 @@ private fun Rank.toRank(): ChessBoardState.Rank =
     }
 
 /** Maps a [ChessBoardState.Rank] to a game engine [Rank]. */
-private fun ChessBoardState.Rank.toGameRank(): Rank =
+fun ChessBoardState.Rank.toGameRank(): Rank =
     when (this) {
       ChessBoardState.Rank.King -> Rank.King
       ChessBoardState.Rank.Queen -> Rank.Queen

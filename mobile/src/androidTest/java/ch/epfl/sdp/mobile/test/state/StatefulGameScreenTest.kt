@@ -9,13 +9,12 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.state.ProvideFacades
-import ch.epfl.sdp.mobile.state.StatefulGameScreen
-import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
+import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
-import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Promotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -644,9 +643,9 @@ class StatefulGameScreenTest {
   }
 
   @Test
-  fun playingUntilPromotion_displaysPromotedPiece() {
+  fun given_game_when_playingUntilPromotion_then_canPromoteToQueen() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(Promotion)
+    robot.play(promote(Rank.Queen))
     robot
         .onAllNodesWithContentDescription(
             robot.strings.boardPieceContentDescription(
@@ -655,5 +654,12 @@ class StatefulGameScreenTest {
             ),
         )
         .assertCountEquals(2)
+  }
+
+  @Test
+  fun given_rank_when_transformingToChessBoardStateRankAndBack_then_isEqual() {
+    val ranks = listOf(*Rank.values())
+    val mapped = ranks.map { it.toChessBoardStateRank() }.map { it.toGameRank() }
+    assertThat(mapped).isEqualTo(ranks)
   }
 }
