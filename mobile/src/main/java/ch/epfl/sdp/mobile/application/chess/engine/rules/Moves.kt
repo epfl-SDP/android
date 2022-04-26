@@ -78,11 +78,9 @@ private suspend fun <Color> SequenceScope<Pair<Action, Effect<Piece<Color>>>>.yi
   } else {
     // Retrieve the origin piece.
     val piece = board[from] ?: return
-    // Compute the identifier of the promoted piece.
-    val id = board.maxOf { (_, piece) -> piece.id }.inc()
     // Yield one action for each promotion choice.
     for (rank in listOf(Bishop, Knight, Queen, Rook)) {
-      yield(Promote(from, to, rank) to promote(from, to, piece.copy(id = id, rank = rank)))
+      yield(Promote(from, to, rank) to promote(from, to, piece.copy(rank = rank)))
     }
   }
 }
