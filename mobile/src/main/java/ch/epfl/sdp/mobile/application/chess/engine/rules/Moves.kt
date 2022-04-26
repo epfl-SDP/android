@@ -5,8 +5,11 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Piece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.combine
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect.Factory.remove
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Allied
@@ -36,19 +39,49 @@ typealias Moves<P> = Sequence<Pair<Action, Effect<P>>>
  * @param x the delta on the x axis.
  * @param y the delta on the y axis.
  * @param includeAdversary true if the [Moves] should include stepping on and eating adversaries.
+ * @param promotionAllowed true if the [Moves] should include promotion of the piece.
  */
 fun BoardSequence<Piece<Role>>.delta(
     from: Position,
     x: Int,
     y: Int,
     includeAdversary: Boolean = true,
+    promotionAllowed: Boolean = false,
 ): Moves<Piece<Role>> = sequence {
   val board = first()
   val delta = Delta(x, y)
   val target = from + delta ?: return@sequence // Stop if out of bounds.
   val piece = board[target]
   if (piece == null || (includeAdversary && piece.color == Adversary)) {
-    yield(Action(from, delta) to move(from, delta))
+    yieldMoveOrPromote(board, from, target, promotionAllowed = promotionAllowed)
+  }
+}
+
+/**
+ * Yields a [Move] or a [Promote] action, depending on the value of the [promote] argument.
+ *
+ * @param Color the color of the pieces.
+ * @param board the current [Board] state.
+ * @param from the start [Position].
+ * @param to the target [Position].
+ * @param promotionAllowed true iff the promotion action is allowed.
+ */
+private suspend fun <Color> SequenceScope<Pair<Action, Effect<Piece<Color>>>>.yieldMoveOrPromote(
+    board: Board<Piece<Color>>,
+    from: Position,
+    to: Position,
+    promotionAllowed: Boolean,
+) {
+  val isOnLastRow = to.y == 0
+  if (!isOnLastRow || !promotionAllowed) {
+    yield(Move(from, to) to move(from, to))
+  } else {
+    // Retrieve the origin piece.
+    val piece = board[from] ?: return
+    // Yield one action for each promotion choice.
+    for (rank in listOf(Bishop, Knight, Queen, Rook)) {
+      yield(Promote(from, to, rank) to promote(from, to, piece.copy(rank = rank)))
+    }
   }
 }
 
@@ -80,8 +113,10 @@ fun BoardSequence<Piece<Role>>.sideTakes(
     from: Position,
 ): Moves<Piece<Role>> = sequence {
   val board = first()
-  if (board[Position(from.x - 1, from.y - 1)] != null) yieldAll(delta(from, -1, -1))
-  if (board[Position(from.x + 1, from.y - 1)] != null) yieldAll(delta(from, 1, -1))
+  if (board[Position(from.x - 1, from.y - 1)] != null)
+      yieldAll(delta(from, -1, -1, promotionAllowed = true))
+  if (board[Position(from.x + 1, from.y - 1)] != null)
+      yieldAll(delta(from, 1, -1, promotionAllowed = true))
 }
 
 /**
@@ -104,14 +139,14 @@ private fun BoardSequence<Piece<Role>>.repeatDirection(
     val delta = direction * (i + 1)
     val target = from + delta ?: return@sequence // Stop if out of bounds.
     val piece = board[target]
-    val action = Action(from, delta)
+    val action = Move(from, delta)
     if (piece != null) {
       if (includeAdversary && piece.color == Adversary) {
-        yield(action to move(from, delta))
+        yield(action to move(from, target))
       }
       return@sequence
     }
-    yield(action to move(from, delta))
+    yield(action to move(from, target))
   }
 }
 
@@ -209,10 +244,10 @@ private fun BoardSequence<Piece<Role>>.castling(
 
   // We can perform the castling.
   yield(
-      Action(kingStart, kingEnd - kingStart) to
+      Move(kingStart, kingEnd - kingStart) to
           combine(
-              move(kingStart, kingEnd - kingStart),
-              move(rookStart, rookEnd - rookStart),
+              move(kingStart, kingEnd),
+              move(rookStart, rookEnd),
           ),
   )
 }
@@ -247,10 +282,10 @@ fun BoardSequence<Piece<Role>>.enPassant(
   if (drop(1).any { it[adversaryStart] != adversary }) return@sequence
 
   yield(
-      Action(position, adversaryStep - position) to
+      Move(position, adversaryStep - position) to
           combine(
               remove(neighbour),
-              move(position, adversaryStep - position),
+              move(position, adversaryStep),
           ),
   )
 }

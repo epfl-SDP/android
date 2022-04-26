@@ -44,6 +44,8 @@ object English : LocalizedStrings {
   override val gameMessageCheck = "Check !"
   override val gameMessageStalemate = "Stalemate !"
   override val gameMessageCheckmate = "Checkmate !"
+  override val gamePromoteTitle = "Promote to:"
+  override val gamePromoteConfirm = "Ok".uppercase()
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }

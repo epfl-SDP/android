@@ -229,28 +229,35 @@ private fun Piece(
 
 /** Returns the [Painter] associated to the value of this [Piece]. */
 private val Piece.icon: Painter
-  @Composable
-  get() =
-      when (color) {
-        Black ->
-            when (rank) {
-              King -> ChessIcons.BlackKing
-              Queen -> ChessIcons.BlackQueen
-              Rook -> ChessIcons.BlackRook
-              Bishop -> ChessIcons.BlackBishop
-              Knight -> ChessIcons.BlackKnight
-              Pawn -> ChessIcons.BlackPawn
-            }
-        White ->
-            when (rank) {
-              King -> ChessIcons.WhiteKing
-              Queen -> ChessIcons.WhiteQueen
-              Rook -> ChessIcons.WhiteRook
-              Bishop -> ChessIcons.WhiteBishop
-              Knight -> ChessIcons.WhiteKnight
-              Pawn -> ChessIcons.WhitePawn
-            }
-      }
+  @Composable get() = rank.icon(color)
+
+/**
+ * Returns the associated [Painter] for [ChessBoardState.Rank] depending on the player color.
+ *
+ * @param color the [ChessBoardState.Color] of the user.
+ */
+@Composable
+fun ChessBoardState.Rank.icon(color: ChessBoardState.Color): Painter =
+    when (color) {
+      Black ->
+          when (this) {
+            King -> ChessIcons.BlackKing
+            Queen -> ChessIcons.BlackQueen
+            Rook -> ChessIcons.BlackRook
+            Bishop -> ChessIcons.BlackBishop
+            Knight -> ChessIcons.BlackKnight
+            Pawn -> ChessIcons.BlackPawn
+          }
+      White ->
+          when (this) {
+            King -> ChessIcons.WhiteKing
+            Queen -> ChessIcons.WhiteQueen
+            Rook -> ChessIcons.WhiteRook
+            Bishop -> ChessIcons.WhiteBishop
+            Knight -> ChessIcons.WhiteKnight
+            Pawn -> ChessIcons.WhitePawn
+          }
+    }
 
 /** Return the associated content description [String] for [ChessBoardState.Color] */
 fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String {
