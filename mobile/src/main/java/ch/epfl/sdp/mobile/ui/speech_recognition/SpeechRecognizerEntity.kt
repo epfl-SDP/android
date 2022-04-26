@@ -39,7 +39,6 @@ class SpeechRecognizerEntity(
         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) // Speech action
             .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang) // Speech language
             .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, maxResultsCount) // Number of results
-            .putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 1000)
 
     // Listener for results
     recognizer.setRecognitionListener(listener(cont))
