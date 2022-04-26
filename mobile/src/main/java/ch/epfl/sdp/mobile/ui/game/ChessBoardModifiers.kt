@@ -6,8 +6,7 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
@@ -18,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -103,8 +103,8 @@ fun Modifier.actions(
     cells: Int = ChessBoardCells
 ): Modifier = composed {
   val surfaceColor = color.takeOrElse { LocalContentColor.current }
-  cells(positions = positions, cells = cells, drawBehind = false) {
-    drawCircle(color = surfaceColor, radius = diameter.toPx() / 2)
+  cells(positions = positions, cells = cells) {
+    onDrawInFront { drawCircle(color = surfaceColor, radius = diameter.toPx() / 2) }
   }
 }
 
@@ -124,7 +124,7 @@ fun Modifier.check(
   cells(
       positions = position?.let(::setOf) ?: emptySet(),
       cells = cells,
-  ) { drawRect(fillColor) }
+  ) { onDrawBehind { drawRect(fillColor) } }
 }
 
 /** The duration of a cycle of the selection dashed border animation. */
@@ -162,52 +162,105 @@ fun Modifier.selection(
       positions = position?.let(::setOf) ?: emptySet(),
       cells = cells,
   ) {
-    val phase = size.width / 3
-    val style =
-        Stroke(
-            width = width.toPx(),
-            pathEffect =
-                dashPathEffect(
-                    phase = -2 * progress * phase,
-                    intervals = floatArrayOf(phase, phase),
-                ),
-        )
-    drawRect(color = lineColor, style = style)
+    onDrawBehind {
+      val phase = size.width / 3
+      val style =
+          Stroke(
+              width = width.toPx(),
+              pathEffect =
+                  dashPathEffect(
+                      phase = -2 * progress * phase,
+                      intervals = floatArrayOf(phase, phase),
+                  ),
+          )
+      drawRect(color = lineColor, style = style)
+    }
   }
 }
 
 /**
- * A [Modifier] which calls [onDraw] for each cell passed as a [ChessBoardState.Position].
+ * A [Modifier] which draws each cell passed as a [ChessBoardState.Position] with a cache.
  *
  * @param positions the [Set] of position which should be drawn.
  * @param cells the number of cells which should be displayed per side.
- * @param drawBehind a [Boolean] which indicates whether the [Modifier] should be drawn behind the
- * content.
- * @param onDraw the [DrawScope] in which drawing operations should be performed for each cell.
+ * @param onBuildDrawCache the block in which caching and drawing is performed.
  */
 private fun Modifier.cells(
     positions: Set<ChessBoardState.Position>,
     cells: Int = ChessBoardCells,
-    drawBehind: Boolean = true,
-    onDraw: DrawScope.() -> Unit,
-): Modifier = drawWithContent {
-  if (!drawBehind) drawContent()
-  val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
-  val squareSize = size.minDimension / cells
-  for ((x, y) in positions) {
-    withTransform(
-        transformBlock = {
-          val left = origin.x + x * squareSize
-          val top = origin.y + y * squareSize
-          inset(
-              left = left,
-              top = top,
-              right = size.width - (left + squareSize),
-              bottom = size.height - (top + squareSize),
-          )
-        },
-        drawBlock = onDraw,
-    )
+    onBuildDrawCache: CellsCacheDrawScope.() -> CellsDrawResult,
+) = drawWithCache { onBuildDrawCache(CellsCacheDrawScope(this, positions, cells)).result }
+
+/**
+ * Handles to a drawing environments which enables caching based on the resolved size.
+ *
+ * @param scope the underlying [CacheDrawScope].
+ * @param positions the positions which will be drawn.
+ * @param cells the number of cells which should be displayed per side.
+ *
+ * @see CacheDrawScope
+ */
+class CellsCacheDrawScope
+internal constructor(
+    private val scope: CacheDrawScope,
+    private val positions: Set<ChessBoardState.Position>,
+    private val cells: Int,
+) : Density by scope {
+
+  /**
+   * Draws all the positions using the [block] into the given [DrawScope].
+   *
+   * @receiver the [DrawScope] into which the positions are drawn.
+   * @param block the block which draws individual positions.
+   */
+  private /* inline */ fun DrawScope.drawPositions(
+      block: DrawScope.(ChessBoardState.Position) -> Unit,
+  ) {
+    val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
+    val squareSize = size.minDimension / cells
+    for (position in positions) {
+      val (x, y) = position
+      withTransform(
+          transformBlock = {
+            val left = origin.x + x * squareSize
+            val top = origin.y + y * squareSize
+            inset(
+                left = left,
+                top = top,
+                right = size.width - (left + squareSize),
+                bottom = size.height - (top + squareSize),
+            )
+          },
+          drawBlock = { block(position) },
+      )
+    }
   }
-  if (drawBehind) drawContent()
+
+  /**
+   * Issues drawing commands to be executed before the layout content is drawn.
+   *
+   * @param block the block of drawing commands.
+   */
+  fun onDrawBehind(block: DrawScope.(ChessBoardState.Position) -> Unit) =
+      CellsDrawResult(scope.onDrawBehind { drawPositions(block) })
+
+  /**
+   * Issues drawing commands to be executed after the layout content is drawn.
+   *
+   * @param block the block of drawing commands.
+   */
+  fun onDrawInFront(block: DrawScope.(ChessBoardState.Position) -> Unit): CellsDrawResult =
+      CellsDrawResult(
+          scope.onDrawWithContent {
+            drawContent()
+            drawPositions(block)
+          },
+      )
 }
+
+/**
+ * Holder to a callback to be invoked during the drawing operations.
+ *
+ * @see DrawResult
+ */
+class CellsDrawResult internal constructor(val result: DrawResult)
