@@ -73,6 +73,7 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
               position = state.selectedPosition,
               color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.medium),
           )
+          .letters(color = MaterialTheme.colors.onPrimary)
           .semantics { this.contentDescription = strings.boardContentDescription },
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
