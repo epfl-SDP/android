@@ -4,7 +4,6 @@ import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
@@ -68,23 +67,6 @@ class ChessFacadeTest {
 
     assertThat(fetchedMatch.white.filterNotNull().first().uid).isEqualTo(user1.uid)
     assertThat(fetchedMatch.black.filterNotNull().first().uid).isEqualTo(user2.uid)
-  }
-
-  @Test
-  fun updatingAMatchWithNoId_doesNothing() = runTest {
-    val auth = mockk<Auth>()
-    val store = emptyStore()
-
-    val chessFacade = ChessFacade(auth, store)
-    // Player 1
-    val user = mockk<AuthenticatedUser>()
-    every { user.uid } returns "userIdWhite"
-
-    val match = Match()
-    match.update(Game.create())
-    val fetchedMatch = chessFacade.matches(user).map { it.firstOrNull() }.first()
-
-    assertThat(fetchedMatch).isEqualTo(null)
   }
 
   @Test
