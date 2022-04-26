@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.notation.serialize
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
 import ch.epfl.sdp.mobile.state.Loadable.Companion.loaded
 import ch.epfl.sdp.mobile.state.Loadable.Companion.loading
 import ch.epfl.sdp.mobile.ui.play.PlayScreen
@@ -159,7 +159,7 @@ private fun info(match: Match): Flow<MatchInfo> {
     val whiteId = w.map { it?.uid ?: "" }.orElse { "" }
     MatchInfo(
         id = match.id,
-        movesCount = g.map { it.serialize().size }.orElse { 0 },
+        movesCount = g.map { it.toExtendedNotation().size }.orElse { 0 },
         whiteId = whiteId,
         blackId = blackId,
         whiteName = w.map { it?.name ?: "" }.orElse { "" },

@@ -6,8 +6,8 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
-import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
@@ -126,6 +126,6 @@ private data class StoreMatch(
 
   override suspend fun update(game: Game) =
       withContext(ioDispatcher) {
-        store.collection("games").document(id).update { this["moves"] = game.serialize() }
+        store.collection("games").document(id).update { this["moves"] = game.toExtendedNotation() }
       }
 }

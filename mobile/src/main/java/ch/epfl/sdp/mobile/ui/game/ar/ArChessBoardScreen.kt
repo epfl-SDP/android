@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.ar
+package ch.epfl.sdp.mobile.ui.game.ar
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -6,8 +6,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.viewinterop.AndroidView
-import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
@@ -15,23 +16,20 @@ import io.github.sceneview.ar.ArSceneView
 private const val BoardScale = 0.2f
 
 /**
- * This composable displays a chess game in AR. When it is created, it will load the different
- * models needed to display the scene . To show the board, the user need to wait that ARCore analyse
- * the environment and when it's ready, the user need to tap on the screen and the board will be
- * placed at this position
+ * Composable used to display a AR chess board
  *
- * This composable will keep the screen on, it will never sleep
- *
- * @param game The game that will be displayed in AR
- * @param modifier the [Modifier] for this composable.
+ * @param state The state of the game, it's used to track the modification on the game
+ * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-fun ArScreen(game: Game, modifier: Modifier = Modifier) {
-
-  var chessScene by remember { mutableStateOf<ChessScene?>(null) }
-
+fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
+    state: GameScreenState<Piece>,
+    modifier: Modifier = Modifier
+) {
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
+
+  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
 
   // Keep the screen on only for this composable
   DisposableEffect(view) {
@@ -45,11 +43,11 @@ fun ArScreen(game: Game, modifier: Modifier = Modifier) {
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        // Create the object [ChessScene] that will load all the AR elements
-        chessScene = ChessScene(context, view.lifecycleScope, game.board)
-
-        // Scale the whole scene to the desired size
-        chessScene?.scale(BoardScale)
+        chessScene =
+            ChessScene(context, view.lifecycleScope, state.pieces).apply {
+              // Scale the whole scene to the desired size
+              scale(BoardScale)
+            }
 
         /**
          * If not already in the scene, the board will be added. Update the board anchor with the
@@ -59,7 +57,9 @@ fun ArScreen(game: Game, modifier: Modifier = Modifier) {
          */
         fun anchorOrMoveBoard(anchor: Anchor) {
 
-          chessScene?.let {
+          val currentChessScene = chessScene ?: return
+
+          currentChessScene.let {
             // Add only one instance of the node
             if (!arSceneView.children.contains(it.boardNode)) {
               arSceneView.addChild(it.boardNode)

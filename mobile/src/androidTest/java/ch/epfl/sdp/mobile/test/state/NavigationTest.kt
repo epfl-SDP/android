@@ -65,7 +65,7 @@ class NavigationTest {
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
         }
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
 
     // Do we see the bottom navigation ?
     rule.onNodeWithText(strings.sectionSocial).assertExists()
@@ -75,7 +75,7 @@ class NavigationTest {
 
   @Test
   fun updatingUsername_preservesHomeSection() = runTest {
-    val auth = buildAuth { user("email", "password", "id") }
+    val auth = buildAuth { user("email@epfl.ch", "password", "id") }
     val store = buildStore {
       collection("users") { document("id", ProfileDocument(name = "Alice")) }
     }
@@ -86,7 +86,7 @@ class NavigationTest {
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
         }
-    authFacade.signInWithEmail("email", "password")
+    authFacade.signInWithEmail("email@epfl.ch", "password")
 
     // Move to the profile section.
     rule.onNodeWithText(strings.sectionSettings).performClick()

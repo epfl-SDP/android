@@ -36,7 +36,7 @@ class StatefulPrepareGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -57,7 +57,7 @@ class StatefulPrepareGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -78,7 +78,7 @@ class StatefulPrepareGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
 
-    facade.signUpWithEmail("email", "name", "password")
+    facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {

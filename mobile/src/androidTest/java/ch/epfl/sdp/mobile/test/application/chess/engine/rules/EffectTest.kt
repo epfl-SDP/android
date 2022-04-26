@@ -14,10 +14,10 @@ private typealias UnitPiece = Piece<Unit>
 
 class EffectTest {
 
-  private object UniquePieceIdentifier : PieceIdentifier
+  private val uniquePieceIdentifier = PieceIdentifier(0)
 
-  private val pawn: UnitPiece = Piece(Unit, Rank.Pawn, UniquePieceIdentifier)
-  private val bishop: UnitPiece = Piece(Unit, Rank.Bishop, UniquePieceIdentifier)
+  private val pawn: UnitPiece = Piece(Unit, Rank.Pawn, uniquePieceIdentifier)
+  private val bishop: UnitPiece = Piece(Unit, Rank.Bishop, uniquePieceIdentifier)
 
   @Test
   fun remove_actuallyRemovesPiece() {
@@ -68,15 +68,16 @@ class EffectTest {
     val from = Position(0, 1)
     val to = Position(0, 0)
     val board = buildBoard<UnitPiece> { set(to, bishop) }
-    val effect = move<UnitPiece>(from, Delta(0, -1))
+    val effect = move<UnitPiece>(from, to)
     assertThat(effect.perform(board)[to]).isEqualTo(bishop)
   }
 
   @Test
   fun move_outOfBounds_isNoOp() {
     val from = Position(0, 0)
+    val to = Position(-1, -1)
     val board = buildBoard<UnitPiece> { set(from, pawn) }
-    val effect = move<UnitPiece>(from, Delta(-1, -1))
+    val effect = move<UnitPiece>(from, to)
     assertThat(effect.perform(board)[from]).isEqualTo(pawn)
   }
 
@@ -89,7 +90,7 @@ class EffectTest {
           set(from, pawn)
           set(to, bishop)
         }
-    val effect = move<UnitPiece>(from, Delta(0, -1))
+    val effect = move<UnitPiece>(from, to)
     assertThat(effect.perform(board)[to]).isEqualTo(pawn)
   }
 }

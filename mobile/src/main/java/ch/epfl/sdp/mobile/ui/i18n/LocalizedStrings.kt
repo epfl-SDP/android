@@ -20,6 +20,11 @@ interface LocalizedStrings {
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
+  val authenticateBadPasswordFailure: String
+  val authenticateWrongEmailFormatFailure: String
+  val authenticateInvalidUserFailure: String
+  val authenticateIncorrectPasswordFailure: String
+  val authenticateExistingAccountFailure: String
   val authenticateOr: String
 
   val arContentDescription: String
@@ -59,6 +64,8 @@ interface LocalizedStrings {
   val gameMessageCheck: String
   val gameMessageStalemate: String
   val gameMessageCheckmate: String
+  val gamePromoteTitle: String
+  val gamePromoteConfirm: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String

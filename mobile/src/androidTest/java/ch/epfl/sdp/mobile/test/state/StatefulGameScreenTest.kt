@@ -1,18 +1,19 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.state.ProvideFacades
-import ch.epfl.sdp.mobile.state.StatefulGameScreen
-import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
+import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -638,5 +639,38 @@ class StatefulGameScreenTest {
     val robot = emptyGameAgainstOneselfRobot()
     robot.play(Stalemate)
     robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
+  }
+
+  @Test
+  fun given_game_when_playingUntilPromotion_then_canPromoteToQueen() {
+    val robot = emptyGameAgainstOneselfRobot()
+    robot.play(promote(Rank.Queen))
+    robot
+        .onAllNodesWithContentDescription(
+            robot.strings.boardPieceContentDescription(
+                robot.strings.boardColorWhite,
+                robot.strings.boardPieceQueen,
+            ),
+        )
+        .assertCountEquals(2)
+  }
+
+  @Test
+  fun given_rank_when_transformingToChessBoardStateRankAndBack_then_isEqual() {
+    val ranks = listOf(*Rank.values())
+    val mapped = ranks.map { it.toChessBoardStateRank() }.map { it.toGameRank() }
+    assertThat(mapped).isEqualTo(ranks)
+  }
+
+  @Test
+  fun given_promotionScreen_when_pressingRankTwice_then_confirmIsNotEnabled() {
+    val robot = emptyGameAgainstOneselfRobot()
+    robot.play(UntilPromotion)
+    robot.performInput {
+      drag(from = ChessBoardState.Position(7, 1), to = ChessBoardState.Position(6, 0))
+    }
+    robot.onNodeWithContentDescription(robot.strings.boardPieceQueen).performClick()
+    robot.onNodeWithContentDescription(robot.strings.boardPieceQueen).performClick()
+    robot.onNodeWithLocalizedText { robot.strings.gamePromoteConfirm }.assertIsNotEnabled()
   }
 }
