@@ -125,8 +125,9 @@ class SpeechRecognitionScreenTest {
       intending(hasAction(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)).respondWith(result)
       androidRule.onNodeWithText(DefaultText).assertExists()
       androidRule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
-      androidRule.onNodeWithText(ListeningText).assertExists()
 
+      //TODO: not intents are captured by test
+      // Possible bug -> recognizer keeps listening and do not send intents
       Log.d("tag", "all intents ${Intents.getIntents()}")
       androidRule.onNodeWithText(speech).assertExists(speech)
     } finally {
