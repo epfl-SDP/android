@@ -34,7 +34,7 @@ class StatefulSpeechRecognitionScreenTest {
   @get:Rule val permissionRule: GrantPermissionRule = grant(Manifest.permission.RECORD_AUDIO)
 
   @Test
-  fun given_defaultScreen_when_micClicked_and_okClicked_then_permissionGranted() = runTest {
+  fun given_defaultScreen_when_micActivatedAndDeactivated_then_defaultState() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)

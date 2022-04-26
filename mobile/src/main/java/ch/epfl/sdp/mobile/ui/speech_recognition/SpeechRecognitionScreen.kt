@@ -32,14 +32,15 @@ private val mutex = MutatorMutex()
 /**
  * Screen for demonstrating the SpeechRecognition android feature
  * @param state State of the screen
+ * @param recognizer [SpeechRecognizerEntity] entity used in speech recognition for this screen
  * @param modifier [Modifier] of this composable
  */
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun SpeechRecognitionScreen(
     state: SpeechRecognitionScreenState,
-    recognizer: SpeechRecognizable = SpeechRecognizerEntity(),
     modifier: Modifier = Modifier,
+    recognizer: SpeechRecognizable = SpeechRecognizerEntity(),
 ) {
 
   val context = LocalContext.current
