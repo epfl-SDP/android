@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.toColor
 
 /**
  * This list item is used to display player information in the Social screen.
@@ -34,8 +33,7 @@ fun PersonItem(
       modifier = modifier,
       icon = {
         Box(
-            modifier =
-                Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
+            modifier = Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor),
         ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
       },
       text = {
