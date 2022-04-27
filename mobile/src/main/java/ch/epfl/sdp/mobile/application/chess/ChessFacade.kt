@@ -50,7 +50,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * <<<<<<< HEAD Returns the [Match] associated to the given identifier.
+   * Returns the [Match] associated to the given identifier.
    *
    * @param id the unique identifier for this [Match].
    */
