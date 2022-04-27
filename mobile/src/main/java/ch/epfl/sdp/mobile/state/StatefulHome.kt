@@ -23,14 +23,20 @@ private const val ProfileRoute = "profile"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
-/** The route associated to the play tab. */
-private const val PuzzlesRoute = "puzzles"
+/** The route associated to the puzzle tab. */
+private const val PuzzleSelectionRoute = "puzzles"
+
+/** The route associated to the puzzle tab. */
+private const val PuzzleGameRoute = "puzzle_game"
 
 /** The route associated to new game screen */
 private const val GameRoute = "match"
 
 /** The default identifier for a game. */
 private const val GameDefaultId = ""
+
+/** The default identifier for a puzzle. */
+private const val PuzzleGameDefaultId = ""
 
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
@@ -121,7 +127,21 @@ fun StatefulHome(
         )
       }
       composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
-      composable(PuzzlesRoute) {}
+      composable(PuzzleSelectionRoute) {
+        StatefulPuzzleSelectionScreen(
+            user = user,
+            onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
+        )
+      }
+      composable("$PuzzleGameRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", PuzzleGameDefaultId)
+        StatefulPuzzleGameScreen(
+            user = user,
+            puzzleId = id,
+            modifier = Modifier.fillMaxSize(),
+            paddingValues = paddingValues,
+        )
+      }
     }
   }
 }
@@ -132,7 +152,7 @@ private fun NavBackStackEntry.toSection(): HomeSection =
       SettingsRoute -> HomeSection.Settings
       ArRoute -> HomeSection.Ar
       PlayRoute -> HomeSection.Play
-      PuzzlesRoute -> HomeSection.Puzzles
+      PuzzleSelectionRoute -> HomeSection.Puzzles
       else -> HomeSection.Social
     }
 
@@ -143,7 +163,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Settings -> SettingsRoute
       HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
-      HomeSection.Puzzles -> PuzzlesRoute
+      HomeSection.Puzzles -> PuzzleSelectionRoute
     }
 
 private fun hideBar(route: String?): Boolean {
