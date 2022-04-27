@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
@@ -16,7 +17,7 @@ class SettingsScreenStateImpl(
   override val pastGamesCount = 0
   override val puzzlesCount = 0
   override val matches = emptyList<ChessMatch>()
-  override val backgroundColor = Color.Orange
+  override val backgroundColor = Profile.Color.Orange.toColor()
   override val name = user.name
   override val emoji = user.emoji
   override val followed = user.followed
