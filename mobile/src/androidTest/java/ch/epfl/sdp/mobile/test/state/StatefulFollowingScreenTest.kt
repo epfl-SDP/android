@@ -73,7 +73,7 @@ class StatefulFollowingScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store)
 
-      authenticationFacade.signUpWithEmail("example", "name", "password")
+      authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
@@ -106,7 +106,7 @@ class StatefulFollowingScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store)
 
-      authenticationFacade.signUpWithEmail("example", "name", "password")
+      authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
@@ -128,7 +128,7 @@ class StatefulFollowingScreenTest {
     val store = emptyStore()
     val user =
         with(AuthenticationFacade(auth, store)) {
-          signUpWithEmail("email", "name", "password")
+          signUpWithEmail("email@epfl.ch", "name", "password")
           currentUser.filterIsInstance<AuthenticatedUser>().first()
         }
 
@@ -152,7 +152,7 @@ class StatefulFollowingScreenTest {
     val store = emptyStore()
     val user =
         with(AuthenticationFacade(auth, store)) {
-          signUpWithEmail("email", "name", "password")
+          signUpWithEmail("email@epfl.ch", "name", "password")
           currentUser.filterIsInstance<AuthenticatedUser>().first()
         }
 
@@ -183,7 +183,7 @@ class StatefulFollowingScreenTest {
     }
     val user =
         with(AuthenticationFacade(auth, store)) {
-          signUpWithEmail("email", "name", "password")
+          signUpWithEmail("email@epfl.ch", "name", "password")
           currentUser.filterIsInstance<AuthenticatedUser>().first()
         }
 

@@ -20,8 +20,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green500
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
 import ch.epfl.sdp.mobile.ui.WhiteKing
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import com.google.accompanist.flowlayout.FlowRow
@@ -57,14 +56,14 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(contentPadding)
                     .padding(scaffoldPadding)
-                    .padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 48.dp),
+                    .padding(start = 32.dp, end = 32.dp, top = 48.dp, bottom = 48.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
           Column {
             Player(White, state.white.name, state.white.message)
             Player(Black, state.black.name, state.black.message)
           }
-          ChessBoard(state)
+          ProvideTextStyle(MaterialTheme.typography.subtitle1) { ClassicChessBoard(state) }
           Moves(state.moves, Modifier.fillMaxWidth())
         }
       },

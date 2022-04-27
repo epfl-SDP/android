@@ -10,20 +10,17 @@ import org.junit.Rule
 import org.junit.Test
 
 open class TestPlayScreenState(
-    val onNewGameClickAction: () -> Unit,
     val onGameItemClickAction: (ChessMatch) -> Unit,
     override val matches: List<ChessMatch>
 ) : PlayScreenState<ChessMatch> {
+  override fun onLocalGameClick() {}
+  override fun onOnlineGameClick() {}
   override fun onMatchClick(match: ChessMatch) {
     onGameItemClickAction(match)
   }
-
-  override fun onNewGameClick() {
-    onNewGameClickAction()
-  }
 }
 
-object FakePlayScreenState : TestPlayScreenState({}, {}, emptyList())
+object FakePlayScreenState : TestPlayScreenState({}, emptyList())
 
 class PlayScreenTest {
   @get:Rule val rule = createComposeRule()

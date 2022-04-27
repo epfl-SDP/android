@@ -36,11 +36,9 @@ data class PersistentGame(
           NextStep.Stalemate
         }
       } else {
-        return NextStep.MovePiece(nextPlayer, inCheck) { from, delta ->
-          val (action, effects) =
-              actionsAndEffects(from).firstOrNull { (action, _) ->
-                action.from == from && action.delta == delta
-              }
+        return NextStep.MovePiece(nextPlayer, inCheck) { action ->
+          val (_, effects) =
+              actionsAndEffects(action.from).firstOrNull { (it, _) -> action == it }
                   ?: return@MovePiece this
 
           val nextBoard = effects.perform(board)
@@ -48,7 +46,7 @@ data class PersistentGame(
           copy(
               previous = this to action,
               nextPlayer = nextPlayer.other(),
-              boards = boards.add(nextBoard),
+              boards = boards.add(nextBoard.toBoard()), // Flatten the Board.
           )
         }
       }

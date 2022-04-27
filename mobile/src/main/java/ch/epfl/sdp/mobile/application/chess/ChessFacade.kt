@@ -3,10 +3,11 @@ package ch.epfl.sdp.mobile.application.chess
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.notation.deserialize
-import ch.epfl.sdp.mobile.application.chess.notation.serialize
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
+import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
@@ -22,12 +23,25 @@ import kotlinx.coroutines.flow.*
 class ChessFacade(private val auth: Auth, private val store: Store) {
 
   /**
+   * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
+   *
+   * @param user The [AuthenticatedUser] that wants to create the [Match]
+   *
+   * @return The created [Match] before storing it in the [Store]
+   */
+  suspend fun createLocalMatch(user: AuthenticatedUser): Match {
+    val document = store.collection("games").document()
+    document.set(ChessDocument(whiteId = user.uid, blackId = user.uid))
+    return StoreMatch(document.id, store)
+  }
+
+  /**
    * Creates a [Match] between two [Profile]s and stores it in the [Store]
    *
    * @param white The [Profile] of the player that will play white
    * @param black The [Profile] of the player that will play black
    *
-   * @return The created [Match] before storing it in the [Store] (without the GameId)
+   * @return The created [Match] before storing it in the [Store]
    */
   suspend fun createMatch(white: Profile, black: Profile): Match {
     val document = store.collection("games").document()
@@ -88,7 +102,7 @@ private data class StoreMatch(
 
   private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
 
-  override val game = documentFlow.map { it?.moves ?: emptyList() }.map { it.deserialize() }
+  override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
 
   override val white =
       documentFlow.map { it?.whiteId }.flatMapLatest {
@@ -100,6 +114,6 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    store.collection("games").document(id).update { this["moves"] = game.serialize() }
+    store.collection("games").document(id).update { this["moves"] = game.toExtendedNotation() }
   }
 }

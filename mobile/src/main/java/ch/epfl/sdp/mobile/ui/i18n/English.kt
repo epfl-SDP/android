@@ -14,6 +14,12 @@ object English : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Log in".uppercase()
   override val authenticateSwitchToRegister = "Sign up".uppercase()
   override val authenticateErrorFailure = "Something went wrong when authenticating"
+  override val authenticateBadPasswordFailure = "Your password should be at least 6 characters long"
+  override val authenticateWrongEmailFormatFailure = "Your email must be of the form: person@domain"
+  override val authenticateInvalidUserFailure = "There is no user registered with this email"
+  override val authenticateIncorrectPasswordFailure =
+      "The email or password you entered is incorrect"
+  override val authenticateExistingAccountFailure = "A user with this email already exists"
   override val authenticateOr = "or"
 
   override val arContentDescription: String = "ArComposable"
@@ -38,6 +44,8 @@ object English : LocalizedStrings {
   override val gameMessageCheck = "Check !"
   override val gameMessageStalemate = "Stalemate !"
   override val gameMessageCheckmate = "Checkmate !"
+  override val gamePromoteTitle = "Promote to:"
+  override val gamePromoteConfirm = "Ok".uppercase()
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
@@ -86,8 +94,8 @@ object English : LocalizedStrings {
   override val prepareGameCancel = "Cancel".uppercase()
   override val prepareGameSelectOpponent = "Select".uppercase()
   override val prepareGameSelectedOpponent = "Selected".uppercase()
-  override val prepareGamePlayLocal = "Play locally".uppercase()
-  override val prepareGamePlayOnline = "Play against opponent".uppercase()
+  override val prepareGamePlayLocal = "Local".uppercase()
+  override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
 }
