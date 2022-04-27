@@ -59,7 +59,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * ======= >>>>>>> display-active-games Fetches a [Flow] of [List] of [Match]s that a certain
+   * Fetches a [Flow] of [List] of [Match]s that a certain
    * [Profile] has going on with any other player (or even himself)
    *
    * @param profile The [Profile] whose [Match]s will be fetched
