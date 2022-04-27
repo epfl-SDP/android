@@ -31,7 +31,7 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <C: ChessMatch> ProfileScreen(
+fun <C : ChessMatch> ProfileScreen(
     state: ProfileScreenState<C>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -65,7 +65,7 @@ fun <C: ChessMatch> ProfileScreen(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C: ChessMatch> ProfileHeader(state: ProfileScreenState<C>, modifier: Modifier = Modifier) {
+fun <C : ChessMatch> ProfileHeader(state: ProfileScreenState<C>, modifier: Modifier = Modifier) {
 
   Column(
       modifier = modifier,
@@ -96,7 +96,7 @@ fun <C: ChessMatch> ProfileHeader(state: ProfileScreenState<C>, modifier: Modifi
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C: ChessMatch> ProfilePicture(
+fun <C : ChessMatch> ProfilePicture(
     state: ProfileScreenState<C>,
     modifier: Modifier = Modifier,
 ) {

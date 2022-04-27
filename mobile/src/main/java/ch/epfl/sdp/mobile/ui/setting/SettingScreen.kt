@@ -35,7 +35,7 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <C: ChessMatch> SettingsScreen(
+fun <C : ChessMatch> SettingsScreen(
     state: SettingScreenState<C>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -74,7 +74,7 @@ fun <C: ChessMatch> SettingsScreen(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C: ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifier = Modifier) {
+fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifier = Modifier) {
 
   Column(
       modifier = modifier,
@@ -98,7 +98,7 @@ fun <C: ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifi
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C: ChessMatch> SettingPicture(
+fun <C : ChessMatch> SettingPicture(
     state: SettingScreenState<C>,
     modifier: Modifier = Modifier,
 ) {
