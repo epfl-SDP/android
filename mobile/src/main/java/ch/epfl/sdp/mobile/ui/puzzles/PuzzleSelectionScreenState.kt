@@ -5,7 +5,7 @@ package ch.epfl.sdp.mobile.ui.puzzles
 interface PuzzleSelectionScreenState {
 
   /** Action to execute when clicked on match item in list */
-  fun onPuzzleClick(puzzle: Puzzle)
+  fun onPuzzleItemClick(puzzle: PuzzleItem)
 
   /** List of matches of current user */
   val puzzles: List<PuzzleItem>

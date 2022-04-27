@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun StatefulPuzzleSelectionScreen(
     user: AuthenticatedUser,
-    onPuzzleItemClick: (puzzle: Puzzle) -> Unit,
+    onPuzzleItemClick: (puzzle: PuzzleItem) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -41,14 +41,14 @@ fun StatefulPuzzleSelectionScreen(
 }
 
 private class SnapshotPuzzleSelectionScreen(
-    onPuzzleClickAction: State<(puzzle: Puzzle) -> Unit>,
+    onPuzzleClickAction: State<(puzzle: PuzzleItem) -> Unit>,
     private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
 ) : PuzzleSelectionScreenState {
 
   val onPuzzleClickAction by onPuzzleClickAction
 
-  override fun onPuzzleClick(puzzle: Puzzle) {
+  override fun onPuzzleItemClick(puzzle: PuzzleItem) {
     onPuzzleClickAction(puzzle)
   }
 
