@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
+import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.English.socialPerformFollow
 import ch.epfl.sdp.mobile.ui.i18n.English.socialSearchEmptyTitle
@@ -29,7 +30,7 @@ private val People =
 
 private fun createPerson(bgColor: Color, name: String, emoji: String): Person {
   return object : Person {
-    override val backgroundColor: Color = bgColor
+    override val backgroundColor = bgColor.toColor()
     override val name: String = name
     override val emoji: String = emoji
     override val followed = false
@@ -119,7 +120,7 @@ class SocialScreenTest {
           SearchResultList(
               listOf(
                   object : Person {
-                    override val backgroundColor = Color.Default
+                    override val backgroundColor = Color.Default.toColor()
                     override val name = "test"
                     override val emoji = ":)"
                     override val followed = false
