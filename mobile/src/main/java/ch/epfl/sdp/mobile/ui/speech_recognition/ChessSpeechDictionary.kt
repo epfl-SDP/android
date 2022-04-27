@@ -27,9 +27,9 @@ object ChessSpeechDictionary : ChessDictionary {
                   "inc",
                   "qing",
                   "keying"), // rule finishes with "ing/inc"
-          "rook" to listOf("rook","rooke", "rouck", "ruk", "brooke", "rock"),
-          "pawn" to listOf("rook","bond", "bon", "phone"), // starts with pon/bon
-          "bishop" to listOf("bishop","shop", "up", "beat", "sharp"))
+          "rook" to listOf("rook", "rooke", "rouck", "ruk", "brooke", "rock"),
+          "pawn" to listOf("rook", "bond", "bon", "phone"), // starts with pon/bon
+          "bishop" to listOf("bishop", "shop", "up", "beat", "sharp"))
 
   // Numbers
   override val numbers =

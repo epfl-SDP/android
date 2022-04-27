@@ -1,14 +1,21 @@
 package ch.epfl.sdp.mobile.ui.speech_recognition
 
-object SpeechFilterRules {
+typealias Rule = (List<String>) -> Boolean
 
-    val rules = setOf(this::filterForKing, this::filterForPawn)
+object ChessSpeechFilterRules {
 
-    private fun filterForPawn(speech: String): Boolean {
-        return speech.startsWith("bon") || speech.startsWith("pon")
-    }
+  data class ChessSpeechRule(val chessPiece: String, val rule: Rule)
 
-    private fun filterForKing(speech: String): Boolean {
-        return speech.endsWith("ing") || speech.endsWith("ink")
-    }
+  val rulesSet =
+      setOf(
+          ChessSpeechRule("pawn", this::filterForPawn),
+          ChessSpeechRule("king", this::filterForKing))
+
+  private fun filterForPawn(speech: List<String>): Boolean {
+    return speech.any { it.startsWith("bon") || it.startsWith("pon") }
+  }
+
+  private fun filterForKing(speech: List<String>): Boolean {
+    return speech.any { it.endsWith("inc") || it.endsWith("ink") }
+  }
 }
