@@ -1,20 +1,28 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
+import ch.epfl.sdp.mobile.application.chess.engine.PieceIdentifier
+import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.ui.*
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
-import com.google.ar.sceneform.math.Vector3
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
+import io.github.sceneview.material.setBaseColor
 import io.github.sceneview.math.Position as ArPosition
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
+import io.github.sceneview.utils.Color as ArColor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+const val TAG = "ChessScene"
 
 /**
  * This class represent the AR chess scene which contains :
@@ -25,43 +33,66 @@ import io.github.sceneview.node.ModelNode
  * @param lifecycleScope A scope that is used to launch the model loading
  * @param board The board that contains the displayed game state
  */
-class ChessScene<Piece : ChessBoardState.Piece>(
+class ChessScene(
     private val context: Context,
     private val lifecycleScope: LifecycleCoroutineScope,
-    board: Map<Position, Piece>,
+    board: Flow<Map<Position, SnapshotChessBoardState.SnapshotPiece>>,
 ) {
   val boardNode: ArModelNode
 
   private var boardHeight: Float = 0f
   private var boardHalfSize: Float = 0f
 
+  private var loadBoardJob: Job
+  private lateinit var loadPiecesJob: Job
+
+  private val currentPieces: MutableMap<PieceIdentifier, ModelNode> = mutableMapOf()
+
   init {
-    boardNode =
-        ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL).apply {
-          // Load the board
-          loadModelAsync(
+    boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
+
+    loadBoardJob =
+        lifecycleScope.launch {
+          boardNode.loadModel(
               context = context,
               glbFileLocation = ChessModels.Board,
-              coroutineScope = lifecycleScope,
               autoScale = true,
-          ) { renderableInstance ->
-            // Once loaded compute the board size
-            val filamentAsset = renderableInstance.filamentAsset ?: return@loadModelAsync
-            val boardBoundingBox = filamentAsset.boundingBox
-
-            // Get height (on y axe) of the board
-            // Double the value to get the total height of the box
-            boardHeight = 2 * boardBoundingBox.halfExtent[1]
-            boardHalfSize = boardBoundingBox.halfExtent[0]
-
-            // Initialize all pieces
-            for ((position, piece) in board) {
-              val model = loadPieceModel(piece, position)
-              // Add the new model node to the board
-              addChild(model)
-            }
-          }
+          )
         }
+
+    loadBoardJob.invokeOnCompletion {
+      val renderableInstance = boardNode.modelInstance ?: return@invokeOnCompletion
+      // Once loaded compute the board size
+      val filamentAsset = renderableInstance.filamentAsset ?: return@invokeOnCompletion
+      val boardBoundingBox = filamentAsset.boundingBox
+
+      // Get height (on y axe) of the board
+      // Double the value to get the total height of the box
+      boardHeight = 2 * boardBoundingBox.halfExtent[1]
+      boardHalfSize = boardBoundingBox.halfExtent[0]
+      loadPiecesJob = lifecycleScope.launch { loadPieces(board.first()) }
+    }
+
+    lifecycleScope.launch {
+      board
+          .mapLatest { board ->
+            board.map { (position, piece) ->
+              Log.d(TAG, "$position ${piece.rank}")
+              move(piece.id, position)
+            }
+            Log.d(TAG, "Updated")
+          }
+          .collect()
+    }
+  }
+
+  private fun move(id: PieceIdentifier, position: Position) {
+    loadBoardJob.invokeOnCompletion {
+      loadPiecesJob.invokeOnCompletion {
+        val model = currentPieces[id]
+        model?.modelPosition = toArPosition(position)
+      }
+    }
   }
 
   /**
@@ -69,7 +100,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * chessboard)
    */
   private fun loadPieceModel(
-      piece: Piece,
+      piece: SnapshotChessBoardState.SnapshotPiece,
       position: Position,
   ): ModelNode {
     val path = piece.rank.arModelPath
@@ -84,7 +115,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
             val color = piece.color.colorVector
 
-            renderableInstance.material.setFloat3("baseColorFactor", color)
+            renderableInstance.material.filamentMaterialInstance.setBaseColor(color)
           }
 
           // Rotate the black knight to be faced inside the board
@@ -94,6 +125,15 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         }
 
     return model
+  }
+
+  private fun loadPieces(pieces: Map<Position, SnapshotChessBoardState.SnapshotPiece>) {
+    for ((position, piece) in pieces) {
+      val model = loadPieceModel(piece, position)
+      // Add the new model node to the board
+      boardNode.addChild(model)
+      currentPieces[piece.id] = model
+    }
   }
 
   /** Scale the whole scene with the given [value] */
@@ -132,7 +172,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
   // TODO Use Color instead of Vector
   /** Convert the [Color] into a color that can be used by the AR renderer */
-  private val Color.colorVector: Vector3
+  private val Color.colorVector: ArColor
     get() =
         when (this) {
           Black -> PawniesArColors.Black
