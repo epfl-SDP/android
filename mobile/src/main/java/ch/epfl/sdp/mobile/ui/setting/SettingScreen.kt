@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
@@ -81,12 +80,10 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically) {
         Text(state.name, style = MaterialTheme.typography.h5)
-        IconButton(
-            onClick = state::onEditProfileNameClick,
-            modifier = Modifier.testTag("editProfileName")) {
+        IconButton(onClick = state::onEditProfileNameClick) {
           Icon(
               Icons.Default.Edit,
-              contentDescription = strings.profileEditIcon,
+              contentDescription = strings.profileEditNameIcon,
               modifier = Modifier.size(24.dp))
         }
       }
@@ -120,7 +117,7 @@ fun SettingPicture(
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+    ) { Icon(Icons.Default.Edit, strings.profileEditImageIcon) }
   }
 }
 
