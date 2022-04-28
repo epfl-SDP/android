@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
-import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
@@ -83,8 +82,7 @@ private fun <P : Person> Opponent(
       modifier = modifier,
   ) {
     Box(
-        modifier =
-            Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor.toColor()),
+        modifier = Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor),
     ) { Text(person.emoji, modifier = Modifier.align(Alignment.Center)) }
     Spacer(modifier = Modifier.width(16.dp))
     Text(

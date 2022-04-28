@@ -31,7 +31,7 @@ enum class Rank(
   ),
   Pawn(
       moves = {
-        delta(it, x = 0, y = -1, includeAdversary = false) +
+        delta(it, x = 0, y = -1, includeAdversary = false, promotionAllowed = true) +
             doubleUp(it) +
             sideTakes(it) +
             enPassant(it, Delta(x = 1, y = 0)) +
