@@ -24,13 +24,11 @@ object ChessSpeechDictionary : ChessDictionary {
                   "ting",
                   "ping",
                   "pink",
-                  "inc",
                   "qing",
                   "keying"), // rule finishes with "ing/inc"
           "rook" to listOf("rook", "rooke", "rouck", "ruk", "brooke", "rock"),
-          "pawn" to listOf("rook", "bond", "bon", "phone"), // starts with pon/bon
+          "pawn" to listOf("pawn", "bond", "bon", "phone", "fun"), // starts with pon/bon
           "bishop" to listOf("bishop", "shop", "up", "beat", "sharp"))
-
   // Numbers
   override val numbers =
       mapOf(
@@ -52,7 +50,7 @@ object ChessSpeechDictionary : ChessDictionary {
                   "war"),
           "5" to listOf("5", "five", "live", "fife", "hive", "hyve"),
           "6" to listOf("6", "six", "sex", "secs", "tics", "ticks", "tix", "seeks", "cheeks"),
-          "7" to listOf("7", "seven", "seven", "sevan", "sevin"),
+          "7" to listOf("7", "seven", "sevan", "sevin"),
           "8" to listOf("8", "eight", "ate", "date", "eighth", "hate", "tate"),
       )
 
@@ -65,7 +63,10 @@ object ChessSpeechDictionary : ChessDictionary {
           "d" to listOf("d", "dee", "di", "dd"),
           "e" to listOf("e", "ee", "eh", "he"),
           "f" to listOf("f", "ff", "if", "ef"),
-          "g" to listOf("g", "gg", ""),
+          "g" to listOf("g", "gg"),
           "h" to listOf("h", "age", "stage", "eight", "teach", "sage", "gage", "each"),
       )
+
+  override val moves =
+      letters.keys.flatMap { letter -> numbers.keys.map { num -> "" + letter + num } }
 }

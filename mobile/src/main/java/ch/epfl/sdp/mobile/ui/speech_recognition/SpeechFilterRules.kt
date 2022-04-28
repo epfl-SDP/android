@@ -9,13 +9,20 @@ object ChessSpeechFilterRules {
   val rulesSet =
       setOf(
           ChessSpeechRule("pawn", this::filterForPawn),
-          ChessSpeechRule("king", this::filterForKing))
+          ChessSpeechRule("king", this::filterForKing),
+          ChessSpeechRule("rook", this::filterForRook))
 
   private fun filterForPawn(speech: List<String>): Boolean {
     return speech.any { it.startsWith("bon") || it.startsWith("pon") }
   }
 
   private fun filterForKing(speech: List<String>): Boolean {
-    return speech.any { it.endsWith("inc") || it.endsWith("ink") }
+    return speech.any { it.endsWith("inc") || it.endsWith("ink") || it.endsWith("ing") }
+  }
+
+  private fun filterForRook(speech: List<String>): Boolean {
+    return speech.any {
+      it.endsWith("ouk") || it.endsWith("uk") || it.endsWith("uch") || it.endsWith("och")
+    }
   }
 }
