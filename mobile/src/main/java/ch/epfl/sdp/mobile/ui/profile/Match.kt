@@ -34,6 +34,8 @@ fun Match(
 ) {
   val strings = LocalLocalizedStrings.current
   val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
+  val subtitleColor =
+      if (subtitle == strings.profileYourTurn) PawniesColors.Orange500 else PawniesColors.Green800
 
   ListItem(
       modifier = modifier.clickable { onClick(match) },
@@ -52,7 +54,7 @@ fun Match(
             },
             style = MaterialTheme.typography.body1)
       },
-      secondaryText = { Text(subtitle) },
+      secondaryText = { Text(subtitle, color = subtitleColor) },
   )
 }
 
