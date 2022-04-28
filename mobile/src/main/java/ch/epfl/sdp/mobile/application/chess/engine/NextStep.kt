@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+
 /**
  * An interface representing the next steps that could be performed on an existing [Game] instance.
  * Because [Game] is immutable, the only way to move forward in a chess game is to perform a
@@ -26,11 +28,11 @@ sealed interface NextStep {
    *
    * @param turn the [Color] of the player who should perform a move next.
    * @param inCheck returns true if the current player is in check.
-   * @param move provides the next [Game] depending on which position was moved by how much.
+   * @param move provides the next [Game] depending on which [Action] was selected to be played.
    */
   data class MovePiece(
       val turn: Color,
       val inCheck: Boolean,
-      val move: (Position, Delta) -> Game,
+      val move: (Action) -> Game,
   ) : NextStep
 }

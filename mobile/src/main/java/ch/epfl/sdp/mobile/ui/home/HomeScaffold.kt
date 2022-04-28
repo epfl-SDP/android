@@ -30,7 +30,6 @@ enum class HomeSection(
 
   /** The section to manage our preferences. */
   Settings(PawniesIcons.SectionSettings, { sectionSettings }),
-  Ar(PawniesIcons.ArView, { sectionAr })
 }
 
 /**

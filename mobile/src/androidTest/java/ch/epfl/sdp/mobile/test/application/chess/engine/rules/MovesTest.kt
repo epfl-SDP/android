@@ -1,14 +1,12 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine.rules
 
-import ch.epfl.sdp.mobile.application.chess.engine.Board
-import ch.epfl.sdp.mobile.application.chess.engine.Delta
-import ch.epfl.sdp.mobile.application.chess.engine.Piece
-import ch.epfl.sdp.mobile.application.chess.engine.Position
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.*
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Adversary
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role.Allied
 import com.google.common.truth.Truth.assertThat
@@ -16,12 +14,12 @@ import org.junit.Test
 
 class MovesTest {
 
-  private val adversaryKing = Piece(Adversary, King, PersistentPieceIdentifier(0))
-  private val adversaryPawn = Piece(Adversary, Pawn, PersistentPieceIdentifier(0))
-  private val adversaryRook = Piece(Adversary, Rook, PersistentPieceIdentifier(0))
-  private val alliedKing = Piece(Allied, King, PersistentPieceIdentifier(0))
-  private val alliedPawn = Piece(Allied, Pawn, PersistentPieceIdentifier(0))
-  private val alliedRook = Piece(Allied, Rook, PersistentPieceIdentifier(0))
+  private val adversaryKing = Piece(Adversary, King, PieceIdentifier(0))
+  private val adversaryPawn = Piece(Adversary, Pawn, PieceIdentifier(0))
+  private val adversaryRook = Piece(Adversary, Rook, PieceIdentifier(0))
+  private val alliedKing = Piece(Allied, King, PieceIdentifier(0))
+  private val alliedPawn = Piece(Allied, Pawn, PieceIdentifier(0))
+  private val alliedRook = Piece(Allied, Rook, PieceIdentifier(0))
 
   @Test
   fun delta_outOfBounds_hasNoActions() {
@@ -35,7 +33,7 @@ class MovesTest {
     val position = Position(0, 0)
     val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.delta(Position(0, 0), x = 1, y = 2).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(position, Delta(1, 2)))
+    assertThat(actions.asIterable()).containsExactly(Move(position, Delta(1, 2)))
   }
 
   @Test
@@ -44,7 +42,7 @@ class MovesTest {
     val to = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.delta(from, x = 1, y = 1).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, 1)))
   }
 
   @Test
@@ -54,6 +52,23 @@ class MovesTest {
     val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.delta(from, x = 1, y = 1, includeAdversary = false).map { it.first }
     assertThat(actions.asIterable()).isEmpty()
+  }
+
+  @Test
+  fun given_pawnOnPenultimateRow_when_movesUp_then_canPromote() {
+    val from = Position(0, 1)
+    val to = Position(0, 0)
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(from, alliedPawn) })
+    val actions =
+        board.delta(from = from, x = 0, y = -1, includeAdversary = false, promotionAllowed = true)
+            .map { it.first }
+    assertThat(actions.toSet())
+        .containsExactly(
+            Promote(from, to, Bishop),
+            Promote(from, to, Knight),
+            Promote(from, to, Queen),
+            Promote(from, to, Rook),
+        )
   }
 
   @Test
@@ -78,7 +93,7 @@ class MovesTest {
     val from = Position(0, 6)
     val board = sequenceOf(emptyBoard<Piece<Role>>())
     val actions = board.doubleUp(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(0, -2)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(0, -2)))
   }
 
   @Test
@@ -90,21 +105,73 @@ class MovesTest {
   }
 
   @Test
-  fun sideTakes_left_hasOneAction() {
-    val from = Position(1, 1)
-    val left = Position(0, 0)
+  fun sideTakes_left_hasOneMoveAction() {
+    val from = Position(2, 2)
+    val left = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(-1, -1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(-1, -1)))
   }
 
   @Test
-  fun sideTakes_right_hasOneAction() {
+  fun given_pawnOnPenultimateRow_when_adversaryOnLeft_then_canPromote() {
     val from = Position(1, 1)
-    val right = Position(2, 0)
+    val left = Position(0, 0)
+    val board =
+        sequenceOf(
+            buildBoard<Piece<Role>> {
+              set(from, alliedPawn)
+              set(left, adversaryPawn)
+            },
+        )
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.toSet())
+        .containsExactly(
+            Promote(from, left, Bishop),
+            Promote(from, left, Knight),
+            Promote(from, left, Queen),
+            Promote(from, left, Rook),
+        )
+  }
+
+  @Test
+  fun given_noPawn_when_adversaryOnLeft_then_canNotPromote() {
+    val from = Position(1, 1)
+    val left = Position(0, 0)
+    val board = sequenceOf(buildBoard<Piece<Role>> { set(left, adversaryPawn) })
+
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.toSet()).isEmpty()
+  }
+
+  @Test
+  fun sideTakes_right_hasOneMoveAction() {
+    val from = Position(2, 2)
+    val right = Position(3, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(right, adversaryPawn) })
     val actions = board.sideTakes(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, -1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, -1)))
+  }
+
+  @Test
+  fun given_pawnOnPenultimateRow_when_adversaryOnRight_then_canPromote() {
+    val from = Position(1, 1)
+    val right = Position(2, 0)
+    val board =
+        sequenceOf(
+            buildBoard<Piece<Role>> {
+              set(from, alliedPawn)
+              set(right, adversaryPawn)
+            },
+        )
+    val actions = board.sideTakes(from).map { it.first }
+    assertThat(actions.toSet())
+        .containsExactly(
+            Promote(from, right, Bishop),
+            Promote(from, right, Knight),
+            Promote(from, right, Queen),
+            Promote(from, right, Rook),
+        )
   }
 
   @Test
@@ -139,7 +206,7 @@ class MovesTest {
     val to = Position(1, 1)
     val board = sequenceOf(buildBoard<Piece<Role>> { set(to, adversaryPawn) })
     val actions = board.diagonals(from).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(from, Delta(1, 1)))
+    assertThat(actions.asIterable()).containsExactly(Move(from, Delta(1, 1)))
   }
 
   @Test
@@ -186,7 +253,7 @@ class MovesTest {
           )
         }
     val actions = board.rightCastling().map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(Position(4, 7), Delta(2, 0)))
+    assertThat(actions.asIterable()).containsExactly(Move(Position(4, 7), Delta(2, 0)))
   }
 
   @Test
@@ -325,7 +392,7 @@ class MovesTest {
           )
         }
     val actions = board.enPassant(Position(0, 3), Delta(1, 0)).map { it.first }
-    assertThat(actions.asIterable()).containsExactly(Action(Position(0, 3), Delta(1, -1)))
+    assertThat(actions.asIterable()).containsExactly(Move(Position(0, 3), Delta(1, -1)))
   }
 
   @Test

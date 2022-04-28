@@ -64,6 +64,8 @@ interface LocalizedStrings {
   val gameMessageCheck: String
   val gameMessageStalemate: String
   val gameMessageCheckmate: String
+  val gamePromoteTitle: String
+  val gamePromoteConfirm: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String

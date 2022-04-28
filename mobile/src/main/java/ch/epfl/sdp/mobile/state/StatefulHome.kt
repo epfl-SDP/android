@@ -41,10 +41,7 @@ private const val PuzzleGameDefaultId = ""
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
 
-/**
- * The route associated to the ar tab. Note : This tab is temporary, use only for the development
- * TODO : Remove this when we can display the entire game on AR
- */
+/** The route associated to the ar tab. */
 private const val ArRoute = "ar"
 
 /**
@@ -116,7 +113,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate(ArRoute) },
+                onShowAr = { controller.navigate("$ArRoute/{id}") },
             )
         StatefulGameScreen(
             actions = actions,
@@ -126,20 +123,23 @@ fun StatefulHome(
             paddingValues = paddingValues,
         )
       }
-      composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
+      composable("$ArRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
+        StatefulArScreen(user, id, Modifier.fillMaxSize())
+      }
       composable(PuzzleSelectionRoute) {
         StatefulPuzzleSelectionScreen(
-            user = user,
-            onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
+          user = user,
+          onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
         )
       }
       composable("$PuzzleGameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", PuzzleGameDefaultId)
         StatefulPuzzleGameScreen(
-            user = user,
-            puzzleId = id,
-            modifier = Modifier.fillMaxSize(),
-            paddingValues = paddingValues,
+          user = user,
+          puzzleId = id,
+          modifier = Modifier.fillMaxSize(),
+          paddingValues = paddingValues,
         )
       }
     }
@@ -150,7 +150,6 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
-      ArRoute -> HomeSection.Ar
       PlayRoute -> HomeSection.Play
       PuzzleSelectionRoute -> HomeSection.Puzzles
       else -> HomeSection.Social
@@ -161,7 +160,6 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
-      HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
       HomeSection.Puzzles -> PuzzleSelectionRoute
     }
