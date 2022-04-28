@@ -5,7 +5,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.BoardBuilder
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentPieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import kotlinx.collections.immutable.persistentListOf
@@ -42,7 +41,7 @@ interface Game {
     /** Creates a new [Game], with the standard starting positions for both players. */
     fun create(): Game =
         buildGame(White) {
-          var id = PersistentPieceIdentifier(0)
+          var id = PieceIdentifier(0)
 
           /** Populates a [row] with all the pieces of a given [color]. */
           fun populateSide(row: Int, color: Color) {

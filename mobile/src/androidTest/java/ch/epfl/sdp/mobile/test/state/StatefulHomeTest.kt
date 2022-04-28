@@ -1,10 +1,12 @@
 package ch.epfl.sdp.mobile.test.state
 
+import android.Manifest
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.navigation.compose.rememberNavController
+import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
@@ -12,6 +14,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -27,6 +30,8 @@ import org.junit.Test
 
 class StatefulHomeTest {
 
+  @get:Rule
+  val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
   @get:Rule val rule = createComposeRule()
 
   @Test
@@ -346,10 +351,17 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
+  fun given_aOnGoingGame_when_clickOnArButton_then_displayArScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
+      collection("users") {
+        document("1", ProfileDocument("1", name = "test2"))
+        document("2", ProfileDocument("2", name = "test"))
+      }
+      collection("games") {
+        document(
+            "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
+      }
     }
 
     val authFacade = AuthenticationFacade(auth, store)
@@ -361,20 +373,45 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
           ProvideFacades(authFacade, socialFacade, chessFacade) {
             StatefulHome(
                 user = user,
+                controller = controller,
             )
           }
         }
+    rule.onNodeWithText(strings.sectionPlay).performClick()
+    rule.onNodeWithText(strings.profileMatchTitle("test")).assertExists().performClick()
+    rule.onNodeWithContentDescription(strings.gameShowAr).assertExists().performClick()
+    withCanceledIntents {
+      rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
+    }
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
+        }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithTag("editProfileName").assertExists()
-    rule.onNodeWithTag("editProfileName").performClick()
-    rule.onAllNodesWithText("test").assertCountEquals(2)
-    rule.onAllNodesWithText("test")[1].performTextInput("test2")
+    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+    rule.onNode(hasText("test") and hasSetTextAction()).performTextInput("2")
     rule.onNodeWithText(strings.settingEditSave).performClick()
-    rule.onNodeWithText("test").assertIsDisplayed()
+    rule.onNodeWithText("test2").assertIsDisplayed()
   }
 
   @Test
@@ -389,20 +426,14 @@ class StatefulHomeTest {
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
-            StatefulHome(
-                user = user,
-            )
-          }
+          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithTag("editProfileName").assertExists()
-    rule.onNodeWithTag("editProfileName").performClick()
+    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
     rule.onNodeWithText(strings.settingEditCancel).performClick()
     rule.onNodeWithText("test").assertIsDisplayed()
   }

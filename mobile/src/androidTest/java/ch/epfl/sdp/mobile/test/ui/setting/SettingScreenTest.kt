@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.ChessMatchAdapter
+import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
@@ -27,9 +28,8 @@ class SettingScreenTest {
     override val puzzlesCount = 12
 
     override fun onSettingsClick() = Unit
+    override val backgroundColor = Color.Default.toColor()
     override fun onEditProfileNameClick() = Unit
-
-    override val backgroundColor = Color.Default
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true

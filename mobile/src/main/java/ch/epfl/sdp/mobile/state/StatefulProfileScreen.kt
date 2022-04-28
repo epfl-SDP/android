@@ -9,21 +9,19 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
+import ch.epfl.sdp.mobile.ui.social.Person
 
 class FetchedUserProfileScreenState(
     user: Profile,
-) : ProfileScreenState {
+) : ProfileScreenState, Person by ProfileAdapter(user) {
   override val email = ""
   override val pastGamesCount = 0
   override val matches = emptyList<ChessMatch>()
-  override val backgroundColor = user.backgroundColor
-  override val name = user.name
-  override val emoji = user.emoji
-  override val followed = user.followed
 
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {}
 }
+
 /**
  * A stateful composable to visit the profile page of other players
  *
