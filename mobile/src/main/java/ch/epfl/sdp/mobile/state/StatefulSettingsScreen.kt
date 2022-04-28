@@ -8,6 +8,12 @@ import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Person
 
+/**
+ * Implementation of the [SettingScreenState], [Person], [ProfileAdapter] Interfacces
+ *
+ * @param user the current logged-in user.
+ * @param onEditProfileNameClick Callable lambda to navigate to the profile Edit popup
+ */
 class SettingsScreenStateImpl(
     user: AuthenticatedUser,
     onEditProfileNameClickAction: State<() -> Unit>
