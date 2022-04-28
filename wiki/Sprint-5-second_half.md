@@ -25,3 +25,4 @@ Moreover, I fixed a few low-hanging issues : I cleaned up some code, fixed a MVV
 The sprint went well and I finished all the tasks which I had been assigned.
 
 ## Mohamed Badr Taddist
+This sprint went well in general. I was able to relax a bit from using jetpack and explore more powerful features of the Kotlin language. Annoyingly, I am still stuck by a test concerning the speech recognizer intents. I'll try to fix this with the help of the team members as soon as possible.
