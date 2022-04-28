@@ -6,7 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.Parser.Result
 object Combinators {
 
   /** Returns a [Parser] which can't parse the current input. */
-  fun <T> failure(): Parser<T, Nothing> = Parser { emptySet() }
+  fun <T> failure(): Parser<T, Nothing> = Parser { emptySequence() }
 
   /**
    * Returns a [Parser] which always succeeds, and applies the identity function to the input.
@@ -15,7 +15,7 @@ object Combinators {
    * @param R the type of the result.
    * @param result the result.
    */
-  fun <I, R> success(result: R): Parser<I, R> = Parser { setOf(Result(it, result)) }
+  fun <I, R> success(result: R): Parser<I, R> = Parser { sequenceOf(Result(it, result)) }
 
   /**
    * Returns a [Parser] which combines [this] and an [other] [Parser].
@@ -34,11 +34,9 @@ object Combinators {
    * @param O the type of the result.
    * @param parsers the [Parser] which are combined.
    */
-  fun <I, O> combine(vararg parsers: Parser<I, O>): Parser<I, O> = Parser { input ->
-    parsers.asSequence().map { it.parse(input) }.fold(mutableSetOf()) { acc, set ->
-      acc.apply { addAll(set) }
-    }
-  }
+  fun <I, O> combine(
+      vararg parsers: Parser<I, O>,
+  ): Parser<I, O> = Parser { input -> parsers.asSequence().flatMap { it.parse(input) } }
 
   /**
    * Returns a [Parser] which maps the results of the existing parser using a provided function.
@@ -49,10 +47,10 @@ object Combinators {
    * @receiver the [Parser] which will be mapped.
    * @param f the function used to map the results.
    */
-  /* inline */ fun <I, O1, O2> Parser<I, O1>.map(
-      /* crossinline */ f: (O1) -> O2,
+  inline fun <I, O1, O2> Parser<I, O1>.map(
+      crossinline f: (O1) -> O2,
   ): Parser<I, O2> = Parser {
-    parse(it).mapTo(mutableSetOf()) { r -> Result(r.remaining, f(r.output)) }
+    parse(it).map { (remaining, output) -> Result(remaining, f(output)) }
   }
 
   /**
@@ -65,10 +63,10 @@ object Combinators {
    * @receiver the [Parser] which will be mapped.
    * @param f the function used to flat-map the current output to select the next combinator.
    */
-  /* inline */ fun <I, O1, O2> Parser<I, O1>.flatMap(
-      /* crossinline */ f: (O1) -> Parser<I, O2>,
+  inline fun <I, O1, O2> Parser<I, O1>.flatMap(
+      crossinline f: (O1) -> Parser<I, O2>,
   ): Parser<I, O2> = Parser {
-    parse(it).flatMapTo(mutableSetOf()) { r -> f(r.output).parse(r.remaining) }
+    parse(it).flatMap { (remaining, output) -> f(output).parse(remaining) }
   }
 
   /**
@@ -78,9 +76,9 @@ object Combinators {
    * @param O the type of the output.
    * @param lazyDefaultValue the lambda which computes the default value.
    */
-  /* inline */ fun <I, O> Parser<I, O>.orElse(
-      /* crossinline */ lazyDefaultValue: (I) -> O,
-  ): Parser<I, O> = Parser { parse(it).ifEmpty { setOf(Result(it, lazyDefaultValue(it))) } }
+  inline fun <I, O> Parser<I, O>.orElse(
+      crossinline lazyDefaultValue: (I) -> O,
+  ): Parser<I, O> = Parser { parse(it).ifEmpty { sequenceOf(Result(it, lazyDefaultValue(it))) } }
 
   /**
    * Returns a [Parser] which only keeps results which match the predicate.
@@ -89,7 +87,7 @@ object Combinators {
    * @param O the type of the output.
    * @param keepIf a predicate which must return true iff the result should be kept.
    */
-  fun <I, O> Parser<I, O>.filter(keepIf: (O) -> Boolean): Parser<I, O> = flatMap {
-    if (keepIf(it)) success(it) else failure()
-  }
+  inline fun <I, O> Parser<I, O>.filter(
+      crossinline keepIf: (O) -> Boolean,
+  ): Parser<I, O> = flatMap { if (keepIf(it)) success(it) else failure() }
 }
