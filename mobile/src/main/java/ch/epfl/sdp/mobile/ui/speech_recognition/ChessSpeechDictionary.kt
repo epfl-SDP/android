@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.speech_recognition
 
+/** Currently used chess dictionary for homonym chess keywords */
 object ChessSpeechDictionary : ChessDictionary {
   // Chess Pieces
   override val chessPieces =
@@ -67,6 +68,6 @@ object ChessSpeechDictionary : ChessDictionary {
           "h" to listOf("h", "age", "stage", "eight", "teach", "sage", "gage", "each"),
       )
 
-  override val moves =
+  override val placements =
       letters.keys.flatMap { letter -> numbers.keys.map { num -> "" + letter + num } }
 }
