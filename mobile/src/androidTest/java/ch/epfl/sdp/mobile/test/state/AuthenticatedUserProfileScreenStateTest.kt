@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.runtime.mutableStateOf
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
@@ -31,8 +32,9 @@ class AuthenticatedUserProfileScreenStateTest {
     val facade = ChessFacade(auth, store)
     val job = Job()
     val scope = CoroutineScope(job)
+    val mockClickAction = mutableStateOf({})
 
-    val state = AuthenticatedUserProfileScreenState(mockUser, facade, scope)
+    val state = AuthenticatedUserProfileScreenState(mockUser, facade, scope, mockClickAction)
     assertThat(state.name).isEqualTo("test")
   }
 }

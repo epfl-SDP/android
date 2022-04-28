@@ -42,8 +42,14 @@ interface LocalizedStrings {
   val profileChallenge: String
   val profileEditIcon: String
   val profileAgainst: String
+  val profileEditImageIcon: String
+  val profileEditNameIcon: String
   val profileYourTurn: String
   val profileOthersTurn: String
+
+  val settingEditSave: String
+  val settingEditCancel: String
+  val settingProfileNameLabel: String
 
   val boardColorBlack: String
   val boardColorWhite: String
