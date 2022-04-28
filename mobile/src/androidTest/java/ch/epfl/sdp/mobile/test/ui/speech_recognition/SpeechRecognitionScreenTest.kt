@@ -98,16 +98,17 @@ class SpeechRecognitionScreenTest {
     rule.onNodeWithText(speech).assertExists()
   }
 
+  //Start activity
   @get:Rule val androidRule = createAndroidComposeRule<HomeActivity>()
 
   @Test
-  fun test() {
+  fun brokenIntentsTest() {
 
     val mockedPermission = mockk<PermissionState>()
     every { mockedPermission.hasPermission } returns true
 
-    // Initiate Espresso intents listening
     try {
+      //Initiate intent capturing
       Intents.init()
 
       // Rule sets content to test
@@ -122,15 +123,27 @@ class SpeechRecognitionScreenTest {
       resultData.putExtra(SpeechRecognizer.RESULTS_RECOGNITION, arrayListOf(speech))
 
       val result = Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-      intending(hasAction(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)).respondWith(result)
-      androidRule.onNodeWithText(DefaultText).assertExists()
-      androidRule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
 
-      //TODO: not intents are captured by test
+      //Stub intent responses of the recognizer
+      intending(hasAction(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)).respondWith(result)
+
+
+      androidRule.onNodeWithText(DefaultText).assertExists()
+
+      //Start listen for result but never stop
+      androidRule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
+      androidRule.onNodeWithContentDescription(ListeningText).assertExists()
+
+      // TODO: no intents are captured by test
       // Possible bug -> recognizer keeps listening and do not send intents
-      Log.d("tag", "all intents ${Intents.getIntents()}")
+
+      Log.d("tag", "all intents ${Intents.getIntents()}") // No intents are seent by the HomeActivity Class
+      // The recognizer keeps listening
+
+      //This fails as no response is sent back to the HomeActivity
       androidRule.onNodeWithText(speech).assertExists(speech)
     } finally {
+      //Stop intent capturing
       Intents.release()
     }
   }
