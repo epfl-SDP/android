@@ -15,6 +15,11 @@ typealias ChessLetter = String
 typealias ChessWord = String // Filter Result
 
 /**
+ * A Chess speech recognition results filters that factors a chess command given a vocabulary
+ * dictionary and a set of filtering rules
+ *
+ * @property chessDictionary chess dictionary rules
+ * @property speechRules chess filtering rules
  */
 class ChessSpeechRecognitionFilter(
     private val chessDictionary: ChessDictionary = ChessSpeechDictionary,
@@ -22,6 +27,11 @@ class ChessSpeechRecognitionFilter(
 ) : SpeechRecognitionFilter {
 
   /**
+   * Applies all speechRules on speeches
+   * @param speeches list of tokenized speeches
+   * @param confidencesScores list of confidence score for recognized speech
+   * @return chess keyword string after applying all speechRules, or an empty string if all rules
+   * fail
    */
   private fun applyRules(
       speeches: List<List<Word>>,
