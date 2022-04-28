@@ -1,8 +1,9 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.runtime.mutableStateOf
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.state.AuthenticatedUserProfileScreenState
+import ch.epfl.sdp.mobile.state.SettingsScreenStateImpl
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -21,7 +22,9 @@ class AuthenticatedUserProfileScreenStateTest {
     every { mockUser.followed } returns false
     every { mockUser.backgroundColor } returns Profile.Color.Default
 
-    val state = AuthenticatedUserProfileScreenState(mockUser)
+    val mockClickAction = mutableStateOf({})
+
+    val state = SettingsScreenStateImpl(mockUser, mockClickAction)
     assertThat(state.name).isEqualTo("test")
   }
 }
