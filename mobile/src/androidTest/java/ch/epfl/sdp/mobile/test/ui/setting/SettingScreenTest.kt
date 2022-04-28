@@ -21,7 +21,8 @@ class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestSettingScreenState(override val matches: List<ChessMatch>) : SettingScreenState {
+  open class TestSettingScreenState(override val matches: List<ChessMatch>) :
+      SettingScreenState<ChessMatch> {
     override val email = "example@epfl.ch"
     override val pastGamesCount = 10
     override val puzzlesCount = 12
@@ -32,6 +33,7 @@ class SettingScreenTest {
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true
+    override fun onMatchClick(match: ChessMatch) = Unit
   }
 
   object FakeSetttingScreenState :

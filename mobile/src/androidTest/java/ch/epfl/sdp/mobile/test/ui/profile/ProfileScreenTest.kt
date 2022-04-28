@@ -22,7 +22,8 @@ class ProfileScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestProfileScreenState(override val matches: List<ChessMatch>) : ProfileScreenState {
+  open class TestProfileScreenState(override val matches: List<ChessMatch>) :
+      ProfileScreenState<ChessMatch> {
     override val email = "example@epfl.ch"
     override val pastGamesCount = 10
     override fun onChallengeClick() = Unit
@@ -31,6 +32,7 @@ class ProfileScreenTest {
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = false
+    override fun onMatchClick(match: ChessMatch) = Unit
   }
 
   object FakeProfileScreenState :
