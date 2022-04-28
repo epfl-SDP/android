@@ -31,12 +31,12 @@ const val TAG = "ChessScene"
  *
  * @param context The context used to load the 3d models
  * @param lifecycleScope A scope that is used to launch the model loading
- * @param board The board that contains the displayed game state
+ * @param boardSnapshot The board that contains the displayed game state
  */
 class ChessScene(
     private val context: Context,
     private val lifecycleScope: LifecycleCoroutineScope,
-    board: Flow<Map<Position, SnapshotChessBoardState.SnapshotPiece>>,
+    boardSnapshot: Flow<Map<Position, SnapshotChessBoardState.SnapshotPiece>>,
 ) {
   val boardNode: ArModelNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
@@ -44,13 +44,13 @@ class ChessScene(
   private var boardHalfSize: Float = 0f
 
   private var loadBoardJob: Job =
-        lifecycleScope.launch {
-          boardNode.loadModel(
-              context = context,
-              glbFileLocation = ChessModels.Board,
-              autoScale = true,
-          )
-        }
+      lifecycleScope.launch {
+        boardNode.loadModel(
+            context = context,
+            glbFileLocation = ChessModels.Board,
+            autoScale = true,
+        )
+      }
   private lateinit var loadPiecesJob: Job
 
   private val currentPieces: MutableMap<PieceIdentifier, ModelNode> = mutableMapOf()
@@ -67,19 +67,16 @@ class ChessScene(
       // Double the value to get the total height of the box
       boardHeight = 2 * boardBoundingBox.halfExtent[1]
       boardHalfSize = boardBoundingBox.halfExtent[0]
-      loadPiecesJob = lifecycleScope.launch { loadPieces(board.first()) }
+      loadPiecesJob = lifecycleScope.launch { loadPieces(boardSnapshot.first()) }
     }
 
     lifecycleScope.launch {
-      board
-          .mapLatest { board ->
-            board.map { (position, piece) ->
-              Log.d(TAG, "$position ${piece.rank}")
-              move(piece.id, position)
-            }
-            Log.d(TAG, "Updated")
-          }
-          .collect()
+      boardSnapshot.collect { map ->
+        for ((position, piece) in map) {
+          Log.d(TAG, "Board $position $piece")
+          move(piece.id, position)
+        }
+      }
     }
   }
 
@@ -87,7 +84,7 @@ class ChessScene(
     loadBoardJob.invokeOnCompletion {
       loadPiecesJob.invokeOnCompletion {
         val model = currentPieces[id]
-        model?.modelPosition = toArPosition(position)
+        model?.smooth(toArPosition(position))
       }
     }
   }

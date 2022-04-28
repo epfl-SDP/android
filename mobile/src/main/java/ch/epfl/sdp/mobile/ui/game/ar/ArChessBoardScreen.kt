@@ -9,11 +9,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
-import kotlinx.coroutines.flow.Flow
 
 private const val BoardScale = 0.2f
 
@@ -25,7 +23,7 @@ private const val BoardScale = 0.2f
  */
 @Composable
 fun ArChessBoardScreen(
-    state: GameScreenState<SnapshotChessBoardState.SnapshotPiece>,
+    state: ChessBoardState<SnapshotChessBoardState.SnapshotPiece>,
     modifier: Modifier = Modifier
 ) {
   val view = LocalView.current
@@ -33,7 +31,7 @@ fun ArChessBoardScreen(
 
   var chessScene by remember { mutableStateOf<ChessScene?>(null) }
 
-  var piecesSnapShort: Flow<Map<ChessBoardState.Position, SnapshotChessBoardState.SnapshotPiece>>
+  val boardSnapshot by remember { mutableStateOf(snapshotFlow { state.pieces }) }
 
   // Keep the screen on only for this composable
   DisposableEffect(view) {
@@ -47,10 +45,8 @@ fun ArChessBoardScreen(
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        piecesSnapShort = snapshotFlow { state.pieces }
-
         chessScene =
-            ChessScene(context, view.lifecycleScope, piecesSnapShort).apply {
+            ChessScene(context, view.lifecycleScope, boardSnapshot).apply {
               // Scale the whole scene to the desired size
               scale(BoardScale)
             }
