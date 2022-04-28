@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.application.chess
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 
 /** Represents a [Game] between two online players */
 interface Match {
@@ -26,13 +25,3 @@ interface Match {
    */
   suspend fun update(game: Game)
 }
-
-/** Creates an empty [Match]. */
-fun Match(): Match =
-    object : Match {
-      override val game = emptyFlow<Game>()
-      override val id: String? = null
-      override val white = emptyFlow<Profile?>()
-      override val black = emptyFlow<Profile?>()
-      override suspend fun update(game: Game) = Unit
-    }

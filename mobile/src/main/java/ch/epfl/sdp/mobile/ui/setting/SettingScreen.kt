@@ -18,8 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.toColor
-import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
@@ -100,7 +98,7 @@ fun SettingPicture(
 ) {
   val strings = LocalLocalizedStrings.current
   Box(
-      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor, CircleShape),
       contentAlignment = Alignment.Center,
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)

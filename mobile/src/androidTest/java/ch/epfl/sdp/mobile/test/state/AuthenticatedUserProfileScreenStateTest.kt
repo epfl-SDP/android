@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.state
 
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.state.AuthenticatedUserProfileScreenState
@@ -23,6 +24,8 @@ class AuthenticatedUserProfileScreenStateTest {
     every { mockUser.emoji } returns "test"
     every { mockUser.uid } returns "test"
     every { mockUser.followed } returns false
+    every { mockUser.backgroundColor } returns Profile.Color.Default
+
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = ChessFacade(auth, store)

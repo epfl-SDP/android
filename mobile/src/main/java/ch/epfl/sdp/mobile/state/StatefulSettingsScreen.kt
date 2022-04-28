@@ -3,12 +3,12 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
-import ch.epfl.sdp.mobile.ui.social.*
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
+import ch.epfl.sdp.mobile.ui.social.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -16,7 +16,7 @@ class AuthenticatedUserProfileScreenState(
     private val user: AuthenticatedUser,
     private val chessFacade: ChessFacade,
     private val scope: CoroutineScope,
-) : SettingScreenState {
+) : SettingScreenState, Person by ProfileAdapter(user) {
   override val email = user.email
   override var pastGamesCount by mutableStateOf(0)
     private set
@@ -32,10 +32,6 @@ class AuthenticatedUserProfileScreenState(
       }
     }
   }
-  override val backgroundColor = Color.Orange
-  override val name = user.name
-  override val emoji = user.emoji
-  override val followed = user.followed
 
   override fun onSettingsClick() {}
   override fun onEditClick() {}

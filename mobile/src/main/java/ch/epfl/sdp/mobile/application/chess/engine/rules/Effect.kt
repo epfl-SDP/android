@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine.rules
 
 import ch.epfl.sdp.mobile.application.chess.engine.Board
-import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 
 /**
@@ -58,19 +57,37 @@ fun interface Effect<Piece : Any> {
     }
 
     /**
-     * Moves the piece at the given [Position] by the given [Delta]. If no piece was present at the
+     * Moves the piece at the given [Position] to the given target. If no piece was present at the
      * starting position or the move didn't stay in the board bounds, the [Effect] will have no
      * effect on the board (since it's not valid).
      *
      * @param P the type of the pieces.
      * @param from the original position of the piece that is moved. The [Piece] must exist.
-     * @param delta the [Delta] applied to the piece. Must stay within the bounds.
+     * @param target the final position of the piece.
      * @return the valid resulting [Effect].
      */
-    fun <P : Any> move(from: Position, delta: Delta): Effect<P> = Effect {
+    fun <P : Any> move(from: Position, target: Position): Effect<P> = Effect {
       val original = it[from] ?: return@Effect it
-      val final = from + delta ?: return@Effect it
-      replace(final, original).perform(remove<P>(from).perform(it))
+      if (!target.inBounds) return@Effect it
+      replace(target, original).perform(remove<P>(from).perform(it))
     }
+
+    /**
+     * Moves the piece at the given [Position] to the given target, and replaces it with the
+     * provided piece. If no piece was present at the starting position or the move didn't stay in
+     * the board bounds, the [Effect] will have no effect on the board (since it's not valid).
+     *
+     * @param P the type of the pieces.
+     *
+     * @param from the original position of the piece that is moved. The [Piece] must exist.
+     * @param target the final position of the piece.
+     * @param piece the piece to put at the target position.
+     * @return the valid resulting [Effect].
+     */
+    fun <P : Any> promote(from: Position, target: Position, piece: P): Effect<P> =
+        combine(
+            move(from, target),
+            replace(target, piece),
+        )
   }
 }

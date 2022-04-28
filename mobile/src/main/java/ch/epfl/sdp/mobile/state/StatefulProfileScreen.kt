@@ -8,6 +8,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
+import ch.epfl.sdp.mobile.ui.social.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -15,7 +16,7 @@ class FetchedUserProfileScreenState(
     user: Profile,
     private val chessFacade: ChessFacade,
     private val scope: CoroutineScope,
-) : ProfileScreenState {
+) : ProfileScreenState, Person by ProfileAdapter(user) {
   override val email = ""
   override var pastGamesCount by mutableStateOf(0)
     private set
@@ -31,14 +32,10 @@ class FetchedUserProfileScreenState(
     }
   }
 
-  override val backgroundColor = user.backgroundColor
-  override val name = user.name
-  override val emoji = user.emoji
-  override val followed = user.followed
-
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {}
 }
+
 /**
  * A stateful composable to visit the profile page of other players
  *

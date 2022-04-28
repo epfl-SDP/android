@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.toColor
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
@@ -97,7 +96,7 @@ fun ProfilePicture(
     modifier: Modifier = Modifier,
 ) {
   Box(
-      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor, CircleShape),
       contentAlignment = Alignment.Center,
   ) { Text(state.emoji, style = MaterialTheme.typography.h3) }
 }
