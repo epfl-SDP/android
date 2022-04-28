@@ -12,6 +12,14 @@ import ch.epfl.sdp.mobile.ui.social.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * An implementation of the [ProfileScreenState] that performs a given profile's [ChessMatch]
+ * requests.
+ *
+ * @param user the given [Profile].
+ * @param chessFacade the [ChessFacade] used to perform some requests.
+ * @param scope the [CoroutineScope] on which requests are performed.
+ */
 class FetchedUserProfileScreenState(
     user: Profile,
     private val chessFacade: ChessFacade,
@@ -51,13 +59,18 @@ fun StatefulProfileScreen(
 ) {
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
-  val profile by remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
+  val emptyProfile: Profile =
+      object : Profile {
+        override val emoji: String = ""
+        override val name: String = ""
+        override val backgroundColor: Profile.Color = Profile.Color.Default
+        override val uid: String = ""
+        override val followed: Boolean = false
+      }
+  val fetchedProfile by
+      remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
+  val profile = fetchedProfile ?: emptyProfile
   val scope = rememberCoroutineScope()
-  if (profile != null) {
-    val state =
-        remember(profile) { profile?.let { FetchedUserProfileScreenState(it, chessFacade, scope) } }
-    if (state != null) {
-      ProfileScreen(state, modifier, contentPadding)
-    }
-  }
+  val state = remember(profile) { FetchedUserProfileScreenState(profile, chessFacade, scope) }
+  ProfileScreen(state, modifier, contentPadding)
 }

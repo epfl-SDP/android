@@ -12,6 +12,14 @@ import ch.epfl.sdp.mobile.ui.social.Person
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
+ * user's profile.
+ *
+ * @param user the current [AuthenticatedUser].
+ * @param chessFacade the [ChessFacade] used to perform some requests.
+ * @param scope the [CoroutineScope] on which requests are performed.
+ */
 class AuthenticatedUserProfileScreenState(
     private val user: AuthenticatedUser,
     private val chessFacade: ChessFacade,
@@ -38,7 +46,7 @@ class AuthenticatedUserProfileScreenState(
 }
 
 /**
- * A stateful composable to visit setting page of the loged-in user
+ * A stateful composable to visit setting page of the logged-in user
  *
  * @param user the current logged-in user.
  * @param modifier the [Modifier] for this composable.
