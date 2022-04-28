@@ -38,20 +38,12 @@ class ChessScene(
     private val lifecycleScope: LifecycleCoroutineScope,
     board: Flow<Map<Position, SnapshotChessBoardState.SnapshotPiece>>,
 ) {
-  val boardNode: ArModelNode
+  val boardNode: ArModelNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
   private var boardHeight: Float = 0f
   private var boardHalfSize: Float = 0f
 
-  private var loadBoardJob: Job
-  private lateinit var loadPiecesJob: Job
-
-  private val currentPieces: MutableMap<PieceIdentifier, ModelNode> = mutableMapOf()
-
-  init {
-    boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
-
-    loadBoardJob =
+  private var loadBoardJob: Job =
         lifecycleScope.launch {
           boardNode.loadModel(
               context = context,
@@ -59,6 +51,11 @@ class ChessScene(
               autoScale = true,
           )
         }
+  private lateinit var loadPiecesJob: Job
+
+  private val currentPieces: MutableMap<PieceIdentifier, ModelNode> = mutableMapOf()
+
+  init {
 
     loadBoardJob.invokeOnCompletion {
       val renderableInstance = boardNode.modelInstance ?: return@invokeOnCompletion
