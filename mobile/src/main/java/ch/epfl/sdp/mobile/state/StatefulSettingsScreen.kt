@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen

@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -400,22 +401,17 @@ class StatefulHomeTest {
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
-            StatefulHome(
-                user = user,
-            )
-          }
+          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
-    rule.onNode(hasText("test") and hasSetTextAction()).performTextInput("test2")
+    rule.onNode(hasText("test") and hasSetTextAction()).performTextInput("2")
     rule.onNodeWithText(strings.settingEditSave).performClick()
-    rule.onNodeWithText("test").assertIsDisplayed()
+    rule.onNodeWithText("test2").assertIsDisplayed()
   }
 
   @Test
@@ -430,15 +426,10 @@ class StatefulHomeTest {
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
-            StatefulHome(
-                user = user,
-            )
-          }
+          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
