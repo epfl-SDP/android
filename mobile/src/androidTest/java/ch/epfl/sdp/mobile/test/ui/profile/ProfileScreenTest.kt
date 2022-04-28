@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.ChessMatchAdapter
+import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
@@ -27,7 +28,7 @@ class ProfileScreenTest {
     override val pastGamesCount = 10
     override fun onChallengeClick() = Unit
     override fun onUnfollowClick() = Unit
-    override val backgroundColor = Color.Default
+    override val backgroundColor = Color.Default.toColor()
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = false

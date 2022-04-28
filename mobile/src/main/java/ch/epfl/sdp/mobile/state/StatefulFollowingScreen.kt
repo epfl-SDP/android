@@ -27,7 +27,7 @@ data class ProfileAdapter(
     val profile: Profile,
 ) : Person {
   val uid = profile.uid
-  override val backgroundColor = profile.backgroundColor
+  override val backgroundColor = profile.backgroundColor.toColor()
   override val name = profile.name
   override val emoji = profile.emoji
   override val followed = profile.followed
