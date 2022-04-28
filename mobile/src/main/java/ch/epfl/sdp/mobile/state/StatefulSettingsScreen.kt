@@ -17,10 +17,6 @@ class SettingsScreenStateImpl(
   override val pastGamesCount = 0
   override val puzzlesCount = 0
   override val matches = emptyList<ChessMatch>()
-  override val backgroundColor = Profile.Color.Orange.toColor()
-  override val name = user.name
-  override val emoji = user.emoji
-  override val followed = user.followed
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
 
   override fun onSettingsClick() {}
