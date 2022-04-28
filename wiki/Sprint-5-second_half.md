@@ -1,4 +1,6 @@
-# Sprint 5 (first half)
+# Sprint 5 (second half)
+## Summary
+Overall, the sprint went quite well in spite of quite a few disturbing elements throughout it., such as vacations, midterms and graded works. This caused a few of  the planned features to be a bit behind schedule, but nothing major as they should almost all be merged by the end of the weekend. We had some internal talks about organization and communication, and everything was settled well. In addition to that, we had to replace one of our stand-up meetings with a written review due to the midterms making it more difficult to meet.
 
 ## Lars Barmettler
 This week I progressed slower than I’d liked to. Next to the SDP project we had multiple submissions in other courses and one midterm. Sadly, I had no time over the vacation week to work on the project, since I barely had access to a computer. However, I manged to do a big chunk of the edit profile task. This one is separated in two subtask the edit profile name (which I finished) and the edit profile image. For the edit profile image task, I’m in the middle of the development and will finish in the span of the next week. The teamwork was good, and I had not that many problems with merge conflict since the work was nicely isolated, from all other ongoing tasks.
@@ -16,6 +18,11 @@ My planning for this second week of the sprint is a bit off. I had 1 midterm and
 I will manage my time better next time.
 
 ## Fouad Mahmoud
+For the second week of this sprint, I finalized my two profile match history tasks by adding tests and applying some code changes. 
+
+This sprint went rather smoothly. It was beneficial to have the spring break in the middle, but I didn’t make use of it that much since my tasks were actually rather light. I do feel a lot more comfortable with several aspects of this project and would love to take on more challenging tasks in the future. 
+
+One thing I could try to improve for next sprint is to have my pull requests merged as soon as they are finished by receiving early feedback from others as one of my pull requests was merged almost two weeks after it was finished due to asking for feedback late.
 
 ## Alexandre Piveteau
 In addition to what was done last week, I finalized the promotion UI and engine pull request by adding some extra unit and integration tests.
