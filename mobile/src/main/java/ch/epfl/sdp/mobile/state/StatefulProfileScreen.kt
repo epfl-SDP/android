@@ -67,9 +67,7 @@ fun StatefulProfileScreen(
         override val uid: String = ""
         override val followed: Boolean = false
       }
-  val fetchedProfile by
-      remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
-  val profile = fetchedProfile ?: emptyProfile
+  val profile = remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(emptyProfile)
   val scope = rememberCoroutineScope()
   val state = remember(profile) { FetchedUserProfileScreenState(profile, chessFacade, scope) }
   ProfileScreen(state, modifier, contentPadding)
