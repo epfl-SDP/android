@@ -191,7 +191,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
           Rook -> ChessModels.Rook
         }
 
-  // TODO Use Color instead of Vector
   /** Convert the [Color] into a color that can be used by the AR renderer */
   private val Color.colorVector: ArColor
     get() =
