@@ -22,8 +22,8 @@ import kotlinx.coroutines.flow.map
  */
 class FetchedUserProfileScreenState(
     user: Profile,
-    private val chessFacade: ChessFacade,
-    private val scope: CoroutineScope,
+    chessFacade: ChessFacade,
+    scope: CoroutineScope,
 ) :
     VisitedProfileScreenState,
     ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
