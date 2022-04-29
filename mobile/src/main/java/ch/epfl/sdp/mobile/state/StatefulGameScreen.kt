@@ -16,7 +16,6 @@ import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
-import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

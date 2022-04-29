@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
-import com.google.ar.sceneform.math.Vector3
 import io.github.sceneview.utils.colorOf
 
 /** The palette of colors used in the Pawnies application. */

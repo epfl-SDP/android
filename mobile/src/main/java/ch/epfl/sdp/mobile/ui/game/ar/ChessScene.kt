@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
-import android.util.Log
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -18,11 +17,7 @@ import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.utils.Color as ArColor
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-
-const val TAG = "ChessScene"
 
 /**
  * This class represent the AR chess scene which contains :
@@ -43,26 +38,16 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   private var currentPosition: Map<Position, Piece> = emptyMap()
   private var boardHeight: Float = 0f
   private var boardHalfSize: Float = 0f
-  
+
   private var currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
+  private var isLoaded = false
+
   init {
-    /*
-    loadBoardJob.invokeOnCompletion {
-      val renderableInstance = boardNode.modelInstance ?: return@invokeOnCompletion
-      // Once loaded compute the board size
-      val filamentAsset = renderableInstance.filamentAsset ?: return@invokeOnCompletion
-      val boardBoundingBox = filamentAsset.boundingBox
-
-      // Get height (on y axe) of the board
-      // Double the value to get the total height of the box
-      boardHeight = 2 * boardBoundingBox.halfExtent[1]
-      boardHalfSize = boardBoundingBox.halfExtent[0]
-      loadPiecesJob = lifecycleScope.launch { loadPieces(boardSnapshot.first()) }
-    }*/
-
     scope.launch {
+      // Load Board
       val renderableInstance = loadBoard() ?: return@launch
+
       // Once loaded compute the board size
       val filamentAsset = renderableInstance.filamentAsset ?: return@launch
       val boardBoundingBox = filamentAsset.boundingBox
@@ -71,28 +56,49 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       // Double the value to get the total height of the box
       boardHeight = 2 * boardBoundingBox.halfExtent[1]
       boardHalfSize = boardBoundingBox.halfExtent[0]
+
+      // Load pieces
       loadPieces(startingBoard)
+      isLoaded = true
+
+      // Move the pieces to the correct position
+      moveAllPiece()
     }
+  }
+
+  /**
+   * Use by [ArChessBoardScreen] to update the pieces' position on the board
+   *
+   * @param pieces The new piece position
+   */
+  fun update(pieces: Map<Position, Piece>) {
+    savePosition(pieces)
+    moveAllPiece()
   }
 
   /**
    * Save the newest pieces position
    *
-   * @param pieces The new pieces position to savee
+   * @param pieces The new pieces position to save
    */
-  fun savePosition(pieces: Map<Position, Piece>) {
+  private fun savePosition(pieces: Map<Position, Piece>) {
     currentPosition = pieces
-    Log.d(TAG, "$currentPieces")
   }
 
-  /*  private fun move(piece: Piece, position: Position) {
-    loadBoardJob.invokeOnCompletion {
-      loadPiecesJob.invokeOnCompletion {
-        val model = currentPieces[piece]
-        model?.smooth(toArPosition(position))
+  /** Move all pieces */
+  private fun moveAllPiece() {
+    if (isLoaded) {
+      for ((position, piece) in currentPosition) {
+        move(piece, position)
       }
     }
-  }*/
+  }
+
+  /** Move the given [piece] at a specific [position]] */
+  private fun move(piece: Piece, position: Position) {
+    val model = currentPieces[piece] ?: return
+    model.position = toArPosition(position)
+  }
 
   private suspend fun loadBoard(): RenderableInstance? {
     return boardNode.loadModel(
