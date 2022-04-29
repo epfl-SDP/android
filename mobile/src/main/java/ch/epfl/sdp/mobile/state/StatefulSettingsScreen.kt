@@ -69,7 +69,7 @@ fun StatefulSettingsScreen(
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val state =
-      remember(user) {
+      remember(user, chessFacade, scope, currentOnEditProfileNameClick) {
         AuthenticatedUserProfileScreenState(user, chessFacade, scope, currentOnEditProfileNameClick)
       }
   SettingsScreen(state, modifier, contentPadding)
