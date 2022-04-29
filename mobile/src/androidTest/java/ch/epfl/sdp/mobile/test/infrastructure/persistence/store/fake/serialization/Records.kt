@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization
 
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeDocumentId
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeDocumentRecord
 import com.google.firebase.firestore.DocumentId
@@ -47,10 +48,12 @@ fun <T : Any> FakeDocumentRecord.toObject(id: FakeDocumentId, valueClass: KClass
     val name = requireNotNull(parameter.name) { "Unnamed constructor parameter not supported." }
     if (valueClass.hasJavaAnnotatedField<DocumentId>(name)) {
       require(parameter.type in SupportedDocumentIdTypes) { "DocumentId must be a String?." }
-      require(fields[name] == null) { "Found a document field with the same name as DocumentId." }
+      require(fields[FieldPath(name)] == null) {
+        "Found a document field with the same name as DocumentId."
+      }
       arguments[parameter] = id.value
     } else {
-      arguments[parameter] = fields[name]
+      arguments[parameter] = fields[FieldPath(name)]
     }
   }
   return constructor.callBy(arguments)
@@ -69,10 +72,10 @@ fun <T : Any> FakeDocumentRecord.Companion.fromObject(
     valueClass: KClass<T>,
 ): FakeDocumentRecord {
   require(valueClass.isData) { "Only data classes are currently supported." }
-  val fields = mutableMapOf<String, Any?>()
+  val fields = mutableMapOf<FieldPath, Any?>()
   for (property in valueClass.memberProperties) {
     if (!valueClass.hasJavaAnnotatedField<DocumentId>(property.name)) {
-      fields[property.name] = property.get(value)
+      fields[FieldPath(property.name)] = property.get(value)
     }
   }
   return FakeDocumentRecord(fields)

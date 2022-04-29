@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.RecordingDocumentEditScope
 
 /**
  * A [FakeDocumentRecord] which contains all the fields from a document. Document records do not
@@ -8,7 +10,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
  *
  * @param fields the fields of the record.
  */
-data class FakeDocumentRecord(val fields: Map<String, Any?>) {
+data class FakeDocumentRecord(val fields: Map<FieldPath, Any?>) {
 
   /** A convenience construction which builds an empty [FakeDocumentRecord]. */
   constructor() : this(emptyMap())
@@ -27,22 +29,4 @@ data class FakeDocumentRecord(val fields: Map<String, Any?>) {
   }
 
   companion object
-}
-
-/**
- * An implementation of [DocumentEditScope] which records the mutations that were performed on the
- * scope. Mutations which affect the same field will be replaced with their latest value.
- */
-private class RecordingDocumentEditScope : DocumentEditScope {
-
-  /** The mutations which have been applied within the [DocumentEditScope]. */
-  val mutations: Map<String, Any?>
-    get() = recording
-
-  /** The map which records the mutations. */
-  private val recording = mutableMapOf<String, Any?>()
-
-  override fun set(field: String, value: Any?) {
-    recording[field] = value
-  }
 }

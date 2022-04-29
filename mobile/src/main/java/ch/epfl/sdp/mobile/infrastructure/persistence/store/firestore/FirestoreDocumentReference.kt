@@ -1,9 +1,7 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentSnapshot
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreFieldValue.mapFirestoreFieldValue
 import com.google.firebase.firestore.DocumentReference as ActualDocumentReference
 import com.google.firebase.firestore.SetOptions
 import kotlin.reflect.KClass
@@ -46,16 +44,34 @@ class FirestoreDocumentReference(
   }
 
   override suspend fun update(scope: DocumentEditScope.() -> Unit) {
-    val values = FirestoreDocumentEditScope().apply(scope).values
-    reference.set(values, SetOptions.merge()).await()
+    val values = RecordingDocumentEditScope().apply(scope).mutations
+    reference.set(values.toFirestoreDocument(), SetOptions.merge()).await()
   }
 
   override suspend fun set(scope: DocumentEditScope.() -> Unit) {
-    val values = FirestoreDocumentEditScope().apply(scope).values
-    reference.set(values).await()
+    val values = RecordingDocumentEditScope().apply(scope).mutations
+    reference.set(values.toFirestoreDocument()).await()
   }
 
   override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) {
     reference.set(value).await()
   }
+}
+
+@Suppress("Unchecked_Cast")
+private fun Map<FieldPath, Any?>.toFirestoreDocument(): Map<String, Any?> {
+  val document = mutableMapOf<String, Any?>()
+  for ((path, value) in this) {
+    var root = document
+    val segments = path.segments.toMutableList()
+    while (segments.size > 1) {
+      val segment = segments[0]
+      val map = root[segment] as? MutableMap<String, Any?> ?: mutableMapOf()
+      root[segment] = map
+      root = map
+      segments.removeFirst()
+    }
+    document[segments[0]] = value.mapFirestoreFieldValue()
+  }
+  return document
 }
