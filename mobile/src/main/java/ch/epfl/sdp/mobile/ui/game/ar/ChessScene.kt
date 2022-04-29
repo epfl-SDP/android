@@ -39,6 +39,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 ) {
   val boardNode: ArModelNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
+  var currentPosition: Map<Position, Piece> = emptyMap()
   private var boardHeight: Float = 0f
   private var boardHalfSize: Float = 0f
 
@@ -52,7 +53,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       }
   private lateinit var loadPiecesJob: Job
 
-  private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
+  private var currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   init {
 
@@ -77,6 +78,16 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         }
       }
     }
+  }
+
+  /**
+   * Save the newest pieces position
+   *
+   * @param pieces The new pieces position to savee
+   */
+  fun savePosition(pieces: Map<Position, Piece>) {
+    currentPosition = pieces
+    Log.d(TAG, "$currentPieces")
   }
 
   private fun move(piece: Piece, position: Position) {
