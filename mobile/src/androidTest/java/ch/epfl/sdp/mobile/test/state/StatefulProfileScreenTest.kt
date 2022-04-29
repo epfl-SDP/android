@@ -51,7 +51,7 @@ class StatefulProfileScreenTest {
   }
 
   @Test
-  fun given_statefulProfileScreen_when_profileStateIsNull_then_aNullProfileIsDisplayed() {
+  fun given_statefulProfileScreen_when_profileStateIsNull_then_anEmptyProfileIsDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val store = buildStore {
@@ -64,7 +64,7 @@ class StatefulProfileScreenTest {
         ProvideFacades(authFacade, socialFacade, chessFacade) { StatefulVisitedProfileScreen("2") }
       }
 
-      rule.onAllNodesWithText("").assertCountEquals(3)
+      rule.onAllNodesWithText("").assertCountEquals(2)
     }
   }
 }

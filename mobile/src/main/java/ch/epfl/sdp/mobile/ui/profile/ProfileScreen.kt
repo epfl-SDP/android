@@ -71,7 +71,6 @@ fun ProfileHeader(state: VisitedProfileScreenState, modifier: Modifier = Modifie
     ProfilePicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(state.name, style = MaterialTheme.typography.h5)
-      Text("", style = MaterialTheme.typography.subtitle2)
     }
 
     Row(
