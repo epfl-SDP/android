@@ -46,6 +46,5 @@ fun UserScreen(
     item { header() }
     stickyHeader { profileTabBar() }
     items(matches) { match -> Match(match, ChessIcons.WhiteKing, { onMatchClick(match) }) }
-
   }
 }

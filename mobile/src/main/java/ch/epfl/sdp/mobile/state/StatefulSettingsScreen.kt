@@ -5,12 +5,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
-import ch.epfl.sdp.mobile.ui.social.Person
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
@@ -26,22 +25,9 @@ class AuthenticatedUserProfileScreenState(
     private val chessFacade: ChessFacade,
     private val scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
-) : SettingScreenState, Person by ProfileAdapter(user) {
+) : SettingScreenState, ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
   override val email = user.email
-  override var pastGamesCount by mutableStateOf(0)
-    private set
   override val puzzlesCount = 0
-  override var matches by mutableStateOf(emptyList<ChessMatch>())
-    private set
-
-  init {
-    scope.launch {
-      fetchForUser(user, chessFacade).collect { list ->
-        matches = list.map { createChessMatch(it, user) }
-        pastGamesCount = matches.size
-      }
-    }
-  }
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
 
   override fun onSettingsClick() {}

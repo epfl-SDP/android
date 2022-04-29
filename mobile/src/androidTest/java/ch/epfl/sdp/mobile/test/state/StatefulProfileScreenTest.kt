@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
-import ch.epfl.sdp.mobile.state.StatefulProfileScreen
+import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -42,7 +42,9 @@ class StatefulProfileScreenTest {
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade) { StatefulProfileScreen("1") }
+            ProvideFacades(authFacade, socialFacade, chessFacade) {
+              StatefulVisitedProfileScreen("1")
+            }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
     }
@@ -59,7 +61,7 @@ class StatefulProfileScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store)
       rule.setContentWithLocalizedStrings {
-        ProvideFacades(authFacade, socialFacade, chessFacade) { StatefulProfileScreen("2") }
+        ProvideFacades(authFacade, socialFacade, chessFacade) { StatefulVisitedProfileScreen("2") }
       }
 
       rule.onAllNodesWithText("").assertCountEquals(3)

@@ -4,11 +4,11 @@ import androidx.compose.runtime.Stable
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Person
 
-/** The view-model of the profile of the currently logged-in user. */
+/** The view-model of the profile of the screen. */
 @Stable
 interface ProfileScreenState : Person {
 
-  /** The email address of the currently connected user. */
+  /** The email address of the user. */
   val email: String
 
   /** Number of past games */
@@ -16,10 +16,4 @@ interface ProfileScreenState : Person {
 
   /** List of chess matches */
   val matches: List<ChessMatch>
-
-  /** On unfollow button clicked */
-  fun onUnfollowClick()
-
-  /** On challenge button clicked */
-  fun onChallengeClick()
 }

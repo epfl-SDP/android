@@ -36,9 +36,12 @@ class StatefulSettingScreenTest {
 
     val openProfileEditNameMock = { functionCalled = true }
 
-    val authFacade = AuthenticationFacade(emptyAuth(), emptyStore())
-    val socialFacade = SocialFacade(emptyAuth(), emptyStore())
-    val chessFacade = ChessFacade(emptyAuth(), emptyStore())
+    val auth = emptyAuth()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
 
     val strings =
         rule.setContentWithLocalizedStrings {

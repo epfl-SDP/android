@@ -29,16 +29,14 @@ import ch.epfl.sdp.mobile.ui.social.*
 fun Match(
     match: ChessMatch,
     icon: Painter,
-    onClick: (ChessMatch) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
   val subtitle = chooseSubtitle(strings, match.matchResult, match.numberOfMoves)
-  val subtitleColor =
-      if (subtitle == strings.profileYourTurn) PawniesColors.Orange500 else PawniesColors.Green800
 
   ListItem(
-      modifier = modifier.clickable { onClick(match) },
+      modifier = modifier.clickable { onClick() },
       icon = { Icon(icon, null, modifier = Modifier.size(40.dp)) },
       text = {
         Text(
@@ -54,7 +52,11 @@ fun Match(
             },
             style = MaterialTheme.typography.body1)
       },
-      secondaryText = { Text(subtitle, color = subtitleColor) },
+      secondaryText = {
+        val subtitleColor =
+            if (match.matchResult == YourTurn) PawniesColors.Orange500 else PawniesColors.Green800
+        Text(subtitle, color = subtitleColor)
+      },
   )
 }
 

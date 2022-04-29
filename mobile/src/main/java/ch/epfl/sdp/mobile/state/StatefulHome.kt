@@ -92,7 +92,7 @@ fun StatefulHome(
         StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
-        StatefulProfileScreen(
+        StatefulVisitedProfileScreen(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {

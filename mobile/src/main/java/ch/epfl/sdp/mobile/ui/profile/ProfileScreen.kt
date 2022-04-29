@@ -29,7 +29,7 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    state: ProfileScreenState,
+    state: VisitedProfileScreenState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -61,7 +61,7 @@ fun ProfileScreen(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
+fun ProfileHeader(state: VisitedProfileScreenState, modifier: Modifier = Modifier) {
 
   Column(
       modifier = modifier,
@@ -92,7 +92,7 @@ fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
  */
 @Composable
 fun ProfilePicture(
-    state: ProfileScreenState,
+    state: VisitedProfileScreenState,
     modifier: Modifier = Modifier,
 ) {
   Box(
