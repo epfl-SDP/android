@@ -39,14 +39,7 @@ interface Query {
    */
   fun orderBy(path: FieldPath, direction: Direction = Direction.Ascending): Query
 
-  /**
-   * Orders the result according to the values of the document for the given field.
-   *
-   * @param field the field for which the ordering is performed.
-   * @param direction the direction in which the ordering is performed.
-   *
-   * @return the updated [Query].
-   */
+  /** @see orderBy a variant with a [FieldPath]. */
   fun orderBy(field: String, direction: Direction = Direction.Ascending): Query =
       orderBy(FieldPath(field), direction)
 
@@ -63,16 +56,7 @@ interface Query {
    */
   fun whereGreaterThan(path: FieldPath, value: Any, inclusive: Boolean = true): Query
 
-  /**
-   * Filters the results by keeping only the documents for which the value of the given [field] is
-   * greater than the given [value]. Documents which do not contain this field will be discarded.
-   *
-   * @param field the field which is compared.
-   * @param value the value which is used for comparison.
-   * @param inclusive true if the results should include documents whose field is an exact match.
-   *
-   * @return the updated [Query].
-   */
+  /** @see whereGreaterThan a variant with a [FieldPath]. */
   fun whereGreaterThan(field: String, value: Any, inclusive: Boolean = true): Query =
       whereGreaterThan(FieldPath(field), value, inclusive)
 
@@ -88,16 +72,7 @@ interface Query {
    */
   fun whereLessThan(path: FieldPath, value: Any, inclusive: Boolean = true): Query
 
-  /**
-   * Filters the results by keeping only the documents for which the value of the given [field] is
-   * less than the given [value]. Documents which do not contain this field will be discarded.
-   *
-   * @param field the field which is compared.
-   * @param value the value which is used for comparison.
-   * @param inclusive true if the results should include documents whose field is an exact match.
-   *
-   * @return the updated [Query].
-   */
+  /** @see whereLessThan a variant with a [FieldPath]. */
   fun whereLessThan(field: String, value: Any, inclusive: Boolean = true): Query =
       whereLessThan(FieldPath(field), value, inclusive)
 
@@ -112,15 +87,7 @@ interface Query {
    */
   fun whereEquals(path: FieldPath, value: Any?): Query
 
-  /**
-   * Filters the results by keeping only the documents which contain the given [value] for the given
-   * [field].
-   *
-   * @param field the field for which the equality is checked.
-   * @param value the value which is looked for.
-   *
-   * @return the updated [Query].
-   */
+  /** @see whereEquals a variant with a [FieldPath]. */
   fun whereEquals(field: String, value: Any?): Query = whereEquals(FieldPath(field), value)
 
   /**
@@ -134,15 +101,7 @@ interface Query {
    */
   fun whereNotEquals(path: FieldPath, value: Any?): Query
 
-  /**
-   * Filters the results by keeping only the documents which **do not** contain the given [value]
-   * for the given [field].
-   *
-   * @param field the field for which the difference is checked.
-   * @param value the value which is avoided.
-   *
-   * @return the updated [Query].
-   */
+  /** @see whereNotEquals a variant with a [FieldPath] */
   fun whereNotEquals(field: String, value: Any?): Query = whereNotEquals(FieldPath(field), value)
 
   /**
@@ -156,15 +115,7 @@ interface Query {
    */
   fun whereArrayContains(path: FieldPath, value: Any): Query
 
-  /**
-   * Filters the results by keeping only the documents which contain the given [value] in an array
-   * in the given [field].
-   *
-   * @param field the field for which array contains is checked.
-   * @param value the value which is looked for.
-   *
-   * @return the updated [Query].
-   */
+  /** @see whereArrayContains a variant with a [FieldPath]. */
   fun whereArrayContains(field: String, value: Any): Query =
       whereArrayContains(FieldPath(field), value)
 
