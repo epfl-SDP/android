@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.ui.speech_recognition
 
-/** Currently used chess dictionary for homonym chess keywords */
+/** Currently used chess dictionary for homophones chess keywords */
 object ChessSpeechDictionary : ChessDictionary {
   // Chess Pieces
   override val chessPieces =

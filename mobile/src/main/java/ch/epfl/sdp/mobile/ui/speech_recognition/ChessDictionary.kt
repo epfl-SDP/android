@@ -2,9 +2,9 @@ package ch.epfl.sdp.mobile.ui.speech_recognition
 
 /**
  * Interface representing the vocabulary of chess move commands
- * @property chessPieces mapping of chess pieces keywords to their homonyms
- * @property numbers mapping of chess number keywords to their homonyms
- * @property letters mapping of chess letter keywords to their homonyms
+ * @property chessPieces mapping of chess pieces keywords to their homophones
+ * @property numbers mapping of chess number keywords to their homophones
+ * @property letters mapping of chess letter keywords to their homophones
  * @property placements all possible combinations of chess board placement
  */
 interface ChessDictionary {
