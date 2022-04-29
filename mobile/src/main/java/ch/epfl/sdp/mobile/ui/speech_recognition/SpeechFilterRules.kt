@@ -23,8 +23,7 @@ object ChessSpeechFilterRules {
    * @return true if the rule applies to the speech, false otherwise
    */
   private fun filterForPawn(speech: List<String>): Boolean {
-
-    return speech.any { sp -> sp.startsWithAny("bon", "pon") }
+    return speech.any { sp -> sp.endsOrStartsWithAny(String::startsWith, "bon", "pon") }
   }
   /**
    * Filter rule for King
@@ -32,7 +31,7 @@ object ChessSpeechFilterRules {
    * @return true if the rule applies to the speech, false otherwise
    */
   private fun filterForKing(speech: List<String>): Boolean {
-    return speech.any { sp -> sp.endsWithAny("inc", "ink", "ing") }
+    return speech.any { sp -> sp.endsOrStartsWithAny(String::endsWith, "inc", "ink", "ing") }
   }
   /**
    * Filter rule for Rook
@@ -40,22 +39,17 @@ object ChessSpeechFilterRules {
    * @return true if the rule applies to the speech, false otherwise
    */
   private fun filterForRook(speech: List<String>): Boolean {
-    return speech.any { sp -> sp.endsWithAny("ouk", "uk", "uch", "och") }
+    return speech.any { sp -> sp.endsOrStartsWithAny(String::endsWith, "ouk", "uk", "uch", "och") }
   }
 
   /**
-   * @param suffixes variable argument of suffixes
-   * @return true if and only if [this] ends with any of the suffixes
+   * @param suffixesOrPrefixes variable argument of suffixes xor prefixes
+   * @return true if and only if [this] ends or starts with any of the suffixes/prefixes
    */
-  private fun String.endsWithAny(vararg suffixes: String): Boolean {
-    return suffixes.any { this.endsWith(it) }
-  }
-
-  /**
-   * @param prefixes variable argument of suffixes
-   * @return true if and only if [this] starts with any of the prefixes
-   */
-  private fun String.startsWithAny(vararg prefixes: String): Boolean {
-    return prefixes.any { this.startsWith(it) }
+  private fun String.endsOrStartsWithAny(
+      endsOrStartWith: String.(String) -> Boolean,
+      vararg suffixesOrPrefixes: String,
+  ): Boolean {
+    return suffixesOrPrefixes.any { this.endsOrStartWith(it) }
   }
 }
