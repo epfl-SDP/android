@@ -27,9 +27,9 @@ class SettingScreenTest {
     override val pastGamesCount = 10
     override val puzzlesCount = 12
 
-    override fun onEditClick() = Unit
     override fun onSettingsClick() = Unit
     override val backgroundColor = Color.Default.toColor()
+    override fun onEditProfileNameClick() = Unit
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true
