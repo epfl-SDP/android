@@ -66,6 +66,7 @@ fun SettingsScreen(
  */
 @Composable
 fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
 
   Column(
       modifier = modifier,
@@ -74,7 +75,17 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
   ) {
     SettingPicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(state.name, style = MaterialTheme.typography.h5)
+      Row(
+          horizontalArrangement = Arrangement.Center,
+          verticalAlignment = Alignment.CenterVertically) {
+        Text(state.name, style = MaterialTheme.typography.h5)
+        IconButton(onClick = state::onEditProfileNameClick) {
+          Icon(
+              Icons.Default.Edit,
+              contentDescription = strings.profileEditNameIcon,
+              modifier = Modifier.size(24.dp))
+        }
+      }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
     SettingsButton(onClick = state::onSettingsClick)
@@ -98,14 +109,14 @@ fun SettingPicture(
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
-        onClick = state::onEditClick,
+        onClick = state::onSettingsClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
                 .shadow(2.dp, CircleShape)
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+    ) { Icon(Icons.Default.Edit, strings.profileEditImageIcon) }
   }
 }
 
