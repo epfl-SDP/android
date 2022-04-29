@@ -36,25 +36,6 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
     onDispose { view.keepScreenOn = false }
   }
 
-  /**
-   * If not already in the scene, the board will be added. Update the board anchor with the given
-   * one and change the displayed position
-   *
-   * @param anchor The (new) board's anchor position
-   */
-  fun anchorOrMoveBoard(arSceneView: ArSceneView, anchor: Anchor) {
-
-    val currentChessScene = chessScene ?: return
-
-    currentChessScene.let {
-      // Add only one instance of the node
-      if (!arSceneView.children.contains(it.boardNode)) {
-        arSceneView.addChild(it.boardNode)
-      }
-      it.boardNode.anchor = anchor
-    }
-  }
-
   AndroidView(
       factory = { context ->
 
@@ -69,7 +50,7 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
 
         // Place the chess board on the taped position
         arSceneView.onTouchAr = { hitResult, _ ->
-          anchorOrMoveBoard(arSceneView, hitResult.createAnchor())
+          anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
         }
 
         arSceneView
@@ -79,4 +60,27 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
         val currentChessScene = chessScene ?: return@AndroidView
         currentChessScene.update(state.pieces)
       })
+}
+
+/**
+ * If not already in the scene, the board will be added. Update the board anchor with the given one
+ * and change the displayed position
+ *
+ * @param anchor The (new) board's anchor position
+ */
+private fun <Piece : ChessBoardState.Piece> anchorOrMoveBoard(
+    arSceneView: ArSceneView,
+    chessScene: ChessScene<Piece>?,
+    anchor: Anchor
+) {
+
+  val currentChessScene = chessScene ?: return
+
+  currentChessScene.let {
+    // Add only one instance of the node
+    if (!arSceneView.children.contains(it.boardNode)) {
+      arSceneView.addChild(it.boardNode)
+    }
+    it.boardNode.anchor = anchor
+  }
 }
