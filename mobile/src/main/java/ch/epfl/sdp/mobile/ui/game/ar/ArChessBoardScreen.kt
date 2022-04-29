@@ -31,8 +31,6 @@ fun ArChessBoardScreen(
 
   var chessScene by remember { mutableStateOf<ChessScene?>(null) }
 
-  val boardSnapshot by remember { mutableStateOf(snapshotFlow { state.pieces }) }
-
   // Keep the screen on only for this composable
   DisposableEffect(view) {
     view.keepScreenOn = true
@@ -44,6 +42,8 @@ fun ArChessBoardScreen(
 
         // Create the view
         val arSceneView = ArSceneView(context)
+
+        val boardSnapshot = snapshotFlow { state.pieces }
 
         chessScene =
             ChessScene(context, view.lifecycleScope, boardSnapshot).apply {
