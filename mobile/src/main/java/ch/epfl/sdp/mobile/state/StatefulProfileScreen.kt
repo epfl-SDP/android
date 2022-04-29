@@ -26,8 +26,7 @@ class FetchedUserProfileScreenState(
     private val scope: CoroutineScope,
 ) : ProfileScreenState, Person by ProfileAdapter(user) {
   override val email = ""
-  override var pastGamesCount by mutableStateOf(0)
-    private set
+  override val pastGamesCount get() = matches.size
   override var matches by mutableStateOf(emptyList<ChessMatch>())
     private set
 
