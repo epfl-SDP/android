@@ -25,7 +25,6 @@ class VisitedProfileScreenTest {
 
   open class TestProfileScreenState(override val matches: List<ChessMatch>) :
       VisitedProfileScreenState {
-    override val email = "example@epfl.ch"
     override val pastGamesCount = 10
     override fun onChallengeClick() = Unit
     override fun onUnfollowClick() = Unit
@@ -44,7 +43,6 @@ class VisitedProfileScreenTest {
   fun profile_isDisplayed() {
     rule.setContent { ProfileScreen(FakeProfileScreenState) }
 
-    rule.onNodeWithText(FakeProfileScreenState.email).assertExists()
     rule.onNodeWithText(FakeProfileScreenState.name).assertExists()
     rule.onNodeWithText(FakeProfileScreenState.emoji).assertExists()
   }
