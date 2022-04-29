@@ -27,8 +27,8 @@ class StatefulProfileScreen(
   override val email: String = ""
   override var matches by mutableStateOf(emptyList<ChessMatch>())
     private set
-  override var pastGamesCount = matches.size
-    private set
+  override val pastGamesCount
+    get() = matches.size
   init {
     scope.launch {
       fetchForUser(user, chessFacade).collect { list ->
