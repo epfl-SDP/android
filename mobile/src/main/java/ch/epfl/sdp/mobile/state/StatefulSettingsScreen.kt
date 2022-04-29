@@ -22,8 +22,8 @@ import kotlinx.coroutines.CoroutineScope
  */
 class AuthenticatedUserProfileScreenState(
     private val user: AuthenticatedUser,
-    private val chessFacade: ChessFacade,
-    private val scope: CoroutineScope,
+    chessFacade: ChessFacade,
+    scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
 ) : SettingScreenState, ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
   override val email = user.email

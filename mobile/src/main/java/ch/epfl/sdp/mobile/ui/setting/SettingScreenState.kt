@@ -7,6 +7,9 @@ import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 @Stable
 interface SettingScreenState : ProfileScreenState {
 
+  /** The email address of the logged-in user. */
+  val email: String
+
   /** Number of puzzles */
   val puzzlesCount: Int
 

@@ -8,9 +8,6 @@ import ch.epfl.sdp.mobile.ui.social.Person
 @Stable
 interface ProfileScreenState : Person {
 
-  /** The email address of the user. */
-  val email: String
-
   /** Number of past games */
   val pastGamesCount: Int
 

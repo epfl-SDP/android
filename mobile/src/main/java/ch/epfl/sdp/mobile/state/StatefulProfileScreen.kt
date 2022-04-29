@@ -24,7 +24,6 @@ class StatefulProfileScreen(
     private val chessFacade: ChessFacade,
     private val scope: CoroutineScope,
 ) : ProfileScreenState, Person by ProfileAdapter(user) {
-  override val email: String = ""
   override var matches by mutableStateOf(emptyList<ChessMatch>())
     private set
   override var pastGamesCount = matches.size
