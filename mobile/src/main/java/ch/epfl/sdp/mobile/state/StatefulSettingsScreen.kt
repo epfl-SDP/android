@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
  * @param onEditProfileNameClickAction Callable lambda to navigate to the profile Edit popup
  */
 class AuthenticatedUserProfileScreenState(
-    private val user: AuthenticatedUser,
+    user: AuthenticatedUser,
     chessFacade: ChessFacade,
     scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
