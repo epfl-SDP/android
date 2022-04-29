@@ -104,7 +104,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate("$ArRoute/{id}") },
+                onShowAr = { controller.navigate("$ArRoute/${id}") },
             )
         StatefulGameScreen(
             actions = actions,
