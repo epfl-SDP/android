@@ -56,10 +56,7 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
         arSceneView
       },
       modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
-      update = {
-        val currentChessScene = chessScene ?: return@AndroidView
-        currentChessScene.update(state.pieces)
-      })
+      update = { chessScene?.update(state.pieces) })
 }
 
 /**
