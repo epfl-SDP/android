@@ -100,6 +100,11 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     model.position = toArPosition(position)
   }
 
+  /**
+   * Load the board model
+   *
+   * @return The [RenderableInstance] that can be used to manipulate the loaded model
+   */
   private suspend fun loadBoard(): RenderableInstance? {
     return boardNode.loadModel(
         context = context,
@@ -133,11 +138,16 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
     // Once loaded change the piece appearance
     val color = piece.color.colorVector
-
     renderableInstance.material.filamentMaterialInstance.setBaseColor(color)
+
     return model
   }
 
+  /**
+   * Load model for the given pieces list
+   *
+   * @param pieces The pieces that need to be load
+   */
   private suspend fun loadPieces(pieces: Map<Position, Piece>) {
     for ((position, piece) in pieces) {
       val model = loadPieceModel(piece, position)
