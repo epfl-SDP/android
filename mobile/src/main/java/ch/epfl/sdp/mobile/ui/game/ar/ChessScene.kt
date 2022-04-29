@@ -36,10 +36,10 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   val boardNode: ArModelNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
   private var currentPosition: Map<Position, Piece> = emptyMap()
+  private var currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
+
   private var boardHeight: Float = 0f
   private var boardHalfSize: Float = 0f
-
-  private var currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   private var isLoaded = false
 
