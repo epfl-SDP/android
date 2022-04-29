@@ -17,7 +17,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinish
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.digit
 
 /** An object which contains some convenience parser combinators for chess engine notation. */
-object NotationCombinators {
+object AlgebraicNotationCombinators {
 
   /** A [Parser] which returns the column in a position. */
   private val column = char().filter { it in 'a'..'h' }.map { it - 'a' }
