@@ -3,9 +3,8 @@ package ch.epfl.sdp.mobile.ui.game.ar
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
-import ch.epfl.sdp.mobile.application.chess.engine.PieceIdentifier
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
@@ -33,10 +32,10 @@ const val TAG = "ChessScene"
  * @param lifecycleScope A scope that is used to launch the model loading
  * @param boardSnapshot The board that contains the displayed game state
  */
-class ChessScene(
+class ChessScene<Piece : ChessBoardState.Piece>(
     private val context: Context,
     private val lifecycleScope: LifecycleCoroutineScope,
-    boardSnapshot: Flow<Map<Position, SnapshotChessBoardState.SnapshotPiece>>,
+    boardSnapshot: Flow<Map<Position, Piece>>,
 ) {
   val boardNode: ArModelNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
@@ -53,7 +52,7 @@ class ChessScene(
       }
   private lateinit var loadPiecesJob: Job
 
-  private val currentPieces: MutableMap<PieceIdentifier, ModelNode> = mutableMapOf()
+  private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   init {
 
@@ -74,16 +73,16 @@ class ChessScene(
       boardSnapshot.collect { map ->
         for ((position, piece) in map) {
           Log.d(TAG, "Board $position $piece")
-          move(piece.id, position)
+          move(piece, position)
         }
       }
     }
   }
 
-  private fun move(id: PieceIdentifier, position: Position) {
+  private fun move(piece: Piece, position: Position) {
     loadBoardJob.invokeOnCompletion {
       loadPiecesJob.invokeOnCompletion {
-        val model = currentPieces[id]
+        val model = currentPieces[piece]
         model?.smooth(toArPosition(position))
       }
     }
@@ -94,7 +93,7 @@ class ChessScene(
    * chessboard)
    */
   private fun loadPieceModel(
-      piece: SnapshotChessBoardState.SnapshotPiece,
+      piece: Piece,
       position: Position,
   ): ModelNode {
     val path = piece.rank.arModelPath
@@ -121,12 +120,12 @@ class ChessScene(
     return model
   }
 
-  private fun loadPieces(pieces: Map<Position, SnapshotChessBoardState.SnapshotPiece>) {
+  private fun loadPieces(pieces: Map<Position, Piece>) {
     for ((position, piece) in pieces) {
       val model = loadPieceModel(piece, position)
       // Add the new model node to the board
       boardNode.addChild(model)
-      currentPieces[piece.id] = model
+      currentPieces[piece] = model
     }
   }
 

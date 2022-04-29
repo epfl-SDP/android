@@ -7,7 +7,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.viewinterop.AndroidView
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
@@ -22,14 +21,14 @@ private const val BoardScale = 0.2f
  * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-fun ArChessBoardScreen(
-    state: ChessBoardState<SnapshotChessBoardState.SnapshotPiece>,
+fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
+    state: ChessBoardState<Piece>,
     modifier: Modifier = Modifier
 ) {
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
 
-  var chessScene by remember { mutableStateOf<ChessScene?>(null) }
+  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
 
   // Keep the screen on only for this composable
   DisposableEffect(view) {
