@@ -42,10 +42,8 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        val boardSnapshot = snapshotFlow { state.pieces }
-
         chessScene =
-            ChessScene(context, view.lifecycleScope, boardSnapshot).apply {
+            ChessScene(context, view.lifecycleScope, state.pieces).apply {
               // Scale the whole scene to the desired size
               scale(BoardScale)
             }

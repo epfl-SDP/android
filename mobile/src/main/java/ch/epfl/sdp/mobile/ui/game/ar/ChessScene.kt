@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LifecycleCoroutineScope
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -10,6 +9,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import com.google.ar.sceneform.rendering.RenderableInstance
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.material.setBaseColor
@@ -17,6 +17,7 @@ import io.github.sceneview.math.Position as ArPosition
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.utils.Color as ArColor
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -29,34 +30,24 @@ const val TAG = "ChessScene"
  * - A number of chess pieces depending on the game state
  *
  * @param context The context used to load the 3d models
- * @param lifecycleScope A scope that is used to launch the model loading
- * @param boardSnapshot The board that contains the displayed game state
+ * @param scope A scope that is used to launch the model loading
+ * @param startingBoard The board that contains the displayed game state
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
     private val context: Context,
-    private val lifecycleScope: LifecycleCoroutineScope,
-    boardSnapshot: Flow<Map<Position, Piece>>,
+    scope: CoroutineScope,
+    startingBoard: Map<Position, Piece>,
 ) {
   val boardNode: ArModelNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
-  var currentPosition: Map<Position, Piece> = emptyMap()
+  private var currentPosition: Map<Position, Piece> = emptyMap()
   private var boardHeight: Float = 0f
   private var boardHalfSize: Float = 0f
-
-  private var loadBoardJob: Job =
-      lifecycleScope.launch {
-        boardNode.loadModel(
-            context = context,
-            glbFileLocation = ChessModels.Board,
-            autoScale = true,
-        )
-      }
-  private lateinit var loadPiecesJob: Job
-
+  
   private var currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   init {
-
+    /*
     loadBoardJob.invokeOnCompletion {
       val renderableInstance = boardNode.modelInstance ?: return@invokeOnCompletion
       // Once loaded compute the board size
@@ -68,15 +59,19 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       boardHeight = 2 * boardBoundingBox.halfExtent[1]
       boardHalfSize = boardBoundingBox.halfExtent[0]
       loadPiecesJob = lifecycleScope.launch { loadPieces(boardSnapshot.first()) }
-    }
+    }*/
 
-    lifecycleScope.launch {
-      boardSnapshot.collect { map ->
-        for ((position, piece) in map) {
-          Log.d(TAG, "Board $position $piece")
-          move(piece, position)
-        }
-      }
+    scope.launch {
+      val renderableInstance = loadBoard() ?: return@launch
+      // Once loaded compute the board size
+      val filamentAsset = renderableInstance.filamentAsset ?: return@launch
+      val boardBoundingBox = filamentAsset.boundingBox
+
+      // Get height (on y axe) of the board
+      // Double the value to get the total height of the box
+      boardHeight = 2 * boardBoundingBox.halfExtent[1]
+      boardHalfSize = boardBoundingBox.halfExtent[0]
+      loadPieces(startingBoard)
     }
   }
 
@@ -90,20 +85,28 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     Log.d(TAG, "$currentPieces")
   }
 
-  private fun move(piece: Piece, position: Position) {
+  /*  private fun move(piece: Piece, position: Position) {
     loadBoardJob.invokeOnCompletion {
       loadPiecesJob.invokeOnCompletion {
         val model = currentPieces[piece]
         model?.smooth(toArPosition(position))
       }
     }
+  }*/
+
+  private suspend fun loadBoard(): RenderableInstance? {
+    return boardNode.loadModel(
+        context = context,
+        glbFileLocation = ChessModels.Board,
+        autoScale = true,
+    )
   }
 
   /**
    * Load a chess [piece] and place it to a given [position] relative to the parent (aka the
    * chessboard)
    */
-  private fun loadPieceModel(
+  private suspend fun loadPieceModel(
       piece: Piece,
       position: Position,
   ): ModelNode {
@@ -112,15 +115,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     val model =
         ModelNode(position = toArPosition(position)).apply {
           // Load the piece
-          loadModelAsync(
-              context = context, glbFileLocation = path, coroutineScope = lifecycleScope) {
-              renderableInstance ->
-            // Once loaded change the piece appearance
-
-            val color = piece.color.colorVector
-
-            renderableInstance.material.filamentMaterialInstance.setBaseColor(color)
-          }
+          loadModel(context = context, glbFileLocation = path)
 
           // Rotate the black knight to be faced inside the board
           if (piece.rank == Knight && piece.color == Black) {
@@ -128,10 +123,16 @@ class ChessScene<Piece : ChessBoardState.Piece>(
           }
         }
 
+    val renderableInstance = model.modelInstance ?: return model
+
+    // Once loaded change the piece appearance
+    val color = piece.color.colorVector
+
+    renderableInstance.material.filamentMaterialInstance.setBaseColor(color)
     return model
   }
 
-  private fun loadPieces(pieces: Map<Position, Piece>) {
+  private suspend fun loadPieces(pieces: Map<Position, Piece>) {
     for ((position, piece) in pieces) {
       val model = loadPieceModel(piece, position)
       // Add the new model node to the board
