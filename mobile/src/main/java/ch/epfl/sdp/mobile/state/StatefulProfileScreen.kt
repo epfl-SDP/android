@@ -68,6 +68,6 @@ fun StatefulProfileScreen(
       }
   val profile = remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(emptyProfile)
   val scope = rememberCoroutineScope()
-  val state = remember(profile) { FetchedUserProfileScreenState(profile, chessFacade, scope) }
+  val state = remember(profile, chessFacade, scope) { FetchedUserProfileScreenState(profile, chessFacade, scope) }
   ProfileScreen(state, modifier, contentPadding)
 }
