@@ -111,7 +111,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * Loads all the [Renderable] for any [Rank] and makes them available as a higher-order function.
    * All the models will be loaded in parallel.
    *
-   * @return a higher-order function which maps ranks and colors to the right [Renderable].
+   * @return a higher-order function which maps ranks to the right [Renderable].
    */
   private suspend fun loadPieceRenderable(): (Rank) -> Renderable = coroutineScope {
     val loaded = mutableMapOf<Rank, Renderable>()
