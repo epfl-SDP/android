@@ -74,8 +74,8 @@ class ChessScene<Piece : ChessBoardState.Piece>(
                 // Rotate the black pieces to face the right direction.
                 if (piece.color == Black) {
                   modelRotation = Rotation(0f, 180f, 0f)
-                  renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
                 }
+                renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
                 boardNode.addChild(this)
               }
             }
