@@ -97,7 +97,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
    * appropriate model.
    *
-   * @param node the [ArModelNode] to bee prepared.
+   * @param node the [ArModelNode] to be prepared.
    * @return the [RenderableInstance] which can be used to manipulate the loaded model.
    */
   private suspend fun prepareBoardRenderableInstance(node: ArModelNode): RenderableInstance? =
