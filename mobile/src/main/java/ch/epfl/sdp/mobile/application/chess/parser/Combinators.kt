@@ -92,4 +92,32 @@ object Combinators {
   fun <I, O> Parser<I, O>.filter(keepIf: (O) -> Boolean): Parser<I, O> = flatMap {
     if (keepIf(it)) success(it) else failure()
   }
+
+  /**
+   * Returns a [Parser] which repeats the given [Parser] as many times as possible, returning the
+   * [List] of consecutive outputs.
+   *
+   * @param I the type of the input.
+   * @param O the type of the output.
+   * @receiver the repeated parser.
+   * @return a repeated [Parser].
+   */
+  fun <I, O> Parser<I, O>.repeat(): Parser<I, List<O>> {
+    fun helper(): Parser<I, List<O>> =
+        flatMap { head -> helper().map { tail -> tail + head } }.orElse { emptyList() }
+    return helper().map { it.asReversed() }
+  }
+
+  /**
+   * Returns a [Parser] which repeats the given [Parser] at least [count] times, returning the
+   * [List] of consecutive outputs.
+   *
+   * @param I the type of the input.
+   * @param O the type of the output.
+   * @receiver the repeated parser.
+   * @param count the minimum count of elements.
+   * @return a repeated [Parser].
+   */
+  fun <I, O> Parser<I, O>.repeatAtLeast(count: Int): Parser<I, List<O>> =
+      repeat().filter { it.size >= count }
 }

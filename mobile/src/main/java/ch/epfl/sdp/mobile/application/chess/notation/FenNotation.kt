@@ -1,9 +1,14 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.piece
-import java.util.*
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.activeColor
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.castlingRights
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.enPassant
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.integer
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.spaces
+import ch.epfl.sdp.mobile.application.chess.notation.Test.board
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 
 /**
  * An object which contains some utilities to transform FEN (Forsyth–Edwards Notation) notation into
@@ -14,8 +19,6 @@ object FenNotation {
   const val nothingSymbol = '-'
   const val RowSeparatorSymbol = '/'
   const val FieldSeparatorSymbol = ' '
-
-  data class ParserPiece(val nPieces: Int, val piece: Optional<Pair<Color, Rank>>)
 
   data class CastlingRights(
       val kingSideWhite: Boolean = false,
@@ -34,57 +37,38 @@ object FenNotation {
       val fullMoveClock: Int,
   )
 
-  fun parseFen(text: String): BoardSnapshot {
-    val tokens = text.split(" ")
-    val chessboardText = tokens[0]
-    val colorText = tokens[1]
-    val castlingRightsText = tokens[2]
-    val enPassantText = tokens[3]
-    val halfMoveClockText = tokens[4]
-    val fullMoveClockText = tokens[5]
-
-    val board =
-        buildBoard<Piece<Color>> {
-          val rows = chessboardText.split(RowSeparatorSymbol)
-          var id = PieceIdentifier(0)
-
-          for (y: Int in rows.indices) {
-            var x = 0
-            var char = 0
-            while (x < Board.Size) {
-              val parserPiece = piece.parse(rows[y][char].toString()).single().output
-              println("DEBUG: ($x, $y): ${parserPiece.piece} (${parserPiece.nPieces})")
-              if (parserPiece.piece.isPresent) {
-                set(
-                    Position(x, y),
-                    Piece(parserPiece.piece.get().first, parserPiece.piece.get().second, id++))
+  fun parseFen(text: String): BoardSnapshot? {
+    val parser =
+        board().flatMap { board ->
+          spaces.flatMap {
+            activeColor.flatMap { color ->
+              spaces.flatMap {
+                castlingRights.flatMap { castling ->
+                  spaces.flatMap {
+                    enPassant.flatMap { enPassant ->
+                      spaces.flatMap {
+                        integer.flatMap { halfMoveClock ->
+                          spaces.flatMap {
+                            integer.map { fullMoveClock ->
+                              BoardSnapshot(
+                                  board = board,
+                                  playing = color,
+                                  castlingRights = castling,
+                                  enPassant = enPassant,
+                                  halfMoveClock = halfMoveClock,
+                                  fullMoveClock = fullMoveClock,
+                              )
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
               }
-              x += parserPiece.nPieces
-              char++
             }
           }
         }
-
-    val color = Color.White
-    val enPassant = null
-    val halfMoveClock = 0
-    val fullMoveClock = 0
-
-    val castlingRights =
-        CastlingRights(
-            kingSideWhite = false,
-            queenSideWhite = false,
-            kingSideBlack = false,
-            queenSideBlack = false,
-        )
-
-    return BoardSnapshot(
-        board = board,
-        playing = color,
-        castlingRights = castlingRights,
-        enPassant = enPassant,
-        halfMoveClock = halfMoveClock,
-        fullMoveClock = fullMoveClock,
-    )
+    return parser.parse(text).singleOrNull()?.output
   }
 }
