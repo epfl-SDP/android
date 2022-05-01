@@ -5,8 +5,8 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.acti
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.board
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.castlingRights
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.enPassant
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.integer
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.spaces
+import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.integer
+import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.spaces
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 

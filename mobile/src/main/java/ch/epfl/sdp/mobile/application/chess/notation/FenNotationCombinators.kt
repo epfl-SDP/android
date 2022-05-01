@@ -25,7 +25,6 @@ object FenNotationCombinators {
 
   private const val NothingSymbol = '-'
   private const val RowSeparatorSymbol = '/'
-  private const val FieldSeparatorSymbol = ' '
 
   private val LettersToRank =
       mapOf(
@@ -85,8 +84,6 @@ object FenNotationCombinators {
         }
       }
 
-  val spaces = char(FieldSeparatorSymbol).repeatAtLeast(count = 1)
-
   /** A [Parser] which consumes either a w or b indicating the next playing color */
   val activeColor = char('w').map { White } or char('b').map { Black }
 
@@ -113,7 +110,4 @@ object FenNotationCombinators {
    * move, if allowed
    */
   val enPassant = char(NothingSymbol).map { null } or position.map { it }
-
-  /** A [Parser] which consumes a number of digits representing an integer number */
-  val integer = digit().repeat().map { it.joinToString("") }.map { it.toInt() }
 }

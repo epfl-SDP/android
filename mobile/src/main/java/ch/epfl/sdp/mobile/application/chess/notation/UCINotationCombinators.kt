@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.position
+import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.spaces
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
@@ -41,9 +42,13 @@ object UCINotationCombinators {
   /** A [Parser] for an action. */
   private val action = combine(move, promote)
 
-  /** A [Parser] for an arbitrarily long sequence of actions */
-  private val actions = action.repeat()
+  /** A [Parser] for an arbitrarily long list of actions. */
+  private val actions =
+      action
+          .flatMap { action -> spaces.map { action } }
+          .repeat()
+          .flatMap { actions -> action.map { actions + it } }
 
   /** Returns a [Parser] for a list of [Action]. */
-  fun uciActions(): Parser<String, List<Action>> = actions
+  fun uciActionList(): Parser<String, List<Action>> = actions
 }
