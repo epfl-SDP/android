@@ -9,7 +9,6 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.orElse
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.char
@@ -41,7 +40,7 @@ object VoiceInputCombinator {
           string("rook").map { Rank.Rook },
           string("bishop").map { Rank.Bishop },
           string("knight").map { Rank.Knight },
-      )
+          string("pawn").map { Rank.Pawn })
 
   /** A [Parser] which indicate the action between 2 position */
   // FIXME : "to" Doesn't work :(
@@ -50,7 +49,6 @@ object VoiceInputCombinator {
   /** A [Parser] for a [Move] action. */
   private val move =
       rank
-          .orElse { Rank.Pawn }
           .flatMap {
             position.flatMap { from ->
               actionSeparator.flatMap { position.map { to -> Move(from, to) } }
