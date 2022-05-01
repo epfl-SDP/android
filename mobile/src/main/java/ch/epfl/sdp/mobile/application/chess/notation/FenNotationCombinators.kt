@@ -1,22 +1,26 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.position
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.orElse
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.char
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.charLower
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.digit
-import java.util.*
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
 
 /**
  * An object which contains some convenience parser combinators for FEN (Forsyth–Edwards Notation)
  * notation.
  */
 object FenNotationCombinators {
+
+  private const val nothingSymbol = '-'
+  private const val RowSeparatorSymbol = '/'
+  private const val FieldSeparatorSymbol = ' '
 
   private data class ParserPiece(val color: Color, val rank: Rank)
 
@@ -44,23 +48,13 @@ object FenNotationCombinators {
           char('p').map { ParserPiece(Color.Black, Rank.Pawn) },
       )
 
-  /** A [Parser] which consumes a `/` indicating a new row */
-  private val rowSeparator = char('/')
+  /** A [Parser] which consumes a row separator indicating a new row */
+  private val rowSeparator = char(RowSeparatorSymbol)
 
-  /** A [Parser] which returns the column in a position. */
-  private val column = char().filter { it in 'a'..'h' }.map { it - 'a' }
+  /** A [Parser] which consumes a field separator indicating a new row */
+  private val fieldSeparator = char(FieldSeparatorSymbol)
 
-  /** A [Parser] which returns the row in a position. */
-  private val row = digit().map { 8 - it }
-
-  /** A [Parser] which returns a [Position]. */
-  private val position =
-      column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
-
-  /** A [Parser] which consumes a `/` indicating a new row */
-  private val fieldSeparator = char(' ')
-
-  /** A [Parser] which consumes a `/` indicating a new row */
+  /** A [Parser] which consumes either a w or b indicating the next playing color */
   private val activeColor = char('w').map { Color.White } or char('b').map { Color.Black }
 
   private data class ParserCastlingRights(
@@ -69,4 +63,29 @@ object FenNotationCombinators {
       val kingSideBlack: Boolean = false,
       val queenSideBlack: Boolean = false,
   )
+
+  private val castlingRightsHalf =
+      charLower('k').flatMap { charLower('q').map { Pair(first = true, second = true) } } or
+          charLower(nothingSymbol).map { Pair(first = false, second = false) } or
+          charLower('q').map { Pair(first = false, second = true) } or
+          charLower('k').map { Pair(first = true, second = false) }
+
+  private val castlingRights =
+      castlingRightsHalf.flatMap { white ->
+        castlingRightsHalf.map { black ->
+          ParserCastlingRights(
+              kingSideWhite = white.first,
+              queenSideWhite = white.second,
+              kingSideBlack = black.first,
+              queenSideBlack = black.second,
+          )
+        }
+      }
+
+  /** A [Parser] which consumes a either a nothing symbol or a position representing an en passant move, if allowed */
+  private val enPassant =
+      char(nothingSymbol).map { null } or position.map { it }
+
+  /** A [Parser] which consumes a token representing an integer number */
+  private val integer = token(delimiter = FieldSeparatorSymbol.toString()).map { it.toInt() }
 }
