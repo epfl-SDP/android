@@ -33,16 +33,17 @@ object StringCombinators {
 
   /** Parses the first token of a [String], if it's exists.
    *
-   * @param delimiter The [String] expected between tokens
+   * @param delimiters A vararg of potential [String] expected between tokens
    * @param ignoreCase Whether or not to ignore case in delimiters
    */
   fun token(
-      delimiter: String,
+      vararg delimiters: String,
       ignoreCase: Boolean = false,
   ): Parser<String, String> = Parser {
-    val tokens = it.split(delimiter, ignoreCase = ignoreCase, limit = 1)
+    val tokens = it.split(delimiters = delimiters, ignoreCase = ignoreCase, limit = 1)
     if(tokens.isNotEmpty()) {
       val token = tokens.first()
+      // TODO: What semantics of split is used?
       val toDrop = it.indexOf(token) + token.length
 
       setOf(Parser.Result(it.drop(toDrop), token))
