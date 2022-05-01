@@ -4,7 +4,9 @@ import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
@@ -55,6 +57,19 @@ object VoiceInputCombinator {
           }
           .checkFinished()
 
+  /** A [Parser] for a [Promote] action. */
+  private val promote =
+      position // No leading rank because only pawns may be promoted.
+          .flatMap { from ->
+            actionSeparator.flatMap {
+              position.flatMap { to -> rank.map { rank -> Promote(from, to, rank) } }
+            }
+          }
+          .checkFinished()
+
+  /** A [Parser] for an action. */
+  private val action = combine(move, promote)
+
   /** Returns a [Parser] for an [Action]. */
-  fun action(): Parser<String, Any> = move
+  fun action(): Parser<String, Any> = action
 }

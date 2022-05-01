@@ -35,13 +35,13 @@ object StringCombinators {
       val splitString = it.trim().split(delimiter, limit = 2)
       val result = splitString.first()
       val remaining =
-      // drop only if we can drop something
-      if (splitString.size != 1) {
-            splitString.drop(1)
+          if (splitString.size == 1) {
+            ""
           } else {
-            splitString
+            // drop only if we can drop something
+            splitString.drop(1).first()
           }
-      setOf(Parser.Result(remaining.first(), result))
+      setOf(Parser.Result(remaining, result))
     } else {
       emptySet()
     }
