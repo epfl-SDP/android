@@ -45,7 +45,7 @@ object VoiceInputCombinator {
 
   /** A [Parser] which indicate the action between 2 position */
   // FIXME : "to" Doesn't work :(
-  private val actionSeparator = string("to") or char('-')
+  private val actionSeparator = string("to")
 
   /** A [Parser] for a [Move] action. */
   private val move =

@@ -32,8 +32,16 @@ object StringCombinators {
    */
   fun string(delimiter: Char = ' '): Parser<String, Token> = Parser {
     if (it.isNotEmpty()) {
-      val splitString = it.split(delimiter, limit = 2)
-      setOf(Parser.Result(splitString.last(), splitString.first()))
+      val splitString = it.trim().split(delimiter, limit = 2)
+      val result = splitString.first()
+      val remaining =
+      // drop only if we can drop something
+      if (splitString.size != 1) {
+            splitString.drop(1)
+          } else {
+            splitString
+          }
+      setOf(Parser.Result(remaining.first(), result))
     } else {
       emptySet()
     }

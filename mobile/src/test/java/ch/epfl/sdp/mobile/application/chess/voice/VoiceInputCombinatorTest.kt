@@ -8,9 +8,9 @@ import org.junit.Test
 
 class VoiceInputCombinatorTest {
   @Test
-  fun test() {
-    val res = VoiceInputCombinator.action().parse("king a1-a1").singleOrNull()?.output
-    val expected = Action.Move(Position(0, 7), Delta(0, 0))
+  fun given_moveKing_when_parsed_then_returnCorrectResult() {
+    val res = VoiceInputCombinator.action().parse("king d8 to d7").singleOrNull()?.output
+    val expected = Action.Move(Position(3, 0), Delta(0, 1))
 
     assertEquals(expected, res)
   }
