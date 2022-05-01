@@ -31,7 +31,8 @@ object StringCombinators {
   /** Parses the first digit of a [String], if it exists. */
   fun digit(): Parser<String, Int> = char().filter { it in '0'..'9' }.map { it - '0' }
 
-  /** Parses the first token of a [String], if it's exists.
+  /**
+   * Parses the first token of a [String], if it's exists.
    *
    * @param delimiters A vararg of potential [String] expected between tokens
    * @param ignoreCase Whether or not to ignore case in delimiters
@@ -41,7 +42,7 @@ object StringCombinators {
       ignoreCase: Boolean = false,
   ): Parser<String, String> = Parser {
     val tokens = it.split(delimiters = delimiters, ignoreCase = ignoreCase, limit = 1)
-    if(tokens.isNotEmpty()) {
+    if (tokens.isNotEmpty()) {
       val token = tokens.first()
       // TODO: What semantics of split is used?
       val toDrop = it.indexOf(token) + token.length

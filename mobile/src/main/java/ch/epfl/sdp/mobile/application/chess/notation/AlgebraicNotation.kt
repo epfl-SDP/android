@@ -6,8 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotationCombinator
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
- * An object which contains some utilities to transform games in algebraic notation, and
- * vice-versa.
+ * An object which contains some utilities to transform games in algebraic notation, and vice-versa.
  */
 object AlgebraicNotation {
 

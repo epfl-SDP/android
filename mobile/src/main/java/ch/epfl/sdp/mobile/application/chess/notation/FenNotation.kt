@@ -2,11 +2,11 @@ package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.activeColor
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.board
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.castlingRights
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.enPassant
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.integer
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.spaces
-import ch.epfl.sdp.mobile.application.chess.notation.Test.board
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 
@@ -15,10 +15,6 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
  * games
  */
 object FenNotation {
-
-  const val nothingSymbol = '-'
-  const val RowSeparatorSymbol = '/'
-  const val FieldSeparatorSymbol = ' '
 
   data class CastlingRights(
       val kingSideWhite: Boolean = false,

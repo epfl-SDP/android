@@ -23,7 +23,8 @@ class FlowsTest {
     val two = game.toAlgebraicNotation()
     val games = flowOf(one, two)
 
-    assertThat(games.mapToGame().map { it.toAlgebraicNotation() }.toList()).containsExactly(one, two)
+    assertThat(games.mapToGame().map { it.toAlgebraicNotation() }.toList())
+        .containsExactly(one, two)
   }
 
   @Test
@@ -32,6 +33,7 @@ class FlowsTest {
     val two = Game.create().play { Position(0, 5) += Delta(0, -2) }.toAlgebraicNotation()
     val games = flowOf(one, two)
 
-    assertThat(games.mapToGame().map { it.toAlgebraicNotation() }.toList()).containsExactly(one, two)
+    assertThat(games.mapToGame().map { it.toAlgebraicNotation() }.toList())
+        .containsExactly(one, two)
   }
 }

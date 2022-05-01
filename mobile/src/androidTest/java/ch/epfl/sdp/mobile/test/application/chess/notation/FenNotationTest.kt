@@ -9,11 +9,11 @@ import org.junit.Test
 
 class FenNotationTest {
 
-  private fun assertEquivalent(actual: Board<Piece<Color>>, expected: Board<Piece<Color>>) {
+  private fun assertEquivalent(actual: Board<Piece<Color>>?, expected: Board<Piece<Color>>) {
     for (x: Int in 0 until Board.Size) {
       for (y: Int in 0 until Board.Size) {
-        assertThat(actual[Position(x, y)]?.rank).isEqualTo(expected[Position(x, y)]?.rank)
-        assertThat(actual[Position(x, y)]?.color).isEqualTo(expected[Position(x, y)]?.color)
+        assertThat(actual?.get(Position(x, y))?.rank).isEqualTo(expected[Position(x, y)]?.rank)
+        assertThat(actual?.get(Position(x, y))?.color).isEqualTo(expected[Position(x, y)]?.color)
       }
     }
   }
@@ -24,7 +24,7 @@ class FenNotationTest {
     val startingGameFEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
     val startingGameBoard = startingGame.board
-    val deserializedBoard = parseFen(startingGameFEN).board
+    val deserializedBoard = parseFen(startingGameFEN)?.board
 
     assertEquivalent(deserializedBoard, startingGameBoard)
   }
@@ -32,10 +32,10 @@ class FenNotationTest {
   @Test
   fun given_startingBoardPlayingE4_when_decodingFromFenNotation_then_hasEquivalentBoard() {
     val foolsMateGame = Game.create().play(FoolsMate)
-    val foolsMateFEN= "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3"
+    val foolsMateFEN = "rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3"
 
     val foolsMateGameBoard = foolsMateGame.board
-    val deserializedBoard = parseFen(foolsMateFEN).board
+    val deserializedBoard = parseFen(foolsMateFEN)?.board
 
     assertEquivalent(deserializedBoard, foolsMateGameBoard)
   }

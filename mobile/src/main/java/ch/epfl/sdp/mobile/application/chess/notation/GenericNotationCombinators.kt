@@ -7,9 +7,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
 
-/**
- * An object which contains some convenience parser combinators for any notation
- */
+/** An object which contains some convenience parser combinators for any notation */
 object GenericNotationCombinators {
   /** A [Parser] which returns the column in a position. */
   val column = StringCombinators.char().filter { it in 'a'..'h' }.map { it - 'a' }
@@ -18,6 +16,5 @@ object GenericNotationCombinators {
   val row = StringCombinators.digit().map { 8 - it }
 
   /** A [Parser] which returns a [Position]. */
-  val position =
-    column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
+  val position = column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
 }
