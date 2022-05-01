@@ -26,8 +26,7 @@ object NotationCombinators {
   private val row = digit().map { 8 - it }
 
   /** A [Parser] which returns a [Position]. */
-  val position =
-      column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
+  val position = column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
 
   /**
    * A [Parser] which returns the [Rank] of a piece, and defaults to [Rank.Pawn] if no matching rank

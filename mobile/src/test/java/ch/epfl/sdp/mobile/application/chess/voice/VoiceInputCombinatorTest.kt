@@ -17,7 +17,7 @@ class VoiceInputCombinatorTest {
   }
 
   @Test
-  fun test(){
+  fun test() {
     val res = VoiceInputCombinator.action().parse("d8 to d7 queen").singleOrNull()?.output
     val expected = Action.Promote(Position(3, 0), Delta(0, 1), Rank.Queen)
 
