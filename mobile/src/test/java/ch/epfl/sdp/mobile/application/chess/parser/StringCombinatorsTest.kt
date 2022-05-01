@@ -19,4 +19,11 @@ class StringCombinatorsTest {
     val expected = setOf(Parser.Result("is a test", "This"))
     assertEquals(expected, res)
   }
+
+  @Test
+  fun given_aEmptyString_when_parsed_then_returnEmptySet() {
+    val res = string().parse("")
+    val expected = emptySet<Parser<String, Token>>()
+    assertEquals(expected, res)
+  }
 }
