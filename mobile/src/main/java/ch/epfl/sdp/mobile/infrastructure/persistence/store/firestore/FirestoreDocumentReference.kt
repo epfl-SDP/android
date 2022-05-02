@@ -58,6 +58,13 @@ class FirestoreDocumentReference(
   }
 }
 
+/**
+ * Maps a flat map of [FieldPath] to values into a [Map] that's Firestore-friendly. More
+ * specifically, the resulting map will have nested maps to represent composed field paths.
+ *
+ * @receiver the [Map] of [FieldPath] to values, without any nesting.
+ * @return the [Map] that will be given to Firestore.
+ */
 @Suppress("Unchecked_Cast")
 private fun Map<FieldPath, Any?>.toFirestoreDocument(): Map<String, Any?> {
   val document = mutableMapOf<String, Any?>()
