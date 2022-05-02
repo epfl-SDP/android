@@ -60,6 +60,14 @@ class ChessScene<Piece : ChessBoardState.Piece>(
           .consumeAsFlow()
           .onEach { positions ->
 
+            // FIXME : Removing all nodes will increase the computational resources a lot.
+            //    We shouldn't destroy a node to re-set it after. Each time that a board change, for
+            //    each piece, we will create all the loader needed to create asserts. Furthermore,
+            //    this implementation don't allow use to add animation on models
+            //    Solution, we save the map of id and rank for each piece.
+            //    - If the id is missing delete the corresponding node.
+            //    - If the receive rank didn't match, set the model to the new corresponding rank
+            //    (Note: Maybe we can check the model path to check if the rank is correct)
             // Remove all current children.
             boardNode.children.forEach {
               val child = boardNode.removeChild(it)
