@@ -15,7 +15,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 
 /**
  * An object which contains some utilities to transform FEN (Forsyth–Edwards Notation) notation into
- * games
+ * games.
  */
 object FenNotation {
 
@@ -58,7 +58,7 @@ object FenNotation {
   )
 
   /**
-   * Parses a FEN String to a [BoardSnapshot]
+   * Parses a FEN String to a [BoardSnapshot].
    *
    * @param text The FEN String
    * @return The parsed [BoardSnapshot], if successful.
