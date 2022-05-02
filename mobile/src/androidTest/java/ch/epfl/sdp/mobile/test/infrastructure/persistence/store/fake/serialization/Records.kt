@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.serialization
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
@@ -127,8 +129,18 @@ fun <T : Any> FakeDocumentRecord.Companion.fromObject(
   require(valueClass.isData) { "Only data classes are currently supported." }
   val fields = mutableMapOf<FieldPath, Any?>()
   for (property in valueClass.memberProperties) {
-    if (!valueClass.hasJavaAnnotatedField<DocumentId>(property.name)) {
+    if (valueClass.hasJavaAnnotatedField<DocumentId>(property.name)) {
+      continue
+    } else if (property.returnType.classifier in SupportedFieldTypes.map { it.classifier }) {
       fields[FieldPath(property.name)] = property.get(value)
+    } else {
+      val nested = property.get(value)
+      if (nested != null) {
+        val record = fromObject(nested, property.returnType.jvmErasure as KClass<Any>)
+        record.fields.forEach { (k, v) ->
+          fields[FieldPath(listOf(property.name) + k.segments)] = v
+        }
+      }
     }
   }
   return FakeDocumentRecord(fields)
