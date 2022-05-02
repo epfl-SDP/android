@@ -1,23 +1,19 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine.rules
 
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
-import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.Piece
-import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
-import ch.epfl.sdp.mobile.application.chess.engine.buildGame
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentPieceIdentifier
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class CheckmateTest {
 
-  private val whiteKing = Piece(White, King, PersistentPieceIdentifier(0))
-  private val whiteRook1 = Piece(White, Rook, PersistentPieceIdentifier(1))
-  private val whiteRook2 = Piece(White, Rook, PersistentPieceIdentifier(2))
-  private val whitePawn = Piece(White, Pawn, PersistentPieceIdentifier(0))
-  private val blackKing = Piece(Black, King, PersistentPieceIdentifier(0))
+  private val whiteKing = Piece(White, King, PieceIdentifier(0))
+  private val whiteRook1 = Piece(White, Rook, PieceIdentifier(1))
+  private val whiteRook2 = Piece(White, Rook, PieceIdentifier(2))
+  private val whitePawn = Piece(White, Pawn, PieceIdentifier(0))
+  private val blackKing = Piece(Black, King, PieceIdentifier(0))
 
   @Test
   fun twoRooks_canPutAdversaryKing_inCheckmate() {

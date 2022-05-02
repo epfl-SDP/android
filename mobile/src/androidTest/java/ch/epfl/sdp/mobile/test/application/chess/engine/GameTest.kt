@@ -91,8 +91,8 @@ class GameTest {
     val second = game.previous
     val first = game.previous?.first?.previous
 
-    assertThat(first?.second).isEqualTo(Action(Position(6, 7), Delta(-1, -2)))
-    assertThat(second?.second).isEqualTo(Action(Position(6, 0), Delta(-1, 2)))
+    assertThat(first?.second).isEqualTo(Action.Move(Position(6, 7), Delta(-1, -2)))
+    assertThat(second?.second).isEqualTo(Action.Move(Position(6, 0), Delta(-1, 2)))
   }
 
   @Test

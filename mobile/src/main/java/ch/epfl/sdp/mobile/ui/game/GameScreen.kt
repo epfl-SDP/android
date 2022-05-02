@@ -56,14 +56,14 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(contentPadding)
                     .padding(scaffoldPadding)
-                    .padding(start = 16.dp, end = 16.dp, top = 48.dp, bottom = 48.dp),
+                    .padding(start = 32.dp, end = 32.dp, top = 48.dp, bottom = 48.dp),
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
           Column {
             Player(White, state.white.name, state.white.message)
             Player(Black, state.black.name, state.black.message)
           }
-          ClassicChessBoard(state)
+          ProvideTextStyle(MaterialTheme.typography.subtitle1) { ClassicChessBoard(state) }
           Moves(state.moves, Modifier.fillMaxWidth())
         }
       },

@@ -14,17 +14,14 @@ import kotlinx.coroutines.launch
  *
  * @param user the current [AuthenticatedUser].
  * @param scope the coroutine scope.
- * @param onSaveAction the callback called after we saved the changes.
- * @param onCancelAction the callback called when we click the cancel button.
+ * @param onCloseAction the callback called after we click on Cancel or Save Button.
  */
 class EditProfileNameDialogStateImpl(
     private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
-    onSaveAction: State<() -> Unit>,
-    onCancelAction: State<() -> Unit>
+    onCloseAction: State<() -> Unit>,
 ) : EditProfileNameDialogState {
-  private val onSaveAction by onSaveAction
-  private val onCancelAction by onCancelAction
+  private val onCloseAction by onCloseAction
 
   override var userName by mutableStateOf(user.name)
 
@@ -38,13 +35,13 @@ class EditProfileNameDialogStateImpl(
     scope.launch {
       mutex.mutate(MutatePriority.UserInput) {
         user.update { name(userName) }
-        onSaveAction()
+        onCloseAction()
       }
     }
   }
 
   override fun onCancelClick() {
-    onCancelAction()
+    onCloseAction()
   }
 }
 
@@ -53,22 +50,19 @@ class EditProfileNameDialogStateImpl(
  * retrieve the appropriate dependencies.
  *
  * @param user the current [AuthenticatedUser].
- * @param onSave the callback called after we saved the changes.
- * @param onCancel the callback called when we click the cancel button.
+ * @param onClose the callback called after we click on the Cancel or Save Button the changes.
  */
 @Composable
 fun StatefulEditProfileNameDialog(
     user: AuthenticatedUser,
-    onSave: () -> Unit,
-    onCancel: () -> Unit
+    onClose: () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
-  val onSaveAction = rememberUpdatedState(onSave)
-  val onCancelAction = rememberUpdatedState(onCancel)
+  val onCloseAction = rememberUpdatedState(onClose)
 
   val state =
-      remember(user, scope, onSaveAction, onCancelAction) {
-        EditProfileNameDialogStateImpl(user, scope, onSaveAction, onCancelAction)
+      remember(user, scope, onCloseAction) {
+        EditProfileNameDialogStateImpl(user, scope, onCloseAction)
       }
 
   EditProfileNameDialog(state)

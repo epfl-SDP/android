@@ -16,10 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
@@ -81,12 +79,10 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
           horizontalArrangement = Arrangement.Center,
           verticalAlignment = Alignment.CenterVertically) {
         Text(state.name, style = MaterialTheme.typography.h5)
-        IconButton(
-            onClick = state::onEditProfileNameClick,
-            modifier = Modifier.testTag("editProfileName")) {
+        IconButton(onClick = state::onEditProfileNameClick) {
           Icon(
               Icons.Default.Edit,
-              contentDescription = strings.profileEditIcon,
+              contentDescription = strings.profileEditNameIcon,
               modifier = Modifier.size(24.dp))
         }
       }
@@ -108,7 +104,7 @@ fun SettingPicture(
 ) {
   val strings = LocalLocalizedStrings.current
   Box(
-      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor, CircleShape),
       contentAlignment = Alignment.Center,
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
@@ -120,7 +116,7 @@ fun SettingPicture(
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+    ) { Icon(Icons.Default.Edit, strings.profileEditImageIcon) }
   }
 }
 

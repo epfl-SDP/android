@@ -6,8 +6,8 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
-import ch.epfl.sdp.mobile.application.chess.notation.serialize
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
@@ -50,7 +50,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * <<<<<<< HEAD Returns the [Match] associated to the given identifier.
+   * Returns the [Match] associated to the given identifier.
    *
    * @param id the unique identifier for this [Match].
    */
@@ -59,8 +59,8 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 
   /**
-   * ======= >>>>>>> display-active-games Fetches a [Flow] of [List] of [Match]s that a certain
-   * [Profile] has going on with any other player (or even himself)
+   * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
+   * player (or even himself)
    *
    * @param profile The [Profile] whose [Match]s will be fetched
    *
@@ -114,6 +114,6 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    store.collection("games").document(id).update { this["moves"] = game.serialize() }
+    store.collection("games").document(id).update { this["moves"] = game.toExtendedNotation() }
   }
 }
