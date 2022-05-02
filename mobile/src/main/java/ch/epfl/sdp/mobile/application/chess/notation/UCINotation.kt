@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.application.chess.notation
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.UCINotationCombinators.uciActionList
 
-/** An object which contains some utilities to transform games in UCI notation, and vice-versa. */
+/** An object which contains some utilities to transform UCI notation to a [List] of [Action]s */
 object UCINotation {
 
   /**
@@ -15,12 +15,4 @@ object UCINotation {
   fun parseActionList(text: String): List<Action> {
     return uciActionList().parse(input = text).single().output
   }
-
-  /*
-  fun parseActionList(text: String): List<Action> {
-    val results = uciActionList().parse(input = text)
-    println(results)
-    return results.single().output
-  }
-   */
 }

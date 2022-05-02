@@ -38,12 +38,12 @@ object UCINotationCombinators {
   /** A [Parser] for an action. */
   private val action = combine(promote, move)
 
-  /** A [Parser] for an arbitrarily long list of actions. */
+  /** A [Parser] for an arbitrarily long string of actions. */
   private val actions =
       action.flatMap { action -> spaces.map { action } }.repeat().flatMap { actions ->
         action.map { actions + it }
       }
 
-  /** Returns a [Parser] for a list of [Action]s. */
+  /** Returns a [Parser] for a string of actions. */
   fun uciActionList(): Parser<String, List<Action>> = actions.checkFinished()
 }
