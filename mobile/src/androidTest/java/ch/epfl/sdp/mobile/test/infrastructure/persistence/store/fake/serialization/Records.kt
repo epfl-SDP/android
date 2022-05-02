@@ -108,6 +108,7 @@ private fun <T : Any> Map<FieldPath, Any?>.toObject(id: FakeDocumentId, valueCla
 private fun FieldPath.tail(): FieldPath? =
     if (segments.size > 1) FieldPath(segments.drop(1)) else null
 
+/** Returns this [Map] from which all of the [FieldPath]'s prefixes are removed. */
 private fun Map<FieldPath, Any?>.tail(): Map<FieldPath, Any?> =
     mapKeys { (k) -> k.tail() }.filterKeys { it != null }.mapKeys { (k) -> requireNotNull(k) }
 
