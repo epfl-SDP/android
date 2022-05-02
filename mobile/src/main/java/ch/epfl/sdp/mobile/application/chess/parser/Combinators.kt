@@ -47,8 +47,8 @@ object Combinators {
    * @receiver the [Parser] which will be mapped.
    * @param f the function used to map the results.
    */
-  inline fun <I, O1, O2> Parser<I, O1>.map(
-      crossinline f: (O1) -> O2,
+  /* inline */ fun <I, O1, O2> Parser<I, O1>.map(
+      /* crossinline */ f: (O1) -> O2,
   ): Parser<I, O2> = Parser {
     parse(it).map { (remaining, output) -> Result(remaining, f(output)) }
   }
@@ -63,8 +63,8 @@ object Combinators {
    * @receiver the [Parser] which will be mapped.
    * @param f the function used to flat-map the current output to select the next combinator.
    */
-  inline fun <I, O1, O2> Parser<I, O1>.flatMap(
-      crossinline f: (O1) -> Parser<I, O2>,
+  /* inline */ fun <I, O1, O2> Parser<I, O1>.flatMap(
+      /* crossinline */ f: (O1) -> Parser<I, O2>,
   ): Parser<I, O2> = Parser {
     parse(it).flatMap { (remaining, output) -> f(output).parse(remaining) }
   }
@@ -76,8 +76,8 @@ object Combinators {
    * @param O the type of the output.
    * @param lazyDefaultValue the lambda which computes the default value.
    */
-  inline fun <I, O> Parser<I, O>.orElse(
-      crossinline lazyDefaultValue: (I) -> O,
+  /* inline */ fun <I, O> Parser<I, O>.orElse(
+      /* crossinline */ lazyDefaultValue: (I) -> O,
   ): Parser<I, O> = Parser { parse(it).ifEmpty { sequenceOf(Result(it, lazyDefaultValue(it))) } }
 
   /**
@@ -87,7 +87,7 @@ object Combinators {
    * @param O the type of the output.
    * @param keepIf a predicate which must return true iff the result should be kept.
    */
-  inline fun <I, O> Parser<I, O>.filter(
-      crossinline keepIf: (O) -> Boolean,
+  /* inline */ fun <I, O> Parser<I, O>.filter(
+      /* crossinline */ keepIf: (O) -> Boolean,
   ): Parser<I, O> = flatMap { if (keepIf(it)) success(it) else failure() }
 }
