@@ -9,7 +9,6 @@ import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeat
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
@@ -28,27 +27,23 @@ object UCINotationCombinators {
       )
 
   /** A [Parser] for a [Move] action. */
-  private val move =
-      position.flatMap { from -> position.map { to -> Move(from, to) } }.checkFinished()
+  private val move = position.flatMap { from -> position.map { to -> Move(from, to) } }
 
   /** A [Parser] for a [Promote] action. */
   private val promote =
-      position
-          .flatMap { from ->
-            position.flatMap { to -> promoteRank.map { rank -> Promote(from, to, rank) } }
-          }
-          .checkFinished()
+      position.flatMap { from ->
+        position.flatMap { to -> promoteRank.map { rank -> Promote(from, to, rank) } }
+      }
 
   /** A [Parser] for an action. */
-  private val action = combine(move, promote)
+  private val action = combine(promote, move)
 
   /** A [Parser] for an arbitrarily long list of actions. */
   private val actions =
-      action
-          .flatMap { action -> spaces.map { action } }
-          .repeat()
-          .flatMap { actions -> action.map { actions + it } }
+      action.flatMap { action -> spaces.map { action } }.repeat().flatMap { actions ->
+        action.map { actions + it }
+      }
 
-  /** Returns a [Parser] for a list of [Action]. */
-  fun uciActionList(): Parser<String, List<Action>> = actions
+  /** Returns a [Parser] for a list of [Action]s. */
+  fun uciActionList(): Parser<String, List<Action>> = actions.checkFinished()
 }

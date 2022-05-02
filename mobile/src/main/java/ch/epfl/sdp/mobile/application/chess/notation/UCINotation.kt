@@ -15,4 +15,12 @@ object UCINotation {
   fun parseActionList(text: String): List<Action> {
     return uciActionList().parse(input = text).single().output
   }
+
+  /*
+  fun parseActionList(text: String): List<Action> {
+    val results = uciActionList().parse(input = text)
+    println(results)
+    return results.single().output
+  }
+   */
 }
