@@ -23,21 +23,23 @@ import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
 
 /**
- * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
- * @param state state of the ProfileScreen
+ * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
+ *
+ * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsScreen(
     state: SettingScreenState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberSettingTabBarState(state.pastGamesCount, state.puzzlesCount)
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
-
   UserScreen(
       header = {
         SettingHeader(
@@ -53,19 +55,22 @@ fun SettingsScreen(
         )
       },
       matches = state.matches,
-      onMatchClick = {},
       lazyColumnState = lazyColumnState,
-      modifier = modifier)
+      modifier = modifier.fillMaxSize(),
+      contentPadding = contentPadding,
+      onMatchClick = {})
 }
 
 /**
  * Composes the settings header given the profile [SettingScreenState]. Displays also the
- * ProfilePicture, SettingsButton, name and email of the user's profile
- * @param state state of profile screen
+ * ProfilePicture, SettingsButton, name and email of the user's profile.
+ *
+ * @param state state of the profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
 
   Column(
       modifier = modifier,
@@ -74,7 +79,17 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
   ) {
     SettingPicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(state.name, style = MaterialTheme.typography.h5)
+      Row(
+          horizontalArrangement = Arrangement.Center,
+          verticalAlignment = Alignment.CenterVertically) {
+        Text(state.name, style = MaterialTheme.typography.h5)
+        IconButton(onClick = state::onEditProfileNameClick) {
+          Icon(
+              Icons.Default.Edit,
+              contentDescription = strings.profileEditNameIcon,
+              modifier = Modifier.size(24.dp))
+        }
+      }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
     SettingsButton(onClick = state::onSettingsClick)
@@ -82,8 +97,9 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes the settings picture given its [state]
- * @param state state of setting screen
+ * Composes the settings picture given its [state].
+ *
+ * @param state state of the setting screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -98,20 +114,21 @@ fun SettingPicture(
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
-        onClick = state::onEditClick,
+        onClick = state::onSettingsClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
                 .shadow(2.dp, CircleShape)
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+    ) { Icon(Icons.Default.Edit, strings.profileEditImageIcon) }
   }
 }
 
 /**
- * Composes the settings button
- * @param onClick call back method for settings button
+ * Composes the settings button.
+ *
+ * @param onClick callback method for the settings button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
