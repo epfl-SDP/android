@@ -11,8 +11,8 @@ object StringCombinators {
   /** Parses the first [Char] of a [String], if it's not empty. */
   fun char(): Parser<String, Char> = Parser {
     if (it.isNotEmpty()) {
-      setOf(Parser.Result(it.drop(1), it.first()))
-    } else emptySet()
+      sequenceOf(Parser.Result(it.drop(1), it.first()))
+    } else emptySequence()
   }
 
   /**
@@ -62,6 +62,6 @@ object StringCombinators {
    * @param O the type of the output of this [Parser].
    */
   fun <O> Parser<String, O>.checkFinished(): Parser<String, O> = Parser {
-    parse(it).filterTo(mutableSetOf()) { r -> r.remaining.isEmpty() }
+    parse(it).filter { r -> r.remaining.isEmpty() }
   }
 }
