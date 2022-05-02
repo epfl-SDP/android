@@ -53,6 +53,7 @@ object English : LocalizedStrings {
   override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
   override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
   override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
+  override val profileAgainst = "Against " // TODO: handle right-to-left languages
   override val profileYourTurn = "Your turn to play!"
   override val profileOthersTurn = "Their turn to play."
 
