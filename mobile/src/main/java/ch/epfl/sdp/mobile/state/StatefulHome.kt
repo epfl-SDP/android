@@ -84,14 +84,15 @@ fun StatefulHome(
       composable(SettingsRoute) {
         StatefulSettingsScreen(
             user = user,
+            onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
             modifier = Modifier.fillMaxSize(),
-            onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) })
+            contentPadding = paddingValues)
       }
       dialog(SettingEditProfileNameRoute) {
         StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
-        StatefulProfileScreen(
+        StatefulVisitedProfileScreen(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
