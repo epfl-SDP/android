@@ -25,18 +25,18 @@ class AuthenticatedUserProfileScreenState(
     chessFacade: ChessFacade,
     scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
+    onEditProfileImageClickAction: State<() -> Unit>,
 ) : SettingScreenState, ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
   override val email = user.email
   override val puzzlesCount = 0
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
 
-  override fun onSettingsClick() {}
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
   }
-  override fun onEditProfileNameClick() {
-    onEditProfileNameClickAction()
+  override fun onEditProfileImageClick() {
+    onEditProfileImageClickAction()
   }
 }
 
@@ -45,7 +45,7 @@ class AuthenticatedUserProfileScreenState(
  *
  * @param user the current logged-in user.
  * @param onEditProfileNameClick Callable lambda to navigate to the profile name edit popup
- * @param onEditProfileImageClickAction Callable lambda to navigate to the profile image edit popup
+ * @param onEditProfileImageClick Callable lambda to navigate to the profile image edit popup
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
@@ -53,16 +53,18 @@ class AuthenticatedUserProfileScreenState(
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
     onEditProfileNameClick: () -> Unit,
-    onEditProfileImageClickAction: () -> Unit,
+    onEditProfileImageClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
+  val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
   val state =
       remember(user, chessFacade, scope, currentOnEditProfileNameClick) {
-        AuthenticatedUserProfileScreenState(user, chessFacade, scope, currentOnEditProfileNameClick)
+        AuthenticatedUserProfileScreenState(
+            user, chessFacade, scope, currentOnEditProfileNameClick, currentOnEditProfileImageClick)
       }
   SettingsScreen(state, modifier, contentPadding)
 }

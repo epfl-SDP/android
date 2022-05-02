@@ -88,6 +88,7 @@ fun StatefulHome(
         StatefulSettingsScreen(
             user = user,
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
+            onEditProfileImageClick = { controller.navigate(SettingEditProfileImageRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }

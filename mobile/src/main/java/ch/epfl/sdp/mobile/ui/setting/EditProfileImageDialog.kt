@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.ui.setting
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -78,6 +79,7 @@ fun EditSettingPicture(backgroundColor: Color, emoji: String, modifier: Modifier
 /**
  * Select Emoji Item
  * @param state which is [EditProfileImageDialogState] and modifies it
+ * @param emoji String which to be changed
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -90,7 +92,7 @@ fun SelectEmojiItem(
       modifier =
           if (state.emoji == emoji)
               modifier.size(72.dp).border(BorderStroke(4.dp, Green800), CircleShape)
-          else modifier.size(72.dp),
+          else modifier.size(72.dp).clickable { state.emoji = emoji },
       contentAlignment = Alignment.Center,
   ) { Text(emoji, style = MaterialTheme.typography.h4) }
 }
@@ -98,6 +100,7 @@ fun SelectEmojiItem(
 /**
  * Select Background color of profile Image
  * @param state which is [EditProfileImageDialogState] and modifies it
+ * @param backgroundColor the current color in item
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -106,8 +109,19 @@ fun SelectBackgroundColorItem(
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
-  Box(
-      modifier = modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape),
-      contentAlignment = Alignment.Center,
-  ) {}
+  Box(modifier = modifier.padding(4.dp)) {
+    Box(
+        modifier =
+            if (state.backgroundColor == backgroundColor)
+                modifier
+                    .size(64.dp)
+                    .background(backgroundColor.toColor(), CircleShape)
+                    .border(BorderStroke(4.dp, Green800), CircleShape)
+            else
+                modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape).clickable {
+                  state.backgroundColor = backgroundColor
+                },
+        contentAlignment = Alignment.Center,
+    ) {}
+  }
 }

@@ -46,7 +46,6 @@ interface Profile {
       /** A purple value. */
       val Purple = Color("#FF6A5495")
 
-
       /** A default color. */
       val Default = Orange
     }
