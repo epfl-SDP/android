@@ -1,6 +1,9 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
-import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.Board
+import ch.epfl.sdp.mobile.application.chess.engine.Color
+import ch.epfl.sdp.mobile.application.chess.engine.Piece
+import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.activeColor
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.board
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.castlingRights
@@ -24,10 +27,10 @@ object FenNotation {
    * @param queenSideBlack Indicates if black can castle queen side
    */
   data class CastlingRights(
-      val kingSideWhite: Boolean = false,
-      val queenSideWhite: Boolean = false,
-      val kingSideBlack: Boolean = false,
-      val queenSideBlack: Boolean = false,
+      val kingSideWhite: Boolean,
+      val queenSideWhite: Boolean,
+      val kingSideBlack: Boolean,
+      val queenSideBlack: Boolean,
   )
 
   // TODO: Need to accommodate for whose turn to play, castling rights etc...
