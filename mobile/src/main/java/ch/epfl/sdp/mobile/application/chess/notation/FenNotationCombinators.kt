@@ -15,7 +15,6 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeat
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeatAtLeast
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.char
-import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.charLower
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.digit
 
 /**
@@ -27,9 +26,7 @@ object FenNotationCombinators {
   private const val NothingSymbol = '-'
   private const val RowSeparatorSymbol = '/'
 
-  /**
-   * Maps FEN letters to [Rank]s for promotion
-   */
+  /** Maps FEN letters to [Rank]s for promotion */
   private val LettersToRank =
       mapOf(
           'k' to Rank.King,
@@ -39,9 +36,7 @@ object FenNotationCombinators {
           'n' to Rank.Knight,
           'p' to Rank.Pawn)
 
-  /**
-   * Represents either a Piece or a number of Empty squares on a board row
-   */
+  /** Represents either a Piece or a number of Empty squares on a board row */
   private sealed interface Square {
     val width: Int
     data class Piece(val rank: Rank, val color: Color) : Square {
@@ -52,9 +47,7 @@ object FenNotationCombinators {
     }
   }
 
-  /**
-   * A [Parser] which consumes a piece in FEN and returns the corresponding [Square.Piece]
-   */
+  /** A [Parser] which consumes a piece in FEN and returns the corresponding [Square.Piece] */
   private fun piece(): Parser<String, Square.Piece> =
       char().filter { it.lowercaseChar() in LettersToRank.keys }.map {
         val rank = requireNotNull(LettersToRank[it.lowercaseChar()])
@@ -63,23 +56,24 @@ object FenNotationCombinators {
       }
 
   /**
-   * A [Parser] which consumes digit in FEN representing empty squares and returns the corresponding [Square.Empty]
+   * A [Parser] which consumes digit in FEN representing empty squares and returns the corresponding
+   * [Square.Empty]
    */
   private fun empty(): Parser<String, Square.Empty> =
       digit().filter { it in 1..Board.Size }.map { Square.Empty(it) }
 
   /**
-   * A [Parser] which consumes either a piece or a digit in FEN and returns the corresponding [Square]
+   * A [Parser] which consumes either a piece or a digit in FEN and returns the corresponding
+   * [Square]
    */
   private fun square(): Parser<String, Square> = piece().or(empty())
 
-  /**
-   * A [Parser] which consumes a FEN row delimiter
-   */
+  /** A [Parser] which consumes a FEN row delimiter */
   private fun delimiter(): Parser<String, Unit> = char(RowSeparatorSymbol).map {}.orElse {}
 
   /**
-   * A [Parser] which consumes an entire FEN row representation, and returns the corresponding [List] of [Square]s
+   * A [Parser] which consumes an entire FEN row representation, and returns the corresponding
+   * [List] of [Square]s
    */
   private fun lineSquares(): Parser<String, List<Square>> =
       square()
@@ -87,7 +81,8 @@ object FenNotationCombinators {
           .flatMap { list -> delimiter().map { list } }
 
   /**
-   * A [Parser] which consumes a whole board representation in FEN and returns the corresponding [List] of [List]s of [Square]s
+   * A [Parser] which consumes a whole board representation in FEN and returns the corresponding
+   * [List] of [List]s of [Square]s
    */
   private fun boardSquares(): Parser<String, List<List<Square>>> = lineSquares().repeat()
 
@@ -114,6 +109,15 @@ object FenNotationCombinators {
 
   /** A [Parser] which consumes either a w or b indicating the next playing color */
   val activeColor = char('w').map { White } or char('b').map { Black }
+
+  /**
+   * Parses the first [Char] of a [String], if it's not empty and has the provided value whether it
+   * is lower-case of upper-case.
+   *
+   * @param value the value that is searched.
+   */
+  private fun charLower(value: Char): Parser<String, Char> =
+      char().filter { it.lowercaseChar() == value }
 
   /**
    * A [Parser] which consumes half of the castling rights in FEN notation and returns a
