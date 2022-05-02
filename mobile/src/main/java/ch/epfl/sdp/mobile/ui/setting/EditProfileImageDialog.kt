@@ -16,7 +16,6 @@ import backgroundColors
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
-import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
@@ -52,7 +51,9 @@ fun EditProfileImageDialog(
         EditSettingPicture(backgroundColor = state.backgroundColor, emoji = state.emoji)
         Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
         LazyRow() { items(items = emojis) { item -> SelectEmojiItem(state, item) } }
-        LazyRow() { items(items= backgroundColors) { item -> SelectBackgroundColorItem(state, item)} }
+        LazyRow() {
+          items(items = backgroundColors) { item -> SelectBackgroundColorItem(state, item) }
+        }
       }
     }
   }
@@ -88,9 +89,7 @@ fun SelectEmojiItem(
   Box(
       modifier =
           if (state.emoji == emoji)
-              modifier
-                  .size(72.dp)
-                  .border(BorderStroke(4.dp, Green800), CircleShape)
+              modifier.size(72.dp).border(BorderStroke(4.dp, Green800), CircleShape)
           else modifier.size(72.dp),
       contentAlignment = Alignment.Center,
   ) { Text(emoji, style = MaterialTheme.typography.h4) }
@@ -103,12 +102,12 @@ fun SelectEmojiItem(
  */
 @Composable
 fun SelectBackgroundColorItem(
-  state: EditProfileImageDialogState,
-  backgroundColor: Color,
-  modifier: Modifier = Modifier
+    state: EditProfileImageDialogState,
+    backgroundColor: Color,
+    modifier: Modifier = Modifier
 ) {
   Box(
-    modifier = modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape),
-    contentAlignment = Alignment.Center,
-  ) { }
+      modifier = modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape),
+      contentAlignment = Alignment.Center,
+  ) {}
 }
