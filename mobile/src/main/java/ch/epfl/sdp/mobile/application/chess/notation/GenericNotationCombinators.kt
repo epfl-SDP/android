@@ -4,7 +4,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeat
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeatAtLeast
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
@@ -24,5 +23,8 @@ object GenericNotationCombinators {
   val spaces = StringCombinators.char(' ').repeatAtLeast(count = 1)
 
   /** A [Parser] which consumes a number of digits representing an integer number */
-  val integer = StringCombinators.digit().repeat().map { it.joinToString("") }.map { it.toInt() }
+  val integer =
+      StringCombinators.digit().repeatAtLeast(count = 1).map {
+        it.fold(0) { acc, digit -> acc * 10 + digit }
+      }
 }
