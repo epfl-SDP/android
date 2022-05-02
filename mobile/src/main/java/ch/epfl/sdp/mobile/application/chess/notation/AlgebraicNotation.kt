@@ -17,7 +17,7 @@ object AlgebraicNotation {
    * @return the [Action] that was found, or null if an error occurred.
    */
   fun parseAction(text: String): Action? {
-    return action().parse(input = text).singleOrNull()?.output
+    return action().parse(input = text).firstOrNull()?.output
   }
 
   /**
