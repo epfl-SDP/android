@@ -1,32 +1,39 @@
 package ch.epfl.sdp.mobile.state
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
-import ch.epfl.sdp.mobile.ui.social.Person
+import kotlinx.coroutines.CoroutineScope
 
 /**
- * Implementation of the [SettingScreenState], [Person], [ProfileAdapter] Interfacces
+ * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
+ * user's profile.
  *
- * @param user the current logged-in user.
- * @param onEditProfileNameClick Callable lambda to navigate to the profile Edit popup
+ * @param user the current logged-in [AuthenticatedUser].
+ * @param chessFacade the [ChessFacade] used to perform some requests.
+ * @param scope the [CoroutineScope] on which requests are performed.
+ * @param onEditProfileNameClickAction Callable lambda to navigate to the profile Edit popup
  */
-class SettingsScreenStateImpl(
+class AuthenticatedUserProfileScreenState(
     user: AuthenticatedUser,
-    onEditProfileNameClickAction: State<() -> Unit>
-) : SettingScreenState, Person by ProfileAdapter(user) {
+    chessFacade: ChessFacade,
+    scope: CoroutineScope,
+    onEditProfileNameClickAction: State<() -> Unit>,
+) : SettingScreenState, ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
   override val email = user.email
-  override val pastGamesCount = 0
   override val puzzlesCount = 0
-  override val matches = emptyList<ChessMatch>()
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
 
-  override fun onEditProfileImageClick() {
-    onEditProfileImageClickAction()
+  override fun onSettingsClick() {}
+  override fun onEditProfileNameClick() {
+    onEditProfileNameClickAction()
   }
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
@@ -34,12 +41,13 @@ class SettingsScreenStateImpl(
 }
 
 /**
- * A stateful composable to visit setting page of the loged-in user
+ * A stateful composable to visit setting page of the logged-in user
  *
  * @param user the current logged-in user.
  * @param onEditProfileNameClick Callable lambda to navigate to the profile name edit popup
  * @param onEditProfileImageClickAction Callable lambda to navigate to the profile image edit popup
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] to apply to this screen.
  */
 @Composable
 fun StatefulSettingsScreen(
@@ -47,14 +55,14 @@ fun StatefulSettingsScreen(
     onEditProfileNameClick: () -> Unit,
     onEditProfileImageClickAction: () -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val chessFacade = LocalChessFacade.current
+  val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
-  val currentOnEditProfileImageClickAction = rememberUpdatedState(onEditProfileImageClickAction)
-
   val state =
-      remember(user) {
-        SettingsScreenStateImpl(
-            user, currentOnEditProfileNameClick, currentOnEditProfileImageClickAction)
+      remember(user, chessFacade, scope, currentOnEditProfileNameClick) {
+        AuthenticatedUserProfileScreenState(user, chessFacade, scope, currentOnEditProfileNameClick)
       }
-  SettingsScreen(state, modifier)
+  SettingsScreen(state, modifier, contentPadding)
 }

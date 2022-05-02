@@ -17,7 +17,7 @@ private const val SocialRoute = "social"
 /** The route associated to the settings tab. */
 private const val SettingsRoute = "settings"
 
-/** The route associated to the name editing button on the setting screen. */
+/** The route associated to the editing button on the setting screen. */
 private const val SettingEditProfileNameRoute = "profile-name/edit"
 
 /** The route associated to the profile image editing button on the setting screen. */
@@ -87,9 +87,9 @@ fun StatefulHome(
       composable(SettingsRoute) {
         StatefulSettingsScreen(
             user = user,
-            modifier = Modifier.fillMaxSize(),
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
-            onEditProfileImageClickAction = { controller.navigate(SettingEditProfileImageRoute) })
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       dialog(SettingEditProfileNameRoute) {
         StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
@@ -101,7 +101,7 @@ fun StatefulHome(
             onCancel = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
-        StatefulProfileScreen(
+        StatefulVisitedProfileScreen(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
