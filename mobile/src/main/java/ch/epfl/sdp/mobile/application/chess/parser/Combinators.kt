@@ -87,7 +87,7 @@ object Combinators {
    * @param O the type of the output.
    * @param keepIf a predicate which must return true iff the result should be kept.
    */
-  /* inline */ fun <I, O> Parser<I, O>.filter(
-      /* crossinline */ keepIf: (O) -> Boolean,
-  ): Parser<I, O> = flatMap { if (keepIf(it)) success(it) else failure() }
+  fun <I, O> Parser<I, O>.filter(keepIf: (O) -> Boolean): Parser<I, O> = flatMap {
+    if (keepIf(it)) success(it) else failure()
+  }
 }
