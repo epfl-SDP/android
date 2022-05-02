@@ -41,9 +41,9 @@ object StringCombinators {
             // drop only if we can drop something
             splitString.drop(1).first()
           }
-      setOf(Parser.Result(remaining, result))
+      sequenceOf(Parser.Result(remaining, result))
     } else {
-      emptySet()
+      emptySequence()
     }
   }
 
