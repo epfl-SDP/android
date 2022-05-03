@@ -19,8 +19,6 @@ import org.junit.Test
 
 class StatefulEditProfileNameDialogTest {
 
-  @get:Rule
-  val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
   @get:Rule val rule = createComposeRule()
 
   @Test

@@ -48,17 +48,37 @@ fun EditProfileImageDialog(
         confirmContent = { Text(text = strings.settingEditSave) },
         onCancelClick = state::onCancelClick,
         onConfirmClick = state::onSaveClick) {
-      Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        EditSettingPicture(backgroundColor = state.backgroundColor, emoji = state.emoji)
-        Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
-        LazyRow() { items(items = emojis) { item -> SelectEmojiItem(state, item) } }
-        LazyRow() {
-          items(items = Color.asList()) { item -> SelectBackgroundColorItem(state, item) }
+      Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Spacer(Modifier.height(16.dp))
+        EditSettingPicture(
+            backgroundColor = state.backgroundColor,
+            emoji = state.emoji,
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Text(
+            strings.settingProfileImageLabel,
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+          items(items = Emojis) { item ->
+            SelectEmojiItem(selected = state.emoji == item, onClick = { state.emoji = item }, item)
+          }
         }
+        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+          items(items = Color.values) { item ->
+            SelectBackgroundColorItem(
+                selected = state.backgroundColor == item,
+                onClick = { state.backgroundColor = item },
+                item)
+          }
+        }
+        Spacer(Modifier.height(16.dp))
       }
     }
   }
 }
+
 /**
  * Composes the edit settings picture which shows the edit changes
  * @param backgroundColor background color for setting image
@@ -66,7 +86,11 @@ fun EditProfileImageDialog(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun EditSettingPicture(backgroundColor: Color, emoji: String, modifier: Modifier = Modifier) {
+private fun EditSettingPicture(
+    backgroundColor: Color,
+    emoji: String,
+    modifier: Modifier = Modifier
+) {
 
   Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
     Box(
@@ -78,48 +102,51 @@ fun EditSettingPicture(backgroundColor: Color, emoji: String, modifier: Modifier
 
 /**
  * Select Emoji Item
- * @param state which is [EditProfileImageDialogState] and modifies it
+ * @param selected boolean which check if current element is selected
+ * @param onCLick function to execute if current element is clicked
  * @param emoji String which to be changed
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun SelectEmojiItem(
-    state: EditProfileImageDialogState,
+private fun SelectEmojiItem(
+    selected: Boolean,
+    onClick: () -> Unit,
     emoji: String,
     modifier: Modifier = Modifier
 ) {
   Box(
       modifier =
-          if (state.emoji == emoji)
-              modifier.size(72.dp).border(BorderStroke(4.dp, Green800), CircleShape)
-          else modifier.size(72.dp).clickable { state.emoji = emoji },
+          if (selected) modifier.size(72.dp).border(BorderStroke(4.dp, Green800), CircleShape)
+          else modifier.size(72.dp).clickable { onClick() },
       contentAlignment = Alignment.Center,
   ) { Text(emoji, style = MaterialTheme.typography.h4) }
 }
 
 /**
  * Select Background color of profile Image
- * @param state which is [EditProfileImageDialogState] and modifies it
+ * @param selected boolean if current element is equal current item
+ * @param onClick function to execute if element is clicked
  * @param backgroundColor the current color in item
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun SelectBackgroundColorItem(
-    state: EditProfileImageDialogState,
+private fun SelectBackgroundColorItem(
+    selected: Boolean,
+    onClick: () -> Unit,
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
   Box(modifier = modifier.padding(4.dp)) {
     Box(
         modifier =
-            if (state.backgroundColor == backgroundColor)
+            if (selected)
                 modifier
                     .size(64.dp)
                     .background(backgroundColor.toColor(), CircleShape)
                     .border(BorderStroke(4.dp, Green800), CircleShape)
             else
                 modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape).clickable {
-                  state.backgroundColor = backgroundColor
+                  onClick()
                 },
         contentAlignment = Alignment.Center,
     ) {}

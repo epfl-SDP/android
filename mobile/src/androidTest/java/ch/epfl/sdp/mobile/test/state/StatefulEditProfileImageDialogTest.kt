@@ -1,9 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
-import android.Manifest
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -14,15 +12,13 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.ui.setting.emojis
+import ch.epfl.sdp.mobile.ui.setting.Emojis
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 
 class StatefulEditProfileImageDialogTest {
 
-  @get:Rule
-  val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
   @get:Rule val rule = createComposeRule()
 
   @Test
@@ -33,7 +29,7 @@ class StatefulEditProfileImageDialogTest {
         document(
             "1",
             ProfileDocument(
-                emoji = emojis[0], backgroundColor = Profile.Color.asList()[0].toString()))
+                emoji = Emojis[0], backgroundColor = Profile.Color.values[0].toString()))
       }
     }
 
@@ -50,9 +46,9 @@ class StatefulEditProfileImageDialogTest {
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditImageIcon).performClick()
-    rule.onNode(hasText(emojis[1])).performClick()
+    rule.onNode(hasText(Emojis[1])).performClick()
     rule.onNodeWithText(strings.settingEditSave).performClick()
-    rule.onNodeWithText(emojis[1]).assertIsDisplayed()
+    rule.onNodeWithText(Emojis[1]).assertIsDisplayed()
   }
 
   @Test
@@ -63,7 +59,7 @@ class StatefulEditProfileImageDialogTest {
         document(
             "1",
             ProfileDocument(
-                emoji = emojis[0], backgroundColor = Profile.Color.asList()[0].toString()))
+                emoji = Emojis[0], backgroundColor = Profile.Color.values[0].toString()))
       }
     }
 
@@ -80,8 +76,8 @@ class StatefulEditProfileImageDialogTest {
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditImageIcon).performClick()
-    rule.onNode(hasText(emojis[1])).performClick()
+    rule.onNode(hasText(Emojis[1])).performClick()
     rule.onNodeWithText(strings.settingEditCancel).performClick()
-    rule.onNodeWithText(emojis[0]).assertIsDisplayed()
+    rule.onNodeWithText(Emojis[0]).assertIsDisplayed()
   }
 }

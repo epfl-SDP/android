@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialog
 import ch.epfl.sdp.mobile.ui.setting.EditProfileImageDialogState
@@ -14,17 +15,14 @@ import kotlinx.coroutines.launch
  *
  * @param user the current [AuthenticatedUser].
  * @param scope the coroutine scope.
- * @param onSaveAction the callback called after we saved the changes.
- * @param onCancelAction the callback called when we click the cancel button.
+ * @param onCloseAction the callback called if dialog need to be closed.
  */
 class EditProfileImageDialogStateImpl(
     private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
-    onSaveAction: State<() -> Unit>,
-    onCancelAction: State<() -> Unit>
+    onCloseAction: State<() -> Unit>,
 ) : EditProfileImageDialogState {
-  private val onSaveAction by onSaveAction
-  private val onCancelAction by onCancelAction
+  private val onCloseAction by onCloseAction
 
   override var emoji by mutableStateOf(user.emoji)
   override var backgroundColor by mutableStateOf(user.backgroundColor)
@@ -42,13 +40,13 @@ class EditProfileImageDialogStateImpl(
           emoji(emoji)
           backgroundColor(backgroundColor)
         }
-        onSaveAction()
+        onCloseAction()
       }
     }
   }
 
   override fun onCancelClick() {
-    onCancelAction()
+    onCloseAction()
   }
 }
 
@@ -63,21 +61,16 @@ class EditProfileImageDialogStateImpl(
 @Composable
 fun StatefulEditProfileImageDialog(
     user: AuthenticatedUser,
-    onSave: () -> Unit,
-    onCancel: () -> Unit
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
   val scope = rememberCoroutineScope()
-  val onSaveAction = rememberUpdatedState(onSave)
-  val onCancelAction = rememberUpdatedState(onCancel)
+  val onCloseAction = rememberUpdatedState(onClose)
 
   val state =
-      remember(user, scope, onSaveAction, onCancelAction) {
-        EditProfileImageDialogStateImpl(
-            user = user,
-            scope = scope,
-            onSaveAction = onSaveAction,
-            onCancelAction = onCancelAction)
+      remember(user, scope, onCloseAction) {
+        EditProfileImageDialogStateImpl(user = user, scope = scope, onCloseAction = onCloseAction)
       }
 
-  EditProfileImageDialog(state)
+  EditProfileImageDialog(state, modifier)
 }

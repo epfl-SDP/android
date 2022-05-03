@@ -1,7 +1,5 @@
 package ch.epfl.sdp.mobile.application
 
-import androidx.compose.ui.graphics.Color
-
 /**
  * Represents a [Profile] in the application, which is associated gives information about a user and
  * how they should be displayed to other players.
@@ -49,7 +47,7 @@ interface Profile {
       /** A default color. */
       val Default = Orange
 
-      val asList = { listOf(Green200, Green500, Orange, Purple) }
+      val values = listOf(Green200, Green500, Orange, Purple)
     }
   }
 }

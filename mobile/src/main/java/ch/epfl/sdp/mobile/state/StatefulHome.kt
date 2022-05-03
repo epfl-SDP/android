@@ -96,10 +96,7 @@ fun StatefulHome(
         StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
       }
       dialog(SettingEditProfileImageRoute) {
-        StatefulEditProfileImageDialog(
-            user = user,
-            onSave = { controller.popBackStack() },
-            onCancel = { controller.popBackStack() })
+        StatefulEditProfileImageDialog(user = user, onClose = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
