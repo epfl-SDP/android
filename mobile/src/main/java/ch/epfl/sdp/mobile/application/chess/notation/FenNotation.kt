@@ -4,12 +4,12 @@ import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
+import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.integer
+import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.spaces
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.activeColor
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.board
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.castlingRights
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotationCombinators.enPassant
-import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.integer
-import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.spaces
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 
@@ -33,7 +33,6 @@ object FenNotation {
       val queenSideBlack: Boolean,
   )
 
-  // TODO: Need to accommodate for whose turn to play, castling rights etc...
   /**
    * Represents the state of a board at a given time, without game history
    * @param board The [Board] describing the position of every [Piece] at the present moment

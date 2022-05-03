@@ -4,8 +4,8 @@ import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
+import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.position
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.CastlingRights
-import ch.epfl.sdp.mobile.application.chess.notation.GenericNotationCombinators.position
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map

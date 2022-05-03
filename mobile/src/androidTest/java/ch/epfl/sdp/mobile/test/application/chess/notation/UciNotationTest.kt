@@ -2,16 +2,24 @@ package ch.epfl.sdp.mobile.test.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActionList
+import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class UciNotationTest {
 
   @Test
+  fun given_emptyMoves_when_decodingFromUCINotation_then_hasNoActions() {
+    val uci = ""
+    val res = parseActions(uci)
+
+    assertThat(res).isEmpty()
+  }
+
+  @Test
   fun given_simpleMoves_when_decodingFromUCINotation_then_hasEqualActions() {
     val uci = "d3d6 f8d8 d6d8 a8h1"
-    val res = parseActionList(uci)
+    val res = parseActions(uci)
     val expected =
         listOf(
             Action.Move(Position(3, 5), Position(3, 2)),
@@ -26,7 +34,7 @@ class UciNotationTest {
   @Test
   fun given_promotionMoves_when_decodingFromUCINotation_then_hasEqualActions() {
     val uci = "e7e8q h2h1n b7b8r a2a1b"
-    val res = parseActionList(uci)
+    val res = parseActions(uci)
     val expected =
         listOf(
             Action.Promote(Position(4, 1), Position(4, 0), Rank.Queen),
@@ -41,7 +49,7 @@ class UciNotationTest {
   @Test
   fun given_mixOfMoves_when_decodingFromUCINotation_then_hasEqualActions() {
     val uci = "d3d6 e7e8q h2h1n f8d8 d6d8 b7b8r a2a1b a8h1"
-    val res = parseActionList(uci)
+    val res = parseActions(uci)
     val expected =
         listOf(
             Action.Move(Position(3, 5), Position(3, 2)),
