@@ -113,11 +113,14 @@ class ChessSpeechRecognitionFilter(
   }
 
   /**
-   * Makes a decision of choosing the best candidate [chess piece | letter | number] from a list of speeches by relying on confidence scores
+   * Makes a decision of choosing the best candidate [chess piece | letter | number] from a list of
+   * speeches by relying on confidence scores
    * @param speeches list of tokenized speech recognizer results
    * @param confidencesScores confidence scores for each speech result in speeches
-   * @param detectionBlock a detection method for a certain type of chess keyword (ChessPiece | Number |Letter)
-   * @return most confident result [chess piece | letter | number] or empty if could not determine one
+   * @param detectionBlock a detection method for a certain type of chess keyword (ChessPiece |
+   * Number |Letter)
+   * @return most confident result [chess piece | letter | number] or empty if could not determine
+   * one
    */
   private fun detectFromSpeeches(
       speeches: List<List<Word>>,
