@@ -4,11 +4,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
-import ch.epfl.sdp.mobile.application.chess.notation.NotationCombinators
+import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinished
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.string
@@ -36,18 +35,20 @@ object VoiceInputCombinator {
   private val move =
       rank
           .flatMap {
-            NotationCombinators.position.flatMap { from ->
-              actionSeparator.flatMap { NotationCombinators.position.map { to -> Move(from, to) } }
+            CommonNotationCombinators.position.flatMap { from ->
+              actionSeparator.flatMap {
+                CommonNotationCombinators.position.map { to -> Move(from, to) }
+              }
             }
           }
           .checkFinished()
 
   /** A [Parser] for a [Promote] action. */
   private val promote =
-      NotationCombinators.position // No leading rank because only pawns may be promoted.
+      CommonNotationCombinators.position // No leading rank because only pawns may be promoted.
           .flatMap { from ->
             actionSeparator.flatMap {
-              NotationCombinators.position.flatMap { to ->
+              CommonNotationCombinators.position.flatMap { to ->
                 rank.map { rank -> Promote(from, to, rank) }
               }
             }
