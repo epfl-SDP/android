@@ -34,13 +34,7 @@ object StringCombinators {
     if (it.isNotEmpty()) {
       val splitString = it.trim { char -> char == delimiter }.split(delimiter, limit = 2)
       val result = splitString.first()
-      val remaining =
-          if (splitString.size == 1) {
-            ""
-          } else {
-            // drop only if we can drop something
-            splitString.drop(1).first()
-          }
+      val remaining = splitString.drop(1).firstOrNull() ?: ""
       sequenceOf(Parser.Result(remaining, result))
     } else {
       emptySequence()
