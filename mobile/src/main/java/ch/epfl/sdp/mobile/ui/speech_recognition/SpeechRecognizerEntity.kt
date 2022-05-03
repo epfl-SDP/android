@@ -10,21 +10,24 @@ import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-val defaultListener: (CancellableContinuation<List<String>>) -> RecognitionListener = { cont ->
-  object : SpeechRecognizerEntity.RecognitionListenerAdapter() {
-    override fun onResults(results: Bundle?) {
-      super.onResults(results)
-      cont.resume(
-          // results cannot be null
-          results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: emptyList())
+val defaultListener: (CancellableContinuation<List<String>>) -> RecognitionListener =
+    { cont->
+      object : SpeechRecognizerEntity.RecognitionListenerAdapter() {
+        override fun onResults(results: Bundle?) {
+          super.onResults(results)
+          cont.resume(
+              // results cannot be null
+              results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) ?: emptyList())
+        }
+
+      }
     }
-  }
-}
 
 class SpeechRecognizerEntity(
     private val lang: String = "en-US",
     private val maxResultsCount: Int = 10,
-    private val listener: CancellableContinuation<List<String>>.() -> RecognitionListener =
+    private val listener:
+        (CancellableContinuation<List<String>>) -> RecognitionListener =
         defaultListener
 ) : SpeechRecognizable {
   /**
@@ -34,22 +37,24 @@ class SpeechRecognizerEntity(
    */
   override suspend fun recognition(context: Context): List<String> =
       suspendCancellableCoroutine { cont ->
-    val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
-    val speechRecognizerIntent =
-        Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) // Speech action
-            .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang) // Speech language
-            .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, maxResultsCount) // Number of results
+        val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        val speechRecognizerIntent =
+            Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH) // Speech action
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang) // Speech language
+                .putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, maxResultsCount) // Number of results
+        // Listener for results
+        recognizer.setRecognitionListener(
+            listener(
+                cont
+            ))
+        recognizer.startListening(speechRecognizerIntent)
 
-    // Listener for results
-    recognizer.setRecognitionListener(listener(cont))
-    recognizer.startListening(speechRecognizerIntent)
-
-    // Clearing upon coroutine cancellation
-    cont.invokeOnCancellation {
-      recognizer.stopListening()
-      recognizer.destroy()
-    }
-  }
+        // Clearing upon coroutine cancellation
+        cont.invokeOnCancellation {
+          recognizer.stopListening()
+          recognizer.destroy()
+        }
+      }
 
   /** Adapter class for Recognition' listener */
   abstract class RecognitionListenerAdapter : RecognitionListener {

@@ -19,7 +19,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import kotlinx.coroutines.launch
 
-/* Extracted strings used for test, may be removed later */
+/* Extracted strings used for test, maybe removed later */
 const val PermissionGranted = "Permission has been granted ! "
 const val PermissionDenied = "Permission was NOT GRANTED !"
 const val DefaultText = "---"
