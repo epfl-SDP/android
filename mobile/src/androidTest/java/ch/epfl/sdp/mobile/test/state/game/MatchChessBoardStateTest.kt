@@ -28,7 +28,7 @@ class MatchChessBoardStateTest {
   }
 
   @Test
-  fun given_engineRan_when_convertingBackAndForth_then_equalsOriginalRank() {
+  fun given_engineRanK_when_convertingBackAndForth_then_equalsOriginalRank() {
     for (rank in Rank.values()) {
       assertThat(rank.toRank().toEngineRank()).isEqualTo(rank)
     }
