@@ -78,7 +78,7 @@ private fun Map<FieldPath, Any?>.toFirestoreDocument(): Map<String, Any?> {
       root = map
       segments.removeFirst()
     }
-    document[segments[0]] = value.mapFirestoreFieldValue()
+    root[segments[0]] = value.mapFirestoreFieldValue()
   }
   return document
 }
