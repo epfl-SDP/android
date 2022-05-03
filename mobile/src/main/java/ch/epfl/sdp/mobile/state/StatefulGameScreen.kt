@@ -1,15 +1,17 @@
 package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
-import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.state.game.MatchGameScreenState
-import ch.epfl.sdp.mobile.ui.game.*
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.game.GameScreen
+import ch.epfl.sdp.mobile.ui.game.PromoteDialog
+import ch.epfl.sdp.mobile.ui.game.PromotionState
 
 /**
  * The different navigation actions which may be performed by the [StatefulGameScreen].

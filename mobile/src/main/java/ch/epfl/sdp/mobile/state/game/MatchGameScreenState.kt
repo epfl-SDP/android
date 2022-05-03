@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
+import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
 import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toPosition
@@ -207,5 +207,5 @@ private constructor(
   }
 
   override val moves: List<Move>
-    get() = delegate.game.toExtendedNotation().map(::Move)
+    get() = delegate.game.toAlgebraicNotation().map(::Move)
 }
