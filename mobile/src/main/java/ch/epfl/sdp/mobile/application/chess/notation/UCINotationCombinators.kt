@@ -49,5 +49,5 @@ object UCINotationCombinators {
           .orElse { emptyList() }
 
   /** Returns a [Parser] for a string of actions. */
-  fun actions(): Parser<String, List<Action>?> = actions.checkFinished()
+  fun actions(): Parser<String, List<Action>> = actions.checkFinished()
 }
