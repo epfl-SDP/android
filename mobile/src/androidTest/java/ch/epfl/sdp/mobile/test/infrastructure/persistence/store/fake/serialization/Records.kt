@@ -92,7 +92,7 @@ private fun <T : Any> Map<FieldPath, Any?>.toObject(id: FakeDocumentId, valueCla
     val name = requireNotNull(parameter.name) { "Unnamed constructor parameter not supported." }
     when {
       valueClass.hasJavaAnnotatedField<DocumentId>(name) -> {
-        require(parameter.type in SupportedDocumentIdTypes) { "DocumentId must be a String?." }
+        require(parameter.type in SupportedDocumentIdTypes) { "DocumentId must be a String or String?." }
         require(this[FieldPath(name)] == null) {
           "Found a document field with the same name as DocumentId."
         }
