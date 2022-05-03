@@ -51,7 +51,6 @@ class StatefulEditProfileImageDialogTest {
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditImageIcon).performClick()
     rule.onNode(hasText(emojis[1])).performClick()
-    rule.onNode(hasText(Profile.Color.asList()[1].toString())).performClick()
     rule.onNodeWithText(strings.settingEditSave).performClick()
     rule.onNodeWithText(emojis[1]).assertIsDisplayed()
   }
