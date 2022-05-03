@@ -32,7 +32,7 @@ object StringCombinators {
    */
   fun string(delimiter: Char = ' '): Parser<String, Token> = Parser {
     if (it.isNotEmpty()) {
-      val splitString = it.trim().split(delimiter, limit = 2)
+      val splitString = it.trim { char -> char == delimiter }.split(delimiter, limit = 2)
       val result = splitString.first()
       val remaining =
           if (splitString.size == 1) {
