@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.notation.Notation.parseGame
+import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.parseGame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
