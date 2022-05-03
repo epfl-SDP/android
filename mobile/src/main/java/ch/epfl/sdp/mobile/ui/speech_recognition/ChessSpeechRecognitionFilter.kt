@@ -140,7 +140,7 @@ class ChessSpeechRecognitionFilter(
   }
 
   /**
-   * Searches for any matches of for a list word given a dictionary of chess keywords
+   * Searches for any matches for a list word given a dictionary of chess keywords
    * @param words a single tokenized speech as a list of words
    * @param dictionary a mapping from chess keyword to its predefined possible homonyms
    * @return a detected key word from dictionary if any, an empty string otherwise
