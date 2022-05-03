@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.ui.social
 
-import ch.epfl.sdp.mobile.application.Profile.Color
+import androidx.compose.ui.graphics.Color
 
 /** An interface representing a list of people you're following. */
 interface Person {

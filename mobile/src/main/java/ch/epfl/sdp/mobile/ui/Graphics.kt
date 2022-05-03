@@ -58,6 +58,12 @@ val PawniesIcons.Search
 val PawniesIcons.Check
   get() = Icons.Default.Check
 
+val PawniesIcons.LocalPlay
+  @Composable get() = painterResource(id = R.drawable.local_play)
+
+val PawniesIcons.OnlinePlay
+  @Composable get() = painterResource(id = R.drawable.online_play)
+
 /** Chess pieces */
 object ChessIcons
 

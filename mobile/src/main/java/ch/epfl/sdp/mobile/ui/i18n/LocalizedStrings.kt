@@ -20,6 +20,11 @@ interface LocalizedStrings {
   val authenticateSwitchToLogIn: String
   val authenticateSwitchToRegister: String
   val authenticateErrorFailure: String
+  val authenticateBadPasswordFailure: String
+  val authenticateWrongEmailFormatFailure: String
+  val authenticateInvalidUserFailure: String
+  val authenticateIncorrectPasswordFailure: String
+  val authenticateExistingAccountFailure: String
   val authenticateOr: String
 
   val arContentDescription: String
@@ -35,7 +40,15 @@ interface LocalizedStrings {
   val profileSettings: String
   val profileUnfollow: String
   val profileChallenge: String
-  val profileEditIcon: String
+  val profileAgainst: String
+  val profileEditImageIcon: String
+  val profileEditNameIcon: String
+  val profileYourTurn: String
+  val profileOthersTurn: String
+
+  val settingEditSave: String
+  val settingEditCancel: String
+  val settingProfileNameLabel: String
 
   val boardColorBlack: String
   val boardColorWhite: String
@@ -57,6 +70,8 @@ interface LocalizedStrings {
   val gameMessageCheck: String
   val gameMessageStalemate: String
   val gameMessageCheckmate: String
+  val gamePromoteTitle: String
+  val gamePromoteConfirm: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String
@@ -85,4 +100,6 @@ interface LocalizedStrings {
   val prepareGameSelectedOpponent: String
   val prepareGamePlayLocal: String
   val prepareGamePlayOnline: String
+
+  val playOnlineGames: String
 }

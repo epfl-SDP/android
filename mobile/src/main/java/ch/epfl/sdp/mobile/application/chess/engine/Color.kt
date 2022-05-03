@@ -3,6 +3,8 @@ package ch.epfl.sdp.mobile.application.chess.engine
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.DenormalizedBoardDecorator
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.NormalizedBoardDecorator
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Role
 
@@ -60,7 +62,11 @@ enum class Color(
    * @param action the [Action] to normalize.
    * @return the normalized action.
    */
-  fun normalize(action: Action): Action = Action(normalize(action.from), normalize(action.delta))
+  fun normalize(action: Action): Action =
+      when (action) {
+        is Move -> Move(normalize(action.from), normalize(action.delta))
+        is Promote -> Promote(normalize(action.from), normalize(action.delta), action.rank)
+      }
 
   // TODO : Is there another way to do this ?
   fun denormalize(effect: Effect<Piece<Role>>): Effect<Piece<Color>> = Effect { board ->

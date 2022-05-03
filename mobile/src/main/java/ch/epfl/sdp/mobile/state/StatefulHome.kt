@@ -18,6 +18,9 @@ private const val SocialRoute = "social"
 /** The route associated to the settings tab. */
 private const val SettingsRoute = "settings"
 
+/** The route associated to the editing button on the setting screen. */
+private const val SettingEditProfileNameRoute = "profile-name/edit"
+
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
 
@@ -36,10 +39,7 @@ private const val PrepareGameRoute = "prepare_game"
 /** Temporary route associated with speech recognition demo screen */
 private const val SpeechRecognitionRoute = "speech"
 
-/**
- * The route associated to the ar tab. Note : This tab is temporary, use only for the development
- * TODO : Remove this when we can display the entire game on AR
- */
+/** The route associated to the ar tab. */
 private const val ArRoute = "ar"
 
 /**
@@ -64,6 +64,10 @@ fun StatefulHome(
     controller.navigate("$ProfileRoute/${person.uid}")
   }
 
+  val onGameItemClick: (match: ChessMatchAdapter) -> Unit = { match ->
+    controller.navigate("$GameRoute/${match.uid}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -82,14 +86,28 @@ fun StatefulHome(
             contentPadding = paddingValues,
         )
       }
-      composable(SettingsRoute) { StatefulSettingsScreen(user, Modifier.fillMaxSize()) }
+      composable(SettingsRoute) {
+        StatefulSettingsScreen(
+            user = user,
+            onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
+      }
+      dialog(SettingEditProfileNameRoute) {
+        StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
+      }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
-        StatefulProfileScreen(
+        StatefulVisitedProfileScreen(
             backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
-            { controller.navigate(PrepareGameRoute) }, Modifier.fillMaxSize(), paddingValues)
+            user = user,
+            onGameItemClick = onGameItemClick,
+            navigateToLocalGame = { match -> controller.navigate("$GameRoute/${match.id}") },
+            navigateToPrepareGame = { controller.navigate(PrepareGameRoute) },
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       dialog(PrepareGameRoute) {
         StatefulPrepareGameScreen(
@@ -103,7 +121,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate(ArRoute) },
+                onShowAr = { controller.navigate("$ArRoute/{id}") },
             )
         StatefulGameScreen(
             actions = actions,
@@ -113,19 +131,20 @@ fun StatefulHome(
             paddingValues = paddingValues,
         )
       }
-      composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
       composable(SpeechRecognitionRoute) {
         StatefulSpeechRecognitionScreen(user, Modifier.fillMaxSize())
       }
+      composable("$ArRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
+        StatefulArScreen(user, id, Modifier.fillMaxSize())
+      }
     }
-  }
 }
 
 /** Maps a [NavBackStackEntry] to the appropriate [HomeSection]. */
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
-      ArRoute -> HomeSection.Ar
       PlayRoute -> HomeSection.Play
       SpeechRecognitionRoute -> HomeSection.SpeechRecognition
       else -> HomeSection.Social
@@ -136,7 +155,6 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
-      HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
       HomeSection.SpeechRecognition -> SpeechRecognitionRoute
     }

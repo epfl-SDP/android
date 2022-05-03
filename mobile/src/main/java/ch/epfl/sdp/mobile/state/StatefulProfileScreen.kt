@@ -1,44 +1,38 @@
 package ch.epfl.sdp.mobile.state
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
+import ch.epfl.sdp.mobile.ui.social.Person
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-class FetchedUserProfileScreenState(
-    user: Profile,
-) : ProfileScreenState {
-  override val email = ""
-  override val pastGamesCount = 0
-  override val matches = emptyList<ChessMatch>()
-  override val backgroundColor = user.backgroundColor
-  override val name = user.name
-  override val emoji = user.emoji
-  override val followed = user.followed
-
-  override fun onUnfollowClick() {}
-  override fun onChallengeClick() {}
-}
 /**
- * A stateful composable to visit the profile page of other players
+ * An implementation of the [ProfileScreenState] that performs a given profile's [ChessMatch]
+ * requests.
  *
- * @param uid of the player.
- * @param modifier the [Modifier] for this composable.
+ * @param user the given [Profile].
+ * @param chessFacade the [ChessFacade] used to perform some requests.
+ * @param scope the [CoroutineScope] on which requests are performed.
  */
-@Composable
-fun StatefulProfileScreen(
-    uid: String,
-    modifier: Modifier = Modifier,
-) {
-  val socialFacade = LocalSocialFacade.current
-  val profile by remember(socialFacade, uid) { socialFacade.profile(uid) }.collectAsState(null)
-  val state = profile?.let { FetchedUserProfileScreenState(it) }
-  if (state != null) {
-    ProfileScreen(state, modifier)
+class StatefulProfileScreen(
+    user: Profile,
+    private val chessFacade: ChessFacade,
+    private val scope: CoroutineScope,
+) : ProfileScreenState, Person by ProfileAdapter(user) {
+  override var matches by mutableStateOf(emptyList<ChessMatch>())
+    private set
+  override val pastGamesCount
+    get() = matches.size
+  init {
+    scope.launch {
+      fetchForUser(user, chessFacade).collect { list ->
+        matches = list.map { createChessMatch(it, user) }
+      }
+    }
   }
 }

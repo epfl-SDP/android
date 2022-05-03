@@ -18,18 +18,20 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.toColor
 
 /**
- * Main component of the ProfileScreen that groups ProfileHeader and list of Matches
- * @param state state of the ProfileScreen
+ * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
+ *
+ * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] to apply to this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    state: ProfileScreenState,
+    state: VisitedProfileScreenState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
@@ -45,18 +47,21 @@ fun ProfileScreen(
         )
       },
       matches = state.matches,
+      contentPadding = contentPadding,
+      onMatchClick = {},
       lazyColumnState = lazyColumnState,
       modifier = modifier)
 }
 
 /**
  * Composes the profile header given the profile [state]. Displays also the ProfilePicture,
- * SettingsButton, name and email of th user profile
- * @param state state of profile screen
+ * SettingsButton, name and email of th user profile.
+ *
+ * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
+fun ProfileHeader(state: VisitedProfileScreenState, modifier: Modifier = Modifier) {
 
   Column(
       modifier = modifier,
@@ -66,7 +71,6 @@ fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
     ProfilePicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(state.name, style = MaterialTheme.typography.h5)
-      Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
 
     Row(
@@ -80,25 +84,26 @@ fun ProfileHeader(state: ProfileScreenState, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes the profile picture given its [state]
- * @param state state of profile screen
+ * Composes the profile picture given its [state].
+ *
+ * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun ProfilePicture(
-    state: ProfileScreenState,
+    state: VisitedProfileScreenState,
     modifier: Modifier = Modifier,
 ) {
   Box(
-      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor, CircleShape),
       contentAlignment = Alignment.Center,
   ) { Text(state.emoji, style = MaterialTheme.typography.h3) }
 }
 
 /**
- * Composes the unfollow button
- * @param onClick callback function for the unfollow button.
+ * Composes the unfollow button.
  *
+ * @param onClick callback function for the unfollow button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -116,8 +121,9 @@ fun UnfollowButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes the challenge button
- * @param onClick call back method for challenge button
+ * Composes the challenge button.
+ *
+ * @param onClick call back method for challenge button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -136,11 +142,12 @@ fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 /**
- * Composes a Profile from puzzles and past games tab items
- * @param pastGamesCount total of the previous games
+ * Composes a Profile from puzzles and past games tab items.
+ *
+ * @param pastGamesCount total of the previous games.
  * @param modifier the [Modifier] for this composable.
- * @param backgroundColor of the tab bar
- * @param elevation elevation dp of the tab bar
+ * @param backgroundColor of the tab bar.
+ * @param elevation elevation dp of the tab bar.
  */
 @Composable
 fun ProfileTabBar(
