@@ -30,16 +30,18 @@ object StringCombinators {
    *
    * @param delimiter the delimiter between each token
    */
-  fun token(delimiter: Char = ' '): Parser<String, Token> = Parser {
-    if (it.isNotEmpty()) {
-      val splitString = it.trim { char -> char == delimiter }.split(delimiter, limit = 2)
-      val result = splitString.first()
-      val remaining = splitString.drop(1).firstOrNull() ?: ""
-      sequenceOf(Parser.Result(remaining, result))
-    } else {
-      emptySequence()
-    }
-  }
+  fun token(delimiter: Char = ' '): Parser<String, Token> =
+      Parser<String, String> {
+        if (it.isNotEmpty()) {
+          val splitString = it.trim { char -> char == delimiter }.split(delimiter, limit = 2)
+          val result = splitString.first()
+          val remaining = splitString.drop(1).firstOrNull() ?: ""
+          sequenceOf(Parser.Result(remaining, result))
+        } else {
+          emptySequence()
+        }
+      }
+          .filter { it.isNotEmpty() }
 
   /**
    * Parses the first [Token] of a [String], if it's not empty and has the provided value.

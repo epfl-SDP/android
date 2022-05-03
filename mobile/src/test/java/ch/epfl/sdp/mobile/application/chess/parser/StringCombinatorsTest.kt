@@ -32,4 +32,10 @@ class StringCombinatorsTest {
     val res = token("That").parse("This is a test")
     assertThat(res.count()).isEqualTo(0)
   }
+
+  @Test
+  fun given_aStringWithOnlyDelimiter_when_parsed_then_returnEmptySequence() {
+    val res = token(delimiter = '-').parse("---")
+    assertThat(res.count()).isEqualTo(0)
+  }
 }
