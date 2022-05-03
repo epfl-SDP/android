@@ -139,6 +139,7 @@ fun StatefulHome(
         StatefulArScreen(user, id, Modifier.fillMaxSize())
       }
     }
+  }
 }
 
 /** Maps a [NavBackStackEntry] to the appropriate [HomeSection]. */

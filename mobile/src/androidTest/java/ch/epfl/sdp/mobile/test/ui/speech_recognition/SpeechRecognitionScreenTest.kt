@@ -1,8 +1,7 @@
 package ch.epfl.sdp.mobile.test.ui.speech_recognition
 
+import android.Manifest
 import android.os.Bundle
-import android.speech.RecognitionListener
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -28,7 +27,8 @@ class SpeechRecognitionScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  @Test fun given_noGrantedPermission_when_screenDisplayed_then_noPermissionText(){
+  @Test
+  fun given_noGrantedPermission_when_screenDisplayed_then_noPermissionText() {
     val mockedPermission = mockk<PermissionState>()
     every { mockedPermission.hasPermission } returns false
     val state = DefaultSpeechRecognitionScreenState(mockedPermission, mutableStateOf(false))
@@ -103,23 +103,26 @@ class SpeechRecognitionScreenTest {
     rule.onNodeWithText(speech).assertExists()
   }
 
-
-  @Test fun testListener() = runTest{
+  @Test
+  fun testListener() = runTest {
     val testResults = arrayListOf("Hello", "World")
-    val listenerResults = suspendCancellableCoroutine<List<String>> { cont ->
-      val bundle : Bundle = mockk()
-      every { bundle.getStringArrayList(any())} returns testResults
-      defaultListener(cont).onResults(bundle)
-    }
-    assertThat(listenerResults,IsEqual(testResults))
+    val listenerResults =
+        suspendCancellableCoroutine<List<String>> { cont ->
+          val bundle: Bundle = mockk()
+          every { bundle.getStringArrayList(any()) } returns testResults
+          defaultListener(cont).onResults(bundle)
+        }
+    assertThat(listenerResults, IsEqual(testResults))
   }
 
-  @Test fun testListenerEmpty() = runTest {
-    val listenerResults = suspendCancellableCoroutine<List<String>> { cont ->
-      val bundle : Bundle = mockk()
-      every {bundle.getStringArrayList(any())}  returns null
-      defaultListener(cont).onResults(bundle)
-    }
+  @Test
+  fun testListenerEmpty() = runTest {
+    val listenerResults =
+        suspendCancellableCoroutine<List<String>> { cont ->
+          val bundle: Bundle = mockk()
+          every { bundle.getStringArrayList(any()) } returns null
+          defaultListener(cont).onResults(bundle)
+        }
     assertThat(listenerResults, IsEqual(emptyList()))
   }
 }
