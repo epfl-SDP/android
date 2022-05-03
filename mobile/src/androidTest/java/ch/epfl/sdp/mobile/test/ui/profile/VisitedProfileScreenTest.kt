@@ -9,7 +9,7 @@ import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
-import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
+import ch.epfl.sdp.mobile.ui.profile.VisitedProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Loss
 import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.CHECKMATE
@@ -19,12 +19,12 @@ import ch.epfl.sdp.mobile.ui.social.Win
 import org.junit.Rule
 import org.junit.Test
 
-class ProfileScreenTest {
+class VisitedProfileScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestProfileScreenState(override val matches: List<ChessMatch>) : ProfileScreenState {
-    override val email = "example@epfl.ch"
+  open class TestProfileScreenState(override val matches: List<ChessMatch>) :
+      VisitedProfileScreenState {
     override val pastGamesCount = 10
     override fun onChallengeClick() = Unit
     override fun onUnfollowClick() = Unit
@@ -43,7 +43,6 @@ class ProfileScreenTest {
   fun profile_isDisplayed() {
     rule.setContent { ProfileScreen(FakeProfileScreenState) }
 
-    rule.onNodeWithText(FakeProfileScreenState.email).assertExists()
     rule.onNodeWithText(FakeProfileScreenState.name).assertExists()
     rule.onNodeWithText(FakeProfileScreenState.emoji).assertExists()
   }
