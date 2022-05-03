@@ -32,9 +32,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.orderBy("field", Query.Direction.ASCENDING) } returns result
+    every { query.orderBy(FieldPath.of("field"), Query.Direction.ASCENDING) } returns result
     reference.orderBy("field")
-    verify { query.orderBy(any<String>(), Query.Direction.ASCENDING) }
+    verify { query.orderBy(FieldPath.of("field"), Query.Direction.ASCENDING) }
   }
 
   @Test
@@ -43,9 +43,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.orderBy("field", Query.Direction.ASCENDING) } returns result
+    every { query.orderBy(FieldPath.of("field"), Query.Direction.ASCENDING) } returns result
     reference.orderBy("field", Ascending)
-    verify { query.orderBy(any<String>(), Query.Direction.ASCENDING) }
+    verify { query.orderBy(FieldPath.of("field"), Query.Direction.ASCENDING) }
   }
 
   @Test
@@ -54,9 +54,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.orderBy("field", Query.Direction.DESCENDING) } returns result
+    every { query.orderBy(FieldPath.of("field"), Query.Direction.DESCENDING) } returns result
     reference.orderBy("field", Descending)
-    verify { query.orderBy(any<String>(), Query.Direction.DESCENDING) }
+    verify { query.orderBy(FieldPath.of("field"), Query.Direction.DESCENDING) }
   }
 
   @Test
@@ -65,9 +65,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereGreaterThan("field", "value") } returns result
+    every { query.whereGreaterThan(FieldPath.of("field"), "value") } returns result
     reference.whereGreaterThan("field", "value", inclusive = false)
-    verify { query.whereGreaterThan("field", "value") }
+    verify { query.whereGreaterThan(FieldPath.of("field"), "value") }
   }
 
   @Test
@@ -76,9 +76,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereGreaterThanOrEqualTo("field", "value") } returns result
+    every { query.whereGreaterThanOrEqualTo(FieldPath.of("field"), "value") } returns result
     reference.whereGreaterThan("field", "value", inclusive = true)
-    verify { query.whereGreaterThanOrEqualTo("field", "value") }
+    verify { query.whereGreaterThanOrEqualTo(FieldPath.of("field"), "value") }
   }
 
   @Test
@@ -87,9 +87,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereLessThan("field", "value") } returns result
+    every { query.whereLessThan(FieldPath.of("field"), "value") } returns result
     reference.whereLessThan("field", "value", inclusive = false)
-    verify { query.whereLessThan("field", "value") }
+    verify { query.whereLessThan(FieldPath.of("field"), "value") }
   }
 
   @Test
@@ -98,9 +98,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereLessThanOrEqualTo("field", "value") } returns result
+    every { query.whereLessThanOrEqualTo(FieldPath.of("field"), "value") } returns result
     reference.whereLessThan("field", "value", inclusive = true)
-    verify { query.whereLessThanOrEqualTo("field", "value") }
+    verify { query.whereLessThanOrEqualTo(FieldPath.of("field"), "value") }
   }
 
   @Test
@@ -109,9 +109,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereEqualTo("field", null) } returns result
+    every { query.whereEqualTo(FieldPath.of("field"), null) } returns result
     reference.whereEquals("field", null)
-    verify { query.whereEqualTo("field", null) }
+    verify { query.whereEqualTo(FieldPath.of("field"), null) }
   }
 
   @Test
@@ -120,9 +120,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereNotEqualTo("field", null) } returns result
+    every { query.whereNotEqualTo(FieldPath.of("field"), null) } returns result
     reference.whereNotEquals("field", null)
-    verify { query.whereNotEqualTo("field", null) }
+    verify { query.whereNotEqualTo(FieldPath.of("field"), null) }
   }
 
   @Test
@@ -131,9 +131,9 @@ class FirestoreQueryTest {
     val result = mockk<Query>()
     val reference = FirestoreQuery(query)
 
-    every { query.whereArrayContains("field", "value") } returns result
+    every { query.whereArrayContains(FieldPath.of("field"), "value") } returns result
     reference.whereArrayContains("field", "value")
-    verify { query.whereArrayContains("field", "value") }
+    verify { query.whereArrayContains(FieldPath.of("field"), "value") }
   }
 
   @Test
