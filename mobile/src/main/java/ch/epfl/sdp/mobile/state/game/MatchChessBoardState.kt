@@ -49,7 +49,12 @@ class MatchChessBoardState(
           .toPosition()
     }
 
-  data class Piece(val piece: EnginePiece<EngineColor>) : ChessBoardState.Piece {
+  /**
+   * An implementation of [Piece] which uses an [EnginePiece] internally.
+   *
+   * @param piece backing [EnginePiece].
+   */
+  data class Piece(private val piece: EnginePiece<EngineColor>) : ChessBoardState.Piece {
     override val rank = piece.rank.toRank()
     override val color = piece.color.toColor()
   }
