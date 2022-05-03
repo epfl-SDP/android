@@ -119,6 +119,64 @@ class FirestoreDocumentReferenceTest {
     verify { doc.set(mapOf("key" to "value")) }
   }
 
+  @Test
+  fun given_nestedMaps_when_callsSet_then_callsApiWithRightArguments() = runTest {
+    val doc = mockk<DocumentReference>()
+    val reference = FirestoreDocumentReference(doc)
+
+    every {
+      doc.set(
+          mapOf(
+              "key1" to "value",
+              "key2" to mapOf("key3" to 1),
+          ),
+      )
+    } returns Tasks.forResult(null)
+
+    reference.set {
+      this["key1"] = "value"
+      this["key2"] = mapOf("key3" to 1)
+    }
+
+    verify {
+      doc.set(
+          mapOf(
+              "key1" to "value",
+              "key2" to mapOf("key3" to 1),
+          ),
+      )
+    }
+  }
+
+  @Test
+  fun given_deeplyNestedMaps_when_callsSet_then_callsApiWithRightArguments() = runTest {
+    val doc = mockk<DocumentReference>()
+    val reference = FirestoreDocumentReference(doc)
+
+    every {
+      doc.set(
+          mapOf(
+              "key1" to "value1",
+              "key2" to mapOf("key3" to mapOf("key4" to "value2")),
+          ),
+      )
+    } returns Tasks.forResult(null)
+
+    reference.set {
+      this["key1"] = "value1"
+      this["key2"] = mapOf("key3" to mapOf("key4" to "value2"))
+    }
+
+    verify {
+      doc.set(
+          mapOf(
+              "key1" to "value1",
+              "key2" to mapOf("key3" to mapOf("key4" to "value2")),
+          ),
+      )
+    }
+  }
+
   data class TestDocument(
       val name: String? = null,
   )
