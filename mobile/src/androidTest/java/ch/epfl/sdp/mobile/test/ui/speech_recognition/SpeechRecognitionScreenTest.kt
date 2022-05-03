@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.test.ui.speech_recognition
 
-import android.Manifest
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.util.Log
@@ -104,53 +103,6 @@ class SpeechRecognitionScreenTest {
     rule.onNodeWithText(speech).assertExists()
   }
 
-  //Start activity
-//  @get:Rule val androidRule = createAndroidComposeRule<HomeActivity>()
-//
-//  @Test
-//  fun brokenIntentsTest() {
-//
-//    val mockedPermission = mockk<PermissionState>()
-//    every { mockedPermission.hasPermission } returns true
-//
-//    try {
-//      //Initiate intent capturing
-//      Intents.init()
-//
-//      // Rule sets content to test
-//      val state = DefaultSpeechRecognitionScreenState(mockedPermission, mutableStateOf(true))
-//      androidRule.setContent{ SpeechRecognitionScreen(state) }
-//
-//
-//      // Mock result intent
-//      val speech = "Hello World"
-//      val resultData = Intent(androidRule.activity.applicationContext, HomeActivity::class.java)
-//      resultData.putExtra(SpeechRecognizer.RESULTS_RECOGNITION, arrayListOf(speech))
-//
-//      val result = Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
-//
-//      //Stub intent responses of the recognizer
-//      intending(hasAction(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)).respondWith(result)
-//
-//      androidRule.onNodeWithText(DefaultText).assertExists()
-//
-//      //Start listen for result but never stop
-//      androidRule.onNodeWithContentDescription(MicroIconDescription).assertExists().performClick()
-//    // androidRule.onNodeWithContentDescription(ListeningText).assertExists()
-//
-//      // TODO: no intents are captured by test
-//      // Possible bug -> recognizer keeps listening and do not send intents
-//
-//      Log.d("tag", "all intents ${Intents.getIntents()}") // No intents are sent by the HomeActivity Class
-//      // The recognizer keeps listening
-//
-//      //This fails as no response is sent back to the HomeActivity
-//      androidRule.onNodeWithText(speech).assertExists(speech)
-//    } finally {
-//      //Stop intent capturing
-//      Intents.release()
-//    }
-//  }
 
   @Test fun testListener() = runTest{
     val testResults = arrayListOf("Hello", "World")
@@ -158,18 +110,8 @@ class SpeechRecognitionScreenTest {
       val bundle : Bundle = mockk()
       every { bundle.getStringArrayList(any())} returns testResults
       defaultListener(cont).onResults(bundle)
-      cont.invokeOnCancellation {
-        Log.d("TAGG", "Canceling...")
-        assertThat(1, IsEqual(1))
-      }
-      cont.cancel()
     }
-
     assertThat(listenerResults,IsEqual(testResults))
-
-
-
-
   }
 
   @Test fun testListenerEmpty() = runTest {
@@ -178,9 +120,6 @@ class SpeechRecognitionScreenTest {
       every {bundle.getStringArrayList(any())}  returns null
       defaultListener(cont).onResults(bundle)
     }
-
-    Log.d("TAG", "After")
     assertThat(listenerResults, IsEqual(emptyList()))
-
   }
 }
