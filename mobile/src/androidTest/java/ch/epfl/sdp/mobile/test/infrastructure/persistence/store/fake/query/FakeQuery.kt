@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query
 
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query.WhereFakeQueryDecorator.Filter.where
@@ -19,35 +20,35 @@ import kotlinx.coroutines.flow.Flow
 interface FakeQuery : Query {
   override fun limit(count: Long): FakeQuery = LimitFakeQueryDecorator(this, count)
 
-  override fun orderBy(field: String, direction: Query.Direction): FakeQuery =
-      OrderByQueryDecorator(this, field, direction)
+  override fun orderBy(path: FieldPath, direction: Query.Direction): FakeQuery =
+      OrderByQueryDecorator(this, path, direction)
 
-  override fun whereGreaterThan(field: String, value: Any, inclusive: Boolean): FakeQuery =
+  override fun whereGreaterThan(path: FieldPath, value: Any, inclusive: Boolean): FakeQuery =
       WhereFakeQueryDecorator(
-          this.whereNotEquals(field, null),
-          where(field) {
+          this.whereNotEquals(path, null),
+          where(path) {
             val bound = if (inclusive) 0 else 1
             FakeFieldComparator.compare(it, value) >= bound
           },
       )
 
-  override fun whereLessThan(field: String, value: Any, inclusive: Boolean): FakeQuery =
+  override fun whereLessThan(path: FieldPath, value: Any, inclusive: Boolean): FakeQuery =
       WhereFakeQueryDecorator(
-          this.whereNotEquals(field, null),
-          where(field) {
+          this.whereNotEquals(path, null),
+          where(path) {
             val bound = if (inclusive) 0 else -1
             FakeFieldComparator.compare(it, value) <= bound
           },
       )
 
-  override fun whereEquals(field: String, value: Any?): FakeQuery =
-      WhereFakeQueryDecorator(this, where(field) { it == value })
+  override fun whereEquals(path: FieldPath, value: Any?): FakeQuery =
+      WhereFakeQueryDecorator(this, where(path) { it == value })
 
-  override fun whereNotEquals(field: String, value: Any?): FakeQuery =
-      WhereFakeQueryDecorator(this, where(field) { it != value })
+  override fun whereNotEquals(path: FieldPath, value: Any?): FakeQuery =
+      WhereFakeQueryDecorator(this, where(path) { it != value })
 
-  override fun whereArrayContains(field: String, value: Any): FakeQuery =
-      WhereFakeQueryDecorator(this, whereArray(field) { it.contains(value) })
+  override fun whereArrayContains(path: FieldPath, value: Any): FakeQuery =
+      WhereFakeQueryDecorator(this, whereArray(path) { it.contains(value) })
 
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot>
 }
