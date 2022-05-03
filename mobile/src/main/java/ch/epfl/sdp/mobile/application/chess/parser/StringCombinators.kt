@@ -45,6 +45,7 @@ object StringCombinators {
    * Parses the first [Token] of a [String], if it's not empty and has the provided value.
    *
    * @param value the value that is searched.
+   * @param delimiter the delimiter between each token.
    */
   fun token(value: Token, delimiter: Char = ' '): Parser<String, Token> =
       token(delimiter).filter { it == value }
