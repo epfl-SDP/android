@@ -5,20 +5,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import ch.epfl.sdp.mobile.ui.ChessIcons
+import ch.epfl.sdp.mobile.ui.WhiteKing
 import ch.epfl.sdp.mobile.ui.social.*
 
 /**
- * A Slot Component for Profile or Setting Screen
- * @param header part of slot construct that comes into the header
- * @param profileBar part of slot construct that represents the tab bar.
- * @param matches the part that is responsible for the list of all matches
+ * A Slot Component for Profile or Setting Screen.
+ *
+ * @param header part of slot construct that comes into the header.
+ * @param profileTabBar part of slot construct that represents the tab bar.
+ * @param matches the part that is responsible for the list of all matches.
+ * @param onMatchClick callback function executed when a match is clicked on.
  * @param lazyColumnState to keep state of LazyColumn onMatchClick a callback called when a
- * [ChessMatch] is clicked
+ * [ChessMatch] is clicked.
  * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -29,15 +33,18 @@ fun UserScreen(
     onMatchClick: (ChessMatch) -> Unit,
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
+
   LazyColumn(
       state = lazyColumnState,
       verticalArrangement = Arrangement.Top,
       horizontalAlignment = Alignment.CenterHorizontally,
       modifier = modifier,
+      contentPadding = contentPadding,
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
-    items(matches) { match -> Match(match, { onMatchClick(match) }) }
+    items(matches) { match -> Match(match, ChessIcons.WhiteKing, { onMatchClick(match) }) }
   }
 }

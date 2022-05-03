@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Match
@@ -109,7 +110,7 @@ private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
     }
 
 /** Intermediate State to simplify the data handling */
-private data class MatchInfo(
+data class MatchInfo(
     val id: String?,
     val movesCount: Int,
     val whiteId: String,
@@ -128,15 +129,15 @@ data class ChessMatchAdapter(
 ) : ChessMatch {}
 
 /**
- * Fetches the matches from the facade and convert it to a list of [MatchInfo]s
- * @param currentUser the current authenticated user
- * @param facade the faced we fetch the matches
+ * Fetches the matches from the facade and convert it to a list of [MatchInfo]s.
+ * @param user the [Profile] who's games we'd like to fetch.
+ * @param facade the faced we fetch the matches.
  */
-private fun fetchForUser(
-    currentUser: AuthenticatedUser,
+fun fetchForUser(
+    user: Profile,
     facade: ChessFacade,
 ): Flow<List<MatchInfo>> =
-    facade.matches(currentUser).map { m -> m.map { info(it) } }.flatMapLatest { matches ->
+    facade.matches(user).map { m -> m.map { info(it) } }.flatMapLatest { matches ->
       combine(matches) { it.toList() }
     }
 
@@ -216,11 +217,11 @@ private class PlayScreenStateImpl(
 }
 
 /**
- * Helper function for createChessMatch
- * @param match [MatchInfo] intermediate datatype
- * @param user authenticated user
+ * Helper function for createChessMatch.
+ * @param match [MatchInfo] intermediate datatype.
+ * @param user the user in question.
  */
-private fun createChessMatch(match: MatchInfo, user: AuthenticatedUser): ChessMatchAdapter =
+fun createChessMatch(match: MatchInfo, user: Profile): ChessMatchAdapter =
     ChessMatchAdapter(
         adversary = if (user.uid == match.blackId) match.whiteName else match.blackName,
         matchResult =
