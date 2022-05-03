@@ -1,9 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
-import android.Manifest
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
