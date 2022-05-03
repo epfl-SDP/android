@@ -27,13 +27,13 @@ class MatchChessBoardState(
     scope: CoroutineScope,
 ) : ChessBoardState<Piece> {
 
-  init {
-    scope.launch { match.game.collect { game = it } }
-  }
-
   /** The current [Game], which is updated when the [Match] progresses. */
   var game by mutableStateOf(Game.create())
     private set
+
+  init {
+    scope.launch { match.game.collect { game = it } }
+  }
 
   override val pieces: Map<ChessBoardState.Position, Piece>
     get() = game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
