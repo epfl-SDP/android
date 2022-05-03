@@ -2,14 +2,13 @@ package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.NotationCombinators.action
+import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotationCombinators.action
 import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
- * An object which contains some utilities to transform games in extended game notation, and
- * vice-versa.
+ * An object which contains some utilities to transform games in algebraic notation, and vice-versa.
  */
-object Notation {
+object AlgebraicNotation {
 
   /**
    * Parses an [Action] from the provided [String] text.
@@ -22,11 +21,11 @@ object Notation {
   }
 
   /**
-   * Transforms this [Position] to extended algebraic notation.
+   * Transforms this [Position] to algebraic notation.
    *
    * @receiver the [Position] that is transformed.
    */
-  private fun Position.toExtendedNotation(): String {
+  private fun Position.toAlgebraicNotation(): String {
     return if (!inBounds) {
       "?"
     } else {
@@ -37,11 +36,11 @@ object Notation {
   }
 
   /**
-   * Transforms this [Rank] to extended algebraic notation.
+   * Transforms this [Rank] to algebraic notation.
    *
    * @receiver the [Rank] that is transformed.
    */
-  private fun Rank.toExtendedNotation(): String =
+  private fun Rank.toAlgebraicNotation(): String =
       when (this) {
         Rank.King -> "K"
         Rank.Queen -> "Q"
@@ -52,26 +51,26 @@ object Notation {
       }
 
   /**
-   * Transforms this [Action] to extended algebraic notation.
+   * Transforms this [Action] to algebraic notation.
    *
    * @receiver the [Action] that is transformed.
    * @param board the current state of the [Board].
    */
-  fun Action.toExtendedNotation(board: Board<Piece<Color>>): String {
+  fun Action.toAlgebraicNotation(board: Board<Piece<Color>>): String {
     val fromPosition = from
     val toPosition = from + delta ?: return "?"
-    val rank = board[fromPosition]?.rank?.toExtendedNotation() ?: return "?"
-    val from = fromPosition.toExtendedNotation()
+    val rank = board[fromPosition]?.rank?.toAlgebraicNotation() ?: return "?"
+    val from = fromPosition.toAlgebraicNotation()
     val sep = if (board[toPosition] != null) "x" else "-"
-    val to = toPosition.toExtendedNotation()
+    val to = toPosition.toAlgebraicNotation()
     return when (this) {
       is Action.Move -> "$rank$from$sep$to"
-      is Action.Promote -> "$rank$from$sep$to${this.rank.toExtendedNotation()}"
+      is Action.Promote -> "$rank$from$sep$to${this.rank.toAlgebraicNotation()}"
     }
   }
 
   /**
-   * Parses a [Game] from a [List] of moves. Invalid moves will be ignored.
+   * Parses a [Game] from a [List] of moves in algebraic notation. Invalid moves will be ignored.
    *
    * @param text the [List] of [String] that should be parsed.
    * @param initial the initial [Game] to which the valid actions are incrementally applied.
@@ -91,12 +90,12 @@ object Notation {
    *
    * @receiver the [Game] that is transformed.
    */
-  fun Game.toExtendedNotation(): List<String> =
+  fun Game.toAlgebraicNotation(): List<String> =
       sequence {
             var previous = previous
             while (previous != null) {
               val (game, action) = previous
-              yield(action.toExtendedNotation(game.board))
+              yield(action.toAlgebraicNotation(game.board))
               previous = game.previous
             }
           }
