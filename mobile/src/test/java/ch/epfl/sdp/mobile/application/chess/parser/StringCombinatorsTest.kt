@@ -26,4 +26,10 @@ class StringCombinatorsTest {
     val expected = emptySequence<Parser<String, Token>>()
     assertThat(res).isEqualTo(expected)
   }
+
+  @Test
+  fun given_aString_when_parsedWithAGivenToken_then_returnEmptySet() {
+    val res = token("That").parse("This is a test")
+    assertThat(res.count()).isEqualTo(0)
+  }
 }
