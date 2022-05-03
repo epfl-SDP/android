@@ -87,7 +87,7 @@ class ChessSpeechRecognitionFilter(
   }
 
   /**
-   * Detects if any word in the speech is within the numberDictionary and return its equivalent
+   * Detects if any word in the speech is within the lettersDictionary and return its equivalent
    * correct chess letter keyword
    * @param words a tokenized speech
    * @param lettersDictionary a mapping from chess keyword letter to their homonyms
