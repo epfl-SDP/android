@@ -45,8 +45,8 @@ private constructor(
      */
     fun <C : Any> pieceBoards(): Factory<PieceBoardSubject<C>, Board<Piece<C>>> =
         Factory { metadata, actual ->
-      PieceBoardSubject(metadata, actual)
-    }
+          PieceBoardSubject(metadata, actual)
+        }
 
     /**
      * An entry point to make fluent assertions about a [Board] of [Piece].
@@ -56,6 +56,7 @@ private constructor(
      * @return a [PieceBoardSubject].
      */
     @JvmStatic
-    fun <C : Any> assertThat(actual: Board<Piece<C>>?) = assertAbout(pieceBoards<C>()).that(actual)
+    fun <C : Any> assertThat(actual: Board<Piece<C>>?): PieceBoardSubject<C> =
+        assertAbout(pieceBoards<C>()).that(actual)
   }
 }

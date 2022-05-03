@@ -46,6 +46,7 @@ private constructor(
      * @param actual the [Piece] under test.
      * @return a [PieceSubject].
      */
-    @JvmStatic fun <C> assertThat(actual: Piece<C>?) = assertAbout(pieces<C>()).that(actual)
+    @JvmStatic
+    fun <C> assertThat(actual: Piece<C>?): PieceSubject<C> = assertAbout(pieces<C>()).that(actual)
   }
 }
