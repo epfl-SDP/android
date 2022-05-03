@@ -17,6 +17,18 @@ class UciNotationTest {
   }
 
   @Test
+  fun given_oneMove_when_decodingFromUCINotation_then_hasEqualAction() {
+    val uci = "d3d6"
+    val res = parseActions(uci)
+    val expected =
+        listOf(
+            Action.Move(Position(3, 5), Position(3, 2)),
+        )
+
+    assertThat(res).containsExactlyElementsIn(expected).inOrder()
+  }
+
+  @Test
   fun given_simpleMoves_when_decodingFromUCINotation_then_hasEqualActions() {
     val uci = "d3d6 f8d8 d6d8 a8h1"
     val res = parseActions(uci)
