@@ -48,6 +48,8 @@ interface Profile {
 
       /** A default color. */
       val Default = Orange
+
+      val asList = { listOf(Green200, Green500, Orange, Purple) }
     }
   }
 }

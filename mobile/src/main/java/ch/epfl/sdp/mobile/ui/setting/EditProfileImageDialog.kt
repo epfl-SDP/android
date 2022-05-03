@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import backgroundColors
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.toColor
@@ -53,7 +53,7 @@ fun EditProfileImageDialog(
         Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
         LazyRow() { items(items = emojis) { item -> SelectEmojiItem(state, item) } }
         LazyRow() {
-          items(items = backgroundColors) { item -> SelectBackgroundColorItem(state, item) }
+          items(items = Color.asList()) { item -> SelectBackgroundColorItem(state, item) }
         }
       }
     }
