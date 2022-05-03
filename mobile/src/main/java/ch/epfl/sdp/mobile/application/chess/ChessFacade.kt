@@ -6,7 +6,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.notation.Notation.toExtendedNotation
+import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
@@ -114,6 +114,6 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    store.collection("games").document(id).update { this["moves"] = game.toExtendedNotation() }
+    store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }
   }
 }
