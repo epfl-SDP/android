@@ -92,9 +92,9 @@ private fun EditSettingPicture(
     modifier: Modifier = Modifier
 ) {
 
-  Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+  Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxWidth()) {
     Box(
-        modifier = modifier.size(118.dp).background(backgroundColor.toColor(), CircleShape),
+        modifier = Modifier.size(118.dp).background(backgroundColor.toColor(), CircleShape),
         contentAlignment = Alignment.Center,
     ) { Text(emoji, style = MaterialTheme.typography.h3) }
   }
