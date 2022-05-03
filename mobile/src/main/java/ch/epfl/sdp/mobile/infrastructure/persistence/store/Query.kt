@@ -15,6 +15,7 @@ interface Query {
    * Limits the number of items which will be returned as part of the resulting [Query].
    *
    * @param count the number of items which will be returned.
+   *
    * @return the updated [Query].
    */
   fun limit(count: Long): Query
