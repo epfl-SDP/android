@@ -30,7 +30,7 @@ object StringCombinators {
    *
    * @param delimiter the delimiter between each token
    */
-  fun string(delimiter: Char = ' '): Parser<String, Token> = Parser {
+  fun token(delimiter: Char = ' '): Parser<String, Token> = Parser {
     if (it.isNotEmpty()) {
       val splitString = it.trim { char -> char == delimiter }.split(delimiter, limit = 2)
       val result = splitString.first()
@@ -46,8 +46,8 @@ object StringCombinators {
    *
    * @param value the value that is searched.
    */
-  fun string(value: Token, delimiter: Char = ' '): Parser<String, Token> =
-      string(delimiter).filter { it == value }
+  fun token(value: Token, delimiter: Char = ' '): Parser<String, Token> =
+      token(delimiter).filter { it == value }
 
   /**
    * Filters the results from this [Parser] which have an empty remaining input to parse,

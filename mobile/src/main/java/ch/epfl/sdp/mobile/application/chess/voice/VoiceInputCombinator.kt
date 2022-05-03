@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinished
-import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.string
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
 
 /** An object that parse a "perfect" voice input into engine notation */
 object VoiceInputCombinator {
@@ -21,15 +21,15 @@ object VoiceInputCombinator {
   // TODO : Internationalization
   private val rank =
       combine(
-          string("king").map { Rank.King },
-          string("queen").map { Rank.Queen },
-          string("rook").map { Rank.Rook },
-          string("bishop").map { Rank.Bishop },
-          string("knight").map { Rank.Knight },
-          string("pawn").map { Rank.Pawn })
+          token("king").map { Rank.King },
+          token("queen").map { Rank.Queen },
+          token("rook").map { Rank.Rook },
+          token("bishop").map { Rank.Bishop },
+          token("knight").map { Rank.Knight },
+          token("pawn").map { Rank.Pawn })
 
   /** A [Parser] which indicate the action between 2 position */
-  private val actionSeparator = string("to")
+  private val actionSeparator = token("to")
 
   /** A [Parser] for a [Move] action. */
   private val move =
