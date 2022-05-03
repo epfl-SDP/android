@@ -23,8 +23,7 @@ class StringCombinatorsTest {
   @Test
   fun given_aEmptyString_when_parsed_then_returnEmptySequence() {
     val res = token().parse("")
-    val expected = emptySequence<Parser<String, Token>>()
-    assertThat(res).isEqualTo(expected)
+    assertThat(res.count()).isEqualTo(0)
   }
 
   @Test
