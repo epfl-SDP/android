@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Piece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.test.application.chess.engine.truth.PieceSubject.Companion.pieces
 import com.google.common.truth.FailureMetadata
+import com.google.common.truth.IterableSubject
 import com.google.common.truth.Subject
 import com.google.common.truth.Truth.assertAbout
 
@@ -19,7 +20,7 @@ class PieceBoardSubject<C : Any>
 private constructor(
     metadata: FailureMetadata,
     private val actual: Board<Piece<C>>?,
-) : Subject(metadata, actual) {
+) : IterableSubject(metadata, actual) {
 
   /**
    * Fails if the subject's pieces are not positioned in the same positions as the expected board.
