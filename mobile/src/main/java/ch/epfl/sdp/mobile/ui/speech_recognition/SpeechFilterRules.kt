@@ -43,6 +43,9 @@ object ChessSpeechFilterRules {
   }
 
   /**
+   * Auxiliary method used for applying checks to a speech word ending or starting with
+   * a variable number of suffixes/prefixes arguments
+   * @param endsOrStartWith ending or starting predicate method
    * @param suffixesOrPrefixes variable argument of suffixes xor prefixes
    * @return true if and only if [this] ends or starts with any of the suffixes/prefixes
    */
