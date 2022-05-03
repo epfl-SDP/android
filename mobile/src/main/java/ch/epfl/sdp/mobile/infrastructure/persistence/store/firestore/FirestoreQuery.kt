@@ -1,7 +1,9 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore
 
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.QuerySnapshot
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreFieldPath.toFirestoreFieldPath
 import com.google.firebase.firestore.Query as ActualQuery
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.awaitClose
@@ -26,25 +28,32 @@ class FirestoreQuery(
         Query.Direction.Descending -> ActualQuery.Direction.DESCENDING
       }
 
-  override fun orderBy(field: String, direction: Query.Direction): Query =
-      FirestoreQuery(reference.orderBy(field, direction.toFirestoreDirection()))
+  override fun orderBy(path: FieldPath, direction: Query.Direction): Query =
+      FirestoreQuery(
+          reference.orderBy(
+              path.toFirestoreFieldPath(),
+              direction.toFirestoreDirection(),
+          ),
+      )
 
-  override fun whereGreaterThan(field: String, value: Any, inclusive: Boolean): Query =
-      if (inclusive) FirestoreQuery(reference.whereGreaterThanOrEqualTo(field, value))
-      else FirestoreQuery(reference.whereGreaterThan(field, value))
+  override fun whereGreaterThan(path: FieldPath, value: Any, inclusive: Boolean): Query =
+      if (inclusive)
+          FirestoreQuery(reference.whereGreaterThanOrEqualTo(path.toFirestoreFieldPath(), value))
+      else FirestoreQuery(reference.whereGreaterThan(path.toFirestoreFieldPath(), value))
 
-  override fun whereLessThan(field: String, value: Any, inclusive: Boolean): Query =
-      if (inclusive) FirestoreQuery(reference.whereLessThanOrEqualTo(field, value))
-      else FirestoreQuery(reference.whereLessThan(field, value))
+  override fun whereLessThan(path: FieldPath, value: Any, inclusive: Boolean): Query =
+      if (inclusive)
+          FirestoreQuery(reference.whereLessThanOrEqualTo(path.toFirestoreFieldPath(), value))
+      else FirestoreQuery(reference.whereLessThan(path.toFirestoreFieldPath(), value))
 
-  override fun whereEquals(field: String, value: Any?): Query =
-      FirestoreQuery(reference.whereEqualTo(field, value))
+  override fun whereEquals(path: FieldPath, value: Any?): Query =
+      FirestoreQuery(reference.whereEqualTo(path.toFirestoreFieldPath(), value))
 
-  override fun whereNotEquals(field: String, value: Any?): Query =
-      FirestoreQuery(reference.whereNotEqualTo(field, value))
+  override fun whereNotEquals(path: FieldPath, value: Any?): Query =
+      FirestoreQuery(reference.whereNotEqualTo(path.toFirestoreFieldPath(), value))
 
-  override fun whereArrayContains(field: String, value: Any): Query =
-      FirestoreQuery(reference.whereArrayContains(field, value))
+  override fun whereArrayContains(path: FieldPath, value: Any): Query =
+      FirestoreQuery(reference.whereArrayContains(path.toFirestoreFieldPath(), value))
 
   override fun asQuerySnapshotFlow(): Flow<QuerySnapshot> =
       callbackFlow<QuerySnapshot> {

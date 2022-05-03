@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query
 
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeDocumentSnapshot
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
@@ -12,19 +13,19 @@ import kotlinx.coroutines.flow.map
  * document snapshots.
  *
  * @param query the query to decorate.
- * @param field the field to compare.
+ * @param path the field to compare.
  * @param order the direction of the comparison.
  */
 class OrderByQueryDecorator(
     private val query: FakeQuery,
-    private val field: String,
+    private val path: FieldPath,
     private val order: Query.Direction,
 ) : FakeQuery {
 
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> {
     val comparator =
         Comparator<FakeDocumentSnapshot> { a, b ->
-          FakeFieldComparator.compare(a?.record?.fields?.get(field), b?.record?.fields?.get(field))
+          FakeFieldComparator.compare(a?.record?.fields?.get(path), b?.record?.fields?.get(path))
         }
     val withOrder = if (order == Query.Direction.Ascending) comparator else comparator.reversed()
     return query.asQuerySnapshotFlow().map {
