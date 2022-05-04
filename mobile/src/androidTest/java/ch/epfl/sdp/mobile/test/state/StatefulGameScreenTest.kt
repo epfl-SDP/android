@@ -10,6 +10,8 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.*
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toRank
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
@@ -658,7 +660,7 @@ class StatefulGameScreenTest {
   @Test
   fun given_rank_when_transformingToChessBoardStateRankAndBack_then_isEqual() {
     val ranks = listOf(*Rank.values())
-    val mapped = ranks.map { it.toChessBoardStateRank() }.map { it.toGameRank() }
+    val mapped = ranks.map { it.toRank() }.map { it.toEngineRank() }
     assertThat(mapped).isEqualTo(ranks)
   }
 
