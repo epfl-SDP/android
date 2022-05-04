@@ -58,7 +58,7 @@ fun StatefulVisitedProfileScreen(
           .collectAsState(EmptyProfile)
   val scope = rememberCoroutineScope()
   val state =
-      remember(profile, chessFacade, scope) {
+      remember(actions, profile, chessFacade, scope) {
         FetchedUserProfileScreenState(profile, actions, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
