@@ -35,6 +35,7 @@ fun StatefulPuzzleGameScreen(
   val facade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
 
+  // TODO: Replace these temp values by an actual puzzle
   val puzzleMoves = emptyList<Action>()
   val boardSnapshot =
       FenNotation.BoardSnapshot(
@@ -51,13 +52,15 @@ fun StatefulPuzzleGameScreen(
           halfMoveClock = 0,
           fullMoveClock = 0,
       )
+  val elo = 1500
 
   val puzzle =
       remember(puzzleId) {
         SnapshotPuzzle(
-            puzzleId,
-            boardSnapshot,
-            puzzleMoves,
+          uid = puzzleId,
+          boardSnapshot = boardSnapshot,
+          puzzleMoves = puzzleMoves,
+          elo = elo,
         )
       }
 

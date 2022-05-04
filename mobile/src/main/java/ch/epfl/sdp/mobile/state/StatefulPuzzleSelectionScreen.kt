@@ -5,7 +5,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleItem
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreenState
@@ -22,11 +21,7 @@ fun StatefulPuzzleSelectionScreen(
   val onGameItemClickAction = rememberUpdatedState(onPuzzleItemClick)
   val scope = rememberCoroutineScope()
   val state =
-      remember(
-          user,
-          chess,
-          scope,
-      ) {
+      remember(user, chess, scope) {
         SnapshotPuzzleSelectionScreen(
             user = user,
             onPuzzleClickAction = onGameItemClickAction,
@@ -55,7 +50,7 @@ private class SnapshotPuzzleSelectionScreen(
   override val puzzles =
       listOf(
           PuzzleItemAdapter(uid = "000001", playerColor = ChessBoardState.Color.White, elo = 1500),
-          PuzzleItemAdapter(uid = "000002", playerColor = ChessBoardState.Color.White, elo = 2000),
+          PuzzleItemAdapter(uid = "000002", playerColor = ChessBoardState.Color.Black, elo = 2000),
           PuzzleItemAdapter(uid = "000003", playerColor = ChessBoardState.Color.White, elo = 2500),
       )
 }

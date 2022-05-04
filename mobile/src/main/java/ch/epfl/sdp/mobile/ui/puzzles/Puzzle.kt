@@ -8,6 +8,7 @@ interface Puzzle {
   val uid: String
   val boardSnapshot: BoardSnapshot
   val puzzleMoves: List<Action>
+  val elo: Int
 }
 
 interface PuzzleItem {
@@ -20,4 +21,5 @@ class SnapshotPuzzle(
     override val uid: String,
     override val boardSnapshot: BoardSnapshot,
     override val puzzleMoves: List<Action>,
+    override val elo: Int,
 ) : Puzzle

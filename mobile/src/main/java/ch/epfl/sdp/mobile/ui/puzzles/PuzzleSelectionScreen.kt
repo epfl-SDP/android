@@ -36,7 +36,7 @@ fun PuzzleSelectionScreen(
   ) { innerPadding ->
     Column {
       Text(
-          text = "PUZZLES HECK YEAH",
+          text = "Unsolved Puzzles",
           color = MaterialTheme.colors.primary,
           style = MaterialTheme.typography.h4,
           modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp))
@@ -61,7 +61,7 @@ fun PuzzleItemListThingy(
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
-  val title = "Puzzle # ${puzzleItem.uid}"
+  val title = "#${puzzleItem.uid} (${puzzleItem.elo})"
   val subtitle = "Playing as ${puzzleItem.playerColor}"
 
   ListItem(
