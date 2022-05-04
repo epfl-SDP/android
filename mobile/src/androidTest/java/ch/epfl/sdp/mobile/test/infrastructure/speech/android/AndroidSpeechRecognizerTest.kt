@@ -80,4 +80,21 @@ class AndroidSpeechRecognizerTest {
 
     verify { listener.onResults(arrayListOf("Hello")) }
   }
+
+  @Test
+  fun given_recognizer_when_settingListener_then_callsSuccessListenerWithDefaultValue() {
+    val framework = mockk<SpeechRecognizer>()
+    val recognizer = AndroidSpeechRecognizer(framework)
+    val listener = mockk<Listener>()
+
+    every { listener.onResults(emptyList()) } returns Unit
+    every { framework.setRecognitionListener(any()) } answers
+        {
+          firstArg<RecognitionListener>().onResults(bundleOf(RESULTS_RECOGNITION to null))
+        }
+
+    recognizer.setListener(listener)
+
+    verify { listener.onResults(emptyList()) }
+  }
 }
