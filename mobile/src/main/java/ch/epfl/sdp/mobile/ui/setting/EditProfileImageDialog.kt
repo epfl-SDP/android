@@ -1,9 +1,6 @@
 package ch.epfl.sdp.mobile.ui.setting
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -13,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -60,17 +58,22 @@ fun EditProfileImageDialog(
             style = MaterialTheme.typography.subtitle1,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
-        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            modifier = Modifier.align(Alignment.CenterHorizontally)) {
           items(items = Emojis) { item ->
             SelectEmojiItem(selected = state.emoji == item, onClick = { state.emoji = item }, item)
           }
         }
-        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp)) {
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            modifier = Modifier.align(Alignment.CenterHorizontally)) {
           items(items = Color.values) { item ->
             SelectBackgroundColorItem(
                 selected = state.backgroundColor == item,
                 onClick = { state.backgroundColor = item },
-                item)
+                backgroundColor = item,
+                modifier = Modifier.padding(4.dp))
           }
         }
         Spacer(Modifier.height(16.dp))
@@ -136,19 +139,11 @@ private fun SelectBackgroundColorItem(
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
-  Box(modifier = modifier.padding(4.dp)) {
-    Box(
-        modifier =
-            if (selected)
-                modifier
-                    .size(64.dp)
-                    .background(backgroundColor.toColor(), CircleShape)
-                    .border(BorderStroke(4.dp, Green800), CircleShape)
-            else
-                modifier.size(64.dp).background(backgroundColor.toColor(), CircleShape).clickable {
-                  onClick()
-                },
-        contentAlignment = Alignment.Center,
-    ) {}
-  }
+  Box(
+      modifier
+          .size(64.dp)
+          .background(backgroundColor.toColor(), CircleShape)
+          .then(
+              if (selected) Modifier.border(BorderStroke(4.dp, Green800), CircleShape)
+              else Modifier.clip(CircleShape).clickable { onClick() }))
 }
