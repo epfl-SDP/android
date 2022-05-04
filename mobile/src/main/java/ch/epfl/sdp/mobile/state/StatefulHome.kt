@@ -20,6 +20,9 @@ private const val SettingsRoute = "settings"
 /** The route associated to the editing button on the setting screen. */
 private const val SettingEditProfileNameRoute = "profile-name/edit"
 
+/** The route associated to the profile image editing button on the setting screen. */
+private const val SettingEditProfileImageRoute = "profile-image/edit"
+
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
 
@@ -86,11 +89,15 @@ fun StatefulHome(
             user = user,
             onMatchClick = onGameItemClick,
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
+            onEditProfileImageClick = { controller.navigate(SettingEditProfileImageRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
       dialog(SettingEditProfileNameRoute) {
         StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
+      }
+      dialog(SettingEditProfileImageRoute) {
+        StatefulEditProfileImageDialog(user = user, onClose = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
@@ -120,7 +127,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate("$ArRoute/{id}") },
+                onShowAr = { controller.navigate("$ArRoute/${id}") },
             )
         StatefulGameScreen(
             actions = actions,

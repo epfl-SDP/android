@@ -18,8 +18,8 @@ interface SettingScreenState<C : ChessMatch> : ProfileScreenState<C> {
   /** Number of puzzles */
   val puzzlesCount: Int
 
-  /** On settings button clicked */
-  fun onSettingsClick()
+  /** On edit profile image button clicked */
+  fun onEditProfileImageClick()
 
   /** On edit profile name button clicked */
   fun onEditProfileNameClick()

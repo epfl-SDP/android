@@ -19,7 +19,8 @@ import kotlinx.coroutines.CoroutineScope
  * @param user the current logged-in [AuthenticatedUser].
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
- * @param onEditProfileNameClickAction Callable lambda to navigate to the profile Edit popup
+ * @param onEditProfileNameClickAction Callable lambda to navigate to the profile edit popup.
+ * @param onEditProfileImageClickAction Callable lambda to navigate to the profile image edit popup.
  */
 class AuthenticatedUserProfileScreenState(
     actions: State<ProfileActions>,
@@ -27,6 +28,7 @@ class AuthenticatedUserProfileScreenState(
     chessFacade: ChessFacade,
     scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
+    onEditProfileImageClickAction: State<() -> Unit>,
 ) :
     SettingScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
@@ -35,19 +37,23 @@ class AuthenticatedUserProfileScreenState(
   override val email = user.email
   override val puzzlesCount = 0
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
+  private val onEditProfileImageClickAction by onEditProfileImageClickAction
 
-  override fun onSettingsClick() {}
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
+  }
+  override fun onEditProfileImageClick() {
+    onEditProfileImageClickAction()
   }
 }
 
 /**
- * A stateful composable to visit setting page of the logged-in user
+ * A stateful composable to visit setting page of the logged-in user.
  *
  * @param user the current logged-in user.
  * @param onMatchClick callback function called when a match is clicked on.
- * @param onEditProfileNameClick Callable lambda to navigate to the profile Edit popup.
+ * @param onEditProfileNameClick Callable lambda to navigate to the profile edit popup.
+ * @param onEditProfileImageClick Callable lambda to navigate to the profile image edit popup.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
@@ -56,6 +62,7 @@ fun StatefulSettingsScreen(
     user: AuthenticatedUser,
     onMatchClick: (ChessMatchAdapter) -> Unit,
     onEditProfileNameClick: () -> Unit,
+    onEditProfileImageClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -63,10 +70,22 @@ fun StatefulSettingsScreen(
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
+  val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
   val state =
-      remember(actions, user, chessFacade, scope, currentOnEditProfileNameClick) {
+      remember(
+          actions,
+          user,
+          chessFacade,
+          scope,
+          currentOnEditProfileNameClick,
+          currentOnEditProfileImageClick) {
         AuthenticatedUserProfileScreenState(
-            actions, user, chessFacade, scope, currentOnEditProfileNameClick)
+            actions,
+            user,
+            chessFacade,
+            scope,
+            currentOnEditProfileNameClick,
+            currentOnEditProfileImageClick)
       }
   SettingsScreen(state, modifier, contentPadding)
 }
