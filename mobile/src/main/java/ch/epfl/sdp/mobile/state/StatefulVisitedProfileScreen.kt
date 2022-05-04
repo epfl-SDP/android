@@ -64,4 +64,5 @@ private object EmptyProfile : Profile {
   override val backgroundColor: Profile.Color = Profile.Color.Default
   override val uid: String = ""
   override val followed: Boolean = false
+  override val solvedPuzzles = emptyList<String>()
 }
