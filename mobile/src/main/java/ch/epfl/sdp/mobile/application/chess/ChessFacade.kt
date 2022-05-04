@@ -19,9 +19,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.SnapshotPuzzle
 import com.opencsv.CSVReaderHeaderAware
-import io.github.sceneview.utils.useText
 import kotlinx.coroutines.flow.*
-import java.io.FileReader
 
 /**
  * An interface which represents all the endpoints and available features for online chess
@@ -32,9 +30,7 @@ import java.io.FileReader
  */
 class ChessFacade(private val auth: Auth, private val store: Store) {
 
-  /**
-   * Chess matches side of chess facade
-   **/
+  /** Chess matches side of chess facade */
 
   /**
    * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
@@ -99,9 +95,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     }
   }
 
-  /**
-   * Puzzle side of chess facade
-   */
+  /** Puzzle side of chess facade */
   suspend fun solvePuzzle(puzzle: Puzzle, user: AuthenticatedUser) {
     user.update { solvedPuzzles(puzzle) }
   }
@@ -117,36 +111,40 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     }
 
     val puzzles =
-      csvMap.map {
-        val puzzleId = it["PuzzleId"] ?: "Error"
-        val fen =
-          FenNotation.parseFen(it["FEN"] ?: "")
-            ?: FenNotation.BoardSnapshot(
-              board = buildBoard {},
-              playing = Color.White,
-              castlingRights =
-              FenNotation.CastlingRights(
-                kingSideWhite = false,
-                queenSideWhite = false,
-                kingSideBlack = false,
-                queenSideBlack = false,
-              ),
-              enPassant = null,
-              halfMoveClock = -1,
-              fullMoveClock = -1,
-            )
-        val moves = UCINotation.parseActions(it["Moves"] ?: "") ?: emptyList()
-        val rating = (it["Rating"] ?: "-1").toInt()
+        csvMap.map {
+          val puzzleId = it["PuzzleId"] ?: "Error"
+          val fen =
+              FenNotation.parseFen(it["FEN"] ?: "")
+                  ?: FenNotation.BoardSnapshot(
+                      board = buildBoard {},
+                      playing = Color.White,
+                      castlingRights =
+                          FenNotation.CastlingRights(
+                              kingSideWhite = false,
+                              queenSideWhite = false,
+                              kingSideBlack = false,
+                              queenSideBlack = false,
+                          ),
+                      enPassant = null,
+                      halfMoveClock = -1,
+                      fullMoveClock = -1,
+                  )
+          val moves = UCINotation.parseActions(it["Moves"] ?: "") ?: emptyList()
+          val rating = (it["Rating"] ?: "-1").toInt()
 
-        SnapshotPuzzle(
-          uid = puzzleId,
-          boardSnapshot = fen,
-          puzzleMoves = moves,
-          elo = rating,
-        )
-      }
+          SnapshotPuzzle(
+              uid = puzzleId,
+              boardSnapshot = fen,
+              puzzleMoves = moves,
+              elo = rating,
+          )
+        }
 
     return puzzles
+  }
+
+  fun puzzle(uid: String, context: Context): Puzzle? {
+    return allPuzzles(context).firstOrNull { it.uid == uid }
   }
 
   fun solvedPuzzles(profile: Profile, context: Context): List<Puzzle> {
@@ -156,7 +154,6 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   fun unsolvedPuzzles(profile: Profile, context: Context): List<Puzzle> {
     return allPuzzles(context).filterNot { profile.solvedPuzzles.contains(it.uid) }
   }
-
 }
 
 private data class StoreMatch(

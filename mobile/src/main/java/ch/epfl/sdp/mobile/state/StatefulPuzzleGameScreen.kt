@@ -5,16 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.engine.Color
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
-import ch.epfl.sdp.mobile.ui.puzzles.SnapshotPuzzle
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -33,36 +29,10 @@ fun StatefulPuzzleGameScreen(
     paddingValues: PaddingValues = PaddingValues(),
 ) {
   val facade = LocalChessFacade.current
+  val context = LocalContext.current
   val scope = rememberCoroutineScope()
 
-  // TODO: Replace these temp values by an actual puzzle
-  val puzzleMoves = emptyList<Action>()
-  val boardSnapshot =
-      FenNotation.BoardSnapshot(
-          board = emptyBoard(),
-          playing = Color.White,
-          castlingRights =
-              FenNotation.CastlingRights(
-                  kingSideWhite = true,
-                  queenSideWhite = true,
-                  kingSideBlack = true,
-                  queenSideBlack = true,
-              ),
-          enPassant = null,
-          halfMoveClock = 0,
-          fullMoveClock = 0,
-      )
-  val elo = 1500
-
-  val puzzle =
-      remember(puzzleId) {
-        SnapshotPuzzle(
-          uid = puzzleId,
-          boardSnapshot = boardSnapshot,
-          puzzleMoves = puzzleMoves,
-          elo = elo,
-        )
-      }
+  val puzzle = facade.puzzle(uid = puzzleId, context = context) ?: Puzzle()
 
   val puzzleGameScreenState =
       remember(user, puzzle, scope) {

@@ -35,8 +35,9 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
           Text("Puzzle id: ${state.puzzle.uid}")
+          Text("Playing as: ${state.puzzle.boardSnapshot.playing}")
+          Text("Elo: ${state.puzzle.elo}")
           Text("Moves: ${state.puzzle.puzzleMoves}")
-          Text("Playing: ${state.puzzle.boardSnapshot.playing}")
           Text("Castling rights: ${state.puzzle.boardSnapshot.castlingRights}")
         }
       },
