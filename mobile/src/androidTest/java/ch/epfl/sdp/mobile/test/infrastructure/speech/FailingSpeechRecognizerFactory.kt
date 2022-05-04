@@ -11,7 +11,9 @@ object FailingSpeechRecognizerFactory : SpeechRecognizerFactory {
 /** A [SpeechRecognizer] which will always fail to recognize the user input, and return an error. */
 class FailingSpeechRecognizer : SpeechRecognizer {
   private var listener: SpeechRecognizer.Listener? = null
-  override fun setListener(listener: SpeechRecognizer.Listener) = Unit
+  override fun setListener(listener: SpeechRecognizer.Listener) {
+    this.listener = listener
+  }
   override fun startListening() {
     listener?.onError()
   }
