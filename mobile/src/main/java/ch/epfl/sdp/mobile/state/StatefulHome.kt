@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.state
 
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -96,8 +95,7 @@ fun StatefulHome(
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
             backStackEntry.arguments?.getString("uid") ?: "",
-            onChallengeClick = {
-              controller.navigate("$PrepareGameRoute?opponentId={$it}") },
+            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
             Modifier.fillMaxSize())
       }
       composable(PlayRoute) {

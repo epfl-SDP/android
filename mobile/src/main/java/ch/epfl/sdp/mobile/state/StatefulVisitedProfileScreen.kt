@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.state
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -29,7 +28,7 @@ class FetchedUserProfileScreenState(
 ) :
     VisitedProfileScreenState,
     ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
-    val onGameItemClickAction by onGameItemClickAction
+  val onGameItemClickAction by onGameItemClickAction
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {
     onGameItemClickAction(user.uid)

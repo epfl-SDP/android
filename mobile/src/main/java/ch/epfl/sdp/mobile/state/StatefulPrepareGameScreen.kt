@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.state
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -44,11 +43,6 @@ fun StatefulPrepareGameScreen(
         )
       }
 
-  DisposableEffect(Unit) {
-    Log.i("myinfo", "hello: $opponentId")
-    onDispose {}
-  }
-
   PrepareGameScreen(state = state, modifier = modifier, key = { it.uid })
 }
 
@@ -72,17 +66,18 @@ class SnapshotPrepareGameScreenState(
 ) : PrepareGameScreenState<ProfileAdapter> {
 
   constructor(
-     user: AuthenticatedUser,
-     opponents: List<ProfileAdapter>,
-     navigateToGame: (match: Match) -> Unit,
-     cancelClick: () -> Unit,
-     chessFacade: ChessFacade,
-     scope: CoroutineScope,
-  ): this(user, null, opponents, navigateToGame, cancelClick, chessFacade, scope)
+      user: AuthenticatedUser,
+      opponents: List<ProfileAdapter>,
+      navigateToGame: (match: Match) -> Unit,
+      cancelClick: () -> Unit,
+      chessFacade: ChessFacade,
+      scope: CoroutineScope,
+  ) : this(user, null, opponents, navigateToGame, cancelClick, chessFacade, scope)
 
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
 
-  override var selectedOpponent: ProfileAdapter? by mutableStateOf(opponents.firstOrNull { it.uid == selected })
+  override var selectedOpponent: ProfileAdapter? by
+      mutableStateOf(opponents.firstOrNull { it.uid == selected })
     private set
 
   override var playEnabled: Boolean by mutableStateOf(selectedOpponent != null)
