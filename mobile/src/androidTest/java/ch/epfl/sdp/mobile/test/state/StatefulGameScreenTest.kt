@@ -3,6 +3,9 @@
 package ch.epfl.sdp.mobile.test.state
 
 import android.Manifest.permission.RECORD_AUDIO
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.rule.GrantPermissionRule
@@ -749,7 +752,7 @@ private object GrantedPermissionState : PermissionState {
 }
 
 private class MissingPermissionState : PermissionState {
-  override var permissionRequested = false
+  override var permissionRequested by mutableStateOf(false)
   override val permission = RECORD_AUDIO
   override val hasPermission
     get() = permissionRequested
