@@ -28,7 +28,7 @@ class AuthenticatedUserProfileScreenState(
     scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
 ) :
-    SettingScreenState,
+    SettingScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
 

@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.setting
 
 import androidx.compose.runtime.Stable
-import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
@@ -11,7 +10,7 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param C the type of the [ChessMatch].
  */
 @Stable
-interface SettingScreenState : ProfileScreenState<ChessMatchAdapter> {
+interface SettingScreenState<C : ChessMatch> : ProfileScreenState<C> {
 
   /** The email address of the logged-in user. */
   val email: String

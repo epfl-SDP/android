@@ -27,7 +27,7 @@ class FetchedUserProfileScreenState(
     chessFacade: ChessFacade,
     scope: CoroutineScope,
 ) :
-    VisitedProfileScreenState,
+    VisitedProfileScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
 
