@@ -40,10 +40,15 @@ interface LocalizedStrings {
   val profileSettings: String
   val profileUnfollow: String
   val profileChallenge: String
-  val profileEditIcon: String
   val profileAgainst: String
+  val profileEditImageIcon: String
+  val profileEditNameIcon: String
   val profileYourTurn: String
   val profileOthersTurn: String
+
+  val settingEditSave: String
+  val settingEditCancel: String
+  val settingProfileNameLabel: String
 
   val boardColorBlack: String
   val boardColorWhite: String
@@ -65,6 +70,8 @@ interface LocalizedStrings {
   val gameMessageCheck: String
   val gameMessageStalemate: String
   val gameMessageCheckmate: String
+  val gamePromoteTitle: String
+  val gamePromoteConfirm: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String

@@ -1,8 +1,9 @@
 package ch.epfl.sdp.mobile.ui.setting
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.state.ChessMatchAdapter
+import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
-import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
  * The view-model of the profile of the currently logged-in user.
@@ -10,29 +11,17 @@ import ch.epfl.sdp.mobile.ui.social.Person
  * @param C the type of the [ChessMatch].
  */
 @Stable
-interface SettingScreenState<C : ChessMatch> : Person {
-  /** The email address of the currently connected user. */
-  val email: String
+interface SettingScreenState : ProfileScreenState<ChessMatchAdapter> {
 
-  /** Number of past games */
-  val pastGamesCount: Int
+  /** The email address of the logged-in user. */
+  val email: String
 
   /** Number of puzzles */
   val puzzlesCount: Int
 
-  /** List of chess matches */
-  val matches: List<C>
-
   /** On settings button clicked */
   fun onSettingsClick()
 
-  /** On edit button clicked */
-  fun onEditClick()
-
-  /**
-   * Callback function to open a match.
-   *
-   * @param match the [ChessMatch] to open.
-   */
-  fun onMatchClick(match: C)
+  /** On edit profile name button clicked */
+  fun onEditProfileNameClick()
 }

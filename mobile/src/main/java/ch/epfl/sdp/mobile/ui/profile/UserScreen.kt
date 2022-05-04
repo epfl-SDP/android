@@ -46,6 +46,6 @@ fun <C : ChessMatch> UserScreen(
   ) {
     item { header() }
     stickyHeader { profileTabBar() }
-    items(matches) { match -> Match(match, ChessIcons.WhiteKing, onMatchClick) }
+    items(matches) { match -> Match(match, ChessIcons.WhiteKing, { onMatchClick(match) }) }
   }
 }

@@ -7,12 +7,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.R.drawable
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -61,6 +63,7 @@ fun AuthenticationScreen(
             onValueChange = { state.email = it },
             label = { Text(strings.authenticateEmailHint) },
             modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         )
         transition.AnimatedVisibility(
             visible = { it == Register },

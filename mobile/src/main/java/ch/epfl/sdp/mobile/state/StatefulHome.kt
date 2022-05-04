@@ -17,6 +17,9 @@ private const val SocialRoute = "social"
 /** The route associated to the settings tab. */
 private const val SettingsRoute = "settings"
 
+/** The route associated to the editing button on the setting screen. */
+private const val SettingEditProfileNameRoute = "profile-name/edit"
+
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
 
@@ -32,10 +35,7 @@ private const val GameDefaultId = ""
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
 
-/**
- * The route associated to the ar tab. Note : This tab is temporary, use only for the development
- * TODO : Remove this when we can display the entire game on AR
- */
+/** The route associated to the ar tab. */
 private const val ArRoute = "ar"
 
 /**
@@ -85,11 +85,15 @@ fun StatefulHome(
         StatefulSettingsScreen(
             user = user,
             onMatchClick = onGameItemClick,
+            onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
+      dialog(SettingEditProfileNameRoute) {
+        StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
+      }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
-        StatefulProfileScreen(
+        StatefulVisitedProfileScreen(
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
             modifier = Modifier.fillMaxSize(),
@@ -116,7 +120,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate(ArRoute) },
+                onShowAr = { controller.navigate("$ArRoute/{id}") },
             )
         StatefulGameScreen(
             actions = actions,
@@ -126,7 +130,10 @@ fun StatefulHome(
             paddingValues = paddingValues,
         )
       }
-      composable(ArRoute) { StatefulArScreen(Modifier.fillMaxSize()) }
+      composable("$ArRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
+        StatefulArScreen(user, id, Modifier.fillMaxSize())
+      }
     }
   }
 }
@@ -135,7 +142,6 @@ fun StatefulHome(
 private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
-      ArRoute -> HomeSection.Ar
       PlayRoute -> HomeSection.Play
       else -> HomeSection.Social
     }
@@ -145,7 +151,6 @@ private fun HomeSection.toRoute(): String =
     when (this) {
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
-      HomeSection.Ar -> ArRoute
       HomeSection.Play -> PlayRoute
     }
 

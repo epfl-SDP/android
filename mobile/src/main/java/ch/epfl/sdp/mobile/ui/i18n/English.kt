@@ -44,6 +44,8 @@ object English : LocalizedStrings {
   override val gameMessageCheck = "Check !"
   override val gameMessageStalemate = "Stalemate !"
   override val gameMessageCheckmate = "Checkmate !"
+  override val gamePromoteTitle = "Promote to:"
+  override val gamePromoteConfirm = "Ok".uppercase()
 
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
@@ -51,16 +53,21 @@ object English : LocalizedStrings {
   override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
   override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
   override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
-  override val profileAgainst = "Against "
+  override val profileAgainst = "Against " // TODO: handle right-to-left languages
   override val profileYourTurn = "Your turn to play!"
   override val profileOthersTurn = "Their turn to play."
+
+  override val settingEditSave = "Save".uppercase()
+  override val settingEditCancel = "Cancel".uppercase()
+  override val settingProfileNameLabel = "Profile Name"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
   override val profileUnfollow = "Unfollow"
   override val profileChallenge = "Challenge"
-  override val profileEditIcon = "Edit profile icon"
+  override val profileEditImageIcon = "Edit profile image icon"
+  override val profileEditNameIcon = "Edit profile name icon"
 
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Play".uppercase()

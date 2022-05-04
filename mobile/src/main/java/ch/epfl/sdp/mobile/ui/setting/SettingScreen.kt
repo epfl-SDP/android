@@ -18,25 +18,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.toColor
-import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
-import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
  *
- * @param C the type of the [ChessMatch].
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <C : ChessMatch> SettingsScreen(
-    state: SettingScreenState<C>,
+fun SettingsScreen(
+    state: SettingScreenState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -69,12 +65,12 @@ fun <C : ChessMatch> SettingsScreen(
  * Composes the settings header given the profile [SettingScreenState]. Displays also the
  * ProfilePicture, SettingsButton, name and email of the user's profile.
  *
- * @param C the type of the [ChessMatch].
  * @param state state of the profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifier = Modifier) {
+fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
 
   Column(
       modifier = modifier,
@@ -83,7 +79,17 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
   ) {
     SettingPicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(state.name, style = MaterialTheme.typography.h5)
+      Row(
+          horizontalArrangement = Arrangement.Center,
+          verticalAlignment = Alignment.CenterVertically) {
+        Text(state.name, style = MaterialTheme.typography.h5)
+        IconButton(onClick = state::onEditProfileNameClick) {
+          Icon(
+              Icons.Default.Edit,
+              contentDescription = strings.profileEditNameIcon,
+              modifier = Modifier.size(24.dp))
+        }
+      }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
     SettingsButton(onClick = state::onSettingsClick)
@@ -93,30 +99,29 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
 /**
  * Composes the settings picture given its [state].
  *
- * @param C the type of the [ChessMatch].
  * @param state state of the setting screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> SettingPicture(
-    state: SettingScreenState<C>,
+fun SettingPicture(
+    state: SettingScreenState,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
   Box(
-      modifier = modifier.size(118.dp).background(state.backgroundColor.toColor(), CircleShape),
+      modifier = modifier.size(118.dp).background(state.backgroundColor, CircleShape),
       contentAlignment = Alignment.Center,
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
-        onClick = state::onEditClick,
+        onClick = state::onSettingsClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
                 .shadow(2.dp, CircleShape)
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, strings.profileEditIcon) }
+    ) { Icon(Icons.Default.Edit, strings.profileEditImageIcon) }
   }
 }
 
