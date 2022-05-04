@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.lightColors
 import androidx.compose.ui.graphics.Color
-import com.google.ar.sceneform.math.Vector3
+import io.github.sceneview.utils.colorOf
 
 /** The palette of colors used in the Pawnies application. */
 val PawniesLightColors =
@@ -29,6 +29,6 @@ object PawniesColors {
 
 object PawniesArColors {
   // ArModel Color
-  val White = Vector3(1f, 0.99f, 0.94f)
-  val Black = Vector3(53 / 255f, 56 / 255f, 57 / 255f)
+  val White = colorOf(1f, 0.99f, 0.94f)
+  val Black = colorOf(53 / 255f, 56 / 255f, 57 / 255f)
 }
