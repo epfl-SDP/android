@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,
+    opponentId: String?,
     navigateToGame: (match: Match) -> Unit,
     cancelClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -29,11 +31,11 @@ fun StatefulPrepareGameScreen(
   val chessFacade = LocalChessFacade.current
   val opponents =
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
-
   val state =
-      remember(user, opponents, navigateToGame, cancelClick, scope, chessFacade) {
+      remember(user, opponents, navigateToGame, cancelClick, scope, chessFacade, opponentId) {
         SnapshotPrepareGameScreenState(
             user = user,
+            selected = opponentId,
             opponents = opponents,
             navigateToGame = navigateToGame,
             cancelClick = cancelClick,
@@ -41,6 +43,12 @@ fun StatefulPrepareGameScreen(
             scope = scope,
         )
       }
+
+  DisposableEffect(Unit) {
+    Log.i("myinfo", "hello: $opponentId")
+    onDispose {}
+  }
+
   PrepareGameScreen(state = state, modifier = modifier, key = { it.uid })
 }
 
@@ -55,6 +63,7 @@ fun StatefulPrepareGameScreen(
  */
 class SnapshotPrepareGameScreenState(
     val user: AuthenticatedUser,
+    selected: String?,
     override val opponents: List<ProfileAdapter>,
     val navigateToGame: (match: Match) -> Unit,
     val cancelClick: () -> Unit,
@@ -62,9 +71,18 @@ class SnapshotPrepareGameScreenState(
     val scope: CoroutineScope,
 ) : PrepareGameScreenState<ProfileAdapter> {
 
+  constructor(
+     user: AuthenticatedUser,
+     opponents: List<ProfileAdapter>,
+     navigateToGame: (match: Match) -> Unit,
+     cancelClick: () -> Unit,
+     chessFacade: ChessFacade,
+     scope: CoroutineScope,
+  ): this(user, null, opponents, navigateToGame, cancelClick, chessFacade, scope)
+
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
 
-  override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
+  override var selectedOpponent: ProfileAdapter? by mutableStateOf(opponents.firstOrNull { it.uid == selected })
     private set
 
   override var playEnabled: Boolean by mutableStateOf(selectedOpponent != null)

@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -7,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
@@ -93,7 +95,10 @@ fun StatefulHome(
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
-            backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
+            backStackEntry.arguments?.getString("uid") ?: "",
+            onChallengeClick = {
+              controller.navigate("$PrepareGameRoute?opponentId={$it}") },
+            Modifier.fillMaxSize())
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
@@ -104,9 +109,12 @@ fun StatefulHome(
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
-      dialog(PrepareGameRoute) {
+      dialog(
+          "$PrepareGameRoute?opponentId={opponentId}",
+          arguments = listOf(navArgument("opponentId") { nullable = true })) {
         StatefulPrepareGameScreen(
             user,
+            opponentId = it.arguments?.getString("opponentId"),
             navigateToGame = { match -> controller.navigate("$GameRoute/${match.id}") },
             cancelClick = { controller.popBackStack() },
         )

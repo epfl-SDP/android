@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -21,15 +22,18 @@ import kotlinx.coroutines.flow.map
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
-    user: Profile,
+    private val user: Profile,
+    onGameItemClickAction: State<(String) -> Unit>,
     chessFacade: ChessFacade,
     scope: CoroutineScope,
 ) :
     VisitedProfileScreenState,
     ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
-
+    val onGameItemClickAction by onGameItemClickAction
   override fun onUnfollowClick() {}
-  override fun onChallengeClick() {}
+  override fun onChallengeClick() {
+    onGameItemClickAction(user.uid)
+  }
 }
 
 /**
@@ -42,18 +46,21 @@ class FetchedUserProfileScreenState(
 @Composable
 fun StatefulVisitedProfileScreen(
     uid: String,
+    onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
+  val onGameItemClickAction = rememberUpdatedState(onChallengeClick)
+
   val profile by
       remember(socialFacade, uid) { socialFacade.profile(uid).map { it ?: EmptyProfile } }
           .collectAsState(EmptyProfile)
   val scope = rememberCoroutineScope()
   val state =
-      remember(profile, chessFacade, scope) {
-        FetchedUserProfileScreenState(profile, chessFacade, scope)
+      remember(profile, chessFacade, scope, onGameItemClickAction) {
+        FetchedUserProfileScreenState(profile, onGameItemClickAction, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }
