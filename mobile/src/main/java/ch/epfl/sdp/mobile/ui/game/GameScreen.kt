@@ -40,7 +40,6 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
     contentPadding: PaddingValues = PaddingValues(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
-  // FIXME : This composable might require some refined handling of snackbar content padding.
   Scaffold(
       modifier = modifier,
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
