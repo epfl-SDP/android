@@ -37,10 +37,10 @@ fun Puzzle(): Puzzle =
               playing = White,
               castlingRights =
                   FenNotation.CastlingRights(
-                    kingSideWhite = false,
-                    queenSideWhite = false,
-                    kingSideBlack = false,
-                    queenSideBlack = false,
+                      kingSideWhite = false,
+                      queenSideWhite = false,
+                      kingSideBlack = false,
+                      queenSideBlack = false,
                   ),
               enPassant = null,
               halfMoveClock = -1,

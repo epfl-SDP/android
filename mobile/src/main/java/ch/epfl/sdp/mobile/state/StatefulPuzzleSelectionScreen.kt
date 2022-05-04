@@ -57,7 +57,8 @@ private class SnapshotPuzzleSelectionScreen(
     onPuzzleClickAction(puzzle)
   }
 
-  override val puzzles = facade.unsolvedPuzzles(user, context).map { it.toPuzzleItem() }.sortedBy { it.elo }
+  override val puzzles =
+      facade.unsolvedPuzzles(user, context).map { it.toPuzzleItem() }.sortedBy { it.elo }
 }
 
 data class PuzzleItemAdapter(

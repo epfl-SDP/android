@@ -68,7 +68,10 @@ fun PuzzleItemListThingy(
       modifier = modifier.clickable { onClick() },
       icon = {
         when (puzzleItem.playerColor) {
-          White -> Icon(ChessIcons.WhiteKing, null) // TODO: Display the last played piece instead of always king
+          White ->
+              Icon(
+                  ChessIcons.WhiteKing,
+                  null) // TODO: Display the last played piece instead of always king
           Black -> Icon(ChessIcons.BlackKing, null)
         }
       },
