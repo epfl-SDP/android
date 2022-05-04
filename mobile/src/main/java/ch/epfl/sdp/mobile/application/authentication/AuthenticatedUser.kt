@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -36,6 +37,8 @@ class AuthenticatedUser(
 
     /** Updates the profile name with [name]. */
     fun name(name: String) = scope.set("name", name)
+
+    fun solvedPuzzles(puzzle: Puzzle) = scope.arrayUnion("solvedPuzzles", puzzle.uid)
   }
 
   /**

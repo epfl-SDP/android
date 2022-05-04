@@ -88,6 +88,8 @@ dependencies {
   implementation(libs.bundles.compose.android)
 
   implementation(libs.arsceneview)
+
+  implementation("com.opencsv:opencsv:5.6")
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }
