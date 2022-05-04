@@ -10,7 +10,6 @@ import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
-import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Loss
 import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.*
 import ch.epfl.sdp.mobile.ui.social.Tie
@@ -22,10 +21,12 @@ class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestSettingScreenState(override val matches: List<ChessMatch>) :
-      SettingScreenState<ChessMatch> {
+  open class TestSettingScreenState(override val matches: List<ChessMatchAdapter>) :
+      SettingScreenState {
     override val email = "example@epfl.ch"
     override val pastGamesCount = 10
+    override fun onMatchClick(match: ChessMatchAdapter) = Unit
+
     override val puzzlesCount = 12
 
     override fun onSettingsClick() = Unit
@@ -34,7 +35,6 @@ class SettingScreenTest {
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true
-    override fun onMatchClick(match: ChessMatch) = Unit
   }
 
   object FakeSetttingScreenState :
@@ -71,7 +71,7 @@ class SettingScreenTest {
 
   private fun testMatchResult(
       rule: ComposeContentTestRule,
-      match: ChessMatch,
+      match: ChessMatchAdapter,
       expected: LocalizedStrings.() -> String,
   ) {
     val state = TestSettingScreenState(List(20) { match })

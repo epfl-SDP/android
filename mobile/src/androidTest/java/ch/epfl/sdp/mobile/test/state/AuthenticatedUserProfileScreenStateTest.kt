@@ -39,7 +39,7 @@ class AuthenticatedUserProfileScreenStateTest {
 
     rule.setContent {
       ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
-        StatefulSettingsScreen(mockUser, {})
+        StatefulSettingsScreen(mockUser, {}, {})
       }
     }
 
