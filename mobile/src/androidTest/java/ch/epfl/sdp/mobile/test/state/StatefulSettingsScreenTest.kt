@@ -66,34 +66,34 @@ class StatefulSettingsScreenTest {
   @Test
   fun given_SettingScreenLoaded_when_clickingOnEditProfileName_then_functionShouldBeCalled() =
       runTest {
-        val user = mockk<AuthenticatedUser>()
-        every { user.name } returns "test"
-        every { user.email } returns "test"
-        every { user.emoji } returns "test"
-        every { user.backgroundColor } returns Profile.Color.Orange
-        every { user.uid } returns "test"
-        every { user.followed } returns false
-        var functionCalled = false
+    val user = mockk<AuthenticatedUser>()
+    every { user.name } returns "test"
+    every { user.email } returns "test"
+    every { user.emoji } returns "test"
+    every { user.backgroundColor } returns Profile.Color.Orange
+    every { user.uid } returns "test"
+    every { user.followed } returns false
+    var functionCalled = false
 
-        val openProfileEditNameMock = { functionCalled = true }
+    val openProfileEditNameMock = { functionCalled = true }
 
-        val auth = emptyAuth()
-        val store = emptyStore()
+    val auth = emptyAuth()
+    val store = emptyStore()
 
-        val authFacade = AuthenticationFacade(auth, store)
-        val socialFacade = SocialFacade(auth, store)
-        val chessFacade = ChessFacade(auth, store)
-        val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val authFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
-        val strings =
-            rule.setContentWithLocalizedStrings {
-              ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-                StatefulSettingsScreen(user, openProfileEditNameMock, {})
-              }
-            }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+            StatefulSettingsScreen(user, openProfileEditNameMock, {})
+          }
+        }
 
-        rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
 
-        Truth.assertThat(functionCalled).isTrue()
-      }
+    Truth.assertThat(functionCalled).isTrue()
+  }
 }

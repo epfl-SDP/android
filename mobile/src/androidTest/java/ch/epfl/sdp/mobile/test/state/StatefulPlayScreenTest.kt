@@ -68,87 +68,87 @@ class StatefulPlayScreenTest {
   @Test
   fun given_playerHasLostByCheckmate_when_accessingPlayScreen_then_displayLostByCheckmate() =
       runTest {
-        val auth = buildAuth { user("email@example.org", "password", "1") }
-        val store = buildStore {
-          collection("users") {
-            document("1", ProfileDocument("1"))
-            document("2", ProfileDocument("2", name = "test"))
-          }
-          collection("games") {
-            document(
-                /* Funfact: Fool's Mate, Fastest checkmate possible https://www.chess.com/article/view/fastest-chess-checkmates */
-                "id",
-                ChessDocument(
-                    uid = "786",
-                    whiteId = "1",
-                    blackId = "2",
-                    moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1"))
+        document("2", ProfileDocument("2", name = "test"))
+      }
+      collection("games") {
+        document(
+            /* Funfact: Fool's Mate, Fastest checkmate possible https://www.chess.com/article/view/fastest-chess-checkmates */
+            "id",
+            ChessDocument(
+                uid = "786",
+                whiteId = "1",
+                blackId = "2",
+                moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
+      }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    facade.signInWithEmail("email@example.org", "password")
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess, speech) {
+            StatefulPlayScreen(
+                user = userAuthenticated,
+                onGameItemClick = {},
+                navigateToPrepareGame = {},
+                navigateToLocalGame = {},
+            )
           }
         }
 
-        val facade = AuthenticationFacade(auth, store)
-        val social = SocialFacade(auth, store)
-        val chess = ChessFacade(auth, store)
-        val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-
-        facade.signInWithEmail("email@example.org", "password")
-        val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-        val strings =
-            rule.setContentWithLocalizedStrings {
-              ProvideFacades(facade, social, chess, speech) {
-                StatefulPlayScreen(
-                    user = userAuthenticated,
-                    onGameItemClick = {},
-                    navigateToPrepareGame = {},
-                    navigateToLocalGame = {},
-                )
-              }
-            }
-
-        rule.onNodeWithText(strings.profileLostByCheckmate(4)).assertExists()
-      }
+    rule.onNodeWithText(strings.profileLostByCheckmate(4)).assertExists()
+  }
 
   @Test
   fun given_playerHasWonByCheckmate_when_accessingPlayScreen_then_displayWinByCheckmate() =
       runTest {
-        val auth = buildAuth { user("email@example.org", "password", "1") }
-        val store = buildStore {
-          collection("users") {
-            document("1", ProfileDocument("1"))
-            document("2", ProfileDocument("2", name = "test"))
-          }
-          collection("games") {
-            document(
-                "id",
-                ChessDocument(
-                    uid = "786",
-                    whiteId = "2",
-                    blackId = "1",
-                    moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1"))
+        document("2", ProfileDocument("2", name = "test"))
+      }
+      collection("games") {
+        document(
+            "id",
+            ChessDocument(
+                uid = "786",
+                whiteId = "2",
+                blackId = "1",
+                moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
+      }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    facade.signInWithEmail("email@example.org", "password")
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess, speech) {
+            StatefulPlayScreen(
+                user = userAuthenticated,
+                onGameItemClick = {},
+                navigateToPrepareGame = {},
+                navigateToLocalGame = {},
+            )
           }
         }
 
-        val facade = AuthenticationFacade(auth, store)
-        val social = SocialFacade(auth, store)
-        val chess = ChessFacade(auth, store)
-        val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-
-        facade.signInWithEmail("email@example.org", "password")
-        val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-        val strings =
-            rule.setContentWithLocalizedStrings {
-              ProvideFacades(facade, social, chess, speech) {
-                StatefulPlayScreen(
-                    user = userAuthenticated,
-                    onGameItemClick = {},
-                    navigateToPrepareGame = {},
-                    navigateToLocalGame = {},
-                )
-              }
-            }
-
-        rule.onNodeWithText(strings.profileWonByCheckmate(4)).assertExists()
-      }
+    rule.onNodeWithText(strings.profileWonByCheckmate(4)).assertExists()
+  }
 
   @Test
   fun statefulPlayScreen_isDisplayedWithNoWhiteId() = runTest {
@@ -308,37 +308,37 @@ class StatefulPlayScreenTest {
   @Test
   fun given_playScreen_when_clickingNewGameAndOnlinePlay_then_onlineGameCallbackIsCalled() =
       runTest {
-        val auth = emptyAuth()
-        val store = buildStore {
-          collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+    }
+    val facade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    facade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val channel = Channel<Unit>(capacity = 1)
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(facade, social, chess, speech) {
+            StatefulPlayScreen(
+                user = currentUser,
+                onGameItemClick = {},
+                navigateToPrepareGame = {
+                  channel.trySend(Unit)
+                  channel.close()
+                },
+                navigateToLocalGame = {},
+            )
+          }
         }
-        val facade = AuthenticationFacade(auth, store)
-        val social = SocialFacade(auth, store)
-        val chess = ChessFacade(auth, store)
-        val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
-        facade.signUpWithEmail("user1@email", "user1", "password")
-        val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    rule.onNodeWithText(strings.newGame).performClick()
+    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
 
-        val channel = Channel<Unit>(capacity = 1)
-        val strings =
-            rule.setContentWithLocalizedStrings {
-              ProvideFacades(facade, social, chess, speech) {
-                StatefulPlayScreen(
-                    user = currentUser,
-                    onGameItemClick = {},
-                    navigateToPrepareGame = {
-                      channel.trySend(Unit)
-                      channel.close()
-                    },
-                    navigateToLocalGame = {},
-                )
-              }
-            }
-
-        rule.onNodeWithText(strings.newGame).performClick()
-        rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-
-        Truth.assertThat(channel.tryReceive().getOrNull()).isEqualTo(Unit)
-      }
+    Truth.assertThat(channel.tryReceive().getOrNull()).isEqualTo(Unit)
+  }
 }
