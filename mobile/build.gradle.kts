@@ -50,6 +50,7 @@ tasks.withType<KotlinCompile>().configureEach {
   kotlinOptions.freeCompilerArgs += "-opt-in=androidx.compose.animation.ExperimentalAnimationApi"
   kotlinOptions.freeCompilerArgs +=
       "-opt-in=androidx.compose.animation.core.ExperimentalTransitionApi"
+  kotlinOptions.freeCompilerArgs += "-Xjvm-default=compatibility"
 }
 
 dependencies {
