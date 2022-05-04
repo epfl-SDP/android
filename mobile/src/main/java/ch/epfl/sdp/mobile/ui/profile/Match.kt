@@ -27,8 +27,8 @@ import ch.epfl.sdp.mobile.ui.social.*
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun <C : ChessMatch> Match(
-    match: C,
+fun Match(
+    match: ChessMatch,
     icon: Painter,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
