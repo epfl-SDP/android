@@ -26,6 +26,7 @@ class SocialFacadeTest {
     override val name: String = "Andy"
     override val emoji: String = ":3"
     override val followed: Boolean = false
+    override val solvedPuzzles = emptyList<String>()
   }
 
   @Test

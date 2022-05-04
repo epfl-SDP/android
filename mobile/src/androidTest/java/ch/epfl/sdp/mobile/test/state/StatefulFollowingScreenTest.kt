@@ -45,6 +45,8 @@ class StatefulFollowingScreenTest {
                     get() = ""
                   override val followed: Boolean
                     get() = false
+                  override val solvedPuzzles: List<String>
+                    get() = emptyList()
                 }))
 
     val mockSocialFacade = mockk<SocialFacade>()
