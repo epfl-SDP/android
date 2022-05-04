@@ -27,6 +27,8 @@ val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech
  *
  * @param authentication the [AuthenticationFacade] that will be provided.
  * @param social the [SocialFacade] that will be provided.
+ * @param chess the [ChessFacade] that will be provided.
+ * @param speech the [SpeechFacade] that will be provided.
  */
 @Composable
 fun ProvideFacades(
