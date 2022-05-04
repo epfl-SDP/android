@@ -6,12 +6,10 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
-import ch.epfl.sdp.mobile.application.chess.notation.UCINotation
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
+import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
@@ -112,25 +110,10 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
 
     val puzzles =
         csvMap.map {
-          val puzzleId = it["PuzzleId"] ?: "Error"
-          val fen =
-              FenNotation.parseFen(it["FEN"] ?: "")
-                  ?: FenNotation.BoardSnapshot(
-                      board = buildBoard {},
-                      playing = Color.White,
-                      castlingRights =
-                          FenNotation.CastlingRights(
-                              kingSideWhite = false,
-                              queenSideWhite = false,
-                              kingSideBlack = false,
-                              queenSideBlack = false,
-                          ),
-                      enPassant = null,
-                      halfMoveClock = -1,
-                      fullMoveClock = -1,
-                  )
-          val moves = UCINotation.parseActions(it["Moves"] ?: "") ?: emptyList()
-          val rating = (it["Rating"] ?: "-1").toInt()
+          val puzzleId = it["PuzzleId"] ?: return@map Puzzle()
+          val fen = parseFen(it["FEN"] ?: "") ?: return@map Puzzle()
+          val moves = parseActions(it["Moves"] ?: "") ?: return@map Puzzle()
+          val rating = (it["Rating"] ?: return@map Puzzle()).toInt()
 
           SnapshotPuzzle(
               uid = puzzleId,
