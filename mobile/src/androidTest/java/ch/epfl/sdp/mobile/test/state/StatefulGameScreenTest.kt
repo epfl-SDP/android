@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.*
@@ -9,6 +11,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
@@ -17,6 +20,7 @@ import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -25,6 +29,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -56,13 +61,16 @@ class StatefulGameScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
+          ProvideFacades(authApi, social, chess, speech) {
+            StatefulGameScreen(user1, "gameId", actions)
+          }
         }
 
     return ChessBoardRobot(rule, strings)
@@ -529,6 +537,7 @@ class StatefulGameScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -537,7 +546,9 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
+          ProvideFacades(authApi, social, chess, speech) {
+            StatefulGameScreen(user1, "gameId", actions)
+          }
         }
 
     val robot = ChessBoardRobot(rule, strings)
@@ -562,6 +573,7 @@ class StatefulGameScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -570,7 +582,9 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
+          ProvideFacades(authApi, social, chess, speech) {
+            StatefulGameScreen(user1, "gameId", actions)
+          }
         }
 
     val robot = ChessBoardRobot(rule, strings)

@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,9 +38,12 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
     state: GameScreenState<Piece>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
+  // FIXME : This composable might require some refined handling of snackbar content padding.
   Scaffold(
       modifier = modifier,
+      scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
             onBackClick = state::onBackClick,

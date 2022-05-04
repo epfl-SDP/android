@@ -11,12 +11,14 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.HomeActivity
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulArScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -43,13 +45,14 @@ class StatefulArScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulArScreen(user1, "gameId") }
+          ProvideFacades(authApi, social, chess, speech) { StatefulArScreen(user1, "gameId") }
         }
 
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()

@@ -8,11 +8,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulAuthenticationScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreen
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState
@@ -63,9 +65,10 @@ class AuthenticationScreenTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
             StatefulAuthenticationScreen()
           }
         }
@@ -84,9 +87,10 @@ class AuthenticationScreenTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
             StatefulAuthenticationScreen()
           }
         }
@@ -105,9 +109,10 @@ class AuthenticationScreenTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
             StatefulAuthenticationScreen()
           }
         }
@@ -126,9 +131,10 @@ class AuthenticationScreenTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
             StatefulAuthenticationScreen()
           }
         }
@@ -147,9 +153,10 @@ class AuthenticationScreenTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+          ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
             StatefulAuthenticationScreen()
           }
         }

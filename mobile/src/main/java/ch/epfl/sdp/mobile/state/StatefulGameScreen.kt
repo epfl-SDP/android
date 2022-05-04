@@ -1,6 +1,12 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package ch.epfl.sdp.mobile.state
 
+import android.Manifest.permission.RECORD_AUDIO
+import androidx.compose.foundation.MutatePriority.UserInput
+import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
@@ -11,11 +17,16 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
 import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -38,6 +49,7 @@ data class StatefulGameScreenActions(
  * @param actions the [StatefulGameScreenActions] to perform.
  * @param modifier the [Modifier] for the composable.
  * @param paddingValues the [PaddingValues] for this composable.
+ * @param audioPermissionState the [PermissionState] which provides access to audio content.
  */
 @Composable
 fun StatefulGameScreen(
@@ -46,11 +58,24 @@ fun StatefulGameScreen(
     actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(),
+    audioPermissionState: PermissionState = rememberPermissionState(RECORD_AUDIO),
 ) {
-  val facade = LocalChessFacade.current
-  val scope = rememberCoroutineScope()
-  val match = remember(facade, id) { facade.match(id) }
+  val chessFacade = LocalChessFacade.current
+  val speechFacade = LocalSpeechFacade.current
 
+  val scope = rememberCoroutineScope()
+  val match = remember(chessFacade, id) { chessFacade.match(id) }
+
+  val snackbarHostState = remember { SnackbarHostState() }
+  val speechRecognizerState =
+      remember(audioPermissionState, speechFacade, snackbarHostState, scope) {
+        SnackbarSpeechRecognizerState(
+            permission = audioPermissionState,
+            facade = speechFacade,
+            snackbarHostState = snackbarHostState,
+            scope = scope,
+        )
+      }
   val gameScreenState =
       remember(actions, user, match, scope) {
         SnapshotChessBoardState(
@@ -58,6 +83,7 @@ fun StatefulGameScreen(
             user = user,
             match = match,
             scope = scope,
+            speechRecognizerState = speechRecognizerState,
         )
       }
 
@@ -67,6 +93,7 @@ fun StatefulGameScreen(
       state = gameScreenState,
       modifier = modifier,
       contentPadding = paddingValues,
+      snackbarHostState = snackbarHostState,
   )
 }
 
@@ -96,6 +123,54 @@ private fun StatefulPromoteDialog(
 }
 
 /**
+ * An implementation of [SpeechRecognizerState] which will display the results in a
+ * [SnackbarHostState].
+ *
+ * @param permission the [PermissionState] for the microphone permission.
+ * @param facade the [SpeechFacade] which is used.
+ * @param snackbarHostState the [SnackbarHostState] used to display some results.
+ * @param scope the [CoroutineScope] in which the actions are performed.
+ */
+class SnackbarSpeechRecognizerState
+constructor(
+    private val permission: PermissionState,
+    private val facade: SpeechFacade,
+    private val snackbarHostState: SnackbarHostState,
+    private val scope: CoroutineScope,
+) : SpeechRecognizerState {
+
+  override var listening: Boolean by mutableStateOf(false)
+    private set
+
+  /**
+   * A [MutatorMutex] which ensures that multiple speech recognition requests aren't performed
+   * simultaneously, and that clicking on the button again cancels the previous request.
+   */
+  private val mutex = MutatorMutex()
+
+  override fun onListenClick() {
+    scope.launch {
+      mutex.mutate(UserInput) {
+        try {
+          listening = true
+          if (!permission.hasPermission) {
+            permission.launchPermissionRequest()
+          } else {
+            when (val speech = facade.recognize()) {
+              // TODO : Display an appropriate message, otherwise act on the board.
+              Failure.Internal -> snackbarHostState.showSnackbar("Internal failure")
+              is Success -> for (result in speech.results) snackbarHostState.showSnackbar(result)
+            }
+          }
+        } finally {
+          listening = false
+        }
+      }
+    }
+  }
+}
+
+/**
  * An implementation of [GameScreenState] and [PromotionState] that starts with default chess
  * positions, can move pieces and has a static move list.
  *
@@ -109,14 +184,8 @@ class SnapshotChessBoardState(
     private val user: AuthenticatedUser,
     private val match: Match,
     private val scope: CoroutineScope,
-) : GameScreenState<SnapshotPiece>, PromotionState {
-
-  // TODO : Implement these things.
-  override var listening by mutableStateOf(false)
-    private set
-  override fun onListenClick() {
-    listening = !listening
-  }
+    speechRecognizerState: SpeechRecognizerState,
+) : GameScreenState<SnapshotPiece>, PromotionState, SpeechRecognizerState by speechRecognizerState {
 
   override fun onArClick() = actions.onShowAr(match)
 
