@@ -2,8 +2,10 @@
 
 package ch.epfl.sdp.mobile.test.state
 
+import android.Manifest.permission.RECORD_AUDIO
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -603,6 +605,8 @@ class StatefulGameScreenTest {
     // Pawn did not move
     robot.assertHasPiece(4, 1, Black, Pawn)
   }
+
+  @get:Rule val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(RECORD_AUDIO)
 
   @Test
   fun clickingListening_showsListeningText() {

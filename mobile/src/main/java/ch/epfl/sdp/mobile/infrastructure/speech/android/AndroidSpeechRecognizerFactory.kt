@@ -45,8 +45,8 @@ class AndroidSpeechRecognizerFactory(
  */
 class AndroidSpeechRecognizer(
     private val recognizer: NativeSpeechRecognizer,
-    private val language: String,
-    private val resultsCount: Int,
+    private val language: String = DefaultLanguage,
+    private val resultsCount: Int = DefaultResultsCount,
 ) : SpeechRecognizer {
 
   override fun setListener(listener: SpeechRecognizer.Listener) =
