@@ -47,6 +47,7 @@ interface Profile {
       /** A default color. */
       val Default = Orange
 
+      /** List of all colors */
       val values = listOf(Green200, Green500, Orange, Purple)
     }
   }

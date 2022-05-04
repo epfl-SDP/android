@@ -55,8 +55,8 @@ class EditProfileImageDialogStateImpl(
  * retrieve the appropriate dependencies.
  *
  * @param user the current [AuthenticatedUser].
- * @param onSave the callback called after we saved the changes.
- * @param onCancel the callback called when we click the cancel button.
+ * @param onClose the callback called after we click the close and the save button.
+ * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun StatefulEditProfileImageDialog(
