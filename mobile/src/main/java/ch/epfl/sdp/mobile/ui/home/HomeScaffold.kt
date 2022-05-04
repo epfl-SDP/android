@@ -26,8 +26,6 @@ enum class HomeSection(
 
   /** The section to manage our preferences. */
   Settings(PawniesIcons.SectionSettings, { sectionSettings }),
-  /** The section to demonstrate Speech Recognition */
-  SpeechRecognition(PawniesIcons.GameMicOn, { sectionSpeechRecognition }),
 }
 
 /**

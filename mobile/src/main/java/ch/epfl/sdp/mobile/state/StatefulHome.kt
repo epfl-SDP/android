@@ -39,9 +39,6 @@ private const val GameDefaultId = ""
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
 
-/** Temporary route associated with speech recognition demo screen */
-private const val SpeechRecognitionRoute = "speech"
-
 /** The route associated to the ar tab. */
 private const val ArRoute = "ar"
 
@@ -138,9 +135,6 @@ fun StatefulHome(
             paddingValues = paddingValues,
         )
       }
-      composable(SpeechRecognitionRoute) {
-        StatefulSpeechRecognitionScreen(user, Modifier.fillMaxSize())
-      }
       composable("$ArRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
         StatefulArScreen(id, Modifier.fillMaxSize())
@@ -154,7 +148,6 @@ private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
       PlayRoute -> HomeSection.Play
-      SpeechRecognitionRoute -> HomeSection.SpeechRecognition
       else -> HomeSection.Social
     }
 
@@ -164,7 +157,6 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
-      HomeSection.SpeechRecognition -> SpeechRecognitionRoute
     }
 
 private fun hideBar(route: String?): Boolean {

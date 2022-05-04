@@ -84,7 +84,6 @@ object English : LocalizedStrings {
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
   override val sectionPlay = "Play"
-  override val sectionSpeechRecognition = "Vocal"
 
   override val newGame = "New game".uppercase()
 
