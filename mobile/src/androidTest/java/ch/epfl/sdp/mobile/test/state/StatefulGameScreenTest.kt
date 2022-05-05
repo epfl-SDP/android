@@ -741,6 +741,18 @@ class StatefulGameScreenTest {
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
     assertThat(permission.permissionRequested).isTrue()
   }
+
+  @Test
+  fun given_suspendingRecognizer_when_clickingListeningTwice_then_cancelsRecognition() {
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = SuspendingSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithLocalizedText { gameListening }.performClick()
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.assertExists()
+  }
 }
 
 private object GrantedPermissionState : PermissionState {

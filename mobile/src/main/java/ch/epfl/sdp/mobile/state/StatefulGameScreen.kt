@@ -142,8 +142,10 @@ constructor(
 
   override fun onListenClick() {
     scope.launch {
+      val willCancel = listening
       mutex.mutate(UserInput) {
         try {
+          if (willCancel) return@mutate
           listening = true
           if (!permission.hasPermission) {
             permission.launchPermissionRequest()
