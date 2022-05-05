@@ -100,7 +100,9 @@ fun StatefulHome(
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
-            backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
+            backStackEntry.arguments?.getString("uid") ?: "",
+            Modifier.fillMaxSize(),
+            onBackToSocialClick = { controller.popBackStack() })
       }
       composable(PlayRoute) {
         StatefulPlayScreen(

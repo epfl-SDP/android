@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.map
 class FetchedUserProfileScreenState(
     user: Profile,
     chessFacade: ChessFacade,
+    val onBackToSocialClick: () -> Unit,
     scope: CoroutineScope,
 ) :
     VisitedProfileScreenState,
@@ -30,6 +31,9 @@ class FetchedUserProfileScreenState(
 
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {}
+  override fun onBackClick() {
+    onBackToSocialClick()
+  }
 }
 
 /**
@@ -43,6 +47,7 @@ class FetchedUserProfileScreenState(
 fun StatefulVisitedProfileScreen(
     uid: String,
     modifier: Modifier = Modifier,
+    onBackToSocialClick: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val socialFacade = LocalSocialFacade.current
@@ -52,8 +57,8 @@ fun StatefulVisitedProfileScreen(
           .collectAsState(EmptyProfile)
   val scope = rememberCoroutineScope()
   val state =
-      remember(profile, chessFacade, scope) {
-        FetchedUserProfileScreenState(profile, chessFacade, scope)
+      remember(profile, chessFacade, onBackToSocialClick, scope) {
+        FetchedUserProfileScreenState(profile, chessFacade, onBackToSocialClick, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }

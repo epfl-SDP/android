@@ -10,4 +10,7 @@ interface VisitedProfileScreenState : ProfileScreenState {
 
   /** On challenge button clicked */
   fun onChallengeClick()
+
+  /** On back button clicked */
+  fun onBackClick()
 }

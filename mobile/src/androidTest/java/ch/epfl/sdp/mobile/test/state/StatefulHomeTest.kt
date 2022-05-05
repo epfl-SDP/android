@@ -257,34 +257,34 @@ class StatefulHomeTest {
   @Test
   fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
       runTest {
-    val auth = emptyAuth()
-    val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-    }
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val user2 =
-        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
-    currentUser.follow(user2)
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+        val auth = emptyAuth()
+        val store = buildStore {
+          collection("users") { document("userId2", ProfileDocument(name = "user2")) }
         }
+        val authFacade = AuthenticationFacade(auth, store)
+        val social = SocialFacade(auth, store)
+        val chess = ChessFacade(auth, store)
 
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-    rule.onNodeWithText("user2").performClick()
-    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+        authFacade.signUpWithEmail("user1@email", "user1", "password")
+        val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+        val user2 =
+            social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+        currentUser.follow(user2)
 
-    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
-    rule.onNodeWithText("user2").assertExists()
-  }
+        val strings =
+            rule.setContentWithLocalizedStrings {
+              ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+            }
+
+        rule.onNodeWithText(strings.sectionPlay).performClick()
+        rule.onNodeWithText(strings.newGame).performClick()
+        rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
+        rule.onNodeWithText("user2").performClick()
+        rule.onNodeWithText(strings.prepareGamePlay).performClick()
+
+        rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+        rule.onNodeWithText("user2").assertExists()
+      }
 
   @Test
   fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
@@ -386,5 +386,37 @@ class StatefulHomeTest {
     withCanceledIntents {
       rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
     }
+  }
+
+  @Test
+  fun given_visitedProfileScreen_when_cancelButtonClicked_then_socialScreenIsDisplayed() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "A"))
+        document("2", ProfileDocument("2", name = "B"))
+      }
+      collection("games") {
+        document(
+            "id", ChessDocument(uid = "45", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
+      }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val follower = socialFacade.profile("2").first()!!
+    user.follow(follower)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade) { StatefulHome(user) }
+        }
+
+    rule.onNodeWithText("B").assertExists().performClick()
+    rule.onNodeWithContentDescription("cancel").assertExists().performClick()
+    rule.onNodeWithText(strings.socialFollowingTitle).assertExists()
   }
 }

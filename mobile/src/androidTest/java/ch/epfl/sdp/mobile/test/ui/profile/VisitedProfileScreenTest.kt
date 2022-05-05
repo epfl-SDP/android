@@ -28,6 +28,7 @@ class VisitedProfileScreenTest {
     override val pastGamesCount = 10
     override fun onChallengeClick() = Unit
     override fun onUnfollowClick() = Unit
+    override fun onBackClick() = Unit
     override val backgroundColor = Color.Default.toColor()
     override val name = "Example"
     override val emoji = "🎁"
@@ -106,5 +107,11 @@ class VisitedProfileScreenTest {
     testMatchResult(rule, ChessMatchAdapter("1", "John", Win(FORFEIT), 10)) {
       profileWonByForfeit(10)
     }
+  }
+
+  @Test
+  fun given_socialScreen_when_userProfileVisited_then_backButtonExists() {
+    rule.setContent { ProfileScreen(state = FakeProfileScreenState) }
+    rule.onNodeWithContentDescription("cancel").assertExists()
   }
 }
