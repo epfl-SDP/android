@@ -16,7 +16,7 @@ private const val DefaultLanguage = "en-US"
 private const val DefaultResultsCount = 10
 
 /**
- * An implementation of a [SpeechRecognizer] which is backed by a [NativeSpeechRecognizer].
+ * An implementation of a [SpeechRecognizerFactory] which is backed by [NativeSpeechRecognizer]s.
  *
  * @param context the [Context] which will be used to create the speech recognizers.
  * @param language the default language to use.
