@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.test.state
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -11,8 +12,13 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import com.google.common.truth.Truth
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -47,10 +53,43 @@ class StatefulSettingsScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade) {
-              StatefulSettingsScreen(user, {})
+              StatefulSettingsScreen(user, {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
     }
+  }
+
+  @Test
+  fun given_SettingScreenLoaded_when_clickingOnEditProfileName_then_functionShouldBeCalled() =
+      runTest {
+    val user = mockk<AuthenticatedUser>()
+    every { user.name } returns "test"
+    every { user.email } returns "test"
+    every { user.emoji } returns "test"
+    every { user.backgroundColor } returns Profile.Color.Orange
+    every { user.uid } returns "test"
+    every { user.followed } returns false
+    var functionCalled = false
+
+    val openProfileEditNameMock = { functionCalled = true }
+
+    val auth = emptyAuth()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade) {
+            StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
+          }
+        }
+
+    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+
+    Truth.assertThat(functionCalled).isTrue()
   }
 }
