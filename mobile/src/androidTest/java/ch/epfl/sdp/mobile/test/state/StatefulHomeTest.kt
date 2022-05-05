@@ -14,6 +14,8 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -21,6 +23,8 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -40,13 +44,14 @@ class StatefulHomeTest {
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(api, social, chess) { StatefulHome(user) }
+          ProvideFacades(api, social, chess, speech) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
@@ -59,12 +64,13 @@ class StatefulHomeTest {
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(api, social, chess) { StatefulHome(user) }
+          ProvideFacades(api, social, chess, speech) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
@@ -78,13 +84,14 @@ class StatefulHomeTest {
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(api, social, chess) { StatefulHome(user) }
+          ProvideFacades(api, social, chess, speech) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
@@ -98,12 +105,13 @@ class StatefulHomeTest {
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulHome(user) }
+          ProvideFacades(facade, social, chess, speech) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
@@ -122,12 +130,13 @@ class StatefulHomeTest {
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signInWithEmail("email@example.org", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess) { StatefulHome(user) }
+          ProvideFacades(facade, social, chess, speech) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText("testName").assertExists()
@@ -142,6 +151,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -149,7 +159,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech) {
             StatefulHome(
                 user = user,
                 // We must call controller.navigate() after the first composition (so the
@@ -173,6 +183,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -182,7 +193,7 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -202,6 +213,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -211,7 +223,7 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -232,6 +244,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -241,7 +254,7 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -264,6 +277,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -273,7 +287,7 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -294,13 +308,14 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -327,6 +342,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -334,7 +350,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -366,6 +382,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -373,7 +390,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -406,6 +423,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -415,7 +433,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -449,6 +467,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -456,7 +475,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -469,5 +488,56 @@ class StatefulHomeTest {
     withCanceledIntents {
       rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
     }
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech) { Navigation() }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+    rule.onNode(hasText("test") and hasSetTextAction()).performTextInput("2")
+    rule.onNodeWithText(strings.settingEditSave).performClick()
+    rule.onNodeWithText("test2").assertIsDisplayed()
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_editProfileName_then_cancelWithoutSave() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech) { Navigation() }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+    rule.onNodeWithText(strings.settingEditCancel).performClick()
+    rule.onNodeWithText("test").assertIsDisplayed()
   }
 }

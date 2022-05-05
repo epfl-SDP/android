@@ -7,11 +7,13 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.ui.setting.Emojis
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -36,12 +38,13 @@ class StatefulEditProfileImageDialogTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signInWithEmail("email@example.org", "password")
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
@@ -66,12 +69,13 @@ class StatefulEditProfileImageDialogTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signInWithEmail("email@example.org", "password")
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
