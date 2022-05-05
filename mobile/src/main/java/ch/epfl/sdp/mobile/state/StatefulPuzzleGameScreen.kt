@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
-import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
+import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +51,7 @@ fun StatefulPuzzleGameScreen(
 }
 
 class SnapshotPuzzleBoardState(
-    override val puzzle: Puzzle,
-    private val user: AuthenticatedUser,
-    private val scope: CoroutineScope,
+  override val puzzle: Puzzle,
+  private val user: AuthenticatedUser,
+  private val scope: CoroutineScope,
 ) : PuzzleGameScreenState<SnapshotPiece>

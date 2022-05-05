@@ -12,18 +12,18 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
-import ch.epfl.sdp.mobile.ui.puzzles.PuzzleItem
+import ch.epfl.sdp.mobile.application.chess.Puzzle
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreenState
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun StatefulPuzzleSelectionScreen(
-    user: AuthenticatedUser,
-    onPuzzleItemClick: (puzzle: PuzzleItem) -> Unit,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
+  user: AuthenticatedUser,
+  onPuzzleItemClick: (puzzle: PuzzleInfo) -> Unit,
+  modifier: Modifier = Modifier,
+  contentPadding: PaddingValues = PaddingValues(),
 ) {
   val chess = LocalChessFacade.current
   val context = LocalContext.current
@@ -47,21 +47,21 @@ fun StatefulPuzzleSelectionScreen(
 }
 
 private class SnapshotPuzzleSelectionScreen(
-    onPuzzleClickAction: State<(puzzle: PuzzleItem) -> Unit>,
-    private val user: AuthenticatedUser,
-    private val facade: ChessFacade,
-    private val scope: CoroutineScope,
-    private val context: Context,
+  onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
+  private val user: AuthenticatedUser,
+  private val facade: ChessFacade,
+  private val scope: CoroutineScope,
+  private val context: Context,
 ) : PuzzleSelectionScreenState {
 
   val onPuzzleClickAction by onPuzzleClickAction
 
-  override fun onPuzzleItemClick(puzzle: PuzzleItem) {
+  override fun onPuzzleItemClick(puzzle: PuzzleInfo) {
     onPuzzleClickAction(puzzle)
   }
 
   override val puzzles =
-      facade.unsolvedPuzzles(user, context).map { it.toPuzzleItem() }.sortedBy { it.elo }
+      facade.unsolvedPuzzles(user, context).map { it.toPuzzleInfo() }.sortedBy { it.elo }
 }
 
 data class PuzzleItemAdapter(
@@ -69,9 +69,9 @@ data class PuzzleItemAdapter(
     override val playerColor: ChessBoardState.Color,
     override val elo: Int,
     override val icon: @Composable (() -> Unit)
-) : PuzzleItem
+) : PuzzleInfo
 
-private fun Puzzle.toPuzzleItem(): PuzzleItem {
+private fun Puzzle.toPuzzleInfo(): PuzzleInfo {
   val playerColor =
       when (this.boardSnapshot.playing) {
         Color.White -> ChessBoardState.Color.White

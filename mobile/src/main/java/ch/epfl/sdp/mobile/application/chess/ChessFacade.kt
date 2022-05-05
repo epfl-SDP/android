@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
@@ -17,8 +18,6 @@ import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
-import ch.epfl.sdp.mobile.ui.puzzles.SnapshotPuzzle
 import com.opencsv.CSVReaderHeaderAware
 import kotlinx.coroutines.flow.*
 
@@ -142,13 +141,20 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 }
 
+private data class SnapshotPuzzle(
+  override val uid: String,
+  override val boardSnapshot: FenNotation.BoardSnapshot,
+  override val puzzleMoves: List<Action>,
+  override val elo: Int,
+) : Puzzle
+
 private data class StoreMatch(
-    override val id: String,
-    private val store: Store,
+  override val id: String,
+  private val store: Store,
 ) : Match {
 
   fun profile(
-      uid: String,
+    uid: String,
   ): Flow<Profile?> {
 
     return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
@@ -161,13 +167,13 @@ private data class StoreMatch(
   override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
 
   override val white =
-      documentFlow.map { it?.whiteId }.flatMapLatest {
-        it?.let(this@StoreMatch::profile) ?: flowOf(null)
-      }
+    documentFlow.map { it?.whiteId }.flatMapLatest {
+      it?.let(this@StoreMatch::profile) ?: flowOf(null)
+    }
   override val black =
-      documentFlow.map { it?.blackId }.flatMapLatest {
-        it?.let(this@StoreMatch::profile) ?: flowOf(null)
-      }
+    documentFlow.map { it?.blackId }.flatMapLatest {
+      it?.let(this@StoreMatch::profile) ?: flowOf(null)
+    }
 
   override suspend fun update(game: Game) {
     store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }

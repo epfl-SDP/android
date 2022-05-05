@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.puzzles
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
 /**

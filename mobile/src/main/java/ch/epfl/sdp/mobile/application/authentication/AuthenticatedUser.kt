@@ -7,7 +7,7 @@ import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import ch.epfl.sdp.mobile.ui.puzzles.Puzzle
+import ch.epfl.sdp.mobile.application.chess.Puzzle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
