@@ -92,7 +92,7 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
-    SettingsButton(onClick = state::onSettingsClick)
+    SettingsButton(onClick = state::onEditProfileImageClick)
   }
 }
 
@@ -114,7 +114,7 @@ fun SettingPicture(
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
-        onClick = state::onSettingsClick,
+        onClick = state::onEditProfileImageClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
                 .shadow(2.dp, CircleShape)

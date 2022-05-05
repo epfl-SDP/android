@@ -32,9 +32,16 @@ class AuthenticatedUserProfileScreenStateTest {
     val facade = ChessFacade(auth, store)
     val job = Job()
     val scope = CoroutineScope(job)
-    val mockClickAction = mutableStateOf({})
+    val mockOnEditProfileNameClickAction = mutableStateOf({})
+    val mockOnEditProfileImageClickAction = mutableStateOf({})
 
-    val state = AuthenticatedUserProfileScreenState(mockUser, facade, scope, mockClickAction)
+    val state =
+        AuthenticatedUserProfileScreenState(
+            mockUser,
+            facade,
+            scope,
+            mockOnEditProfileNameClickAction,
+            mockOnEditProfileImageClickAction)
     assertThat(state.name).isEqualTo("test")
   }
 }
