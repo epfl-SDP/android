@@ -88,7 +88,7 @@ class StatefulSettingsScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-              StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
+            StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
           }
         }
 
