@@ -708,7 +708,7 @@ class StatefulGameScreenTest {
 
   @Test
   fun given_successfulRecognizer_when_clicksListening_then_displaysRecognitionResults() {
-    // This will be fail once we want to move the pieces instead.
+    // This will fail once we want to move the pieces instead.
     val robot =
         emptyGameAgainstOneselfRobot(
             recognizer = SuccessfulSpeechRecognizerFactory,
