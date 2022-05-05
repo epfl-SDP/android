@@ -21,7 +21,7 @@ class ChessSpeechRecognitionFilterTest {
     val chessFilter = ChessSpeechRecognitionFilter()
     val result = chessFilter.filterWords(speechResults)
 
-    assertThat(result, IsEqual(""))
+    assertThat(result, IsEqual(null))
   }
   @Test
   fun given_queenSpeeches_when_filtered_then_outputCorrectResults() {

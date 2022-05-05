@@ -10,7 +10,7 @@ typealias ChessNumber = String
 
 typealias ChessLetter = String
 
-typealias ChessWord = String // Filter Result
+typealias ChessWord = String? // Filter Result
 
 /**
  * A Chess speech recognition results filters that factors a chess command given a vocabulary
@@ -200,7 +200,7 @@ class ChessSpeechRecognitionFilter(
             .append(letter.uppercase())
             .append(number)
             .toString()
-    else ""
+    else null
   }
 
   /** Extension function used to capitalize ChessPiece strings */
