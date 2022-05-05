@@ -1,10 +1,12 @@
 package ch.epfl.sdp.mobile.ui.puzzles
 
+import androidx.compose.runtime.Composable
 import ch.epfl.sdp.mobile.application.chess.engine.Color.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
 
 interface Puzzle {
@@ -18,6 +20,7 @@ interface PuzzleItem {
   val uid: String
   val elo: Int
   val playerColor: Color
+  val icon: @Composable (() -> Unit)
 }
 
 class SnapshotPuzzle(

@@ -143,6 +143,7 @@ fun StatefulHome(
         StatefulPuzzleSelectionScreen(
             user = user,
             onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
+            contentPadding = paddingValues,
         )
       }
       composable("$PuzzleGameRoute/{id}") { entry ->
