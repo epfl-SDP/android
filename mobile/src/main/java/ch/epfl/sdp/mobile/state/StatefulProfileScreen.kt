@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  * requests.
  *
  * @param user the given [Profile].
- * @param actions the [Actions] which are available on the screen.
+ * @param actions the [ProfileActions] which are available on the screen.
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
