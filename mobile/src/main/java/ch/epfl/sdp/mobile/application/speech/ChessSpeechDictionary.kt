@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.speech_recognition
+package ch.epfl.sdp.mobile.application.speech
 
 /** Currently used chess dictionary for homophones chess keywords */
 object ChessSpeechDictionary : ChessDictionary {
@@ -68,6 +68,6 @@ object ChessSpeechDictionary : ChessDictionary {
           "h" to listOf("h", "age", "stage", "eight", "teach", "sage", "gage", "each"),
       )
 
-  override val placements =
-      letters.keys.flatMap { letter -> numbers.keys.map { num -> "" + letter + num } }
+  override val placements: Set<String> =
+      letters.keys.flatMap { letter -> numbers.keys.map { num -> "" + letter + num } }.toSet()
 }

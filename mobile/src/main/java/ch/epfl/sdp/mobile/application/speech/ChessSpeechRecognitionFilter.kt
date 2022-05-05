@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.speech_recognition
+package ch.epfl.sdp.mobile.application.speech
 
 typealias Word = String // Piece | Letter | Number
 
@@ -33,11 +33,11 @@ class ChessSpeechRecognitionFilter(
    */
   private fun applyRules(
       speeches: List<List<Word>>,
-      confidencesScores: List<Double>,
+      confidencesScores: List<Float>,
   ): String {
 
-    val candidates = mutableMapOf<String, Double>()
-    for (chessRule in speechRules.rulesSet) {
+    val candidates = mutableMapOf<String, Float>()
+    for (chessRule in ChessSpeechFilterRules.rulesSet) {
       speeches.forEachIndexed { index, speech ->
         if (chessRule.rule(speech)) {
           candidates[chessRule.chessPiece] = confidencesScores[index]
@@ -52,13 +52,9 @@ class ChessSpeechRecognitionFilter(
    * @param candidates mapping from detected in dictionary chess keywords to their scores
    * @return candidate as a chess keyword
    */
-  private fun bestCandidate(candidates: Map<Word, Double>): String {
+  private fun bestCandidate(candidates: Map<Word, Float>): String {
     if (candidates.isEmpty()) {
       return ""
-    }
-
-    if (candidates.size == 1) {
-      return candidates.entries.first().key
     }
 
     var bestCandidate = candidates.entries.first()
@@ -124,10 +120,10 @@ class ChessSpeechRecognitionFilter(
    */
   private fun detectFromSpeeches(
       speeches: List<List<Word>>,
-      confidencesScores: List<Double>,
+      confidencesScores: List<Float>,
       detectionBlock: (List<Word>) -> String,
   ): String {
-    val candidates = mutableMapOf<String, Double>()
+    val candidates = mutableMapOf<String, Float>()
 
     speeches.forEachIndexed { index, speech ->
       val candidate = detectionBlock(speech)
@@ -163,10 +159,13 @@ class ChessSpeechRecognitionFilter(
    * @return tokenized lists of speeches ready to be filtered
    */
   private fun tokenizeSpeeches(speeches: List<Speech>): List<List<Word>> {
-    return speeches.map { speeche -> speeche.split(" ").map { word -> word.lowercase() } }
+    return speeches.map { speech -> speech.split(" ").map { word -> word.lowercase() } }
   }
 
-  override fun filterWords(speeches: List<String>, confidencesScores: List<Double>): ChessWord {
+  override fun filterWords(speechResults: List<SpeechRecognitionFilter.Result>): ChessWord {
+
+    val speeches = speechResults.map { it.speech }
+    val confidencesScores = speechResults.map { it.confidencesScore }
 
     val tokenizedSpeeches = tokenizeSpeeches(speeches)
 
@@ -184,23 +183,24 @@ class ChessSpeechRecognitionFilter(
           else ->
               when (pieceFromRule.isNotEmpty()) {
                 true -> pieceFromRule
-                else -> "!!"
+                else -> ""
               }
         }
 
     // Apply filters for letter and number
-    val letter =
-        detectFromSpeeches(tokenizedSpeeches, confidencesScores, this::detectLetter).ifEmpty { "@" }
-    val number =
-        detectFromSpeeches(tokenizedSpeeches, confidencesScores, this::detectNumber).ifEmpty { "$" }
+    val letter = detectFromSpeeches(tokenizedSpeeches, confidencesScores, this::detectLetter)
+    val number = detectFromSpeeches(tokenizedSpeeches, confidencesScores, this::detectNumber)
 
+    val success = listOf(piece, number, letter).all { it.isNotEmpty() }
     // Build final result
-    return StringBuilder()
-        .append(piece.capitalize())
-        .append("#")
-        .append(letter.uppercase())
-        .append(number)
-        .toString()
+    return if (success)
+        StringBuilder()
+            .append(piece.capitalize())
+            .append("#")
+            .append(letter.uppercase())
+            .append(number)
+            .toString()
+    else ""
   }
 
   /** Extension function used to capitalize ChessPiece strings */

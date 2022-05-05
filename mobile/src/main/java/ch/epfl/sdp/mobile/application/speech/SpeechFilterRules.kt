@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.speech_recognition
+package ch.epfl.sdp.mobile.application.speech
 
 typealias Rule = (List<String>) -> Boolean
 
