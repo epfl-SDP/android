@@ -10,6 +10,7 @@ import androidx.navigation.compose.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -19,6 +20,9 @@ private const val SettingsRoute = "settings"
 
 /** The route associated to the editing button on the setting screen. */
 private const val SettingEditProfileNameRoute = "profile-name/edit"
+
+/** The route associated to the profile image editing button on the setting screen. */
+private const val SettingEditProfileImageRoute = "profile-image/edit"
 
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
@@ -55,6 +59,7 @@ private const val ArRoute = "ar"
  * @param modifier the [Modifier] for this composable.
  * @param controller the [NavHostController] used to control the current destination.
  */
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun StatefulHome(
     user: AuthenticatedUser,
@@ -93,16 +98,24 @@ fun StatefulHome(
       composable(SettingsRoute) {
         StatefulSettingsScreen(
             user = user,
+            onMatchClick = onGameItemClick,
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
+            onEditProfileImageClick = { controller.navigate(SettingEditProfileImageRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
       dialog(SettingEditProfileNameRoute) {
         StatefulEditProfileNameDialog(user = user, onClose = { controller.popBackStack() })
       }
+      dialog(SettingEditProfileImageRoute) {
+        StatefulEditProfileImageDialog(user = user, onClose = { controller.popBackStack() })
+      }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
-            backStackEntry.arguments?.getString("uid") ?: "", Modifier.fillMaxSize())
+            uid = backStackEntry.arguments?.getString("uid") ?: "",
+            onMatchClick = onGameItemClick,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       composable(PlayRoute) {
         StatefulPlayScreen(
@@ -125,7 +138,7 @@ fun StatefulHome(
         val actions =
             StatefulGameScreenActions(
                 onBack = { controller.popBackStack() },
-                onShowAr = { controller.navigate("$ArRoute/{id}") },
+                onShowAr = { controller.navigate("$ArRoute/${id}") },
             )
         StatefulGameScreen(
             actions = actions,
@@ -137,7 +150,7 @@ fun StatefulHome(
       }
       composable("$ArRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
-        StatefulArScreen(user, id, Modifier.fillMaxSize())
+        StatefulArScreen(id, Modifier.fillMaxSize())
       }
       composable(PuzzleSelectionRoute) {
         StatefulPuzzleSelectionScreen(

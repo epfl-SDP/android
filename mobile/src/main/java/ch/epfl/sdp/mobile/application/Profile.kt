@@ -38,8 +38,20 @@ interface Profile {
       /** A soft orange value. */
       val Orange = Color("#FFF8A68D")
 
+      /** A soft green value. */
+      val Green200 = Color("#FFA9DBBB")
+
+      /** A green value. */
+      val Green500 = Color("#FF379665")
+
+      /** A purple value. */
+      val Purple = Color("#FF6A5495")
+
       /** A default color. */
       val Default = Orange
+
+      /** List of all colors */
+      val values = listOf(Green200, Green500, Orange, Purple)
     }
   }
 }

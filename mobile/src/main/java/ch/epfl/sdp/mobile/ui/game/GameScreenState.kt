@@ -9,7 +9,8 @@ import androidx.compose.runtime.Stable
  * @param Piece the type of the pieces of the underlying [ChessBoardState].
  */
 @Stable
-interface GameScreenState<Piece : ChessBoardState.Piece> : MovableChessBoardState<Piece> {
+interface GameScreenState<Piece : ChessBoardState.Piece> :
+    MovableChessBoardState<Piece>, SpeechRecognizerState {
 
   /**
    * A class representing a [Move] that's been performed by one of the players.
@@ -49,12 +50,6 @@ interface GameScreenState<Piece : ChessBoardState.Piece> : MovableChessBoardStat
 
   /** A callback which will be invoked when the user clicks on the AR button. */
   fun onArClick()
-
-  /** A [Boolean] which indicates if the device is currently listening to voice inputs. */
-  val listening: Boolean
-
-  /** A callback which will be invoked when the user clicks on the listening button. */
-  fun onListenClick()
 
   /**
    * A [List] of all the moves which have been performed by the user. Moves are ordered and should

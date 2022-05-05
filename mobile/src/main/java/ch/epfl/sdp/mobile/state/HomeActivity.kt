@@ -6,9 +6,10 @@ import androidx.activity.compose.setContent
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.infrastructure.assets.android.AndroidAssetManager
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
+import ch.epfl.sdp.mobile.infrastructure.speech.android.AndroidSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -28,14 +29,17 @@ class HomeActivity : ComponentActivity() {
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assetManager)
+    val speechFacade = SpeechFacade(AndroidSpeechRecognizerFactory(this))
 
     setContent {
       PawniesTheme {
         ProvideLocalizedStrings {
           ProvideFacades(
-              authentication = authenticationFacade, social = socialFacade, chess = chessFacade) {
-            Navigation()
-          }
+              authentication = authenticationFacade,
+              social = socialFacade,
+              chess = chessFacade,
+              speech = speechFacade,
+          ) { Navigation() }
         }
       }
     }

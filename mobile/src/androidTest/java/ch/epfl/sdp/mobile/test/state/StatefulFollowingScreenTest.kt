@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
@@ -18,6 +19,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import com.google.common.truth.Truth.*
 import io.mockk.every
 import io.mockk.mockk
@@ -53,13 +55,17 @@ class StatefulFollowingScreenTest {
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
     val mockChessFacade = mockk<ChessFacade>()
+    val mockSpeechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
 
     rule.setContent {
-      ProvideFacades(mockAuthenticationFacade, mockSocialFacade, mockChessFacade) {
-        StatefulFollowingScreen(mockUser, {})
-      }
+      ProvideFacades(
+          mockAuthenticationFacade,
+          mockSocialFacade,
+          mockChessFacade,
+          mockSpeechFacade,
+      ) { StatefulFollowingScreen(mockUser, {}) }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
@@ -76,12 +82,13 @@ class StatefulFollowingScreenTest {
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
+      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+            ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
               StatefulFollowingScreen(user, {})
             }
           }
@@ -110,12 +117,13 @@ class StatefulFollowingScreenTest {
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
+      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
+            ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
               StatefulFollowingScreen(user, {})
             }
           }
@@ -144,6 +152,7 @@ class StatefulFollowingScreenTest {
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
               chess = remember { ChessFacade(auth, store, assets) },
+              speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
@@ -169,6 +178,7 @@ class StatefulFollowingScreenTest {
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
               chess = remember { ChessFacade(auth, store, assets) },
+              speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
@@ -201,6 +211,7 @@ class StatefulFollowingScreenTest {
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
               chess = remember { ChessFacade(auth, store, assets) },
+              speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 

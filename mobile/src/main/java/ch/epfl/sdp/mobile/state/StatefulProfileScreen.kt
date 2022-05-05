@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.state
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,15 +17,18 @@ import kotlinx.coroutines.launch
  * requests.
  *
  * @param user the given [Profile].
+ * @param actions the [ProfileActions] which are available on the screen.
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class StatefulProfileScreen(
     user: Profile,
+    actions: State<ProfileActions>,
     private val chessFacade: ChessFacade,
     private val scope: CoroutineScope,
-) : ProfileScreenState, Person by ProfileAdapter(user) {
-  override var matches by mutableStateOf(emptyList<ChessMatch>())
+) : ProfileScreenState<ChessMatchAdapter>, Person by ProfileAdapter(user) {
+  private val actions by actions
+  override var matches by mutableStateOf(emptyList<ChessMatchAdapter>())
     private set
   override val pastGamesCount
     get() = matches.size
@@ -35,4 +39,14 @@ class StatefulProfileScreen(
       }
     }
   }
+  override fun onMatchClick(match: ChessMatchAdapter) = actions.onMatchClick(match)
 }
+
+/**
+ * A class representing the different actions available on the profile and settings screen.
+ *
+ * @param onMatchClick callback function called when a match is clicked on.
+ */
+data class ProfileActions(
+    val onMatchClick: (ChessMatchAdapter) -> Unit,
+)
