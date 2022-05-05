@@ -14,7 +14,6 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -351,6 +350,89 @@ class StatefulHomeTest {
   }
 
   @Test
+  fun given_settingScreen_when_profileMatchIsClickedOn_then_MatchIsDisplayed() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "Player 1"))
+        document("2", ProfileDocument("2", name = "Player 2"))
+      }
+      collection("games") {
+        document(
+            "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
+      }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithText(strings.profileMatchTitle("Player 2")).assertExists()
+    rule.onNodeWithText(strings.profileMatchTitle("Player 2")).performClick()
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    rule.onNodeWithText("Player 1").assertExists()
+    rule.onNodeWithText("Player 2").assertExists()
+  }
+
+  @Test
+  fun given_visitedProfileScreen_when_profileMatchIsClickedOn_then_MatchIsDisplayed() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "Player 1"))
+        document("2", ProfileDocument("2", name = "Player 2"))
+      }
+      collection("games") {
+        document(
+            "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
+      }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val player2 = socialFacade.profile(uid = "2", user = user).filterIsInstance<Profile>().first()
+    user.follow(player2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("Player 2").assertExists()
+    rule.onNodeWithText("Player 2").performClick()
+    rule.onNodeWithText(strings.profileMatchTitle("Player 1")).performClick()
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    rule.onNodeWithText("Player 1").assertExists()
+    rule.onNodeWithText("Player 2").assertExists()
+  }
+
+  @Test
   fun given_aOnGoingGame_when_clickOnArButton_then_displayArScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
@@ -387,54 +469,5 @@ class StatefulHomeTest {
     withCanceledIntents {
       rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
     }
-  }
-
-  @Test
-  fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val store = buildStore {
-      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
-    }
-
-    val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-
-    authFacade.signInWithEmail("email@example.org", "password")
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
-        }
-
-    rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
-    rule.onNode(hasText("test") and hasSetTextAction()).performTextInput("2")
-    rule.onNodeWithText(strings.settingEditSave).performClick()
-    rule.onNodeWithText("test2").assertIsDisplayed()
-  }
-
-  @Test
-  fun given_userIsLoggedIn_when_editProfileName_then_cancelWithoutSave() = runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val store = buildStore {
-      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
-    }
-
-    val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-
-    authFacade.signInWithEmail("email@example.org", "password")
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
-        }
-
-    rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
-    rule.onNodeWithText(strings.settingEditCancel).performClick()
-    rule.onNodeWithText("test").assertIsDisplayed()
   }
 }

@@ -22,14 +22,17 @@ class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestSettingScreenState(override val matches: List<ChessMatch>) : SettingScreenState {
+  open class TestSettingScreenState(override val matches: List<ChessMatch>) :
+      SettingScreenState<ChessMatch> {
     override val email = "example@epfl.ch"
     override val pastGamesCount = 10
+    override fun onMatchClick(match: ChessMatch) = Unit
+
     override val puzzlesCount = 12
 
-    override fun onSettingsClick() = Unit
     override val backgroundColor = Color.Default.toColor()
     override fun onEditProfileNameClick() = Unit
+    override fun onEditProfileImageClick() = Unit
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true
@@ -69,7 +72,7 @@ class SettingScreenTest {
 
   private fun testMatchResult(
       rule: ComposeContentTestRule,
-      match: ChessMatch,
+      match: ChessMatchAdapter,
       expected: LocalizedStrings.() -> String,
   ) {
     val state = TestSettingScreenState(List(20) { match })
