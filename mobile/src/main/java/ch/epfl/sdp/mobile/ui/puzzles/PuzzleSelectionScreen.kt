@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
 
 /**
  * Composable that composes the PlayScreen expanded to include history of matches
@@ -27,7 +28,7 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
  */
 @Composable
 fun PuzzleSelectionScreen(
-    state: PuzzleSelectionScreenState,
+    state: PuzzleSelectionScreenState<PuzzleInfoAdapter>,
     modifier: Modifier = Modifier,
     key: ((PuzzleInfo) -> Any)? = null,
     contentPadding: PaddingValues = PaddingValues()

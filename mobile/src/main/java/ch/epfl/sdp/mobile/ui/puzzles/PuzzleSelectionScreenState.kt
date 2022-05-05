@@ -1,12 +1,11 @@
 package ch.epfl.sdp.mobile.ui.puzzles
 
 /** Interface that represents state of the PlayScreen */
-// TODO: Add Generic Puzzle Type ?
-interface PuzzleSelectionScreenState {
+interface PuzzleSelectionScreenState<P : PuzzleInfo> {
 
   /** Action to execute when clicked on match item in list */
-  fun onPuzzleItemClick(puzzle: PuzzleInfo)
+  fun onPuzzleItemClick(puzzle: P)
 
   /** List of matches of current user */
-  val puzzles: List<PuzzleInfo>
+  val puzzles: List<P>
 }

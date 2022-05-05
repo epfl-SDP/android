@@ -52,26 +52,26 @@ private class SnapshotPuzzleSelectionScreen(
     private val facade: ChessFacade,
     private val scope: CoroutineScope,
     private val context: Context,
-) : PuzzleSelectionScreenState {
+) : PuzzleSelectionScreenState<PuzzleInfoAdapter> {
 
   val onPuzzleClickAction by onPuzzleClickAction
 
-  override fun onPuzzleItemClick(puzzle: PuzzleInfo) {
+  override fun onPuzzleItemClick(puzzle: PuzzleInfoAdapter) {
     onPuzzleClickAction(puzzle)
   }
 
   override val puzzles =
-      facade.unsolvedPuzzles(user).map { it.toPuzzleInfo() }.sortedBy { it.elo }
+      facade.unsolvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
 }
 
-data class PuzzleItemAdapter(
+data class PuzzleInfoAdapter(
     override val uid: String,
     override val playerColor: ChessBoardState.Color,
     override val elo: Int,
     override val icon: @Composable (() -> Unit)
 ) : PuzzleInfo
 
-private fun Puzzle.toPuzzleInfo(): PuzzleInfo {
+private fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
   val playerColor =
       when (this.boardSnapshot.playing) {
         Color.White -> ChessBoardState.Color.White
@@ -109,7 +109,7 @@ private fun Puzzle.toPuzzleInfo(): PuzzleInfo {
     }
   }
 
-  return PuzzleItemAdapter(
+  return PuzzleInfoAdapter(
       uid = this.uid,
       playerColor = playerColor,
       elo = this.elo,

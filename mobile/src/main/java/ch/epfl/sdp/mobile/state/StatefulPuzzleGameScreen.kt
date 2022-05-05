@@ -53,4 +53,4 @@ class SnapshotPuzzleBoardState(
     override val puzzle: Puzzle,
     private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
-) : PuzzleGameScreenState<SnapshotPiece>
+) : PuzzleGameScreenState

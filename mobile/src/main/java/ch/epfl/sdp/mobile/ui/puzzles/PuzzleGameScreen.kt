@@ -17,8 +17,8 @@ import ch.epfl.sdp.mobile.ui.game.*
  * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
-fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
-    state: PuzzleGameScreenState<Piece>,
+fun PuzzleGameScreen(
+    state: PuzzleGameScreenState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
