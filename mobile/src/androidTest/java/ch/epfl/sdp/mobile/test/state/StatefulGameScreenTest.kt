@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -46,6 +47,7 @@ class StatefulGameScreenTest {
       actions: StatefulGameScreenActions = StatefulGameScreenActions(onBack = {}, onShowAr = {}),
   ): ChessBoardRobot {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") {
@@ -55,7 +57,7 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -521,6 +523,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
@@ -528,7 +531,7 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -554,6 +557,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingGameWithNoBlackId_isUnsuccessful() {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
@@ -561,7 +565,7 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"

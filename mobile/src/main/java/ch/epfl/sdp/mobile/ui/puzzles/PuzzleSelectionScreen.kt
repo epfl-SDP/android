@@ -27,10 +27,10 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
  */
 @Composable
 fun PuzzleSelectionScreen(
-  state: PuzzleSelectionScreenState,
-  modifier: Modifier = Modifier,
-  key: ((PuzzleInfo) -> Any)? = null,
-  contentPadding: PaddingValues = PaddingValues()
+    state: PuzzleSelectionScreenState,
+    modifier: Modifier = Modifier,
+    key: ((PuzzleInfo) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues()
 ) {
   val strings = LocalLocalizedStrings.current
 
@@ -73,9 +73,9 @@ fun PuzzleSelectionScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PuzzleItemListThingy(
-  puzzleItem: PuzzleInfo,
-  onClick: () -> Unit,
-  modifier: Modifier = Modifier,
+    puzzleItem: PuzzleInfo,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
   val title = "#${puzzleItem.uid} (${puzzleItem.elo})"

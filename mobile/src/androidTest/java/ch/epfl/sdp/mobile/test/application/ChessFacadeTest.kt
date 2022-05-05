@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -24,7 +25,7 @@ class ChessFacadeTest {
 
   @Test
   fun match_hasRightId() {
-    val facade = ChessFacade(emptyAuth(), emptyStore())
+    val facade = ChessFacade(emptyAuth(), emptyStore(), emptyAssets())
     val match = facade.match("id")
 
     assertThat(match.id).isEqualTo("id")
@@ -32,7 +33,7 @@ class ChessFacadeTest {
 
   @Test
   fun missingMatch_hasEmptyProfiles() = runTest {
-    val facade = ChessFacade(emptyAuth(), emptyStore())
+    val facade = ChessFacade(emptyAuth(), emptyStore(), emptyAssets())
     val match = facade.match("id")
 
     assertThat(match.black.first()).isNull()
@@ -42,6 +43,7 @@ class ChessFacadeTest {
   @Test
   fun creatingAndFetchingAMatch_AreEquivalent() = runTest {
     val auth = mockk<Auth>()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") {
         document("userId1", ProfileDocument(uid = "userId1"))
@@ -50,7 +52,7 @@ class ChessFacadeTest {
       collection("games") {}
     }
 
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     // Player 1
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -72,13 +74,14 @@ class ChessFacadeTest {
   @Test
   fun updatingAMatchAndFetchingIt_IsConsistent() = runTest {
     val auth = mockk<Auth>()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("games") {
         document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId2"))
       }
     }
 
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     // Player 1
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "userId1"

@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -38,9 +39,10 @@ class StatefulHomeTest {
   fun defaultSection_isSocial() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -57,9 +59,10 @@ class StatefulHomeTest {
   fun clickingSettingsTab_selectsSettingsSection() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -76,9 +79,10 @@ class StatefulHomeTest {
   fun clickSocialSection_selectsSocialSection() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val api = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -96,9 +100,10 @@ class StatefulHomeTest {
   fun clickPlaySection_selectsPlaySection() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -120,9 +125,10 @@ class StatefulHomeTest {
         document("2", ProfileDocument(emoji = ":)", name = "testName", followers = listOf("1")))
       }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     facade.signInWithEmail("email@example.org", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -140,8 +146,9 @@ class StatefulHomeTest {
   fun gameRoute_displaysAChessGame() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signUpWithEmail("email@epfl.ch", "name", "password")
@@ -168,12 +175,13 @@ class StatefulHomeTest {
   @Test
   fun creatingGameFromPrepareGameScreen_opensGameScreen() = runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -197,12 +205,13 @@ class StatefulHomeTest {
   @Test
   fun clickingOnPlayButtonFromPrepareGameScreen_withNoOpponentSelected_doesNothing() = runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -227,12 +236,13 @@ class StatefulHomeTest {
   @Test
   fun cancelingPreparegameScreen_returnsToPlaySection() = runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -259,12 +269,13 @@ class StatefulHomeTest {
   fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
       runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -291,10 +302,11 @@ class StatefulHomeTest {
   fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -324,9 +336,10 @@ class StatefulHomeTest {
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
     }
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -363,9 +376,10 @@ class StatefulHomeTest {
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
     }
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -395,9 +409,10 @@ class StatefulHomeTest {
     val store = buildStore {
       collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
     }
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -420,9 +435,10 @@ class StatefulHomeTest {
     val store = buildStore {
       collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
     }
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")

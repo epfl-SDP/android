@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -68,12 +69,13 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val auth = emptyAuth()
+      val assets = emptyAssets()
       val store = buildStore {
         collection("users") { document("other", ProfileDocument(name = name)) }
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -101,12 +103,13 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val auth = emptyAuth()
+      val assets = emptyAssets()
       val store = buildStore {
         collection("users") { document("other", ProfileDocument(name = name)) }
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -128,6 +131,7 @@ class StatefulFollowingScreenTest {
   fun focusedSearchField_isInSearchMode() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
@@ -139,7 +143,7 @@ class StatefulFollowingScreenTest {
           ProvideFacades(
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store, assets) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
@@ -152,6 +156,7 @@ class StatefulFollowingScreenTest {
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
@@ -163,7 +168,7 @@ class StatefulFollowingScreenTest {
           ProvideFacades(
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store, assets) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
@@ -180,6 +185,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("a", ProfileDocument(name = "Alexandre")) }
     }
@@ -194,7 +200,7 @@ class StatefulFollowingScreenTest {
           ProvideFacades(
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store, assets) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 

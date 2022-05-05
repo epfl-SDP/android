@@ -14,23 +14,23 @@ interface Puzzle {
 
 /** Creates an empty [Puzzle]. */
 fun Puzzle(): Puzzle =
-  object : Puzzle {
-    override val uid = "Error"
-    override val boardSnapshot =
-      FenNotation.BoardSnapshot(
-        board = buildBoard {},
-        playing = Color.White,
-        castlingRights =
-        FenNotation.CastlingRights(
-          kingSideWhite = false,
-          queenSideWhite = false,
-          kingSideBlack = false,
-          queenSideBlack = false,
-        ),
-        enPassant = null,
-        halfMoveClock = -1,
-        fullMoveClock = -1,
-      )
-    override val puzzleMoves = emptyList<Action>()
-    override val elo = -1
-  }
+    object : Puzzle {
+      override val uid = "Error"
+      override val boardSnapshot =
+          FenNotation.BoardSnapshot(
+              board = buildBoard {},
+              playing = Color.White,
+              castlingRights =
+                  FenNotation.CastlingRights(
+                      kingSideWhite = false,
+                      queenSideWhite = false,
+                      kingSideBlack = false,
+                      queenSideBlack = false,
+                  ),
+              enPassant = null,
+              halfMoveClock = -1,
+              fullMoveClock = -1,
+          )
+      override val puzzleMoves = emptyList<Action>()
+      override val elo = -1
+    }

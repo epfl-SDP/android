@@ -8,11 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreenState
@@ -20,10 +20,10 @@ import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun StatefulPuzzleSelectionScreen(
-  user: AuthenticatedUser,
-  onPuzzleItemClick: (puzzle: PuzzleInfo) -> Unit,
-  modifier: Modifier = Modifier,
-  contentPadding: PaddingValues = PaddingValues(),
+    user: AuthenticatedUser,
+    onPuzzleItemClick: (puzzle: PuzzleInfo) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   val chess = LocalChessFacade.current
   val context = LocalContext.current
@@ -47,11 +47,11 @@ fun StatefulPuzzleSelectionScreen(
 }
 
 private class SnapshotPuzzleSelectionScreen(
-  onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
-  private val user: AuthenticatedUser,
-  private val facade: ChessFacade,
-  private val scope: CoroutineScope,
-  private val context: Context,
+    onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
+    private val user: AuthenticatedUser,
+    private val facade: ChessFacade,
+    private val scope: CoroutineScope,
+    private val context: Context,
 ) : PuzzleSelectionScreenState {
 
   val onPuzzleClickAction by onPuzzleClickAction
@@ -61,7 +61,7 @@ private class SnapshotPuzzleSelectionScreen(
   }
 
   override val puzzles =
-      facade.unsolvedPuzzles(user, context).map { it.toPuzzleInfo() }.sortedBy { it.elo }
+      facade.unsolvedPuzzles(user).map { it.toPuzzleInfo() }.sortedBy { it.elo }
 }
 
 data class PuzzleItemAdapter(

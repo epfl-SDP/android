@@ -6,9 +6,7 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
@@ -16,6 +14,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
 import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
+import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
@@ -28,7 +27,11 @@ import kotlinx.coroutines.flow.*
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
  */
-class ChessFacade(private val auth: Auth, private val store: Store) {
+class ChessFacade(
+    private val auth: Auth,
+    private val store: Store,
+    private val assets: AssetManager
+) {
 
   /** Chess matches side of chess facade */
 
@@ -100,14 +103,14 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     user.update { solvedPuzzles(puzzle) }
   }
 
-  private fun allPuzzles(context: Context): List<Puzzle> {
-    val bufferedReader = context.assets.open("puzzles/puzzles.csv").bufferedReader()
-    val reader = CSVReaderHeaderAware(bufferedReader)
+  private fun allPuzzles(): List<Puzzle> {
+    val reader = assets.openAsReader("puzzles/puzzles.csv")
+    val csvReader = CSVReaderHeaderAware(reader)
     val csvMap = mutableListOf<Map<String, String>>()
-    var line = reader.readMap()
+    var line = csvReader.readMap()
     while (line != null) {
       csvMap.add(line)
-      line = reader.readMap()
+      line = csvReader.readMap()
     }
 
     val puzzles =
@@ -128,33 +131,33 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
     return puzzles
   }
 
-  fun puzzle(uid: String, context: Context): Puzzle? {
-    return allPuzzles(context).firstOrNull { it.uid == uid }
+  fun puzzle(uid: String): Puzzle? {
+    return allPuzzles().firstOrNull { it.uid == uid }
   }
 
-  fun solvedPuzzles(profile: Profile, context: Context): List<Puzzle> {
-    return allPuzzles(context).filter { profile.solvedPuzzles.contains(it.uid) }
+  fun solvedPuzzles(profile: Profile): List<Puzzle> {
+    return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
   }
 
-  fun unsolvedPuzzles(profile: Profile, context: Context): List<Puzzle> {
-    return allPuzzles(context).filterNot { profile.solvedPuzzles.contains(it.uid) }
+  fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
+    return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
   }
 }
 
 private data class SnapshotPuzzle(
-  override val uid: String,
-  override val boardSnapshot: FenNotation.BoardSnapshot,
-  override val puzzleMoves: List<Action>,
-  override val elo: Int,
+    override val uid: String,
+    override val boardSnapshot: FenNotation.BoardSnapshot,
+    override val puzzleMoves: List<Action>,
+    override val elo: Int,
 ) : Puzzle
 
 private data class StoreMatch(
-  override val id: String,
-  private val store: Store,
+    override val id: String,
+    private val store: Store,
 ) : Match {
 
   fun profile(
-    uid: String,
+      uid: String,
   ): Flow<Profile?> {
 
     return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
@@ -167,13 +170,13 @@ private data class StoreMatch(
   override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
 
   override val white =
-    documentFlow.map { it?.whiteId }.flatMapLatest {
-      it?.let(this@StoreMatch::profile) ?: flowOf(null)
-    }
+      documentFlow.map { it?.whiteId }.flatMapLatest {
+        it?.let(this@StoreMatch::profile) ?: flowOf(null)
+      }
   override val black =
-    documentFlow.map { it?.blackId }.flatMapLatest {
-      it?.let(this@StoreMatch::profile) ?: flowOf(null)
-    }
+      documentFlow.map { it?.blackId }.flatMapLatest {
+        it?.let(this@StoreMatch::profile) ?: flowOf(null)
+      }
 
   override suspend fun update(game: Game) {
     store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }

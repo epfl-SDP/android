@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth.assertThat
@@ -38,10 +39,11 @@ class StatefulSettingScreenTest {
 
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
 
     val strings =
         rule.setContentWithLocalizedStrings {

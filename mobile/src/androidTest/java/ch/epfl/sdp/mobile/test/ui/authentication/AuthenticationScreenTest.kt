@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulAuthenticationScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -60,9 +61,10 @@ class AuthenticationScreenTest {
   fun given_authenticationSignUpScreen_when_badPasswordIsInserted_then_aFailureBadPasswordMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
@@ -81,9 +83,10 @@ class AuthenticationScreenTest {
   fun given_authenticationSignUpScreen_when_invalidEmailIsInserted_then_aFailureInvalidEmailFormatMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
@@ -102,9 +105,10 @@ class AuthenticationScreenTest {
   fun given_authenticationSignUpScreen_when_signUpWithExistingEmailOccurs_then_aFailureExistingAccountMessageAppears() {
     val auth = buildAuth { user("fouad.mahmoud@epfl.ch", "password") }
     val store = emptyStore()
+    val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
@@ -123,9 +127,10 @@ class AuthenticationScreenTest {
   fun given_authenticationSignInScreen_when_incorrectUserPasswordIsInserted_then_aFailureIncorrectPasswordMessageAppears() {
     val auth = buildAuth { user("fouad.mahmoud@epfl.ch", "password") }
     val store = emptyStore()
+    val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
@@ -144,9 +149,10 @@ class AuthenticationScreenTest {
   fun given_authenticationSignInScreen_when_unregisteredEmailIsTyped_then_aFailureInvalidUserMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authenticationFacade, socialFacade, chessFacade) {
