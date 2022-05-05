@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
  * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
  * user's profile.
  *
- * @param actions the [Actions] which are available on the screen.
+ * @param actions the [ProfileActions] which are available on the screen.
  * @param user the current logged-in [AuthenticatedUser].
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
