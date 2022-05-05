@@ -44,7 +44,7 @@ class StatefulProfileScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-              StatefulVisitedProfileScreen("1")
+              StatefulVisitedProfileScreen("1", {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()

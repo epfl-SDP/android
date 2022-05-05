@@ -18,18 +18,20 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
  *
+ * @param C the type of the [ChessMatch].
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ProfileScreen(
-    state: VisitedProfileScreenState,
+fun <C : ChessMatch> ProfileScreen(
+    state: VisitedProfileScreenState<C>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -48,7 +50,7 @@ fun ProfileScreen(
       },
       matches = state.matches,
       contentPadding = contentPadding,
-      onMatchClick = {},
+      onMatchClick = state::onMatchClick,
       lazyColumnState = lazyColumnState,
       modifier = modifier)
 }
@@ -57,11 +59,15 @@ fun ProfileScreen(
  * Composes the profile header given the profile [state]. Displays also the ProfilePicture,
  * SettingsButton, name and email of th user profile.
  *
+ * @param C the type of the [ChessMatch].
  * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun ProfileHeader(state: VisitedProfileScreenState, modifier: Modifier = Modifier) {
+fun <C : ChessMatch> ProfileHeader(
+    state: VisitedProfileScreenState<C>,
+    modifier: Modifier = Modifier
+) {
 
   Column(
       modifier = modifier,
@@ -86,12 +92,13 @@ fun ProfileHeader(state: VisitedProfileScreenState, modifier: Modifier = Modifie
 /**
  * Composes the profile picture given its [state].
  *
+ * @param C the type of the [ChessMatch].
  * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun ProfilePicture(
-    state: VisitedProfileScreenState,
+fun <C : ChessMatch> ProfilePicture(
+    state: VisitedProfileScreenState<C>,
     modifier: Modifier = Modifier,
 ) {
   Box(

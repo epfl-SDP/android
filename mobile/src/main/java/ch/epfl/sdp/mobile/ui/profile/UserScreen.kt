@@ -15,6 +15,7 @@ import ch.epfl.sdp.mobile.ui.social.*
 /**
  * A Slot Component for Profile or Setting Screen.
  *
+ * @param C the type of the [ChessMatch].
  * @param header part of slot construct that comes into the header.
  * @param profileTabBar part of slot construct that represents the tab bar.
  * @param matches the part that is responsible for the list of all matches.
@@ -26,11 +27,11 @@ import ch.epfl.sdp.mobile.ui.social.*
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun UserScreen(
+fun <C : ChessMatch> UserScreen(
     header: @Composable () -> Unit,
     profileTabBar: @Composable () -> Unit,
-    matches: List<ChessMatch>,
-    onMatchClick: (ChessMatch) -> Unit,
+    matches: List<C>,
+    onMatchClick: (C) -> Unit,
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),

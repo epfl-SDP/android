@@ -24,6 +24,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -362,6 +363,91 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.profileMatchTitle("test")).performClick()
     rule.onNodeWithText("test2").assertExists()
     rule.onNodeWithText("test").assertExists()
+  }
+
+  @Test
+  fun given_settingScreen_when_profileMatchIsClickedOn_then_MatchIsDisplayed() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "Player 1"))
+        document("2", ProfileDocument("2", name = "Player 2"))
+      }
+      collection("games") {
+        document(
+            "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
+      }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithText(strings.profileMatchTitle("Player 2")).assertExists()
+    rule.onNodeWithText(strings.profileMatchTitle("Player 2")).performClick()
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    rule.onNodeWithText("Player 1").assertExists()
+    rule.onNodeWithText("Player 2").assertExists()
+  }
+
+  @Test
+  fun given_visitedProfileScreen_when_profileMatchIsClickedOn_then_MatchIsDisplayed() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "Player 1"))
+        document("2", ProfileDocument("2", name = "Player 2"))
+      }
+      collection("games") {
+        document(
+            "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
+      }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val player2 = socialFacade.profile(uid = "2", user = user).filterIsInstance<Profile>().first()
+    user.follow(player2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("Player 2").assertExists()
+    rule.onNodeWithText("Player 2").performClick()
+    rule.onNodeWithText(strings.profileMatchTitle("Player 1")).performClick()
+    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    rule.onNodeWithText("Player 1").assertExists()
+    rule.onNodeWithText("Player 2").assertExists()
   }
 
   @Test
