@@ -103,7 +103,7 @@ fun StatefulHome(
         StatefulVisitedProfileScreen(
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
-            onBackToSocialClick = { controller.popBackStack() }, 
+            onBackToSocialClick = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
