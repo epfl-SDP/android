@@ -53,7 +53,7 @@ class StatefulSettingsScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade) {
-              StatefulSettingsScreen(user, {}, {})
+              StatefulSettingsScreen(user, {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -84,7 +84,7 @@ class StatefulSettingsScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authFacade, socialFacade, chessFacade) {
-            StatefulSettingsScreen(user, openProfileEditNameMock, {})
+            StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
           }
         }
 
