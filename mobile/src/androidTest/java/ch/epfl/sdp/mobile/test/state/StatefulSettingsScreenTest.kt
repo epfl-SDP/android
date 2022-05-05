@@ -81,10 +81,11 @@ class StatefulSettingsScreenTest {
 
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val strings =

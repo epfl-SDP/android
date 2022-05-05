@@ -391,9 +391,10 @@ class StatefulHomeTest {
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
     }
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
 
@@ -432,9 +433,10 @@ class StatefulHomeTest {
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
     }
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
 
