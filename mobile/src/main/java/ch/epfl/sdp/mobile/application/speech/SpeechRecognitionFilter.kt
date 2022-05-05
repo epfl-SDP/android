@@ -11,7 +11,7 @@ interface SpeechRecognitionFilter {
   data class Result(val speech: String, val confidencesScore: Float)
 
   /**
-   *  Filter the list of results to determine a valid chess move
+   * Filter the list of results to determine a valid chess move
    * @param speechResults list of speech recognizer results
    * @return filtered results or an empty string if it could not determine the chess move
    */
