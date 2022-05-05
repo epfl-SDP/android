@@ -13,7 +13,7 @@ interface SpeechRecognitionFilter {
   /**
    * Filter the list of results to determine a valid chess move
    * @param speechResults list of speech recognizer results
-   * @return filtered results or an empty string if it could not determine the chess move
+   * @return filtered results or null if it could not determine the chess move
    */
   fun filterWords(speechResults: List<Result>): String?
 }

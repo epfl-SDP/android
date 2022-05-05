@@ -195,6 +195,6 @@ class ChessSpeechRecognitionFilter(
 
   /** Extension function used to capitalize ChessPiece strings */
   private fun String.capitalize(): String {
-    return this[0].uppercase() + this.substring(1)
+    return replaceFirstChar { it.uppercaseChar() }
   }
 }
