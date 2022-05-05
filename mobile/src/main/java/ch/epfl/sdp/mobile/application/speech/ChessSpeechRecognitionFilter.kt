@@ -53,17 +53,7 @@ class ChessSpeechRecognitionFilter(
    * @return candidate as a chess keyword
    */
   private fun bestCandidate(candidates: Map<Word, Float>): String {
-    if (candidates.isEmpty()) {
-      return ""
-    }
-
-    var bestCandidate = candidates.entries.first()
-    for (candidate in candidates) {
-      if (candidate.value > bestCandidate.value) {
-        bestCandidate = candidate
-      }
-    }
-    return bestCandidate.key
+    return candidates.entries.maxByOrNull { (_, score) -> score }?.key ?: ""
   }
 
   /**
