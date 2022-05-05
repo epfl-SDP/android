@@ -3,10 +3,7 @@ package ch.epfl.sdp.mobile.ui.puzzles
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -16,6 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
@@ -79,13 +78,27 @@ fun PuzzleItemListThingy(
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
-  val title = "#${puzzleItem.uid} (${puzzleItem.elo})"
-  val subtitle = "Playing as ${puzzleItem.playerColor}"
+  val typography = MaterialTheme.typography
+  val colors = MaterialTheme.colors
 
   ListItem(
       modifier = modifier.clickable { onClick() },
       icon = puzzleItem.icon,
-      text = { Text(title) },
-      secondaryText = { Text(subtitle) },
+      text = {
+        Text(
+            text =
+                buildAnnotatedString {
+                  withStyle(
+                      style =
+                          typography.subtitle1.copy(color = colors.primaryVariant).toSpanStyle()) {
+                    append("#${puzzleItem.uid} ")
+                  }
+                  withStyle(style = typography.body2.copy(color = colors.primary).toSpanStyle()) {
+                    append("(${puzzleItem.elo})")
+                  }
+                },
+        )
+      },
+      secondaryText = { Text(text = "${strings.puzzlePlayingAs} ${puzzleItem.playerColor}") },
   )
 }

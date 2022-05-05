@@ -101,4 +101,6 @@ object English : LocalizedStrings {
   override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
+
+  override val puzzlePlayingAs = "Playing as"
 }

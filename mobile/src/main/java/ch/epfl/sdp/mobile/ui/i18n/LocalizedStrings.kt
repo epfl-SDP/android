@@ -103,4 +103,6 @@ interface LocalizedStrings {
   val prepareGamePlayOnline: String
 
   val playOnlineGames: String
+
+  val puzzlePlayingAs: String
 }
