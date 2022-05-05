@@ -21,6 +21,7 @@ import ch.epfl.sdp.mobile.ui.game.GameScreenState
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import ch.epfl.sdp.mobile.ui.game.PromotionState
+import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,8 @@ import kotlinx.coroutines.launch
  * @param user the currently authenticated user.
  * @param match the match to display.
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
- * @param delegate the [MatchChessBoardState] to delegate to.
+ * @param chessBoardDelegate the [MatchChessBoardState] to delegate to.
+ * @param speechRecognizerDelegate the [SpeechRecognizerState] to delegate to
  */
 class MatchGameScreenState
 private constructor(
@@ -40,8 +42,13 @@ private constructor(
     private val user: AuthenticatedUser,
     private val match: Match,
     private val scope: CoroutineScope,
-    private val delegate: MatchChessBoardState,
-) : GameScreenState<Piece>, PromotionState, ChessBoardState<Piece> by delegate {
+    private val chessBoardDelegate: MatchChessBoardState,
+    private val speechRecognizerDelegate: SpeechRecognizerState,
+) :
+    GameScreenState<Piece>,
+    PromotionState,
+    ChessBoardState<Piece> by chessBoardDelegate,
+    SpeechRecognizerState by speechRecognizerDelegate {
 
   /**
    * Creates a new [MatchGameScreenState].
@@ -50,20 +57,15 @@ private constructor(
    * @param user the currently authenticated user.
    * @param match the match to display.
    * @param scope a [CoroutineScope] keeping track of the state lifecycle.
+   * @param speechRecognizerState the [SpeechRecognizerState] that speech recognition uses.
    */
   constructor(
       actions: StatefulGameScreenActions,
       user: AuthenticatedUser,
       match: Match,
       scope: CoroutineScope,
-  ) : this(actions, user, match, scope, MatchChessBoardState(match, scope))
-
-  // TODO : Implement these things.
-  override var listening by mutableStateOf(false)
-    private set
-  override fun onListenClick() {
-    listening = !listening
-  }
+      speechRecognizerState: SpeechRecognizerState,
+  ) : this(actions, user, match, scope, MatchChessBoardState(match, scope), speechRecognizerState)
 
   override fun onArClick() = actions.onShowAr(match)
 
@@ -84,7 +86,7 @@ private constructor(
    * @param color the [Color] of the player in the engine.
    */
   private fun message(color: Color): Message {
-    return when (val step = delegate.game.nextStep) {
+    return when (val step = chessBoardDelegate.game.nextStep) {
       is NextStep.Checkmate -> if (step.winner == color) Message.None else Message.Checkmate
       is NextStep.MovePiece ->
           if (step.turn == color) if (step.inCheck) Message.InCheck else Message.YourTurn
@@ -106,7 +108,7 @@ private constructor(
     // Display all the possible moves for all the pieces on the board.
     get() {
       val position = selectedPosition ?: return emptySet()
-      return delegate
+      return chessBoardDelegate
           .game
           .actions(Position(position.x, position.y))
           .mapNotNull { it.from + it.delta }
@@ -142,7 +144,7 @@ private constructor(
     // Hide the current selection.
     selectedPosition = null
 
-    val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
+    val step = chessBoardDelegate.game.nextStep as? NextStep.MovePiece ?: return
 
     val currentPlayingId =
         when (step.turn) {
@@ -153,7 +155,7 @@ private constructor(
     if (currentPlayingId == user.uid) {
       // TODO: Update game locally first, then verify upload was successful?
       val actions =
-          delegate
+          chessBoardDelegate
               .game
               .actions(Position(from.x, from.y))
               .filter { it.from + it.delta == Position(to.x, to.y) }
@@ -194,7 +196,7 @@ private constructor(
             to = Position(promotionTo.x, promotionTo.y),
             rank = rank.toEngineRank(),
         )
-    val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
+    val step = chessBoardDelegate.game.nextStep as? NextStep.MovePiece ?: return
     scope.launch {
       val newGame = step.move(action)
       match.update(newGame)
@@ -207,5 +209,5 @@ private constructor(
   }
 
   override val moves: List<Move>
-    get() = delegate.game.toAlgebraicNotation().map(::Move)
+    get() = chessBoardDelegate.game.toAlgebraicNotation().map(::Move)
 }

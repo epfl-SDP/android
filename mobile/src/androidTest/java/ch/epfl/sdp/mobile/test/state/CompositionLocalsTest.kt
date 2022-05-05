@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.state.LocalAuthenticationFacade
 import ch.epfl.sdp.mobile.state.LocalChessFacade
 import ch.epfl.sdp.mobile.state.LocalSocialFacade
+import ch.epfl.sdp.mobile.state.LocalSpeechFacade
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
@@ -28,6 +29,13 @@ class CompositionLocalsTest {
   fun missingSocialFacade_throwsException() {
     assertThrows(IllegalStateException::class.java) {
       rule.setContent { LocalSocialFacade.current }
+    }
+  }
+
+  @Test
+  fun missingSpeechFacade_throwsException() {
+    assertThrows(IllegalStateException::class.java) {
+      rule.setContent { LocalSpeechFacade.current }
     }
   }
 }

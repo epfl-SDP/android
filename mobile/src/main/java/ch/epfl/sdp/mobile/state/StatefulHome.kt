@@ -10,6 +10,7 @@ import androidx.navigation.compose.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -49,6 +50,7 @@ private const val ArRoute = "ar"
  * @param modifier the [Modifier] for this composable.
  * @param controller the [NavHostController] used to control the current destination.
  */
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun StatefulHome(
     user: AuthenticatedUser,
