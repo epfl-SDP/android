@@ -89,7 +89,8 @@ dependencies {
 
   implementation(libs.arsceneview)
 
-  implementation("com.opencsv:opencsv:5.6")
+  // OpenCSV
+  implementation(libs.opencsv)
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }
