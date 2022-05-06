@@ -13,6 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,7 @@ fun PuzzleSelectionScreen(
     contentPadding: PaddingValues = PaddingValues()
 ) {
 
+  val strings = LocalLocalizedStrings.current
   val lazyListState = rememberLazyListState()
   val targetShadow =
       if (lazyListState.firstVisibleItemIndex >= 1 ||
@@ -44,7 +47,7 @@ fun PuzzleSelectionScreen(
   Scaffold(
       topBar = {
         Text(
-            text = "Unsolved Puzzles",
+            text = strings.puzzleUnsolvedPuzzles,
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.h4,
             modifier =
@@ -61,7 +64,7 @@ fun PuzzleSelectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         state = lazyListState,
         contentPadding = innerPadding,
-    ) {
+        modifier = Modifier.semantics { contentDescription = strings.puzzleListCD }) {
       items(state.puzzles, key) { puzzle ->
         PuzzleListInfo(puzzle, { state.onPuzzleItemClick(puzzle) })
       }

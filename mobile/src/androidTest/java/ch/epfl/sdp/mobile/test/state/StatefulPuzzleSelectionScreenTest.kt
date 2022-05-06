@@ -54,26 +54,63 @@ class StatefulPuzzleSelectionScreenTest {
     authFacade.signInWithEmail("email@example.org", "password")
 
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    rule.setContentWithLocalizedStrings {
-      ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-        StatefulPuzzleSelectionScreen(
-            user = userAuthenticated,
-            onPuzzleItemClick = {},
-        )
-      }
-    }
-    rule.onNodeWithText("Unsolved Puzzles").assertExists()
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+            StatefulPuzzleSelectionScreen(
+                user = userAuthenticated,
+                onPuzzleItemClick = {},
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.puzzleUnsolvedPuzzles).assertExists()
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("009tE", substring = true))
     rule.onNodeWithText("009tE", substring = true).performScrollTo() // black pawn 600 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("008Nz", substring = true))
     rule.onNodeWithText("008Nz", substring = true).performScrollTo() // black bishop 600 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("00Bn4", substring = true))
     rule.onNodeWithText("00Bn4", substring = true).performScrollTo() // black rook 613 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("00GRa", substring = true))
     rule.onNodeWithText("00GRa", substring = true).performScrollTo() // black queen 630 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("005N7", substring = true))
     rule.onNodeWithText("005N7", substring = true).performScrollTo() // black knight 721 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("00IaZ", substring = true))
     rule.onNodeWithText("00IaZ", substring = true).performScrollTo() // black king 946 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("001wr", substring = true))
     rule.onNodeWithText("001wr", substring = true).performScrollTo() // white pawn 1045 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("009Wc", substring = true))
     rule.onNodeWithText("009Wc", substring = true).performScrollTo() // white knight 1066 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("00Aas", substring = true))
     rule.onNodeWithText("00Aas", substring = true).performScrollTo() // white bishop 1309 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("003nQ", substring = true))
     rule.onNodeWithText("003nQ", substring = true).performScrollTo() // white rook 1334 elo
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("00C7m", substring = true))
     rule.onNodeWithText("00C7m", substring = true).performScrollTo() // white king 1347 elo
+
+    rule.onNodeWithContentDescription(strings.puzzleListCD)
+        .performScrollToNode(hasText("009Os", substring = true))
     rule.onNodeWithText("009Os", substring = true).performScrollTo() // white queen 1447 elo
   }
 

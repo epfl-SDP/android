@@ -103,4 +103,6 @@ object English : LocalizedStrings {
   override val playOnlineGames = "Online games"
 
   override val puzzlePlayingAs = "Playing as"
+  override val puzzleUnsolvedPuzzles = "Unsolved puzzles"
+  override val puzzleListCD = "puzzle_list"
 }
