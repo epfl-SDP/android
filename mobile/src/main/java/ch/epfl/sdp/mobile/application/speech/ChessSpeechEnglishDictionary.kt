@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.speech
 
 /** Currently used chess dictionary for homophones chess keywords */
-object ChessSpeechDictionary : ChessDictionary {
+object ChessSpeechEnglishDictionary : ChessDictionary {
   // Chess Pieces
   override val chessPieces =
       mapOf(

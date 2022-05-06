@@ -20,7 +20,7 @@ typealias ChessWord = String? // Filter Result
  * @property speechRules chess filtering rules
  */
 class ChessSpeechRecognitionFilter(
-    private val chessDictionary: ChessDictionary = ChessSpeechDictionary,
+    private val chessDictionary: ChessDictionary = ChessSpeechEnglishDictionary,
     private val speechRules: ChessSpeechFilterRules = ChessSpeechFilterRules
 ) : SpeechRecognitionFilter {
 
