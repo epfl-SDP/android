@@ -39,9 +39,7 @@ fun PuzzleGameScreen(
           Text("Elo: ${state.puzzle.elo}")
           Text("Moves: ${state.puzzle.puzzleMoves}")
           Text("Castling rights: ${state.puzzle.boardSnapshot.castlingRights}")
-          Button(onClick = { state.solve() }) {
-            Text("Solve")
-          }
+          Button(onClick = { state.solve() }) { Text("Solve") }
         }
       },
   )

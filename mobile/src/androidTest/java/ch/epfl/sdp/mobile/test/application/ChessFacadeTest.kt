@@ -99,17 +99,17 @@ class ChessFacadeTest {
         .isEqualTo(newGame.board[Position(0, 4)])
   }
 
-  //TODO: Find out why this test does not work
-  //@Test
+  // TODO: Find out why this test does not work
+  // @Test
   fun given_aPuzzle_when_markingAsSolved_then_appearsInProfileSolvedPuzzles() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val assets =
-      FakeAssetManager(
-        csvString =
-        "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
-                "009tE,6k1/6pp/p1N2p2/1pP2bP1/5P2/8/PPP5/3K4 b - - 1 28,f6g5 c6e7 g8f7 e7f5,600,103,90,340,crushing endgame fork short,https://lichess.org/fUV1iXBx/black#56\n",
-      )
+        FakeAssetManager(
+            csvString =
+                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
+                    "009tE,6k1/6pp/p1N2p2/1pP2bP1/5P2/8/PPP5/3K4 b - - 1 28,f6g5 c6e7 g8f7 e7f5,600,103,90,340,crushing endgame fork short,https://lichess.org/fUV1iXBx/black#56\n",
+        )
 
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
@@ -120,7 +120,6 @@ class ChessFacadeTest {
 
     val unsolvedPuzzles = chessFacade.unsolvedPuzzles(user)
     val solvedPuzzles = chessFacade.solvedPuzzles(user)
-
 
     assertThat(unsolvedPuzzles.size).isEqualTo(1)
     assertThat(solvedPuzzles).isEmpty()

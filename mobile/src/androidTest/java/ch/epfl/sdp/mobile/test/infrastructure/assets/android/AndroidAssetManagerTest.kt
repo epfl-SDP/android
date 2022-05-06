@@ -6,10 +6,8 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import java.io.*
-import org.junit.Test
 
 class AndroidAssetManagerTest {
-
 
   fun given_androidAssetManager_when__then_() {
     val context = mockk<Context>()
