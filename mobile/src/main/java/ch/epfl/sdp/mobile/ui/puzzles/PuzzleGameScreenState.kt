@@ -10,4 +10,6 @@ import ch.epfl.sdp.mobile.application.chess.Puzzle
 @Stable
 interface PuzzleGameScreenState {
   val puzzle: Puzzle
+
+  fun solve()
 }

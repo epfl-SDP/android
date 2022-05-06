@@ -6,10 +6,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * The [StatefulPuzzleGameScreen] to be used for the Navigation
@@ -34,8 +36,9 @@ fun StatefulPuzzleGameScreen(
   val puzzleGameScreenState =
       remember(user, puzzle, scope) {
         SnapshotPuzzleBoardState(
-            user = user,
             puzzle = puzzle,
+            user = user,
+            facade = facade,
             scope = scope,
         )
       }
@@ -50,5 +53,10 @@ fun StatefulPuzzleGameScreen(
 class SnapshotPuzzleBoardState(
     override val puzzle: Puzzle,
     private val user: AuthenticatedUser,
+    private val facade: ChessFacade,
     private val scope: CoroutineScope,
-) : PuzzleGameScreenState
+) : PuzzleGameScreenState {
+  override fun solve() {
+    scope.launch { facade.solvePuzzle(puzzle, user) }
+  }
+}
