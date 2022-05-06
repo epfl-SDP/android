@@ -102,4 +102,8 @@ interface LocalizedStrings {
   val prepareGamePlayOnline: String
 
   val playOnlineGames: String
+
+  val tournamentsBadgeJoin: String
+  val tournamentsBadgeParticipant: String
+  val tournamentsBadgeAdmin: String
 }
