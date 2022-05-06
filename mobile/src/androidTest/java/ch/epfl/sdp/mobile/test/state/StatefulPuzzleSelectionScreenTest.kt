@@ -105,14 +105,15 @@ class StatefulPuzzleSelectionScreenTest {
     authFacade.signInWithEmail("email@example.org", "password")
 
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings = rule.setContentWithLocalizedStrings {
-      ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-        StatefulPuzzleSelectionScreen(
-            user = userAuthenticated,
-            onPuzzleItemClick = {},
-        )
-      }
-    }
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+            StatefulPuzzleSelectionScreen(
+                user = userAuthenticated,
+                onPuzzleItemClick = {},
+            )
+          }
+        }
     rule.onNodeWithText(strings.puzzleUnsolvedPuzzles).assertExists()
     rule.onNodeWithText("009tE", substring = true).assertExists()
     rule.onNodeWithText("Error", substring = true).assertExists()
