@@ -84,25 +84,28 @@ private fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
   val firstPiece = firstMove?.let { board[firstMove] }
 
   val icon: @Composable () -> Unit = {
+    val desc = LocalLocalizedStrings.current.boardPieceContentDescription
+    val color = firstPiece?.color.toString()
+    val rank = firstPiece?.rank.toString()
     when (firstPiece?.color) {
       Color.Black -> {
         when (firstPiece.rank) {
-          Rank.King -> Icon(ChessIcons.BlackKing, contentDescription = null)
-          Rank.Queen -> Icon(ChessIcons.BlackQueen, contentDescription = null)
-          Rank.Rook -> Icon(ChessIcons.BlackRook, contentDescription = null)
-          Rank.Bishop -> Icon(ChessIcons.BlackBishop, contentDescription = null)
-          Rank.Knight -> Icon(ChessIcons.BlackKnight, contentDescription = null)
-          Rank.Pawn -> Icon(ChessIcons.BlackPawn, contentDescription = null)
+          Rank.King -> Icon(ChessIcons.BlackKing, contentDescription = desc(color, rank))
+          Rank.Queen -> Icon(ChessIcons.BlackQueen, contentDescription = desc(color, rank))
+          Rank.Rook -> Icon(ChessIcons.BlackRook, contentDescription = desc(color, rank))
+          Rank.Bishop -> Icon(ChessIcons.BlackBishop, contentDescription = desc(color, rank))
+          Rank.Knight -> Icon(ChessIcons.BlackKnight, contentDescription = desc(color, rank))
+          Rank.Pawn -> Icon(ChessIcons.BlackPawn, contentDescription = desc(color, rank))
         }
       }
       Color.White -> {
         when (firstPiece.rank) {
-          Rank.King -> Icon(ChessIcons.WhiteKing, contentDescription = null)
-          Rank.Queen -> Icon(ChessIcons.WhiteQueen, contentDescription = null)
-          Rank.Rook -> Icon(ChessIcons.WhiteRook, contentDescription = null)
-          Rank.Bishop -> Icon(ChessIcons.WhiteBishop, contentDescription = null)
-          Rank.Knight -> Icon(ChessIcons.WhiteKnight, contentDescription = null)
-          Rank.Pawn -> Icon(ChessIcons.WhitePawn, contentDescription = null)
+          Rank.King -> Icon(ChessIcons.WhiteKing, contentDescription = desc(color, rank))
+          Rank.Queen -> Icon(ChessIcons.WhiteQueen, contentDescription = desc(color, rank))
+          Rank.Rook -> Icon(ChessIcons.WhiteRook, contentDescription = desc(color, rank))
+          Rank.Bishop -> Icon(ChessIcons.WhiteBishop, contentDescription = desc(color, rank))
+          Rank.Knight -> Icon(ChessIcons.WhiteKnight, contentDescription = desc(color, rank))
+          Rank.Pawn -> Icon(ChessIcons.WhitePawn, contentDescription = desc(color, rank))
         }
       }
       else -> Icon(PawniesIcons.SectionPuzzles, contentDescription = null)

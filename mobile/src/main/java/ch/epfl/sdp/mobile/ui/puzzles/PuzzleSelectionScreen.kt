@@ -32,7 +32,6 @@ fun PuzzleSelectionScreen(
     key: ((PuzzleInfo) -> Any)? = null,
     contentPadding: PaddingValues = PaddingValues()
 ) {
-  val strings = LocalLocalizedStrings.current
 
   val lazyListState = rememberLazyListState()
   val targetShadow =

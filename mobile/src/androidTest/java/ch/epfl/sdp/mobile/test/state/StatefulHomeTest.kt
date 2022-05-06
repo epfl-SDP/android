@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
@@ -557,5 +558,44 @@ class StatefulHomeTest {
     rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
     rule.onNodeWithText(strings.settingEditCancel).performClick()
     rule.onNodeWithText("test").assertIsDisplayed()
+  }
+
+  @Test
+  fun given_puzzleSelectionScreen_when_puzzleClicked_then_correspondingPuzzleOpened() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val assets =
+      FakeAssetManager(
+        csvString =
+        "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
+                "00008,r6k/pp2r2p/4Rp1Q/3p4/8/1N1P2R1/PqP2bPP/7K b - - 0 24,f2g3 e6e7 b2b1 b3c1 b1c1 h6c1,1852,74,97,1444,crushing hangingPiece long middlegame,https://lichess.org/787zsVup/black#48\n" +
+                "0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1580,73,97,11995,advantage endgame short,https://lichess.org/F8M8OS71#53",
+      )
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+
+    authFacade.signUpWithEmail("email@example.org", "user", "password")
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+      rule.setContentWithLocalizedStrings {
+        val controller = rememberNavController()
+        ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+          StatefulHome(
+            user = user,
+            controller = controller,
+          )
+        }
+      }
+
+    rule.onNodeWithText(strings.sectionPuzzles).performClick()
+    rule.onNodeWithText("00008", substring = true).performClick()
+    rule.onNodeWithText("Puzzle id: 00008").assertExists()
+    rule.onNodeWithText("Elo: 1852").assertExists()
   }
 }

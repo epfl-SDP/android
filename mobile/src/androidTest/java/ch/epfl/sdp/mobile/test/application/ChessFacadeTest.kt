@@ -3,12 +3,14 @@ package ch.epfl.sdp.mobile.test.application
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -95,5 +97,44 @@ class ChessFacadeTest {
 
     assertThat(fetchedMatch.game.first().board[Position(0, 4)])
         .isEqualTo(newGame.board[Position(0, 4)])
+  }
+
+  //TODO: Find out why this test does not work
+  //@Test
+  fun given_aPuzzle_when_markingAsSolved_then_appearsInProfileSolvedPuzzles() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val assets =
+      FakeAssetManager(
+        csvString =
+        "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
+                "009tE,6k1/6pp/p1N2p2/1pP2bP1/5P2/8/PPP5/3K4 b - - 1 28,f6g5 c6e7 g8f7 e7f5,600,103,90,340,crushing endgame fork short,https://lichess.org/fUV1iXBx/black#56\n",
+      )
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    authFacade.signUpWithEmail("email@example.org", "user", "password")
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val unsolvedPuzzles = chessFacade.unsolvedPuzzles(user)
+    val solvedPuzzles = chessFacade.solvedPuzzles(user)
+
+
+    assertThat(unsolvedPuzzles.size).isEqualTo(1)
+    assertThat(solvedPuzzles).isEmpty()
+
+    val puzzle = unsolvedPuzzles.first()
+    assertThat(puzzle.uid).isEqualTo("009tE")
+    chessFacade.solvePuzzle(puzzle, user)
+
+    assertThat(user.solvedPuzzles.size).isEqualTo(1)
+
+    val newUnsolvedPuzzles = chessFacade.unsolvedPuzzles(user)
+    val newSolvedPuzzles = chessFacade.solvedPuzzles(user)
+
+    assertThat(newSolvedPuzzles.size).isEqualTo(1)
+    assertThat(newUnsolvedPuzzles).isEmpty()
   }
 }
