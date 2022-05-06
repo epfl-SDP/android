@@ -63,18 +63,18 @@ class StatefulPuzzleSelectionScreenTest {
       }
     }
     rule.onNodeWithText("Unsolved Puzzles").assertExists()
-    rule.onNodeWithText("009tE", substring = true).performScrollTo() // black pawn
-    rule.onNodeWithText("005N7", substring = true).performScrollTo() // black knight
-    rule.onNodeWithText("008Nz", substring = true).performScrollTo() // black bishop
-    rule.onNodeWithText("00Bn4", substring = true).performScrollTo() // black rook
-    rule.onNodeWithText("00GRa", substring = true).performScrollTo() // black queen
-    rule.onNodeWithText("00IaZ", substring = true).performScrollTo() // black king
-    rule.onNodeWithText("001wr", substring = true).performScrollTo() // white pawn
-    rule.onNodeWithText("009Wc", substring = true).performScrollTo() // white knight
-    rule.onNodeWithText("00Aas", substring = true).performScrollTo() // white bishop
-    rule.onNodeWithText("003nQ", substring = true).performScrollTo() // white rook
-    rule.onNodeWithText("009Os", substring = true).performScrollTo() // white queen
-    rule.onNodeWithText("00C7m", substring = true).performScrollTo() // white king
+    rule.onNodeWithText("009tE", substring = true).performScrollTo() // black pawn 600 elo
+    rule.onNodeWithText("008Nz", substring = true).performScrollTo() // black bishop 600 elo
+    rule.onNodeWithText("00Bn4", substring = true).performScrollTo() // black rook 613 elo
+    rule.onNodeWithText("00GRa", substring = true).performScrollTo() // black queen 630 elo
+    rule.onNodeWithText("005N7", substring = true).performScrollTo() // black knight 721 elo
+    rule.onNodeWithText("00IaZ", substring = true).performScrollTo() // black king 946 elo
+    rule.onNodeWithText("001wr", substring = true).performScrollTo() // white pawn 1045 elo
+    rule.onNodeWithText("009Wc", substring = true).performScrollTo() // white knight 1066 elo
+    rule.onNodeWithText("00Aas", substring = true).performScrollTo() // white bishop 1309 elo
+    rule.onNodeWithText("003nQ", substring = true).performScrollTo() // white rook 1334 elo
+    rule.onNodeWithText("00C7m", substring = true).performScrollTo() // white king 1347 elo
+    rule.onNodeWithText("009Os", substring = true).performScrollTo() // white queen 1447 elo
   }
 
   @Test
