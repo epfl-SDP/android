@@ -1,16 +1,22 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
+import ch.epfl.sdp.mobile.application.chess.engine.Board
+import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
-import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.failure
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinished
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertTokenToChar
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertTokenToToken
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
+import ch.epfl.sdp.mobile.application.speech.ChessSpeechEnglishDictionary
 
 /** An object that parse a "perfect" voice input into engine notation */
 object VoiceInputCombinator {
@@ -20,36 +26,63 @@ object VoiceInputCombinator {
    */
   // TODO : Internationalization
   private val rank =
-      combine(
-          token("king").map { Rank.King },
-          token("queen").map { Rank.Queen },
-          token("rook").map { Rank.Rook },
-          token("bishop").map { Rank.Bishop },
-          token("knight").map { Rank.Knight },
-          token("pawn").map { Rank.Pawn })
+      convertTokenToToken(ChessSpeechEnglishDictionary.chessPieces).map {
+        when (it) {
+          "king" -> Rank.King
+          "queen" -> Rank.Queen
+          "rook" -> Rank.Rook
+          "bishop" -> Rank.Bishop
+          "knight" -> Rank.Knight
+          "pawn" -> Rank.Pawn
+          else -> null
+        }
+      }
+
+  val column =
+      convertTokenToChar(ChessSpeechEnglishDictionary.letters).filter { it in 'a'..'h' }.map {
+        it!! - 'a'
+      }
+
+  val row =
+      convertTokenToChar(ChessSpeechEnglishDictionary.numbers)
+          .filter { it in '0'..'9' }
+          .map {
+            // TODO : What happen id it is null ?
+            8 - (it!! - '0')
+          }
+          .filter { it in 0 until Board.Size }
+
+  val position = column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
 
   /** A [Parser] which indicate the action between 2 position */
   private val actionSeparator = token("to")
 
   /** A [Parser] for a [Move] action. */
   private val move =
-      rank
-          .flatMap {
-            CommonNotationCombinators.position.flatMap { from ->
-              actionSeparator.flatMap {
-                CommonNotationCombinators.position.map { to -> Move(from, to) }
+      rank.flatMap {
+        if (it == null) {
+              failure()
+            } else {
+              position.flatMap { from ->
+                actionSeparator.flatMap { position.map { to -> Move(from, to) } }
               }
             }
-          }
-          .checkFinished()
+            .checkFinished()
+      }
 
   /** A [Parser] for a [Promote] action. */
   private val promote =
-      CommonNotationCombinators.position // No leading rank because only pawns may be promoted.
+      position // No leading rank because only pawns may be promoted.
           .flatMap { from ->
             actionSeparator.flatMap {
-              CommonNotationCombinators.position.flatMap { to ->
-                rank.map { rank -> Promote(from, to, rank) }
+              position.flatMap { to ->
+                rank.map { rank ->
+                  if (rank == null) {
+                    failure<Rank>()
+                  } else {
+                    Promote(from, to, rank)
+                  }
+                }
               }
             }
           }

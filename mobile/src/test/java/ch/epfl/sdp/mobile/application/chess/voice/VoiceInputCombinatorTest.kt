@@ -23,4 +23,12 @@ class VoiceInputCombinatorTest {
 
     assertThat(res).isEqualTo(expected)
   }
+
+  @Test
+  fun given_untreatedInput_when_parsed_then_returnCorrectPosition() {
+    val res = VoiceInputCombinator.action().parse("quinn dee ate to dee 7").singleOrNull()?.output
+    val expected = Action.Move(Position(3, 0), Delta(0, 1))
+
+    assertThat(res).isEqualTo(expected)
+  }
 }

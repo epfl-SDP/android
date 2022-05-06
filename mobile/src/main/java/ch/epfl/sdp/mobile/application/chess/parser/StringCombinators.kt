@@ -52,17 +52,42 @@ object StringCombinators {
   fun token(value: Token, delimiter: Char = ' '): Parser<String, Token> =
       token(delimiter).filter { it == value }
 
-  fun convertToken(
+  /**
+   * Parse the first [Token] of a [String], and try to find the corresponding homophone as a [Token]
+   *
+   * @param dictionary where to look the search the homophone
+   * @param delimiter the delimiter between each token.
+   */
+  fun convertTokenToToken(
       dictionary: Map<String, List<String>>,
       delimiter: Char = ' '
-  ): Parser<String, Token> =
+  ): Parser<String, String?> =
       token(delimiter).map { token ->
         for (entry in dictionary) {
           if (entry.value.any { it == token }) {
             return@map entry.key
           }
         }
-        return@map ""
+        return@map null
+      }
+
+  /**
+   * Parse the first [Token] of a [String], and try to find the corresponding homophone as a [Char]
+   *
+   * @param dictionary where the search the homophone
+   * @param delimiter the delimiter between each token.
+   */
+  fun convertTokenToChar(
+      dictionary: Map<Char, List<String>>,
+      delimiter: Char = ' '
+  ): Parser<String, Char?> =
+      token(delimiter).map { token ->
+        for (entry in dictionary) {
+          if (entry.value.any { it == token }) {
+            return@map entry.key
+          }
+        }
+        return@map null
       }
 
   /**
