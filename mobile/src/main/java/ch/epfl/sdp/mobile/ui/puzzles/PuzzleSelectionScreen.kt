@@ -69,10 +69,17 @@ fun PuzzleSelectionScreen(
   }
 }
 
+/**
+ * Displays a [PuzzleSelectionScreen]'s list item
+ *
+ * @param puzzleInfo The information about the puzzle to display
+ * @param onClick Action to execute when clicked on puzzle item in list
+ * @param modifier the [Modifier] for this composable.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PuzzleListInfo(
-    puzzleItem: PuzzleInfo,
+    puzzleInfo: PuzzleInfo,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -82,7 +89,7 @@ fun PuzzleListInfo(
 
   ListItem(
       modifier = modifier.clickable { onClick() },
-      icon = puzzleItem.icon,
+      icon = puzzleInfo.icon,
       text = {
         Text(
             text =
@@ -90,14 +97,14 @@ fun PuzzleListInfo(
                   withStyle(
                       style =
                           typography.subtitle1.copy(color = colors.primaryVariant).toSpanStyle()) {
-                    append("#${puzzleItem.uid} ")
+                    append("#${puzzleInfo.uid} ")
                   }
                   withStyle(style = typography.body2.copy(color = colors.primary).toSpanStyle()) {
-                    append("(${puzzleItem.elo})")
+                    append("(${puzzleInfo.elo})")
                   }
                 },
         )
       },
-      secondaryText = { Text(text = "${strings.puzzlePlayingAs} ${puzzleItem.playerColor}") },
+      secondaryText = { Text(text = "${strings.puzzlePlayingAs} ${puzzleInfo.playerColor}") },
   )
 }
