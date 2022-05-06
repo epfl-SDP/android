@@ -99,7 +99,7 @@ class ChessFacade(
 
   /** Puzzle side of chess facade */
   suspend fun solvePuzzle(puzzle: Puzzle, user: AuthenticatedUser) {
-    user.update { solvedPuzzles(puzzle) }
+    user.solvePuzzle(puzzle)
   }
 
   private fun allPuzzles(): List<Puzzle> {

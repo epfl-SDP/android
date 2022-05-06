@@ -37,15 +37,13 @@ class AuthenticatedUser(
 
     /** Updates the profile name with [name]. */
     fun name(name: String) = scope.set("name", name)
-
-    fun solvedPuzzles(puzzle: Puzzle) = scope.arrayUnion("solvedPuzzles", puzzle.uid)
   }
 
   /**
    * Atomically updates the profile using the edits performed in the scope.
    *
    * @param block the [UpdateScope] in which some updates may be performed.
-   * @return true iff the updates were properly applied.
+   * @return true iff the updates were properl y applied.
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
@@ -76,6 +74,17 @@ class AuthenticatedUser(
   suspend fun unfollow(unfollowed: Profile) {
     firestore.collection("users").document(unfollowed.uid).update {
       arrayRemove("followers", user.uid)
+    }
+  }
+
+  /**
+   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user
+   *
+   * @param puzzle the [Puzzle] to mark as solved.
+   */
+  suspend fun solvePuzzle(puzzle: Puzzle) {
+    firestore.collection("users").document(this.uid).update {
+      arrayUnion("solvedPuzzles", puzzle.uid)
     }
   }
 

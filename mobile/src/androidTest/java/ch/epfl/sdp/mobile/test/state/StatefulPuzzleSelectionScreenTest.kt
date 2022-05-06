@@ -69,7 +69,6 @@ class StatefulPuzzleSelectionScreenTest {
     rule.onNodeWithText("00Bn4", substring = true).assertExists() // black rook
     rule.onNodeWithText("00GRa", substring = true).assertExists() // black queen
     rule.onNodeWithText("00IaZ", substring = true).assertExists() // black king
-    rule.onRoot().performTouchInput { swipeUp() }
     rule.onNodeWithText("001wr", substring = true).assertExists() // white pawn
     rule.onNodeWithText("009Wc", substring = true).assertExists() // white knight
     rule.onNodeWithText("00Aas", substring = true).assertExists() // white bishop
