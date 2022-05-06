@@ -1,6 +1,12 @@
 package ch.epfl.sdp.mobile.application.speech
 
-/** Currently used chess dictionary for homophones chess keywords */
+/**
+ * Currently used chess dictionary for homophones chess keywords.
+ *
+ * Some homophones is provided by :
+ * - (Uk pronunciation) : http://www.singularis.ltd.uk/bifroest/misc/homophones.html
+ * - https://www.homophone.com/
+ */
 object ChessSpeechEnglishDictionary : ChessDictionary {
   // Chess Pieces
   override val chessPieces =
@@ -17,7 +23,8 @@ object ChessSpeechEnglishDictionary : ChessDictionary {
                   "queena",
                   "gwen",
                   "guin",
-                  "gwyn"),
+                  "gwyn",
+                  "quean"),
           "king" to
               listOf(
                   "king",
@@ -28,7 +35,7 @@ object ChessSpeechEnglishDictionary : ChessDictionary {
                   "qing",
                   "keying"), // rule finishes with "ing/inc"
           "rook" to listOf("rook", "rooke", "rouck", "ruk", "brooke", "rock"),
-          "pawn" to listOf("pawn", "bond", "bon", "phone", "fun"), // starts with pon/bon
+          "pawn" to listOf("pawn", "bond", "bon", "phone", "fun", "porn"), // starts with pon/bon
           "bishop" to listOf("bishop", "shop", "up", "beat", "sharp"))
   // Numbers
   override val numbers =
@@ -50,9 +57,9 @@ object ChessSpeechEnglishDictionary : ChessDictionary {
                   "pore",
                   "war"),
           "5" to listOf("5", "five", "live", "fife", "hive", "hyve"),
-          "6" to listOf("6", "six", "sex", "secs", "tics", "ticks", "tix", "seeks", "cheeks"),
+          "6" to listOf("6", "six", "sex", "secs", "tics", "ticks", "tix", "seeks", "cheeks", "sics"),
           "7" to listOf("7", "seven", "sevan", "sevin"),
-          "8" to listOf("8", "eight", "ate", "date", "eighth", "hate", "tate"),
+          "8" to listOf("8", "eight", "ate", "date", "eighth", "hate", "tate", "ait"),
       )
 
   // Letters
