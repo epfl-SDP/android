@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentId
  * @param emoji the emoji associated with this profile.
  * @param backgroundColor the hex color code for this profile.
  * @param followers a list of unique identifiers of the users who follow this profile.
+ * @param solvedPuzzles a list of unique puzzle ids representing puzzles solved by the user
  */
 data class ProfileDocument(
     @DocumentId val uid: String? = null,

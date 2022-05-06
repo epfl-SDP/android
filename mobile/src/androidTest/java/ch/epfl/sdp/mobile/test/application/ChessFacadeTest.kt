@@ -99,7 +99,6 @@ class ChessFacadeTest {
         .isEqualTo(newGame.board[Position(0, 4)])
   }
 
-  // TODO: Find out why this test does not work
   @Test
   fun given_aPuzzle_when_markingAsSolved_then_appearsInProfileSolvedPuzzles() = runTest {
     val auth = emptyAuth()
@@ -126,7 +125,7 @@ class ChessFacadeTest {
 
     val puzzle = unsolvedPuzzles.first()
     assertThat(puzzle.uid).isEqualTo("009tE")
-    chessFacade.solvePuzzle(puzzle, user)
+    chessFacade.solvePuzzle(puzzle.uid, user)
 
     val newUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     assertThat(newUser.solvedPuzzles.size).isEqualTo(1)

@@ -35,10 +35,8 @@ fun PuzzleGameScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp),
         ) {
           Text("Puzzle id: ${state.puzzle.uid}")
-          Text("Playing as: ${state.puzzle.boardSnapshot.playing}")
+          Text("Playing as: ${state.puzzle.playerColor}")
           Text("Elo: ${state.puzzle.elo}")
-          Text("Moves: ${state.puzzle.puzzleMoves}")
-          Text("Castling rights: ${state.puzzle.boardSnapshot.castlingRights}")
           Button(onClick = { state.solve() }) { Text("Solve") }
         }
       },

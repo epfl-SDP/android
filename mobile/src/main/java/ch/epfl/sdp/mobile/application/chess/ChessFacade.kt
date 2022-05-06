@@ -25,11 +25,12 @@ import kotlinx.coroutines.flow.*
  *
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
+ * @param assets the [AssetManager] which is used to load assets.
  */
 class ChessFacade(
     private val auth: Auth,
     private val store: Store,
-    private val assets: AssetManager
+    private val assets: AssetManager,
 ) {
 
   /** Chess matches side of chess facade */
@@ -98,10 +99,17 @@ class ChessFacade(
   }
 
   /** Puzzle side of chess facade */
-  suspend fun solvePuzzle(puzzle: Puzzle, user: AuthenticatedUser) {
-    user.solvePuzzle(puzzle)
+
+  /**
+   * Marks a [Puzzle] as solved for the current [AuthenticatedUser]
+   *
+   * @param puzzleId The [Puzzle]'id to mark as solved
+   */
+  suspend fun solvePuzzle(puzzleId: String, user: AuthenticatedUser) {
+    user.solvePuzzle(puzzleId)
   }
 
+  /** Fetches the list of all [Puzzle]s from their source */
   private fun allPuzzles(): List<Puzzle> {
     val reader = assets.openAsReader("puzzles/puzzles.csv")
     val csvReader = CSVReaderHeaderAware(reader)
@@ -130,14 +138,35 @@ class ChessFacade(
     return puzzles
   }
 
+  /**
+   * Gets a certain [Puzzle] by his uid
+   *
+   * @param uid The uid of the [Puzzle] to get
+   *
+   * @return The specified [Puzzle], if it exists
+   */
   fun puzzle(uid: String): Puzzle? {
     return allPuzzles().firstOrNull { it.uid == uid }
   }
 
+  /**
+   * Fetches the list of solved [Puzzle]s for a certain [Profile]
+   *
+   * @param profile the [Profile] in question
+   *
+   * @returns The list of solved [Puzzle]s
+   */
   fun solvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
   }
 
+  /**
+   * Fetches the list of unsolved [Puzzle]s for a certain [Profile]
+   *
+   * @param profile the [Profile] in question
+   *
+   * @returns The list of unsolved [Puzzle]s
+   */
   fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
   }

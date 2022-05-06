@@ -43,7 +43,7 @@ class AuthenticatedUser(
    * Atomically updates the profile using the edits performed in the scope.
    *
    * @param block the [UpdateScope] in which some updates may be performed.
-   * @return true iff the updates were properl y applied.
+   * @return true iff the updates were properly applied.
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
@@ -82,9 +82,9 @@ class AuthenticatedUser(
    *
    * @param puzzle the [Puzzle] to mark as solved.
    */
-  suspend fun solvePuzzle(puzzle: Puzzle) {
+  suspend fun solvePuzzle(puzzleId: String) {
     firestore.collection("users").document(this.uid).update {
-      arrayUnion("solvedPuzzles", puzzle.uid)
+      arrayUnion("solvedPuzzles", puzzleId)
     }
   }
 

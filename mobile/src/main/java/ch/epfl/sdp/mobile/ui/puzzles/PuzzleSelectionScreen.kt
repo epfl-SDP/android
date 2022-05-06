@@ -63,7 +63,7 @@ fun PuzzleSelectionScreen(
         contentPadding = innerPadding,
     ) {
       items(state.puzzles, key) { puzzle ->
-        PuzzleItemListThingy(puzzle, { state.onPuzzleItemClick(puzzle) })
+        PuzzleListInfo(puzzle, { state.onPuzzleItemClick(puzzle) })
       }
     }
   }
@@ -71,7 +71,7 @@ fun PuzzleSelectionScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PuzzleItemListThingy(
+fun PuzzleListInfo(
     puzzleItem: PuzzleInfo,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -36,7 +37,7 @@ fun StatefulPuzzleGameScreen(
   val puzzleGameScreenState =
       remember(user, puzzle, scope) {
         SnapshotPuzzleBoardState(
-            puzzle = puzzle,
+            puzzle = puzzle.toPuzzleInfoAdapter(),
             user = user,
             facade = facade,
             scope = scope,
@@ -50,13 +51,21 @@ fun StatefulPuzzleGameScreen(
   )
 }
 
+/**
+ * An implementation of [PuzzleGameScreenState]
+ *
+ * @param puzzle The [Puzzle] to load
+ * @param user the currently logged-in [AuthenticatedUser]
+ * @param facade the [ChessFacade] to manipulate [Puzzle]s
+ * @param scope a [CoroutineScope]
+ */
 class SnapshotPuzzleBoardState(
-    override val puzzle: Puzzle,
+    override val puzzle: PuzzleInfo,
     private val user: AuthenticatedUser,
     private val facade: ChessFacade,
     private val scope: CoroutineScope,
 ) : PuzzleGameScreenState {
   override fun solve() {
-    scope.launch { facade.solvePuzzle(puzzle, user) }
+    scope.launch { facade.solvePuzzle(puzzle.uid, user) }
   }
 }

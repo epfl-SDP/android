@@ -33,7 +33,7 @@ private const val PlayRoute = "play"
 /** The route associated to the puzzle tab. */
 private const val PuzzleSelectionRoute = "puzzles"
 
-/** The route associated to the puzzle tab. */
+/** The route associated to a puzzle game. */
 private const val PuzzleGameRoute = "puzzle_game"
 
 /** The route associated to new game screen */

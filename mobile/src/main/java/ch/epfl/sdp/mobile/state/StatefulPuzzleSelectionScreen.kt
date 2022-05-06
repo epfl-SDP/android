@@ -1,11 +1,9 @@
 package ch.epfl.sdp.mobile.state
 
-import android.content.Context
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Puzzle
@@ -16,8 +14,15 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreenState
-import kotlinx.coroutines.CoroutineScope
 
+/**
+ * The [StatefulPuzzleSelectionScreen] to be used for the Navigation
+ *
+ * @param user the currently logged-in user.
+ * @param onPuzzleItemClick An action triggered when clicking on an item in the puzzle list
+ * @param modifier the [Modifier] for the composable.
+ * @param contentPadding the [PaddingValues] for this composable.
+ */
 @Composable
 fun StatefulPuzzleSelectionScreen(
     user: AuthenticatedUser,
@@ -26,7 +31,6 @@ fun StatefulPuzzleSelectionScreen(
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val chess = LocalChessFacade.current
-  val context = LocalContext.current
   val onGameItemClickAction = rememberUpdatedState(onPuzzleItemClick)
   val scope = rememberCoroutineScope()
   val state =
@@ -35,8 +39,6 @@ fun StatefulPuzzleSelectionScreen(
             onPuzzleClickAction = onGameItemClickAction,
             user = user,
             facade = chess,
-            scope = scope,
-            context = context,
         )
       }
   PuzzleSelectionScreen(
@@ -48,10 +50,8 @@ fun StatefulPuzzleSelectionScreen(
 
 private class SnapshotPuzzleSelectionScreen(
     onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
-    private val user: AuthenticatedUser,
-    private val facade: ChessFacade,
-    private val scope: CoroutineScope,
-    private val context: Context,
+    user: AuthenticatedUser,
+    facade: ChessFacade,
 ) : PuzzleSelectionScreenState<PuzzleInfoAdapter> {
 
   val onPuzzleClickAction by onPuzzleClickAction
@@ -64,6 +64,14 @@ private class SnapshotPuzzleSelectionScreen(
       facade.unsolvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
 }
 
+/**
+ * Represents the basic info of a [Puzzle] to display it in a list
+ *
+ * @param uid The [Puzzle]'s uid
+ * @param playerColor The [Color] of the player in the [Puzzle]
+ * @param elo The elo/rank (difficulty) of the puzzle
+ * @param icon The icon [Composable] to display next to the [Puzzle] description
+ */
 data class PuzzleInfoAdapter(
     override val uid: String,
     override val playerColor: ChessBoardState.Color,
@@ -71,7 +79,8 @@ data class PuzzleInfoAdapter(
     override val icon: @Composable (() -> Unit)
 ) : PuzzleInfo
 
-private fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
+/** Transforms a [Puzzle] to a corresponding [PuzzleInfoAdapter] */
+fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
   val playerColor =
       when (this.boardSnapshot.playing) {
         Color.White -> ChessBoardState.Color.White
