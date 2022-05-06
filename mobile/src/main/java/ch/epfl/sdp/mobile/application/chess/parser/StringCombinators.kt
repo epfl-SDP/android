@@ -52,6 +52,19 @@ object StringCombinators {
   fun token(value: Token, delimiter: Char = ' '): Parser<String, Token> =
       token(delimiter).filter { it == value }
 
+  fun convertToken(
+      dictionary: Map<String, List<String>>,
+      delimiter: Char = ' '
+  ): Parser<String, Token> =
+      token(delimiter).map { token ->
+        for (entry in dictionary) {
+          if (entry.value.any { it == token }) {
+            return@map entry.key
+          }
+        }
+        return@map ""
+      }
+
   /**
    * Filters the results from this [Parser] which have an empty remaining input to parse,
    * effectively making sure the remaining string is empty.
