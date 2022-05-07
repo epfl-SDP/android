@@ -36,6 +36,8 @@ android {
 
   testOptions {
     packagingOptions { jniLibs { useLegacyPackaging = true } }
+
+    // Allow us to have Log during testing
     unitTests.isReturnDefaultValues = true
   }
 
