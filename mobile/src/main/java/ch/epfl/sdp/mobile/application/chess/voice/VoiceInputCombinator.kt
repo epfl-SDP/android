@@ -6,11 +6,13 @@ import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
+import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.failure
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinished
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertTokenToChar
@@ -52,7 +54,10 @@ object VoiceInputCombinator {
           }
           .filter { it in 0 until Board.Size }
 
-  val position = column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
+  val position =
+      combine(
+          CommonNotationCombinators.position,
+          column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds })
 
   /** A [Parser] which indicate the action between 2 position */
   private val actionSeparator = token("to")
@@ -75,15 +80,7 @@ object VoiceInputCombinator {
       position // No leading rank because only pawns may be promoted.
           .flatMap { from ->
             actionSeparator.flatMap {
-              position.flatMap { to ->
-                rank.map { rank ->
-                  if (rank == null) {
-                    failure<Rank>()
-                  } else {
-                    Promote(from, to, rank)
-                  }
-                }
-              }
+              position.flatMap { to -> rank.map { rank -> Promote(from, to, rank!!) } }
             }
           }
           .checkFinished()
@@ -92,5 +89,5 @@ object VoiceInputCombinator {
   private val action = combine(move, promote)
 
   /** Returns a [Parser] for an [Action]. */
-  fun action(): Parser<String, Any> = action
+  fun action(): Parser<String, Action> = action
 }
