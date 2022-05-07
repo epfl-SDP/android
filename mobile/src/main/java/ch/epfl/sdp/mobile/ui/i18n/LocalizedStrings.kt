@@ -106,4 +106,5 @@ interface LocalizedStrings {
   val tournamentsBadgeJoin: String
   val tournamentsBadgeParticipant: String
   val tournamentsBadgeAdmin: String
+  val tournamentsTableScore: String
 }

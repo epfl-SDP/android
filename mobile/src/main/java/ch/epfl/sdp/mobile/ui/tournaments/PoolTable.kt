@@ -3,10 +3,7 @@ package ch.epfl.sdp.mobile.ui.tournaments
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
@@ -19,13 +16,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastMap
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
-import ch.epfl.sdp.mobile.ui.PawniesTheme
 import kotlin.math.roundToInt
 
 /** Represents an amount of points from a given player. */
@@ -77,6 +73,7 @@ fun <P : PoolMember> PoolTable(
     modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.overline,
 ) {
+  val strings = LocalLocalizedStrings.current
   ProvideTextStyle(textStyle) {
     CompositionLocalProvider(LocalContentColor provides PawniesColors.Green800) {
       PoolContent(
@@ -85,7 +82,7 @@ fun <P : PoolMember> PoolTable(
           // TODO : Use a Text with a maximum width and ellipsis.
           playerContent = { Text(it.name.uppercase()) },
           // TODO : Use a Text with a maximum width and ellipsis.
-          scoreTitleContent = { Text("Score".uppercase()) },
+          scoreTitleContent = { Text(strings.tournamentsTableScore.uppercase()) },
           // TODO : Animated score cells !!!
           scoreContent = { it.total?.let { score -> Text(score.toString()) } },
       ) { from, to ->
@@ -97,8 +94,20 @@ fun <P : PoolMember> PoolTable(
   }
 }
 
+/**
+ * A custom layout which places around the different pieces of the [PoolTable] composable.
+ *
+ * @param T the type of items which are displayed.
+ * @param players the list of the players to display.
+ * @param modifier the [Modifier] for this composable.
+ * @param spacing the spacing between the items of the layout.
+ * @param playerContent the body of a player name composable.
+ * @param scoreTitleContent the body of the score title composable.
+ * @param scoreContent the body of the total score cell composable.
+ * @param itemContent the body of a grid item.
+ */
 @Composable
-fun <T> PoolContent(
+private fun <T : PoolMember> PoolContent(
     players: List<T>,
     modifier: Modifier = Modifier,
     spacing: Dp = 16.dp,
@@ -204,6 +213,7 @@ fun <T> PoolContent(
   }
 }
 
+/** Returns the receiver [Float] with a minimum value of 0 (included). */
 private fun Float.positive() = coerceAtLeast(0f)
 
 /**
@@ -328,32 +338,3 @@ private val DefaultGridShape = RoundedCornerShape(8.dp)
 
 /** The default angle for vertical text rotation. */
 private const val DefaultVerticalTextAngle = -90f
-
-// FIXME : REMOVE THESE PREVIEW COMPOSABLES
-
-data class IndexedPoolMember(
-    val index: Int,
-    override val name: String,
-    override val total: PoolScore?,
-) : PoolMember
-
-object IndexPoolData : PoolData<IndexedPoolMember> {
-  override val members =
-      listOf(
-          IndexedPoolMember(0, "Alexandre", 2),
-          IndexedPoolMember(1, "Badr", 10),
-          IndexedPoolMember(2, "Chau", 16),
-          IndexedPoolMember(3, "Fouad", 5),
-          IndexedPoolMember(4, "Lars", 6),
-          IndexedPoolMember(5, "Matthieu", 4),
-      )
-
-  override fun IndexedPoolMember.scoreAgainst(other: IndexedPoolMember) =
-      ((index + other.index) * 373) % 5
-}
-
-@Preview
-@Composable
-fun WonderfulPreview() = PawniesTheme {
-  Box(Modifier.fillMaxSize(), Alignment.Center) { PoolTable(IndexPoolData) }
-}

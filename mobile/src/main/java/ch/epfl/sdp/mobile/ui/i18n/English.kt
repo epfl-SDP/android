@@ -104,4 +104,5 @@ object English : LocalizedStrings {
   override val tournamentsBadgeJoin = "Join"
   override val tournamentsBadgeParticipant = "Participant"
   override val tournamentsBadgeAdmin = "Admin"
+  override val tournamentsTableScore = "Score"
 }
