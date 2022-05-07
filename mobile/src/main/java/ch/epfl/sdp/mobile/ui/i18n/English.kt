@@ -105,6 +105,10 @@ object English : LocalizedStrings {
   override val puzzlePlayingAs = "Playing as"
   override val puzzleUnsolvedPuzzles = "Unsolved puzzles"
   override val puzzleListCD = "puzzle_list"
+  override val puzzlesTitle = "Puzzles"
+  override val puzzleFindMove = { color: String -> "Find the best move for $color" }
+  override val puzzleNumber = { id: String -> "Puzzle: #$id" }
+  override val puzzleRating = { rating: String -> "Rating: $rating" }
 
   override val tournamentsBadgeJoin = "Join"
   override val tournamentsBadgeParticipant = "Participant"

@@ -6,8 +6,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.BlackKing
+import ch.epfl.sdp.mobile.ui.ChessIcons
 import ch.epfl.sdp.mobile.ui.game.*
 
 /**
@@ -24,6 +28,8 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
     contentPadding: PaddingValues = PaddingValues(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
+  val strings = LocalLocalizedStrings.current
+  val typo = MaterialTheme.typography
   Scaffold(
       modifier = modifier,
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
@@ -44,12 +50,36 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
                     .padding(contentPadding)
                     .padding(scaffoldPadding)
                     .padding(start = 32.dp, end = 32.dp, top = 48.dp, bottom = 48.dp),
-            verticalArrangement = Arrangement.spacedBy(32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-          Text("Puzzle #${state.puzzleInfo.uid}")
-          ProvideTextStyle(MaterialTheme.typography.subtitle1) { ClassicChessBoard(state) }
+          Text(strings.puzzlesTitle.uppercase(), style = typo.h6)
+          PuzzleDirective(color = state.puzzleInfo.playerColor)
+          ProvideTextStyle(typo.subtitle1) { ClassicChessBoard(state) }
+          Spacer(Modifier)
+          Column {
+            Text(strings.puzzleNumber(state.puzzleInfo.uid), style = typo.subtitle2)
+            Text(strings.puzzleRating(state.puzzleInfo.elo.toString()), style = typo.subtitle2)
+          }
           Moves(state.moves, Modifier.fillMaxWidth())
         }
       },
   )
+}
+
+/**
+ * A composable which displays some basic information about what is going on in a puzzle.
+ *
+ * @param color the [ChessBoardState.Color] of the player.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+private fun PuzzleDirective(
+    color: ChessBoardState.Color,
+    modifier: Modifier = Modifier,
+) {
+  val strings = LocalLocalizedStrings.current
+  Row(modifier, Arrangement.spacedBy(8.dp), Alignment.CenterVertically) {
+    Icon(ChessIcons.BlackKing, null, Modifier.size(32.dp))
+    Text(strings.puzzleFindMove(color.toString()), style = MaterialTheme.typography.subtitle1)
+  }
 }

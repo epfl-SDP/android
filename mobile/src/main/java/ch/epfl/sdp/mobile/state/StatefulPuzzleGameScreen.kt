@@ -194,7 +194,6 @@ class SnapshotPuzzleGameScreenState(
 
       game = step.move(action)
       currentMoveNumber++
-      // TODO: Handle promotion?
     }
   }
 
