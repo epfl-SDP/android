@@ -88,12 +88,7 @@ fun <P : PoolMember> PoolTable(
           // TODO : Use a Text with a maximum width and ellipsis.
           scoreTitleContent = { Text("Score".uppercase()) },
           // TODO : Animated score cells !!!
-          scoreContent = { index, it ->
-            Cell(
-                background = color(index),
-                modifier = Modifier.fillMaxSize(),
-            ) { it.total?.let { score -> Text(score.toString()) } }
-          },
+          scoreContent = { it.total?.let { score -> Text(score.toString()) } },
       ) { from, to ->
         val score = with(data) { from.scoreAgainst(to) }
         // TODO : Animated score cells !!!
@@ -110,7 +105,7 @@ fun <T> PoolContent(
     spacing: Dp = 16.dp,
     playerContent: @Composable (T) -> Unit,
     scoreTitleContent: @Composable () -> Unit,
-    scoreContent: @Composable BoxScope.(Int, T) -> Unit,
+    scoreContent: @Composable BoxScope.(T) -> Unit,
     itemContent: @Composable BoxScope.(from: T, to: T) -> Unit,
 ) {
   Layout(
@@ -126,8 +121,7 @@ fun <T> PoolContent(
           ) { playerContent(player) }
         }
         // Compose the score results
-        // TODO : This should be in its own color, to reduce code complexity.
-        players.fastForEachIndexed { i, player -> Box(Modifier) { scoreContent(i, player) } }
+        Column(players, Modifier.clip(DefaultGridShape), scoreContent)
         // Compose the score title
         Box(Modifier.rotate(DefaultVerticalTextAngle)) { scoreTitleContent() }
         // Compose the results grid
@@ -138,9 +132,9 @@ fun <T> PoolContent(
     // For simplicity, fetch all the measurables by group.
     val hPlayersMeasurables = measurables.subList(0, players.size)
     val vPlayersMeasurables = measurables.subList(players.size, 2 * players.size)
-    val scoreByPlayerMeasurables = measurables.subList(2 * players.size, 3 * players.size)
-    val scoreMeasurable = measurables[3 * players.size]
-    val gridMeasurable = measurables[3 * players.size + 1]
+    val scoreByPlayerMeasurable = measurables[2 * players.size]
+    val scoreMeasurable = measurables[2 * players.size + 1]
+    val gridMeasurable = measurables[2 * players.size + 2]
     val spacingPx = spacing.toPx()
 
     // Compute the max intrinsic width of the texts.
@@ -172,9 +166,7 @@ fun <T> PoolContent(
     val vPlayersPlaceables =
         vPlayersMeasurables.map { it.measure(Constraints(maxWidth = maxVTextWidth)) }
     val scoreByPlayerPlaceable =
-        scoreByPlayerMeasurables.map {
-          it.measure(Constraints.fixed(cellSize.roundToInt(), cellSize.roundToInt()))
-        }
+        scoreByPlayerMeasurable.measure(Constraints(maxWidth = cellSize.roundToInt()))
     val scorePlaceable = scoreMeasurable.measure(Constraints(maxWidth = maxVTextWidth))
     val gridPlaceable =
         gridMeasurable.measure(
@@ -208,12 +200,11 @@ fun <T> PoolContent(
           x = (maxHTextWidth + spacingPx).roundToInt(),
           y = (maxVTextWidth + spacingPx).roundToInt(),
       )
-      // TODO : Extract this to its own layout, so the corners can be rounded.
-      scoreByPlayerPlaceable.fastForEachIndexed { i, placeable ->
-        val x = maxHTextWidth + 2 * spacingPx + gridPlaceable.width
-        val y = maxVTextWidth + spacingPx + i * cellSize
-        placeable.place(x = x.roundToInt(), y = y.roundToInt())
-      }
+      // Place the scores.
+      scoreByPlayerPlaceable.place(
+          x = (maxHTextWidth + 2 * spacingPx + gridPlaceable.width).roundToInt(),
+          y = (maxVTextWidth + spacingPx).roundToInt(),
+      )
     }
   }
 }
@@ -247,7 +238,9 @@ private fun <T> Grid(
       modifier = modifier,
   ) { measurables, constraints ->
     // Measure at maximum available space, ignoring minimum size constraints.
-    val itemSizePx = minOf(constraints.maxWidth, constraints.maxHeight) / items.size.toFloat()
+    val itemSizePx =
+        if (items.isEmpty()) 0f
+        else minOf(constraints.maxWidth, constraints.maxHeight) / items.size.toFloat()
     val itemConstraints = Constraints.fixed(itemSizePx.roundToInt(), itemSizePx.roundToInt())
     val placeables = measurables.fastMap { it.measure(itemConstraints) }
     val width = items.size * itemSizePx
@@ -262,6 +255,44 @@ private fun <T> Grid(
           val y = j * itemSizePx
           placeable.place(x.roundToInt(), y.roundToInt())
         }
+      }
+    }
+  }
+}
+
+/**
+ * A custom composable which displays a [Column] of items, depending on the provided width of the
+ * column. The cell items try to fill the available space and will be colored depending on their
+ * position.
+ *
+ * @param T the type of the items in the column.
+ * @param items the list of items to display.
+ * @param modifier the [Modifier] for this composable.
+ * @param itemContent the content of each item cell.
+ */
+@Composable
+private fun <T> Column(
+    items: List<T>,
+    modifier: Modifier = Modifier,
+    itemContent: @Composable BoxScope.(T) -> Unit,
+) {
+  Layout(
+      content = {
+        items.fastForEachIndexed { index, item ->
+          Cell(background = color(index), Modifier.fillMaxSize()) { itemContent(item) }
+        }
+      },
+      modifier = modifier,
+  ) { measurables, constraints ->
+    // Measurable at maximum available space.
+    val itemSizePx = if (items.isEmpty()) 0 else constraints.maxWidth
+    val itemConstraints = Constraints.fixed(itemSizePx, itemSizePx)
+    val placeables = measurables.fastMap { it.measure(itemConstraints) }
+    layout(itemSizePx, items.size * itemSizePx) {
+      placeables.fastForEachIndexed { index, placeable ->
+        val x = 0
+        val y = index * itemSizePx
+        placeable.place(x, y)
       }
     }
   }
