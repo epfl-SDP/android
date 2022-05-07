@@ -150,7 +150,7 @@ class SnapshotPuzzleGameScreenState(
               ChessBoardState.Color.Black -> Color.Black
             }
 
-    if (userCurrentlyPlaying) {
+    if (userCurrentlyPlaying && currentMoveNumber < puzzle.puzzleMoves.size) {
       val expected = puzzle.puzzleMoves[currentMoveNumber]
       val actions =
           game.actions(Position(from.x, from.y))
@@ -182,7 +182,7 @@ class SnapshotPuzzleGameScreenState(
   }
 
   private suspend fun attemptNextPuzzleMove(delay: Long = 1000) {
-    if (currentMoveNumber <= puzzle.puzzleMoves.size) {
+    if (currentMoveNumber < puzzle.puzzleMoves.size) {
       delay(delay)
       val action = puzzle.puzzleMoves[currentMoveNumber]
       val step = game.nextStep as? NextStep.MovePiece ?: return
