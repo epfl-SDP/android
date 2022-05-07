@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
+import android.util.Log
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 
 /** An object which contains some utilities to transform user's voice input to a [Action]. */
@@ -16,8 +17,14 @@ object VoiceInput {
     // TODO : parse until action found
     val parsedResult =
         input.firstNotNullOfOrNull { s ->
+          // NOTE (Chau) : I let this log here in purpose. This allow use to refine our custom
+          // [ChesSpeechEnglishDictionary]. If your command is not recognize and you think that we
+          // need to add this in our dictionary, you can reported here
+          // https://github.com/epfl-SDP/android/issues/308
+          Log.d("Voice", s)
+
           val filtered = VoiceInputCombinator.action().parse(s.lowercase()).firstOrNull()?.output
-          // Log.d("Voice", "$filtered")
+
           filtered
         }
 
