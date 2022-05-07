@@ -12,11 +12,9 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.failure
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinished
-import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertTokenToChar
-import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertTokenToToken
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertToken
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
 import ch.epfl.sdp.mobile.application.speech.ChessSpeechEnglishDictionary
 
@@ -28,7 +26,7 @@ object VoiceInputCombinator {
    */
   // TODO : Internationalization
   private val rank =
-      convertTokenToToken(ChessSpeechEnglishDictionary.chessPieces).map {
+      convertToken(ChessSpeechEnglishDictionary.chessPieces).map {
         when (it) {
           "king" -> Rank.King
           "queen" -> Rank.Queen
@@ -41,12 +39,12 @@ object VoiceInputCombinator {
       }
 
   val column =
-      convertTokenToChar(ChessSpeechEnglishDictionary.letters).filter { it in 'a'..'h' }.map {
+      convertToken(ChessSpeechEnglishDictionary.letters).filter { it in 'a'..'h' }.map {
         it!! - 'a'
       }
 
   val row =
-      convertTokenToChar(ChessSpeechEnglishDictionary.numbers)
+      convertToken(ChessSpeechEnglishDictionary.numbers)
           .filter { it in '0'..'9' }
           .map {
             // TODO : What happen id it is null ?

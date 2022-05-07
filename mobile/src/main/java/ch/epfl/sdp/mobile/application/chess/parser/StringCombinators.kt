@@ -53,34 +53,16 @@ object StringCombinators {
       token(delimiter).filter { it == value }
 
   /**
-   * Parse the first [Token] of a [String], and try to find the corresponding homophone as a [Token]
+   * Parse the first [Token] of a [String], and try to find the corresponding [DictKey] homophone
    *
+   * @param DictKey Key type of dictionary
    * @param dictionary where to look the search the homophone
    * @param delimiter the delimiter between each token.
    */
-  fun convertTokenToToken(
-      dictionary: Map<String, List<String>>,
+  fun <DictKey> convertToken(
+      dictionary: Map<DictKey, List<String>>,
       delimiter: Char = ' '
-  ): Parser<String, String?> =
-      token(delimiter).map { token ->
-        for (entry in dictionary) {
-          if (entry.value.any { it == token }) {
-            return@map entry.key
-          }
-        }
-        return@map null
-      }
-
-  /**
-   * Parse the first [Token] of a [String], and try to find the corresponding homophone as a [Char]
-   *
-   * @param dictionary where the search the homophone
-   * @param delimiter the delimiter between each token.
-   */
-  fun convertTokenToChar(
-      dictionary: Map<Char, List<String>>,
-      delimiter: Char = ' '
-  ): Parser<String, Char?> =
+  ): Parser<String, DictKey?> =
       token(delimiter).map { token ->
         for (entry in dictionary) {
           if (entry.value.any { it == token }) {
