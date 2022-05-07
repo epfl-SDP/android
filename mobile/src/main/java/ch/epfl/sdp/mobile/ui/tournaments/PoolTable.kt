@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalContentColor
@@ -82,7 +81,7 @@ fun <P : PoolMember> PoolTable(
     CompositionLocalProvider(LocalContentColor provides PawniesColors.Green800) {
       PoolContent(
           players = data.members,
-          modifier = modifier.border(1.dp, Color.Cyan),
+          modifier = modifier,
           // TODO : Use a Text with a maximum width and ellipsis.
           playerContent = { Text(it.name.uppercase()) },
           // TODO : Use a Text with a maximum width and ellipsis.
@@ -114,11 +113,7 @@ fun <T> PoolContent(
         players.fastForEach { player -> Box(Modifier) { playerContent(player) } }
         // Compose all the players (vertically)
         players.fastForEach { player ->
-          Box(
-              Modifier.border(1.dp, Color.Green)
-                  .rotate(DefaultVerticalTextAngle)
-                  .border(1.dp, Color.Red),
-          ) { playerContent(player) }
+          Box(Modifier.rotate(DefaultVerticalTextAngle)) { playerContent(player) }
         }
         // Compose the score results
         Column(players, Modifier.clip(DefaultGridShape), scoreContent)
