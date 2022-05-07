@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
 import ch.epfl.sdp.mobile.application.chess.engine.Board
-import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
@@ -55,7 +54,7 @@ object VoiceInputCombinator {
   val position =
       combine(
           CommonNotationCombinators.position,
-          column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds })
+          CommonNotationCombinators.computePosition(column, row))
 
   /** A [Parser] which indicate the action between 2 position */
   private val actionSeparator = token("to")

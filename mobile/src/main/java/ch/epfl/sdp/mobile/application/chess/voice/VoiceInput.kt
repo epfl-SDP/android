@@ -21,7 +21,7 @@ object VoiceInput {
           // [ChesSpeechEnglishDictionary]. If your command is not recognize and you think that we
           // need to add this in our dictionary, you can reported here
           // https://github.com/epfl-SDP/android/issues/308
-          Log.d("Voice", s)
+          Log.i("Voice", s)
 
           val filtered = VoiceInputCombinator.action().parse(s.lowercase()).firstOrNull()?.output
 

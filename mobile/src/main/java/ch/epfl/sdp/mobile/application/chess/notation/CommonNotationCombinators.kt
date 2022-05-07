@@ -18,7 +18,14 @@ object CommonNotationCombinators {
   val row = StringCombinators.digit().map { 8 - it }.filter { it in 0 until Board.Size }
 
   /** A [Parser] which returns a [Position]. */
-  val position = column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
+  val position = this.computePosition(column, row)
+
+  fun computePosition(
+      column: Parser<String, Int>,
+      row: Parser<String, Int>
+  ): Parser<String, Position> {
+    return column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
+  }
 
   /** A [Parser] which returns a number of spaces */
   val spaces = StringCombinators.char(' ').repeatAtLeast(count = 1)
