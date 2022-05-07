@@ -151,7 +151,6 @@ class SnapshotPuzzleGameScreenState(
             }
 
     if (userCurrentlyPlaying && currentMoveNumber < puzzle.puzzleMoves.size) {
-      val expected = puzzle.puzzleMoves[currentMoveNumber]
       val actions =
           game.actions(Position(from.x, from.y))
               .filter { it.from + it.delta == Position(to.x, to.y) }
@@ -159,14 +158,7 @@ class SnapshotPuzzleGameScreenState(
 
       if (actions.size == 1) {
         val action = actions.first()
-        if (action == expected) {
-          game = step.move(actions.first())
-          currentMoveNumber++
-
-          scope.launch { attemptNextPuzzleMove() }
-        } else {
-          scope.launch { resetPuzzle() }
-        }
+        playPuzzleAction(step, action)
       } else {
         promotionFrom = from
         promotionTo = to
@@ -175,13 +167,26 @@ class SnapshotPuzzleGameScreenState(
     }
   }
 
-  private suspend fun resetPuzzle(delay: Long = 1000) {
+  private fun playPuzzleAction(step: NextStep.MovePiece, action: Action, delay: Long = 1000) {
+    val expected = puzzle.puzzleMoves[currentMoveNumber]
+
+    game = step.move(action)
+    currentMoveNumber++
+
+    if (action == expected) {
+      scope.launch { attemptNextBotMove(delay) }
+    } else {
+      scope.launch { resetPuzzle(delay) }
+    }
+  }
+
+  private suspend fun resetPuzzle(delay: Long) {
     delay(delay)
     game = puzzle.baseGame()
     currentMoveNumber = 1
   }
 
-  private suspend fun attemptNextPuzzleMove(delay: Long = 1000) {
+  private suspend fun attemptNextBotMove(delay: Long) {
     if (currentMoveNumber < puzzle.puzzleMoves.size) {
       delay(delay)
       val action = puzzle.puzzleMoves[currentMoveNumber]
@@ -189,7 +194,7 @@ class SnapshotPuzzleGameScreenState(
 
       game = step.move(action)
       currentMoveNumber++
-      // TODO: Handle promotion
+      // TODO: Handle promotion?
     }
   }
 
@@ -243,7 +248,7 @@ class SnapshotPuzzleGameScreenState(
             rank = rank.toEngineRank(),
         )
     val step = game.nextStep as? NextStep.MovePiece ?: return
-    game = step.move(action)
+    playPuzzleAction(step, action)
     choices = emptyList()
   }
 

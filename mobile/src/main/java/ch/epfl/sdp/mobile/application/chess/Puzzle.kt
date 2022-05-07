@@ -31,12 +31,13 @@ interface Puzzle {
   val elo: Int
 }
 
-fun Puzzle.baseGame(): Game  {
-  val baseGame = PersistentGame(
-    previous = null,
-    nextPlayer = boardSnapshot.playing,
-    boards = persistentListOf(boardSnapshot.board),
-  )
+fun Puzzle.baseGame(): Game {
+  val baseGame =
+      PersistentGame(
+          previous = null,
+          nextPlayer = boardSnapshot.playing,
+          boards = persistentListOf(boardSnapshot.board),
+      )
 
   val step = baseGame.nextStep as? NextStep.MovePiece ?: return baseGame
   val move = puzzleMoves.firstOrNull() ?: return baseGame
