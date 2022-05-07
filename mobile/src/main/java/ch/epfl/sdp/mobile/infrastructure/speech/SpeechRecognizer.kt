@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.infrastructure.speech
 
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+
 /** An interface providing access to the native [SpeechRecognizer] of the platform. */
 interface SpeechRecognizer {
 
@@ -14,7 +16,7 @@ interface SpeechRecognizer {
      *
      * @param results the [List] of speech recognition results, ordered by decreasing score.
      */
-    fun onResults(results: List<String>)
+    fun onResults(results: Pair<ChessBoardState.Position, ChessBoardState.Position>)
   }
 
   /**

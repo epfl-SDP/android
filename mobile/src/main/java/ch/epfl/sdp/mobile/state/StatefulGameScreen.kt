@@ -153,7 +153,9 @@ constructor(
             when (val speech = facade.recognize()) {
               // TODO : Display an appropriate message, otherwise act on the board.
               Failure.Internal -> snackbarHostState.showSnackbar("Internal failure")
-              is Success -> for (result in speech.results) snackbarHostState.showSnackbar(result)
+              is Success -> {
+                snackbarHostState.showSnackbar(speech.results.toString())
+              }
             }
           }
         } finally {

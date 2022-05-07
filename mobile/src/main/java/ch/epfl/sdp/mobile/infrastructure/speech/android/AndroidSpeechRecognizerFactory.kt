@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.speech.RecognizerIntent.*
 import android.speech.SpeechRecognizer as NativeSpeechRecognizer
 import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
+import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toPosition
 
 /** The default locale we'll be using for speech recognition. */
 private const val DefaultLanguage = "en-US"
@@ -55,7 +57,13 @@ class AndroidSpeechRecognizer(
             override fun onError(error: Int) = listener.onError()
             override fun onResults(
                 results: Bundle?,
-            ) = listener.onResults(results?.getStringArrayList(RESULTS_RECOGNITION) ?: emptyList())
+            ) {
+              val input = results?.getStringArrayList(RESULTS_RECOGNITION) ?: emptyList()
+              // TODO : Error is null
+              val action = VoiceInput.parseInput(input)!!
+              listener.onResults(
+                  Pair(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition()))
+            }
           },
       )
 

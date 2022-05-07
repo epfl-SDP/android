@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.application.speech
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -29,7 +30,8 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
      *
      * @param results the [List] of possible results.
      */
-    data class Success(val results: List<String>) : RecognitionResult
+    data class Success(val results: Pair<ChessBoardState.Position, ChessBoardState.Position>) :
+        RecognitionResult
   }
 
   /**
@@ -52,7 +54,9 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
             cleanup()
             cont.resume(Failure.Internal)
           }
-          override fun onResults(results: List<String>) {
+          override fun onResults(
+              results: Pair<ChessBoardState.Position, ChessBoardState.Position>
+          ) {
             cleanup()
             cont.resume(Success(results))
           }
