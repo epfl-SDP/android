@@ -202,6 +202,8 @@ class SnapshotPuzzleGameScreenState(
       currentMoveNumber++
     } else {
       puzzleState = PuzzleState.Solved
+      // TODO: Mark puzzle as solved
+      //facade.solvePuzzle(puzzle.uid)
     }
   }
 
