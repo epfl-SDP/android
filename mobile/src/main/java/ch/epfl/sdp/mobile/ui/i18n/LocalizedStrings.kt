@@ -87,7 +87,12 @@ interface LocalizedStrings {
   val sectionSocial: String
   val sectionSettings: String
   val sectionPlay: String
+  val sectionContests: String
+
   val newGame: String
+  val newContest: String
+
+  val tournamentContestsTitle : String
 
   val prepareGameChooseColor: String
   val prepareGameChooseOpponent: String
