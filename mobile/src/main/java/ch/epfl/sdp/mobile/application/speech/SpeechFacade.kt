@@ -54,11 +54,17 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
             cleanup()
             cont.resume(Failure.Internal)
           }
+
           override fun onResults(
-              results: Pair<ChessBoardState.Position, ChessBoardState.Position>
+              results: Pair<ChessBoardState.Position, ChessBoardState.Position>?
           ) {
             cleanup()
-            cont.resume(Success(results))
+            // TODO : it's duplicate with [AndroidSpeechRecognizer] ?
+            if (results == null) {
+              cont.resume(Failure.Internal)
+            } else {
+              cont.resume(Success(results))
+            }
           }
         },
     )
