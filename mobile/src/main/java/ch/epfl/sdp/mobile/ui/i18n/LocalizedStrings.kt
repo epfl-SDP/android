@@ -107,7 +107,7 @@ interface LocalizedStrings {
   val puzzlePlayingAs: String
   val puzzleUnsolvedPuzzles: String
   val puzzleListCD: String
-  
+
   val tournamentsBadgeJoin: String
   val tournamentsBadgeParticipant: String
   val tournamentsBadgeAdmin: String
