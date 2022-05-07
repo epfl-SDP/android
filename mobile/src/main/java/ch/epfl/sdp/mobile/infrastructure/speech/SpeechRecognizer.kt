@@ -16,7 +16,7 @@ interface SpeechRecognizer {
      *
      * @param results the [List] of speech recognition results, ordered by decreasing score.
      */
-    fun onResults(results: Pair<ChessBoardState.Position, ChessBoardState.Position>)
+    fun onResults(results: Pair<ChessBoardState.Position, ChessBoardState.Position>?)
   }
 
   /**

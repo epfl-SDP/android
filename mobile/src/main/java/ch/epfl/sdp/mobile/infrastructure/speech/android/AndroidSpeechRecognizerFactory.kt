@@ -59,10 +59,13 @@ class AndroidSpeechRecognizer(
                 results: Bundle?,
             ) {
               val input = results?.getStringArrayList(RESULTS_RECOGNITION) ?: emptyList()
-              // TODO : Error is null
-              val action = VoiceInput.parseInput(input)!!
-              listener.onResults(
-                  Pair(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition()))
+              val action = VoiceInput.parseInput(input)
+              if (action == null) {
+                listener.onError()
+              } else {
+                listener.onResults(
+                    Pair(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition()))
+              }
             }
           },
       )
