@@ -31,4 +31,19 @@ class VoiceInputCombinatorTest {
 
     assertThat(res).isEqualTo(expected)
   }
+
+  @Test
+  fun given_aListOfPossibilityInput_when_parsed_returnTheBestMatchResult() {
+    val res = VoiceInput.parseInput(listOf("This is a test", "King C2 to C4"))
+    val expected = Action.Move(Position(2, 6), Delta(0, -2))
+
+    assertThat(res).isEqualTo(expected)
+  }
+
+  @Test
+  fun given_aListOfNotMatchingInput_when_parsed_returnNull() {
+    val res = VoiceInput.parseInput(listOf("This is a test", "This is not a test"))
+
+    assertThat(res).isEqualTo(null)
+  }
 }
