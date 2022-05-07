@@ -8,11 +8,8 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.chess.Match
-import ch.epfl.sdp.mobile.application.chess.Puzzle
+import ch.epfl.sdp.mobile.application.chess.*
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.state.game.MatchChessBoardState
@@ -27,8 +24,8 @@ import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -103,15 +100,9 @@ class SnapshotPuzzleGameScreenState(
     SpeechRecognizerState by speechRecognizerState {
 
   /** The current [Game], which is updated when the [Match] progresses. */
-  var game: Game by
-      mutableStateOf(
-          PersistentGame(
-              previous = null,
-              nextPlayer = puzzle.boardSnapshot.playing,
-              boards = persistentListOf(puzzle.boardSnapshot.board),
-          ),
-      )
+  var game: Game by mutableStateOf(puzzle.baseGame())
     private set
+  private var currentMoveNumber: Int = 1 // Always start with playing "computer" move
 
   override fun onBackClick() = actions.onBack()
 
@@ -143,13 +134,6 @@ class SnapshotPuzzleGameScreenState(
     }
   }
 
-  /**
-   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
-   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
-   *
-   * @param from the start [ChessBoardState.Position].
-   * @param to the end [ChessBoardState.Position].
-   */
   private fun tryPerformMove(
       from: ChessBoardState.Position,
       to: ChessBoardState.Position,
@@ -167,13 +151,22 @@ class SnapshotPuzzleGameScreenState(
             }
 
     if (userCurrentlyPlaying) {
+      val expected = puzzle.puzzleMoves[currentMoveNumber]
       val actions =
           game.actions(Position(from.x, from.y))
               .filter { it.from + it.delta == Position(to.x, to.y) }
               .toList()
 
       if (actions.size == 1) {
-        scope.launch { game = step.move(actions.first()) }
+        val action = actions.first()
+        if (action == expected) {
+          game = step.move(actions.first())
+          currentMoveNumber++
+
+          scope.launch { attemptNextPuzzleMove() }
+        } else {
+          scope.launch { resetPuzzle() }
+        }
       } else {
         promotionFrom = from
         promotionTo = to
@@ -182,37 +175,22 @@ class SnapshotPuzzleGameScreenState(
     }
   }
 
-  // Promotion management.
-  override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())
-    private set
-
-  override val confirmEnabled: Boolean
-    get() = selection != null
-
-  override var selection: ChessBoardState.Rank? by mutableStateOf(null)
-    private set
-
-  private var promotionFrom by mutableStateOf(ChessBoardState.Position(0, 0))
-  private var promotionTo by mutableStateOf(ChessBoardState.Position(0, 0))
-
-  override fun onConfirm() {
-    val rank = selection ?: return
-    selection = null
-    val action =
-        Action.Promote(
-            from = Position(promotionFrom.x, promotionFrom.y),
-            to = Position(promotionTo.x, promotionTo.y),
-            rank = rank.toEngineRank(),
-        )
-    val step = game.nextStep as? NextStep.MovePiece ?: return
-    scope.launch {
-      game = step.move(action)
-      choices = emptyList()
-    }
+  private suspend fun resetPuzzle(delay: Long = 1000) {
+    delay(delay)
+    game = puzzle.baseGame()
+    currentMoveNumber = 1
   }
 
-  override fun onSelect(rank: ChessBoardState.Rank) {
-    selection = if (rank == selection) null else rank
+  private suspend fun attemptNextPuzzleMove(delay: Long = 1000) {
+    if (currentMoveNumber <= puzzle.puzzleMoves.size) {
+      delay(delay)
+      val action = puzzle.puzzleMoves[currentMoveNumber]
+      val step = game.nextStep as? NextStep.MovePiece ?: return
+
+      game = step.move(action)
+      currentMoveNumber++
+      // TODO: Handle promotion
+    }
   }
 
   override val moves: List<Move>
@@ -241,4 +219,35 @@ class SnapshotPuzzleGameScreenState(
           }
           .toPosition()
     }
+
+  // Promotion management.
+  override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())
+    private set
+
+  override val confirmEnabled: Boolean
+    get() = selection != null
+
+  override var selection: ChessBoardState.Rank? by mutableStateOf(null)
+    private set
+  private var promotionFrom by mutableStateOf(ChessBoardState.Position(0, 0))
+
+  private var promotionTo by mutableStateOf(ChessBoardState.Position(0, 0))
+
+  override fun onConfirm() {
+    val rank = selection ?: return
+    selection = null
+    val action =
+        Action.Promote(
+            from = Position(promotionFrom.x, promotionFrom.y),
+            to = Position(promotionTo.x, promotionTo.y),
+            rank = rank.toEngineRank(),
+        )
+    val step = game.nextStep as? NextStep.MovePiece ?: return
+    game = step.move(action)
+    choices = emptyList()
+  }
+
+  override fun onSelect(rank: ChessBoardState.Rank) {
+    selection = if (rank == selection) null else rank
+  }
 }

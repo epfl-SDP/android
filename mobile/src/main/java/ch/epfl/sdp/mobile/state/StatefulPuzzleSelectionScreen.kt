@@ -83,8 +83,9 @@ data class PuzzleInfoAdapter(
 fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
   val playerColor =
       when (this.boardSnapshot.playing) {
-        Color.White -> ChessBoardState.Color.White
-        Color.Black -> ChessBoardState.Color.Black
+        // Inverted colors to FEN since first UCI moves describes "computer" move
+        Color.White -> ChessBoardState.Color.Black
+        Color.Black -> ChessBoardState.Color.White
       }
 
   val board = this.boardSnapshot.board
