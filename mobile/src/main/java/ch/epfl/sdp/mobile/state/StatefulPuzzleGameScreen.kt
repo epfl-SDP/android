@@ -1,16 +1,33 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package ch.epfl.sdp.mobile.state
 
+import android.Manifest.permission.RECORD_AUDIO
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.Puzzle
+import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toPosition
+import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toRank
+import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.game.GameScreenState.*
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -19,53 +36,209 @@ import kotlinx.coroutines.launch
  *
  * @param user the currently logged-in user.
  * @param puzzleId the identifier for the puzzle.
+ * @param actions the [StatefulGameScreenActions] to perform.
  * @param modifier the [Modifier] for the composable.
  * @param paddingValues the [PaddingValues] for this composable.
+ * @param audioPermissionState the [PermissionState] which provides access to audio content.
  */
 @Composable
 fun StatefulPuzzleGameScreen(
     user: AuthenticatedUser,
     puzzleId: String,
+    actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(),
+    audioPermissionState: PermissionState = rememberPermissionState(RECORD_AUDIO),
 ) {
-  val facade = LocalChessFacade.current
+  val chessFacade = LocalChessFacade.current
+  val speechFacade = LocalSpeechFacade.current
+
   val scope = rememberCoroutineScope()
+  val puzzle = chessFacade.puzzle(uid = puzzleId) ?: Puzzle()
 
-  val puzzle = facade.puzzle(uid = puzzleId) ?: Puzzle()
-
-  val puzzleGameScreenState =
-      remember(user, puzzle, scope) {
-        SnapshotPuzzleBoardState(
-            puzzle = puzzle.toPuzzleInfoAdapter(),
-            user = user,
-            facade = facade,
+  val snackbarHostState = remember { SnackbarHostState() }
+  val speechRecognizerState =
+      remember(audioPermissionState, speechFacade, snackbarHostState, scope) {
+        SnackbarSpeechRecognizerState(
+            permission = audioPermissionState,
+            facade = speechFacade,
+            snackbarHostState = snackbarHostState,
             scope = scope,
         )
       }
+
+  val puzzleGameScreenState =
+      remember(actions, user, puzzle, chessFacade, scope) {
+        SnapshotPuzzleGameScreenState(
+            actions = actions,
+            user = user,
+            puzzle = puzzle,
+            scope = scope,
+            facade = chessFacade,
+            speechRecognizerState = speechRecognizerState,
+        )
+      }
+
+  StatefulPromoteDialog(puzzleGameScreenState)
 
   PuzzleGameScreen(
       state = puzzleGameScreenState,
       modifier = modifier,
       contentPadding = paddingValues,
+      snackbarHostState = snackbarHostState,
   )
 }
 
-/**
- * An implementation of [PuzzleGameScreenState]
- *
- * @param puzzle The [Puzzle] to load
- * @param user the currently logged-in [AuthenticatedUser]
- * @param facade the [ChessFacade] to manipulate [Puzzle]s
- * @param scope a [CoroutineScope]
- */
-class SnapshotPuzzleBoardState(
-    override val puzzle: PuzzleInfo,
+class SnapshotPuzzleGameScreenState(
+    private val actions: StatefulGameScreenActions,
     private val user: AuthenticatedUser,
-    private val facade: ChessFacade,
+    private val puzzle: Puzzle,
     private val scope: CoroutineScope,
-) : PuzzleGameScreenState {
+    private val facade: ChessFacade,
+    private val speechRecognizerState: SpeechRecognizerState,
+) :
+    PuzzleGameScreenState<ChessBoardState.Piece>,
+    PromotionState,
+    MovableChessBoardState<ChessBoardState.Piece>,
+    SpeechRecognizerState by speechRecognizerState {
+
+  /** The current [Game], which is updated when the [Match] progresses. */
+  var game: Game by
+      mutableStateOf(
+          PersistentGame(
+              previous = null,
+              nextPlayer = puzzle.boardSnapshot.playing,
+              boards = persistentListOf(puzzle.boardSnapshot.board),
+          ),
+      )
+    private set
+
+  override fun onBackClick() = actions.onBack()
+
+  /** The currently selected [Position] of the board. */
+  override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
+    private set
+
+  override val availableMoves: Set<ChessBoardState.Position>
+    // Display all the possible moves for all the pieces on the board.
+    get() {
+      val position = selectedPosition ?: return emptySet()
+      return game.actions(Position(position.x, position.y))
+          .mapNotNull { it.from + it.delta }
+          .map { it.toPosition() }
+          .toSet()
+    }
+
+  override fun onDropPiece(piece: ChessBoardState.Piece, endPosition: ChessBoardState.Position) {
+    val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
+    tryPerformMove(startPosition, endPosition)
+  }
+
+  override fun onPositionClick(position: ChessBoardState.Position) {
+    val from = selectedPosition
+    if (from == null) {
+      selectedPosition = position
+    } else {
+      tryPerformMove(from, position)
+    }
+  }
+
+  /**
+   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
+   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
+   *
+   * @param from the start [ChessBoardState.Position].
+   * @param to the end [ChessBoardState.Position].
+   */
+  private fun tryPerformMove(
+      from: ChessBoardState.Position,
+      to: ChessBoardState.Position,
+  ) {
+    // Hide the current selection.
+    selectedPosition = null
+
+    val step = game.nextStep as? NextStep.MovePiece ?: return
+
+    val userCurrentlyPlaying =
+        step.turn ==
+            when (puzzleInfo.playerColor) {
+              ChessBoardState.Color.White -> Color.White
+              ChessBoardState.Color.Black -> Color.Black
+            }
+
+    if (userCurrentlyPlaying) {
+      val actions =
+          game.actions(Position(from.x, from.y))
+              .filter { it.from + it.delta == Position(to.x, to.y) }
+              .toList()
+
+      if (actions.size == 1) {
+        scope.launch { game = step.move(actions.first()) }
+      } else {
+        promotionFrom = from
+        promotionTo = to
+        choices = actions.filterIsInstance<Action.Promote>().map { it.rank.toRank() }
+      }
+    }
+  }
+
+  // Promotion management.
+  override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())
+    private set
+
+  override val confirmEnabled: Boolean
+    get() = selection != null
+
+  override var selection: ChessBoardState.Rank? by mutableStateOf(null)
+    private set
+
+  private var promotionFrom by mutableStateOf(ChessBoardState.Position(0, 0))
+  private var promotionTo by mutableStateOf(ChessBoardState.Position(0, 0))
+
+  override fun onConfirm() {
+    val rank = selection ?: return
+    selection = null
+    val action =
+        Action.Promote(
+            from = Position(promotionFrom.x, promotionFrom.y),
+            to = Position(promotionTo.x, promotionTo.y),
+            rank = rank.toEngineRank(),
+        )
+    val step = game.nextStep as? NextStep.MovePiece ?: return
+    scope.launch {
+      game = step.move(action)
+      choices = emptyList()
+    }
+  }
+
+  override fun onSelect(rank: ChessBoardState.Rank) {
+    selection = if (rank == selection) null else rank
+  }
+
+  override val moves: List<Move>
+    get() = game.toAlgebraicNotation().map(::Move)
+
+  override val puzzleInfo: PuzzleInfo
+    get() = puzzle.toPuzzleInfoAdapter()
+
   override fun solve() {
     scope.launch { facade.solvePuzzle(puzzle.uid, user) }
   }
+
+  override val pieces: Map<ChessBoardState.Position, MatchChessBoardState.Piece>
+    get() =
+        game.board.associate { (pos, piece) ->
+          pos.toPosition() to MatchChessBoardState.Piece(piece)
+        }
+
+  override val checkPosition: ChessBoardState.Position?
+    get() {
+      val nextStep = game.nextStep
+      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
+      return game.board
+          .firstNotNullOf { (position, piece) ->
+            position.takeIf { piece.color == nextStep.turn && piece.rank == Rank.King }
+          }
+          .toPosition()
+    }
 }

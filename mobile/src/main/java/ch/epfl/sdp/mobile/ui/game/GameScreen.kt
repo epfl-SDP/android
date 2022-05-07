@@ -122,7 +122,7 @@ private val Message.text: String
  * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-private fun Moves(
+fun Moves(
     moves: List<Move>,
     modifier: Modifier = Modifier,
 ) {

@@ -161,9 +161,15 @@ fun StatefulHome(
       }
       composable("$PuzzleGameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", PuzzleGameDefaultId)
+        val actions =
+          StatefulGameScreenActions(
+            onBack = { controller.popBackStack() },
+            onShowAr = {}, // TODO: Refactor AR to show puzzle?...
+          )
         StatefulPuzzleGameScreen(
             user = user,
             puzzleId = id,
+            actions = actions,
             modifier = Modifier.fillMaxSize(),
             paddingValues = paddingValues,
         )
