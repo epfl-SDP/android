@@ -100,4 +100,8 @@ object English : LocalizedStrings {
   override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
+
+  override val tournamentsBadgeJoin = "Join"
+  override val tournamentsBadgeParticipant = "Participant"
+  override val tournamentsBadgeAdmin = "Admin"
 }
