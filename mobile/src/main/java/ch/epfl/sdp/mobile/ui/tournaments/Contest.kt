@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 
-@Composable fun Contest() {}
+/** Composes a Contest log. */
+@OptIn(ExperimentalMaterialApi::class) @Composable fun Contest() {}
