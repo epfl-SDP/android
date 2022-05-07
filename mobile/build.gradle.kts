@@ -34,7 +34,10 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
-  testOptions { packagingOptions { jniLibs { useLegacyPackaging = true } } }
+  testOptions {
+    packagingOptions { jniLibs { useLegacyPackaging = true } }
+    unitTests.isReturnDefaultValues = true
+  }
 
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
