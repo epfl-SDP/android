@@ -26,4 +26,12 @@ interface PuzzleGameScreenState<Piece : ChessBoardState.Piece> :
 
   /** A callback which will be invoked if the user wants to go back in the hierarchy. */
   fun onBackClick()
+
+  var puzzleState: PuzzleState
+
+  enum class PuzzleState {
+    Solving,
+    Failed,
+    Solved,
+  }
 }

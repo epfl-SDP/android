@@ -53,7 +53,7 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
           Text(strings.puzzlesTitle.uppercase(), style = typo.h6)
-          PuzzleDirective(color = state.puzzleInfo.playerColor)
+          PuzzleDirective(color = state.puzzleInfo.playerColor, puzzleState = state.puzzleState)
           ProvideTextStyle(typo.subtitle1) { ClassicChessBoard(state) }
           Spacer(Modifier)
           Column {
@@ -75,11 +75,37 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
 @Composable
 private fun PuzzleDirective(
     color: ChessBoardState.Color,
+    puzzleState: PuzzleGameScreenState.PuzzleState,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
+  val colors = MaterialTheme.colors
+
+  @Composable
+  fun Directive() =
+      when (puzzleState) {
+        PuzzleGameScreenState.PuzzleState.Solving ->
+            Text(
+                strings.puzzleFindMove(color.toString()),
+                color = colors.primary,
+                style = MaterialTheme.typography.subtitle1,
+            )
+        PuzzleGameScreenState.PuzzleState.Failed ->
+            Text(
+                strings.puzzleFailed,
+                color = colors.secondary,
+                style = MaterialTheme.typography.subtitle1,
+            )
+        PuzzleGameScreenState.PuzzleState.Solved ->
+            Text(
+                strings.puzzleSolved,
+                color = colors.primaryVariant,
+                style = MaterialTheme.typography.subtitle1,
+            )
+      }
+
   Row(modifier, Arrangement.spacedBy(8.dp), Alignment.CenterVertically) {
     Icon(ChessIcons.BlackKing, null, Modifier.size(32.dp))
-    Text(strings.puzzleFindMove(color.toString()), style = MaterialTheme.typography.subtitle1)
+    Directive()
   }
 }

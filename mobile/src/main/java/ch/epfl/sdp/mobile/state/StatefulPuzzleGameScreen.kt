@@ -20,6 +20,7 @@ import ch.epfl.sdp.mobile.ui.game.*
 import ch.epfl.sdp.mobile.ui.game.GameScreenState.*
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState.PuzzleState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -38,6 +39,7 @@ import kotlinx.coroutines.launch
  * @param paddingValues the [PaddingValues] for this composable.
  * @param audioPermissionState the [PermissionState] which provides access to audio content.
  */
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun StatefulPuzzleGameScreen(
     user: AuthenticatedUser,
@@ -103,6 +105,8 @@ class SnapshotPuzzleGameScreenState(
   var game: Game by mutableStateOf(puzzle.baseGame())
     private set
   private var currentMoveNumber: Int = 1 // Always start with playing "computer" move
+
+  override var puzzleState: PuzzleState by mutableStateOf(PuzzleState.Solving)
 
   override fun onBackClick() = actions.onBack()
 
@@ -181,9 +185,11 @@ class SnapshotPuzzleGameScreenState(
   }
 
   private suspend fun resetPuzzle(delay: Long) {
+    puzzleState = PuzzleState.Failed
     delay(delay)
     game = puzzle.baseGame()
     currentMoveNumber = 1
+    puzzleState = PuzzleState.Solving
   }
 
   private suspend fun attemptNextBotMove(delay: Long) {
@@ -194,6 +200,8 @@ class SnapshotPuzzleGameScreenState(
 
       game = step.move(action)
       currentMoveNumber++
+    } else {
+      puzzleState = PuzzleState.Solved
     }
   }
 
@@ -230,9 +238,9 @@ class SnapshotPuzzleGameScreenState(
 
   override val confirmEnabled: Boolean
     get() = selection != null
-
   override var selection: ChessBoardState.Rank? by mutableStateOf(null)
     private set
+
   private var promotionFrom by mutableStateOf(ChessBoardState.Position(0, 0))
 
   private var promotionTo by mutableStateOf(ChessBoardState.Position(0, 0))

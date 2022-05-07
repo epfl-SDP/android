@@ -109,6 +109,8 @@ interface LocalizedStrings {
   val puzzleListCD: String
   val puzzlesTitle: String
   val puzzleFindMove: (color: String) -> String
+  val puzzleFailed: String
+  val puzzleSolved: String
   val puzzleNumber: (id: String) -> String
   val puzzleRating: (rating: String) -> String
 
