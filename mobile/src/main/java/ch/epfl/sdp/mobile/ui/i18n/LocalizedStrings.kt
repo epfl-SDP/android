@@ -92,7 +92,7 @@ interface LocalizedStrings {
   val newGame: String
   val newContest: String
 
-  val tournamentContestsTitle : String
+  val tournamentContestsTitle: String
 
   val prepareGameChooseColor: String
   val prepareGameChooseOpponent: String
