@@ -26,8 +26,8 @@ fun ContestScreen(
       innerPadding ->
     Column {
       Row(
-          horizontalArrangement = Arrangement.Center,
-          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.Start,
+          verticalAlignment = Alignment.Top,
           modifier = modifier.padding(start = 16.dp, top = 12.dp, bottom = 16.dp, end = 16.dp)) {
         Text(
             text = strings.tournamentContestsTitle,
@@ -49,7 +49,7 @@ fun newContestButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       shape = RoundedCornerShape(28.dp),
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
       colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface),
-      modifier = modifier) {
+      modifier = modifier.width(194.dp).height(56.dp)) {
     Icon(PawniesIcons.Add, null)
     Spacer(Modifier.width(8.dp))
     Text(strings.newContest)
