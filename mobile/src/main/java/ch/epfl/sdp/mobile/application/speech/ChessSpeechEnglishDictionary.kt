@@ -34,7 +34,7 @@ object ChessSpeechEnglishDictionary : ChessDictionary {
                   "pink",
                   "qing",
                   "keying"), // rule finishes with "ing/inc"
-          "rook" to listOf("rook", "rooke", "rouck", "ruk", "brooke", "rock"),
+          "rook" to listOf("rook", "rooke", "rouck", "ruk", "brooke", "rock", "route"),
           "pawn" to listOf("pawn", "bond", "bon", "phone", "fun", "porn"), // starts with pon/bon
           "bishop" to listOf("bishop", "shop", "up", "beat", "sharp"),
           "knight" to listOf("knight"))
@@ -67,17 +67,20 @@ object ChessSpeechEnglishDictionary : ChessDictionary {
   // Letters
   override val letters =
       mapOf(
-          'a' to listOf("a", "ahh", "ah", "ay"),
+          'a' to
+              mutableListOf("a", "ahh", "ah", "ay").apply {
+                this.addAll(numbers.getOrDefault('8', emptyList()))
+              },
           'b' to listOf("b", "be", "bea", "bee", "beef", "bebe", "me"),
-          'c' to listOf("c", "see", "sea", "seat", "cee", "si", "ce", "c"),
+          'c' to listOf("c", "see", "sea", "seat", "cee", "si", "ce"),
           'd' to listOf("d", "dee", "di", "dd"),
           'e' to listOf("e", "ee", "eh", "he"),
-          'f' to listOf("f", "ff", "if", "ef"),
+          'f' to listOf("f", "ff", "if", "ef", "s"),
           'g' to listOf("g", "gg"),
           'h' to listOf("h", "age", "stage", "eight", "teach", "sage", "gage", "each"),
       )
 
-  override val actions = mapOf("to" to listOf("to", "two", "too", "to"))
+  override val actions = mapOf("to" to listOf("to", "two", "too", "to", "2"))
 
   override val placements: Set<String> =
       letters.keys.flatMap { letter -> numbers.keys.map { num -> "" + letter + num } }.toSet()
