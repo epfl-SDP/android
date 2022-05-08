@@ -78,6 +78,21 @@ fun ChessBoardRobotInputScope.click(x: Int, y: Int, pointerId: Int = 0) {
 }
 
 /**
+ * Performs a click gesture with the pointer with the given id at a specific position in algebraic
+ * notation.
+ *
+ * @param x the row coordinate, as a character in algebraic notation.
+ * @param y the col coordinate, as an integer in algebraic notation.
+ * @param pointerId the identifier of the pointer.
+ */
+fun ChessBoardRobotInputScope.click(x: Char, y: Int, pointerId: Int = 0) {
+  down(x = x - 'a', y = 8 - y, pointerId = pointerId)
+  // Required to send a move event. See TouchInjectionScope.click() for details.
+  moveBy(x = 0, y = 0, pointerId = pointerId)
+  up(pointerId = pointerId)
+}
+
+/**
  * Performs a drag gesture between two positions with the pointer with the given id.
  *
  * @param from the original [ChessBoardState.Position].

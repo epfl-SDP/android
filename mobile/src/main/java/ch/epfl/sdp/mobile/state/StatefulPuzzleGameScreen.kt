@@ -202,8 +202,8 @@ class SnapshotPuzzleGameScreenState(
       currentMoveNumber++
     } else {
       puzzleState = PuzzleState.Solved
-      // TODO: Mark puzzle as solved
-      //facade.solvePuzzle(puzzle.uid)
+      // TODO: Mark puzzle as solved. Understand why it resets the current puzzle
+      // facade.solvePuzzle(puzzle.uid, user)
     }
   }
 

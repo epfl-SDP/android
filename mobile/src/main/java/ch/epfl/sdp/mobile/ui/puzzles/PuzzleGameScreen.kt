@@ -86,7 +86,7 @@ private fun PuzzleDirective(
       when (puzzleState) {
         PuzzleGameScreenState.PuzzleState.Solving ->
             Text(
-                strings.puzzleFindMove(color.toString()),
+                strings.puzzleSolving(color.toString()),
                 color = colors.primary,
                 style = MaterialTheme.typography.subtitle1,
             )
