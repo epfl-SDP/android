@@ -26,10 +26,10 @@ import ch.epfl.sdp.mobile.ui.plus
  * @param contentPadding the [PaddingValues] for this screen.
  */
 @Composable
-fun ContestScreen(
-    state: ContestScreenState,
+fun <C : Contest> ContestScreen(
+    state: ContestScreenState<C>,
     modifier: Modifier = Modifier,
-    key: ((Contest) -> Any)? = null,
+    key: ((C) -> Any)? = null,
     contentPadding: PaddingValues = PaddingValues()
 ) {
   val strings = LocalLocalizedStrings.current
@@ -56,7 +56,7 @@ fun ContestScreen(
         LazyColumn(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = innerPadding,
+            contentPadding = totalPadding,
             modifier = Modifier.fillMaxWidth()) {
           items(state.contests, key) { contest -> ContestItem(contest = contest, onClick = {}) }
         }

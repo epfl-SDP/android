@@ -4,10 +4,10 @@ import androidx.compose.runtime.Stable
 
 /** The view-model of the list of tournaments screen. */
 @Stable
-interface ContestScreenState {
+interface ContestScreenState<C : Contest> {
 
   /** The list of completed and ongoing tournaments. */
-  val contests: List<Contest>
+  val contests: List<C>
 
   /** Callback called when the "New Contest" button is clicked. */
   fun onNewContestClick()
