@@ -16,6 +16,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinish
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertToken
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
 import ch.epfl.sdp.mobile.application.speech.ChessSpeechEnglishDictionary
+import ch.epfl.sdp.mobile.application.speech.ChessSpeechFilterRules.rulesSet
 
 /** An object that parse a "perfect" voice input into engine notation */
 object VoiceInputCombinator {
@@ -25,17 +26,32 @@ object VoiceInputCombinator {
    */
   // TODO : Internationalization
   private val rank =
-      convertToken(ChessSpeechEnglishDictionary.chessPieces).map {
-        when (it) {
-          "king" -> Rank.King
-          "queen" -> Rank.Queen
-          "rook" -> Rank.Rook
-          "bishop" -> Rank.Bishop
-          "knight" -> Rank.Knight
-          "pawn" -> Rank.Pawn
-          else -> null
-        }
-      }
+  // Try to transformed into a our chess word
+  combine(
+              convertToken(ChessSpeechEnglishDictionary.chessPieces),
+              token().map { token ->
+                rulesSet
+                    .map { chessRule ->
+                      // Apply rule
+                      val res = chessRule.rule(token)
+                      res
+                    }
+                    .firstOrNull { res ->
+                      // Get the 1st value that have been transformed
+                      res != null
+                    }
+              })
+          .map {
+            when (it) {
+              "king" -> Rank.King
+              "queen" -> Rank.Queen
+              "rook" -> Rank.Rook
+              "bishop" -> Rank.Bishop
+              "knight" -> Rank.Knight
+              "pawn" -> Rank.Pawn
+              else -> null
+            }
+          }
 
   val column =
       convertToken(ChessSpeechEnglishDictionary.letters).filter { it in 'a'..'h' }.map {
@@ -77,7 +93,10 @@ object VoiceInputCombinator {
       position // No leading rank because only pawns may be promoted.
           .flatMap { from ->
             actionSeparator.flatMap {
-              position.flatMap { to -> rank.map { rank -> Promote(from, to, rank!!) } }
+              position.flatMap { to ->
+                // remove word that cannot be converted
+                rank.filter { it != null }.map { rank -> Promote(from, to, rank!!) }
+              }
             }
           }
           .checkFinished()
