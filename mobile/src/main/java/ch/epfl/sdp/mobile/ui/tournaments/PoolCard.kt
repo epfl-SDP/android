@@ -2,10 +2,8 @@ package ch.epfl.sdp.mobile.ui.tournaments
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Arrangement.Top
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -16,17 +14,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
-import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status.Ongoing
 import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status.StillOpen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * The information displayed within a pool card.
@@ -140,77 +133,4 @@ private fun PoolStatusText(
       style = MaterialTheme.typography.subtitle1,
       color = PawniesColors.Orange200,
   )
-}
-
-// FIXME : REMOVE THESE PREVIEW COMPOSABLES
-
-data class IndexedPoolMember(
-    val index: Int,
-    private val nameState: State<String>,
-    override val total: PoolScore?,
-) : PoolMember {
-
-  constructor(
-      index: Int,
-      name: String,
-      total: PoolScore?,
-  ) : this(index, mutableStateOf(name), total)
-
-  override val name by nameState
-}
-
-class IndexPoolInfo(
-    private val index: Int,
-    scope: CoroutineScope,
-) : PoolInfo<IndexedPoolMember> {
-
-  private var matthieu = mutableStateOf("Matthieu")
-
-  init {
-    scope.launch {
-      while (true) {
-
-        matthieu.value = "Matthieu Burguburu The Overflow"
-        delay(3000)
-
-        matthieu.value = "Matthieu"
-        delay(3000)
-      }
-    }
-  }
-
-  override val members =
-      listOf(
-          IndexedPoolMember(0, "Alexandre", 2),
-          IndexedPoolMember(1, "Badr", 10),
-          IndexedPoolMember(2, "Chau", 16),
-          IndexedPoolMember(3, "Fouad", 5),
-          IndexedPoolMember(4, "Lars", 6),
-          IndexedPoolMember(5, matthieu, 4),
-      )
-
-  override fun IndexedPoolMember.scoreAgainst(other: IndexedPoolMember) =
-      ((index + other.index) * 373) % 5
-
-  override val name: String = "Pool #$index"
-
-  override val status: Status = StillOpen
-
-  override var startNextRoundEnabled by mutableStateOf((index % 2) == 0)
-    private set
-
-  override fun onStartNextRound() {
-    startNextRoundEnabled = false
-  }
-}
-
-@Preview
-@Composable
-fun WonderfulPreview() = PawniesTheme {
-  val scope = rememberCoroutineScope()
-  LazyColumn(
-      modifier = Modifier.fillMaxSize(),
-      verticalArrangement = spacedBy(16.dp),
-      contentPadding = PaddingValues(16.dp),
-  ) { items(100) { PoolCard(IndexPoolInfo(it, scope)) } }
 }
