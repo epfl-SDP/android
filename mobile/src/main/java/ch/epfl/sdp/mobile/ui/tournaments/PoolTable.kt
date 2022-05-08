@@ -93,7 +93,8 @@ fun <P : PoolMember> PoolTable(
             ) { text ->
               Text(
                   text = text,
-                  modifier = Modifier.widthIn(max = 200.dp),
+                  modifier = Modifier.widthIn(max = DefaultTextMaxWidth),
+                  maxLines = 1,
                   overflow = TextOverflow.Ellipsis,
               )
             }
@@ -101,7 +102,8 @@ fun <P : PoolMember> PoolTable(
           scoreTitleContent = {
             Text(
                 text = strings.tournamentsTableScore.uppercase(),
-                modifier = Modifier.widthIn(max = 200.dp),
+                modifier = Modifier.widthIn(max = DefaultTextMaxWidth),
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
           },
@@ -110,14 +112,14 @@ fun <P : PoolMember> PoolTable(
                 targetState = it.total,
                 transitionSpec = fadeTransition,
                 contentAlignment = Alignment.Center,
-            ) { total -> total?.let { score -> Text(score.toString()) } }
+            ) { total -> total?.let { score -> Text(score.toString(), maxLines = 1) } }
           },
       ) { from, to ->
         AnimatedContent(
             targetState = with(data) { from.scoreAgainst(to) },
             transitionSpec = fadeTransition,
             contentAlignment = Alignment.Center,
-        ) { score -> score?.let { Text(it.toString()) } }
+        ) { score -> score?.let { Text(it.toString(), maxLines = 1) } }
       }
     }
   }
@@ -364,6 +366,9 @@ private fun Cell(
       content = content,
   )
 }
+
+/** The default max width for some text. */
+private val DefaultTextMaxWidth = 120.dp
 
 /** The default size of a cell. */
 private val DefaultCellSize = 20.dp
