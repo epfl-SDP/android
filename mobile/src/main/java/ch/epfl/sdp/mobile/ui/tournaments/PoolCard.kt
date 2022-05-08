@@ -125,7 +125,7 @@ private fun PoolStatusText(
   val text =
       when (status) {
         StillOpen -> strings.tournamentsPoolStillOpen
-        is Ongoing -> strings.tournamentsPoolRound(status.currentRound, status.currentRound)
+        is Ongoing -> strings.tournamentsPoolRound(status.currentRound, status.totalRounds)
       }
   Text(
       text = text,
