@@ -4,52 +4,139 @@ package ch.epfl.sdp.mobile.ui.tournaments
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
+import androidx.compose.foundation.layout.Arrangement.Top
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.TournamentDetailsClose
 import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabItem
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import kotlinx.coroutines.CoroutineScope
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
+
+/** An interface which represents a match between two players, which both have a name. */
+@Stable
+interface TournamentMatch {
+
+  /** The name of the first player. */
+  val firstPlayerName: String
+
+  /** The name of the second player. */
+  val secondPlayerName: String
+}
+
+@Stable
+data class TournamentsFinalsRound<M : TournamentMatch>(
+    val name: String,
+    val matches: List<M>,
+)
+
+@Stable
+interface TournamentDetailsState<P : PoolMember, M : TournamentMatch> {
+
+  val badge: BadgeType?
+
+  val title: String
+
+  val pools: List<PoolInfo<P>>
+
+  val finals: List<TournamentsFinalsRound<M>>
+
+  fun onBadgeClick()
+
+  fun onWatchMatchClick(match: M)
+
+  fun onCloseClick()
+}
 
 @Composable
-fun <Section> TournamentDetails(
-    sections: List<Section>,
+fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
+    state: TournamentDetailsState<P, M>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
-    section: @Composable Section.(PaddingValues) -> Unit
 ) {
+  val pagerState = rememberPagerState()
+  val coroutineScope = rememberCoroutineScope()
+  val strings = LocalLocalizedStrings.current
+  val sectionCount = state.finals.size + 1
   Scaffold(
       modifier = modifier,
       topBar = {
         DetailsTopBar(
-            title = "EPFL Masters Chess",
-            onClose = {},
+            title = state.title,
+            onClose = state::onCloseClick,
+            count = sectionCount,
+            selected = pagerState.currentPage,
+            sectionTitle = {
+              when (it) {
+                0 -> strings.tournamentsDetailsPools
+                else -> strings.tournamentsDetailsFinals
+              }
+            },
+            sectionSubtitle = {
+              when (it) {
+                0 -> state.pools.size.toString()
+                else -> state.finals[it - 1].name
+              }
+            },
+            onSectionClick = { coroutineScope.launch { pagerState.animateScrollToPage(it) } },
         )
       },
       content = { paddingValues ->
         HorizontalPager(
-            count = sections.size,
+            state = pagerState,
+            count = sectionCount,
             modifier = Modifier.fillMaxSize(),
-        ) { section(sections[it], contentPadding + paddingValues) }
+        ) { index ->
+          if (index == 0) {
+            DetailsPools(
+                modifier = Modifier.fillMaxSize(),
+                pools = state.pools,
+                contentPadding = contentPadding + paddingValues,
+            )
+          } else {
+            DetailsFinals(
+                modifier = Modifier.fillMaxSize(),
+                matches = state.finals[index - 1].matches,
+                contentPadding = contentPadding + paddingValues,
+            )
+          }
+        }
       },
   )
 }
 
+/**
+ * The top app bar, which will be displayed on the tournaments screen.
+ *
+ * @param title the title of the top bar.
+ * @param onClose the callback called when the user presses the back action.
+ * @param count the number of sections.
+ * @param selected the index of the currently selected section.
+ * @param sectionTitle returns the title for the n-th section.
+ * @param sectionSubtitle returns the subtitle for the n-th section.
+ * @param onSectionClick called when the i-th section is pressed.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 private fun DetailsTopBar(
     title: String,
     onClose: () -> Unit,
+    count: Int,
+    selected: Int,
+    sectionTitle: (Int) -> String,
+    sectionSubtitle: (Int) -> String,
+    onSectionClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
   Surface(
@@ -78,17 +165,17 @@ private fun DetailsTopBar(
         }
         // Tabs.
         ScrollableTabRow(
-            selectedTabIndex = 0,
+            selectedTabIndex = selected,
             backgroundColor = MaterialTheme.colors.background,
             indicator = {}, // Hide the default indicator.
             edgePadding = 0.dp, // No start padding.
         ) {
-          repeat(10) {
+          for (index in 0 until count) {
             SettingTabItem(
-                title = "Hello",
-                subtitle = "World",
-                onClick = {},
-                selected = it == 0,
+                title = sectionTitle(index),
+                subtitle = sectionSubtitle(index),
+                onClick = { onSectionClick(index) },
+                selected = index == selected,
             )
           }
         }
@@ -97,116 +184,48 @@ private fun DetailsTopBar(
   }
 }
 
-// FIXME : REMOVE THESE PREVIEW COMPOSABLES
-
-@Preview
 @Composable
-private fun TournamentsPreview() = PawniesTheme {
-  val scope = rememberCoroutineScope()
-  TournamentDetails(
-      sections = listOf(1, 2, 3),
-      modifier = Modifier.fillMaxSize(),
-  ) { paddingValues ->
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = paddingValues + PaddingValues(16.dp),
-        verticalArrangement = spacedBy(16.dp),
-    ) { items(100) { PoolCard(IndexPoolInfo(it, scope)) } }
-  }
+private fun <P : PoolMember> DetailsPools(
+    pools: List<PoolInfo<P>>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+) {
+  LazyColumn(
+      modifier = modifier,
+      contentPadding = contentPadding + PaddingValues(16.dp),
+      verticalArrangement = spacedBy(16.dp),
+  ) { items(pools) { PoolCard(it) } }
 }
 
-data class IndexedPoolMember(
-    val index: Int,
-    private val nameState: State<String>,
-    override val total: PoolScore?,
-) : PoolMember {
-
-  constructor(
-      index: Int,
-      name: String,
-      total: PoolScore?,
-  ) : this(index, mutableStateOf(name), total)
-
-  override val name by nameState
-}
-
-class IndexPoolInfo(
-    private val index: Int,
-    scope: CoroutineScope,
-) : PoolInfo<IndexedPoolMember> {
-
-  private var matthieu = mutableStateOf("Matthieu")
-
-  init {
-    // scope.launch {
-    //   while (true) {
-    //
-    //     matthieu.value = "Matthieu Burguburu The Overflow"
-    //     delay(3000)
-    //
-    //     matthieu.value = "Matthieu"
-    //     delay(3000)
-    //   }
-    // }
-  }
-
-  override val members =
-      listOf(
-          IndexedPoolMember(0, "Alexandre", 2),
-          IndexedPoolMember(1, "Badr", 10),
-          IndexedPoolMember(2, "Chau", 16),
-          IndexedPoolMember(3, "Fouad", 5),
-          IndexedPoolMember(4, "Lars", 6),
-          IndexedPoolMember(5, matthieu, 4),
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun <M : TournamentMatch> DetailsFinals(
+    matches: List<M>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+) {
+  LazyColumn(
+      modifier = modifier,
+      contentPadding = contentPadding,
+      verticalArrangement = Top,
+  ) {
+    items(matches) {
+      DetailsMatch(
+          first = it.firstPlayerName,
+          second = it.secondPlayerName,
       )
-
-  override fun IndexedPoolMember.scoreAgainst(other: IndexedPoolMember) =
-      ((index + other.index) * 373) % 5
-
-  override val name: String = "Pool #$index"
-
-  override val status: PoolInfo.Status = PoolInfo.Status.StillOpen
-
-  override var startNextRoundEnabled by mutableStateOf((index % 2) == 0)
-    private set
-
-  override fun onStartNextRound() {
-    startNextRoundEnabled = false
+    }
   }
 }
 
-// @Stable
-// interface TournamentsDetailsState<P : PoolMember, Pool : PoolInfo<P>, M : TournamentMatch> {
-//
-//   @Stable
-//   interface Section<P : PoolMember, Pool : PoolInfo<P>, M : TournamentMatch> {
-//     data class Pools<P : PoolMember, Pool : PoolInfo<P>>(val pools: List<Pool>) : Section<P,
-// Pool, *>
-//     data class Matches
-//   }
-//
-//   val badge: BadgeType?
-//
-//   val sections: List<Section>
-//
-//   // TODO : Callbacks.
-//   fun onWatchMatchClick(match: M)
-// }
-//
-// @Stable
-// interface TournamentMatch {
-//   val firstPlayerName: String
-//   val secondPlayerName: String
-// }
-//
-// @Composable
-// fun <P : PoolMember, Pool : PoolInfo<P>, Match : TournamentMatch> TournamentDetails(
-//     state: TournamentsDetailsState<P, Pool, Match>,
-//     onCloseClick: () -> Unit,
-//     modifier: Modifier = Modifier,
-//     contentPadding: PaddingValues = PaddingValues(),
-// ) {
-//   HorizontalPager(
-//       count = state.sections.size,
-//   ) {}
-// }
+@Composable
+private fun DetailsMatch(
+    first: String,
+    second: String,
+    modifier: Modifier = Modifier,
+) {
+  Column(modifier) {
+    Text(first)
+    Text(second)
+  }
+}

@@ -108,4 +108,6 @@ object English : LocalizedStrings {
   override val tournamentsPoolStillOpen = "Still open"
   override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
   override val tournamentsPoolStartNextRound = "Start next round".uppercase()
+  override val tournamentsDetailsFinals = "Finals".uppercase()
+  override val tournamentsDetailsPools = "Pools".uppercase()
 }
