@@ -15,9 +15,6 @@ interface PuzzleGameScreenState<Piece : ChessBoardState.Piece> :
   /** The [Puzzle] that is loaded */
   val puzzleInfo: PuzzleInfo
 
-  /** Marks the [Puzzle] as solved for the current user */
-  fun solve()
-
   /**
    * A [List] of all the moves which have been performed by the user. Moves are ordered and should
    * be displayed as such.

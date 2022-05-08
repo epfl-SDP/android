@@ -63,10 +63,10 @@ class StatefulPuzzleGameScreenTest {
           }
         }
 
-    rule.onNodeWithText("PUZZLES").assertExists()
-    rule.onNodeWithText("Find the best move for White").assertExists()
-    rule.onNodeWithText("Puzzle: #008Nz").assertExists()
-    rule.onNodeWithText("Rating: 600").assertExists()
+    rule.onNodeWithText(strings.puzzlesTitle.uppercase()).assertExists()
+    rule.onNodeWithText(strings.puzzleSolving("White")).assertExists()
+    rule.onNodeWithText(strings.puzzleNumber("008Nz")).assertExists()
+    rule.onNodeWithText(strings.puzzleRating("600")).assertExists()
     rule.onNodeWithText("1. Bd3-e2").assertExists()
   }
 

@@ -54,6 +54,7 @@ fun StatefulPuzzleGameScreen(
 
   val scope = rememberCoroutineScope()
   val puzzle = chessFacade.puzzle(uid = puzzleId) ?: Puzzle()
+  val userState = rememberUpdatedState(user)
 
   val snackbarHostState = remember { SnackbarHostState() }
   val speechRecognizerState =
@@ -70,7 +71,7 @@ fun StatefulPuzzleGameScreen(
       remember(actions, user, puzzle, chessFacade, scope) {
         SnapshotPuzzleGameScreenState(
             actions = actions,
-            user = user,
+            user = userState,
             puzzle = puzzle,
             scope = scope,
             facade = chessFacade,
@@ -90,7 +91,7 @@ fun StatefulPuzzleGameScreen(
 
 class SnapshotPuzzleGameScreenState(
     private val actions: StatefulGameScreenActions,
-    private val user: AuthenticatedUser,
+    private val user: State<AuthenticatedUser>,
     private val puzzle: Puzzle,
     private val scope: CoroutineScope,
     private val facade: ChessFacade,
@@ -202,8 +203,7 @@ class SnapshotPuzzleGameScreenState(
       currentMoveNumber++
     } else {
       puzzleState = PuzzleState.Solved
-      // TODO: Mark puzzle as solved. Understand why it resets the current puzzle
-      // solve()
+      scope.launch { facade.solvePuzzle(puzzle.uid, user.value) }
     }
   }
 
@@ -212,10 +212,6 @@ class SnapshotPuzzleGameScreenState(
 
   override val puzzleInfo: PuzzleInfo
     get() = puzzle.toPuzzleInfoAdapter()
-
-  override fun solve() {
-    scope.launch { facade.solvePuzzle(puzzle.uid, user) }
-  }
 
   override val pieces: Map<ChessBoardState.Position, MatchChessBoardState.Piece>
     get() =
