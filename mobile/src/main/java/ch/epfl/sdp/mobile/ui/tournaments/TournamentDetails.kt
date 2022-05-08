@@ -54,30 +54,63 @@ interface TournamentMatch {
   }
 }
 
+/**
+ * A class representing the ongoing results of a round of the tournament.
+ *
+ * @param M the type of the [TournamentMatch]es.
+ * @param name the name of this round.
+ * @param matches the [List] of matches to display.
+ */
 @Stable
-data class TournamentsFinalsRound<M : TournamentMatch>(
-    val name: String,
-    val matches: List<M>,
-)
+data class TournamentsFinalsRound<M : TournamentMatch>(val name: String, val matches: List<M>)
 
+/**
+ * The state which will be used to hoist a [TournamentDetails] screen.
+ *
+ * @param P the type of the [PoolMember]s.
+ * @param M the type of the [TournamentMatch]es.
+ */
 @Stable
 interface TournamentDetailsState<P : PoolMember, M : TournamentMatch> {
 
+  /** The current badge to display, if any. */
   val badge: BadgeType?
 
+  /** The title of this tournament. */
   val title: String
 
+  /** The list of [PoolInfo] to be displayed in this first tab. */
   val pools: List<PoolInfo<P>>
 
+  /** The list of [TournamentsFinalsRound] to be displayed in supplementary tabs. */
   val finals: List<TournamentsFinalsRound<M>>
 
+  /**
+   * A callback which is called when the badge is clicked (typically, if the user wants to join the
+   * tournament).
+   */
   fun onBadgeClick()
 
+  /**
+   * A callback which is called when the user wants to watch a specific match.
+   *
+   * @param match the match which should be watched.
+   */
   fun onWatchMatchClick(match: M)
 
+  /** A callback which is called when the user wants to close the screen. */
   fun onCloseClick()
 }
 
+/**
+ * A composable which displays all the details about a specific tournament.
+ *
+ * @param P the type of the [PoolMember]s.
+ * @param M the type of the [TournamentMatch]es.
+ * @param state the [TournamentDetailsState] which hoists the state of this screen.
+ * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this composable.
+ */
 @Composable
 fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
     state: TournamentDetailsState<P, M>,
@@ -204,6 +237,14 @@ private fun DetailsTopBar(
   }
 }
 
+/**
+ * The screen which will be displayed in the pools tab.
+ *
+ * @param P the type of the [PoolMember]s.
+ * @param pools the [List] of pools to display.
+ * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this tab.
+ */
 @Composable
 private fun <P : PoolMember> DetailsPools(
     pools: List<PoolInfo<P>>,
@@ -217,6 +258,15 @@ private fun <P : PoolMember> DetailsPools(
   ) { items(pools) { PoolCard(it) } }
 }
 
+/**
+ * The screen which will be displayed in the finals tab.
+ *
+ * @param M the type of the [TournamentMatch].
+ * @param matches the [List] of matches to display.
+ * @param onWatchClick the callback called when the user wants to watch a specific match.
+ * @param modifier the [Modifier] for this composable.
+ * @param contentPadding the [PaddingValues] for this tab.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun <M : TournamentMatch> DetailsFinals(
@@ -242,6 +292,16 @@ private fun <M : TournamentMatch> DetailsFinals(
   }
 }
 
+/**
+ * A composable which displays the details of a match.
+ *
+ * @param first the name of the first player.
+ * @param second the name of the second player
+ * @param result the [Result] of the match
+ * @param onWatchClick the callback called if the [Result] is [Result.Ongoing] and the action is
+ * clicked.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 private fun DetailsMatch(
     first: String,
