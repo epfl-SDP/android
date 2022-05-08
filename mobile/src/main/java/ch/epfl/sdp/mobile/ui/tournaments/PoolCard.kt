@@ -63,6 +63,13 @@ interface PoolInfo<P : PoolMember> : PoolData<P> {
   fun onStartNextRound()
 }
 
+/**
+ * Displays a pool and its information.
+ *
+ * @param P the type of the actual [PoolMember]s.
+ * @param info the [PoolInfo] which should be displayed in the cards.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 fun <P : PoolMember> PoolCard(
     info: PoolInfo<P>,
