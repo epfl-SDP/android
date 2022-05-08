@@ -114,10 +114,37 @@ class PoolCardTest {
                     override val total: PoolScore? = null
                   },
               )
-          override fun PoolMember.scoreAgainst(other: PoolMember) = 0
+          override fun PoolMember.scoreAgainst(other: PoolMember): PoolScore? = null
         }
     rule.setContentWithLocalizedStrings { PoolCard(info) }
     rule.onAllNodesWithText("Alexandre", ignoreCase = true).assertCountEquals(2)
     rule.onAllNodesWithText("Georges", ignoreCase = true).assertCountEquals(2)
+  }
+
+  @Test
+  fun given_nonEmptyPool_whenDisplayed_then_showsScores() {
+    val info =
+        object : PoolInfo<PoolMember> {
+          override val name = "Hello there"
+          override val status = PoolInfo.Status.StillOpen
+          override val startNextRoundEnabled = false
+          override fun onStartNextRound() = Unit
+          override val members =
+              listOf(
+                  object : PoolMember {
+                    override val name: String = "Alexandre"
+                    override val total: PoolScore = 1
+                  },
+                  object : PoolMember {
+                    override val name: String = "Georges"
+                    override val total: PoolScore = 2
+                  },
+              )
+          override fun PoolMember.scoreAgainst(other: PoolMember) = 0
+        }
+    rule.setContentWithLocalizedStrings { PoolCard(info) }
+    rule.onAllNodesWithText("1", ignoreCase = true).assertCountEquals(1)
+    rule.onAllNodesWithText("2", ignoreCase = true).assertCountEquals(1)
+    rule.onAllNodesWithText("0", ignoreCase = true).assertCountEquals(4) // 1 per square
   }
 }
