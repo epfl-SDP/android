@@ -203,7 +203,7 @@ class SnapshotPuzzleGameScreenState(
     } else {
       puzzleState = PuzzleState.Solved
       // TODO: Mark puzzle as solved. Understand why it resets the current puzzle
-      //solve()
+      // solve()
     }
   }
 

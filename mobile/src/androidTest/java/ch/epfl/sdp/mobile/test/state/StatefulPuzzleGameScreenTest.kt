@@ -13,7 +13,6 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.state.StatefulPuzzleGameScreen
-import ch.epfl.sdp.mobile.state.StatefulPuzzleSelectionScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -164,7 +163,7 @@ class StatefulPuzzleGameScreenTest {
 
   @OptIn(ExperimentalPermissionsApi::class)
   @Test
-  fun given_aMultiMovePuzzle_when_correctMove_then_notReset() = runTest {
+  fun given_aMultiMovePuzzle_when_correctMoves_then_puzzleSolved() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val assets =
@@ -202,9 +201,21 @@ class StatefulPuzzleGameScreenTest {
       click('e', 7)
     }
 
-    rule.onNodeWithText(strings.puzzleSolving("White")).assertExists()
     // Piece was moved as expected and puzzle not reset
+    rule.onNodeWithText(strings.puzzleSolving("White")).assertExists()
     robot.assertHasPiece(4, 1, ChessBoardState.Color.White, ChessBoardState.Rank.Knight)
+
+    // Wait until "computer" has played"
+    rule.waitUntil(timeoutMillis = 2000) {
+      robot.hasPiece(5, 1, ChessBoardState.Color.Black, ChessBoardState.Rank.King)
+    }
+
+    robot.performInput {
+      click('e', 7)
+      click('f', 5)
+    }
+
+    rule.onNodeWithText(strings.puzzleSolved).assertExists()
   }
 
   @OptIn(ExperimentalPermissionsApi::class)
