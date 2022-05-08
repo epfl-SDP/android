@@ -107,4 +107,7 @@ interface LocalizedStrings {
   val tournamentsBadgeParticipant: String
   val tournamentsBadgeAdmin: String
   val tournamentsTableScore: String
+  val tournamentsPoolStillOpen: String
+  val tournamentsPoolRound: (current: Int, total: Int) -> String
+  val tournamentsPoolStartNextRound: String
 }

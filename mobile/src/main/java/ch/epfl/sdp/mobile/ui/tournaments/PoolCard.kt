@@ -1,21 +1,29 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement.SpaceBetween
+import androidx.compose.foundation.layout.Arrangement.Top
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesTheme
+import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status
+import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status.Ongoing
+import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status.StillOpen
 
 /**
  * The information displayed within a pool card.
@@ -45,7 +53,11 @@ interface PoolInfo<P : PoolMember> : PoolData<P> {
   /** The current status of this pool. */
   val status: Status
 
-  // TODO : Admin stuff, to start the next round.
+  /** True if the button to start the next round should be enabled. */
+  val startNextRoundEnabled: Boolean
+
+  /** A callback called when the start next round action is called. */
+  fun onStartNextRound()
 }
 
 @Composable
@@ -58,12 +70,66 @@ fun <P : PoolMember> PoolCard(
       shape = RoundedCornerShape(8.dp),
       elevation = 2.dp,
   ) {
-    Column(Modifier.padding(16.dp), spacedBy(16.dp)) {
-      Text("Hello there my title whatever") // TODO : Custom
-      Divider() // TODO : Custom
-      PoolTable(info)
+    Column(Modifier.padding(16.dp), Top, CenterHorizontally) {
+      Row(Modifier.fillMaxWidth(), SpaceBetween, CenterVertically) {
+        PoolNameText(info.name)
+        PoolStatusText(info.status)
+      }
+      AnimatedVisibility(info.startNextRoundEnabled) {
+        OutlinedButton(
+            onClick = info::onStartNextRound,
+            modifier = Modifier.padding(top = 16.dp),
+            shape = CircleShape,
+        ) { Text(LocalLocalizedStrings.current.tournamentsPoolStartNextRound) }
+      }
+      DashedDivider(Modifier.padding(top = 16.dp))
+      PoolTable(info, Modifier.padding(top = 16.dp))
     }
   }
+}
+
+/**
+ * Displays the name of the pool.
+ *
+ * @param name the name of the pool.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+private fun PoolNameText(
+    name: String,
+    modifier: Modifier = Modifier,
+) {
+  Text(
+      text = name,
+      modifier = modifier,
+      style = MaterialTheme.typography.subtitle1,
+      color = PawniesColors.Green200,
+  )
+}
+
+/**
+ * Displays the color of the pool.
+ *
+ * @param status the [PoolInfo.Status] for the pool.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+private fun PoolStatusText(
+    status: Status,
+    modifier: Modifier = Modifier,
+) {
+  val strings = LocalLocalizedStrings.current
+  val text =
+      when (status) {
+        StillOpen -> strings.tournamentsPoolStillOpen
+        is Ongoing -> strings.tournamentsPoolRound(status.currentRound, status.currentRound)
+      }
+  Text(
+      text = text,
+      modifier = modifier,
+      style = MaterialTheme.typography.subtitle1,
+      color = PawniesColors.Orange200,
+  )
 }
 
 // FIXME : REMOVE THESE PREVIEW COMPOSABLES
@@ -90,7 +156,14 @@ class IndexPoolInfo(private val index: Int) : PoolInfo<IndexedPoolMember> {
 
   override val name: String = "Pool #$index"
 
-  override val status: PoolInfo.Status = PoolInfo.Status.StillOpen
+  override val status: Status = StillOpen
+
+  override var startNextRoundEnabled by mutableStateOf((index % 2) == 0)
+    private set
+
+  override fun onStartNextRound() {
+    startNextRoundEnabled = false
+  }
 }
 
 @Preview
