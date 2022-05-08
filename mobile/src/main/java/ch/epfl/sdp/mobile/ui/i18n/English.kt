@@ -114,4 +114,6 @@ object English : LocalizedStrings {
   override val tournamentsDetailsMatchWon = "Win".uppercase()
   override val tournamentsDetailsMatchLost = "Loss".uppercase()
   override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
+  override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
+  override val tournamentsDetailsHeaderDone = "Done".uppercase()
 }

@@ -116,4 +116,6 @@ interface LocalizedStrings {
   val tournamentsDetailsMatchWon: String
   val tournamentsDetailsMatchLost: String
   val tournamentsDetailsMatchDrawn: String
+  val tournamentsDetailsHeaderOngoing: String
+  val tournamentsDetailsHeaderDone: String
 }

@@ -11,10 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
@@ -275,12 +272,30 @@ private fun <M : TournamentMatch> DetailsFinals(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val ongoingMatches = remember(matches) { matches.filter { it.result == Result.Ongoing } }
+  val doneMatches = remember(matches) { matches.filter { it.result != Result.Ongoing } }
+  val strings = LocalLocalizedStrings.current
   LazyColumn(
       modifier = modifier,
       contentPadding = contentPadding,
       verticalArrangement = Top,
   ) {
-    items(matches) {
+    if (ongoingMatches.isNotEmpty()) {
+      item { DetailsSectionHeader(strings.tournamentsDetailsHeaderOngoing) }
+    }
+    items(ongoingMatches) {
+      DetailsMatch(
+          first = it.firstPlayerName,
+          second = it.secondPlayerName,
+          result = it.result,
+          onWatchClick = { onWatchClick(it) },
+          modifier = Modifier.fillParentMaxWidth(),
+      )
+    }
+    if (doneMatches.isNotEmpty()) {
+      item { DetailsSectionHeader(strings.tournamentsDetailsHeaderDone) }
+    }
+    items(doneMatches) {
       DetailsMatch(
           first = it.firstPlayerName,
           second = it.secondPlayerName,
@@ -290,6 +305,25 @@ private fun <M : TournamentMatch> DetailsFinals(
       )
     }
   }
+}
+
+/**
+ * A header for a section of items.
+ *
+ * @param text the title of the header.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+private fun DetailsSectionHeader(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+  Text(
+      text = text,
+      style = MaterialTheme.typography.h6,
+      color = PawniesColors.Green200,
+      modifier = modifier.padding(16.dp),
+  )
 }
 
 /**
