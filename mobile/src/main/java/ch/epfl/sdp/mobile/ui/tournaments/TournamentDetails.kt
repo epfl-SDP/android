@@ -124,6 +124,8 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
         DetailsTopBar(
             title = state.title,
             onClose = state::onCloseClick,
+            onBadgeClick = state::onBadgeClick,
+            badgeEnabled = state.badge == BadgeType.Join,
             count = sectionCount,
             selected = pagerState.currentPage,
             sectionTitle = {
@@ -171,6 +173,8 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
  *
  * @param title the title of the top bar.
  * @param onClose the callback called when the user presses the back action.
+ * @param onBadgeClick the callback called then the user presses the badge icon.
+ * @param badgeEnabled true if the badge should be clickable.
  * @param count the number of sections.
  * @param selected the index of the currently selected section.
  * @param sectionTitle returns the title for the n-th section.
@@ -182,6 +186,8 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
 private fun DetailsTopBar(
     title: String,
     onClose: () -> Unit,
+    onBadgeClick: () -> Unit,
+    badgeEnabled: Boolean,
     count: Int,
     selected: Int,
     sectionTitle: (Int) -> String,
@@ -211,7 +217,12 @@ private fun DetailsTopBar(
                 style = MaterialTheme.typography.h5,
             )
           }
-          Badge(BadgeType.Join, onClick = {}, Modifier.padding(start = 24.dp, end = 16.dp))
+          Badge(
+              type = BadgeType.Join,
+              onClick = onBadgeClick,
+              modifier = Modifier.padding(start = 24.dp, end = 16.dp),
+              enabled = badgeEnabled,
+          )
         }
         // Tabs.
         ScrollableTabRow(
