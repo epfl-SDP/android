@@ -154,6 +154,7 @@ constructor(
               // TODO : Display an appropriate message, otherwise act on the board.
               Failure.Internal -> snackbarHostState.showSnackbar("Internal failure")
               is Success -> {
+                // TODO : Call a function that execute the user command (Move or promote)
                 snackbarHostState.showSnackbar(speech.results.toString())
               }
             }

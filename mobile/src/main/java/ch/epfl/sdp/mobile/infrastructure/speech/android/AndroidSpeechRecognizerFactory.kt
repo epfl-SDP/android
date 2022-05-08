@@ -64,6 +64,8 @@ class AndroidSpeechRecognizer(
                 listener.onError()
               } else {
                 listener.onResults(
+                    // Note(Chau)  : Maybe take Engine.Action as a parameter
+                    // We can treat a move or a promotion
                     Pair(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition()))
               }
             }
