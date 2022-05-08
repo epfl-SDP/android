@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -16,11 +16,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.util.fastMap
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.FadeEnterTransition
+import ch.epfl.sdp.mobile.ui.FadeExitTransition
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import kotlin.math.roundToInt
 
@@ -74,21 +77,47 @@ fun <P : PoolMember> PoolTable(
     textStyle: TextStyle = MaterialTheme.typography.overline,
 ) {
   val strings = LocalLocalizedStrings.current
+  val fadeTransition: AnimatedContentScope<*>.() -> ContentTransform = {
+    FadeEnterTransition with FadeExitTransition
+  }
   ProvideTextStyle(textStyle) {
     CompositionLocalProvider(LocalContentColor provides PawniesColors.Green800) {
       PoolContent(
           players = data.members,
           modifier = modifier,
-          // TODO : Use a Text with a maximum width and ellipsis.
-          playerContent = { Text(it.name.uppercase()) },
-          // TODO : Use a Text with a maximum width and ellipsis.
-          scoreTitleContent = { Text(strings.tournamentsTableScore.uppercase()) },
-          // TODO : Animated score cells !!!
-          scoreContent = { it.total?.let { score -> Text(score.toString()) } },
+          playerContent = {
+            AnimatedContent(
+                targetState = it.name.uppercase(),
+                transitionSpec = fadeTransition,
+                contentAlignment = Alignment.Center,
+            ) { text ->
+              Text(
+                  text = text,
+                  modifier = Modifier.widthIn(max = 200.dp),
+                  overflow = TextOverflow.Ellipsis,
+              )
+            }
+          },
+          scoreTitleContent = {
+            Text(
+                text = strings.tournamentsTableScore.uppercase(),
+                modifier = Modifier.widthIn(max = 200.dp),
+                overflow = TextOverflow.Ellipsis,
+            )
+          },
+          scoreContent = {
+            AnimatedContent(
+                targetState = it.total,
+                transitionSpec = fadeTransition,
+                contentAlignment = Alignment.Center,
+            ) { total -> total?.let { score -> Text(score.toString()) } }
+          },
       ) { from, to ->
-        val score = with(data) { from.scoreAgainst(to) }
-        // TODO : Animated score cells !!!
-        score?.let { Text(it.toString()) }
+        AnimatedContent(
+            targetState = with(data) { from.scoreAgainst(to) },
+            transitionSpec = fadeTransition,
+            contentAlignment = Alignment.Center,
+        ) { score -> score?.let { Text(it.toString()) } }
       }
     }
   }
@@ -142,15 +171,25 @@ private fun <T : PoolMember> PoolContent(
     val spacingPx = spacing.toPx()
 
     // Compute the max intrinsic width of the texts.
-    val maxHTextWidth =
+    val maxHTextIntrinsicWidth =
         hPlayersMeasurables.maxOfOrNull { it.maxIntrinsicWidth(constraints.maxHeight) } ?: 0
     val scoreWidth = scoreMeasurable.maxIntrinsicWidth(constraints.maxHeight)
-    val maxVTextWidth =
+    val maxVTextIntrinsicWidth =
         maxOf(
             scoreWidth,
             vPlayersMeasurables.maxOfOrNull { it.maxIntrinsicWidth(constraints.maxHeight) }
                 ?: scoreWidth,
         )
+
+    // Measure the players texts.
+    val hPlayersPlaceables =
+        hPlayersMeasurables.map { it.measure(Constraints(maxWidth = maxHTextIntrinsicWidth)) }
+    val vPlayersPlaceables =
+        vPlayersMeasurables.map { it.measure(Constraints(maxWidth = maxVTextIntrinsicWidth)) }
+
+    // Use the actual maximum and minimum size measurement to compute the grid size.
+    val maxHTextWidth = hPlayersPlaceables.maxOfOrNull { it.width } ?: 0
+    val maxVTextWidth = vPlayersPlaceables.maxOfOrNull { it.width } ?: 0
 
     // Compute the available space.
     val hSpace = (constraints.maxWidth - maxHTextWidth - 2f * spacingPx).positive()
@@ -165,10 +204,6 @@ private fun <T : PoolMember> PoolContent(
     val height = (players.size * cellSize + maxVTextWidth + spacingPx).positive()
 
     // Measure all the items, according to the retrieved constraints.
-    val hPlayersPlaceables =
-        hPlayersMeasurables.map { it.measure(Constraints(maxWidth = maxHTextWidth)) }
-    val vPlayersPlaceables =
-        vPlayersMeasurables.map { it.measure(Constraints(maxWidth = maxVTextWidth)) }
     val scoreByPlayerPlaceable =
         scoreByPlayerMeasurable.measure(Constraints(maxWidth = cellSize.roundToInt()))
     val scorePlaceable = scoreMeasurable.measure(Constraints(maxWidth = maxVTextWidth))

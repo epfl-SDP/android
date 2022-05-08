@@ -24,6 +24,9 @@ import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status.Ongoing
 import ch.epfl.sdp.mobile.ui.tournaments.PoolInfo.Status.StillOpen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * The information displayed within a pool card.
@@ -136,11 +139,39 @@ private fun PoolStatusText(
 
 data class IndexedPoolMember(
     val index: Int,
-    override val name: String,
+    private val nameState: State<String>,
     override val total: PoolScore?,
-) : PoolMember
+) : PoolMember {
 
-class IndexPoolInfo(private val index: Int) : PoolInfo<IndexedPoolMember> {
+  constructor(
+      index: Int,
+      name: String,
+      total: PoolScore?,
+  ) : this(index, mutableStateOf(name), total)
+
+  override val name by nameState
+}
+
+class IndexPoolInfo(
+    private val index: Int,
+    scope: CoroutineScope,
+) : PoolInfo<IndexedPoolMember> {
+
+  private var matthieu = mutableStateOf("Matthieu")
+
+  init {
+    scope.launch {
+      while (true) {
+
+        matthieu.value = "Matthieu Burguburu"
+        delay(3000)
+
+        matthieu.value = "Matthieu"
+        delay(3000)
+      }
+    }
+  }
+
   override val members =
       listOf(
           IndexedPoolMember(0, "Alexandre", 2),
@@ -148,7 +179,7 @@ class IndexPoolInfo(private val index: Int) : PoolInfo<IndexedPoolMember> {
           IndexedPoolMember(2, "Chau", 16),
           IndexedPoolMember(3, "Fouad", 5),
           IndexedPoolMember(4, "Lars", 6),
-          IndexedPoolMember(5, "Matthieu", 4),
+          IndexedPoolMember(5, matthieu, 4),
       )
 
   override fun IndexedPoolMember.scoreAgainst(other: IndexedPoolMember) =
@@ -169,9 +200,10 @@ class IndexPoolInfo(private val index: Int) : PoolInfo<IndexedPoolMember> {
 @Preview
 @Composable
 fun WonderfulPreview() = PawniesTheme {
+  val scope = rememberCoroutineScope()
   LazyColumn(
       modifier = Modifier.fillMaxSize(),
       verticalArrangement = spacedBy(16.dp),
       contentPadding = PaddingValues(16.dp),
-  ) { items(100) { PoolCard(IndexPoolInfo(it)) } }
+  ) { items(100) { PoolCard(IndexPoolInfo(it, scope)) } }
 }
