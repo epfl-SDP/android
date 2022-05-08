@@ -25,26 +25,32 @@ private val matches =
         object : TournamentMatch {
           override val firstPlayerName = "Alexandre"
           override val secondPlayerName = "Matthieu"
+          override val result: TournamentMatch.Result = TournamentMatch.Result.Ongoing
         },
         object : TournamentMatch {
           override val firstPlayerName = "Chau"
           override val secondPlayerName = "Matthieu"
+          override val result: TournamentMatch.Result = TournamentMatch.Result.Draw
         },
         object : TournamentMatch {
           override val firstPlayerName = "Alexandre"
           override val secondPlayerName = "Chau"
+          override val result: TournamentMatch.Result = TournamentMatch.Result.FirstWon
         },
         object : TournamentMatch {
           override val firstPlayerName = "Alexandre"
           override val secondPlayerName = "Lars"
+          override val result: TournamentMatch.Result = TournamentMatch.Result.SecondWon
         },
         object : TournamentMatch {
           override val firstPlayerName = "Lars"
           override val secondPlayerName = "Chau"
+          override val result: TournamentMatch.Result = TournamentMatch.Result.Ongoing
         },
         object : TournamentMatch {
           override val firstPlayerName = "Lars"
           override val secondPlayerName = "Matthieu"
+          override val result: TournamentMatch.Result = TournamentMatch.Result.Draw
         },
     )
 

@@ -2,23 +2,31 @@
 
 package ch.epfl.sdp.mobile.ui.tournaments
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Arrangement.Top
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.TournamentDetailsClose
 import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabItem
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentMatch.Result
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -33,6 +41,17 @@ interface TournamentMatch {
 
   /** The name of the second player. */
   val secondPlayerName: String
+
+  /** The result of this [TournamentMatch]. */
+  val result: Result
+
+  /** An enumeration with the possible values of a [TournamentMatch]. */
+  enum class Result {
+    Ongoing,
+    Draw,
+    FirstWon,
+    SecondWon,
+  }
 }
 
 @Stable
@@ -109,6 +128,7 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
                 modifier = Modifier.fillMaxSize(),
                 matches = state.finals[index - 1].matches,
                 contentPadding = contentPadding + paddingValues,
+                onWatchClick = state::onWatchMatchClick,
             )
           }
         }
@@ -201,6 +221,7 @@ private fun <P : PoolMember> DetailsPools(
 @Composable
 private fun <M : TournamentMatch> DetailsFinals(
     matches: List<M>,
+    onWatchClick: (M) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -213,6 +234,9 @@ private fun <M : TournamentMatch> DetailsFinals(
       DetailsMatch(
           first = it.firstPlayerName,
           second = it.secondPlayerName,
+          result = it.result,
+          onWatchClick = { onWatchClick(it) },
+          modifier = Modifier.fillParentMaxWidth(),
       )
     }
   }
@@ -222,10 +246,37 @@ private fun <M : TournamentMatch> DetailsFinals(
 private fun DetailsMatch(
     first: String,
     second: String,
+    result: Result,
+    onWatchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  Column(modifier) {
-    Text(first)
-    Text(second)
+  ProvideTextStyle(MaterialTheme.typography.subtitle1) {
+    Row(modifier.padding(16.dp), SpaceBetween, CenterVertically) {
+      Column(Modifier, spacedBy(4.dp)) {
+        Text(first.uppercase())
+        Text(second.uppercase())
+      }
+      val strings = LocalLocalizedStrings.current
+      AnimatedContent(result) {
+        when (it) {
+          Result.Ongoing ->
+              OutlinedButton(
+                  onClick = onWatchClick,
+                  shape = CircleShape,
+              ) { Text(strings.tournamentsDetailsWatch) }
+          Result.Draw -> Text(strings.tournamentsDetailsMatchDrawn, color = PawniesColors.Green200)
+          Result.FirstWon ->
+              Column(Modifier, spacedBy(4.dp), End) {
+                Text(strings.tournamentsDetailsMatchWon, color = PawniesColors.Green200)
+                Text(strings.tournamentsDetailsMatchLost, color = PawniesColors.Orange200)
+              }
+          Result.SecondWon ->
+              Column(Modifier, spacedBy(4.dp), End) {
+                Text(strings.tournamentsDetailsMatchLost, color = PawniesColors.Orange200)
+                Text(strings.tournamentsDetailsMatchWon, color = PawniesColors.Green200)
+              }
+        }
+      }
+    }
   }
 }

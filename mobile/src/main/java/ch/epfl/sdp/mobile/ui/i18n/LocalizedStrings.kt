@@ -112,4 +112,8 @@ interface LocalizedStrings {
   val tournamentsPoolStartNextRound: String
   val tournamentsDetailsFinals: String
   val tournamentsDetailsPools: String
+  val tournamentsDetailsWatch: String
+  val tournamentsDetailsMatchWon: String
+  val tournamentsDetailsMatchLost: String
+  val tournamentsDetailsMatchDrawn: String
 }

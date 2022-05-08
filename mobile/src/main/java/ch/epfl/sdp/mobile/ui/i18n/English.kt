@@ -110,4 +110,8 @@ object English : LocalizedStrings {
   override val tournamentsPoolStartNextRound = "Start next round".uppercase()
   override val tournamentsDetailsFinals = "Finals".uppercase()
   override val tournamentsDetailsPools = "Pools".uppercase()
+  override val tournamentsDetailsWatch = "Watch".uppercase()
+  override val tournamentsDetailsMatchWon = "Win".uppercase()
+  override val tournamentsDetailsMatchLost = "Loss".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
 }
