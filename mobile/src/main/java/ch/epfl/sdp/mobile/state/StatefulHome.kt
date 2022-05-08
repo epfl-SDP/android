@@ -90,7 +90,7 @@ fun StatefulHome(
         )
       }
       composable(ContestsRoute) {
-        StatefulTournamentScreen(modifier = modifier.fillMaxSize(), contentPadding = paddingValues)
+        StatefulTournamentScreen(modifier = Modifier.fillMaxSize(), contentPadding = paddingValues)
       }
       composable(SettingsRoute) {
         StatefulSettingsScreen(

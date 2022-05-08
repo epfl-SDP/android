@@ -119,6 +119,31 @@ class StatefulHomeTest {
   }
 
   @Test
+  fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).assertExists()
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText(strings.sectionContests).assertIsDisplayed()
+    rule.onNodeWithText(strings.sectionContests).assertIsSelected()
+    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+  }
+
+  @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
@@ -448,29 +473,6 @@ class StatefulHomeTest {
     rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
     rule.onNodeWithText("Player 1").assertExists()
     rule.onNodeWithText("Player 2").assertExists()
-  }
-
-  @Test
-  fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
-        }
-
-    rule.onNodeWithText(strings.sectionContests).assertExists()
-    rule.onNodeWithText(strings.sectionContests).performClick()
-    rule.onNodeWithText(strings.sectionContests).assertIsDisplayed()
   }
 
   @Test

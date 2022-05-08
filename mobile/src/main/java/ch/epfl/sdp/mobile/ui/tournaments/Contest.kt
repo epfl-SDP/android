@@ -1,7 +1,21 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.Composable
+import kotlin.time.Duration
 
-/** Composes a Contest log. */
-@OptIn(ExperimentalMaterialApi::class) @Composable fun Contest() {}
+interface Contest {
+  val name: String
+  val creationDate: Duration
+  val personStatus: ContestPersonStatus
+  val status: ContestStatus
+}
+
+enum class ContestPersonStatus {
+  ADMIN,
+  PARTICIPANT,
+  VIEWER
+}
+
+enum class ContestStatus {
+  ONGOING,
+  DONE
+}

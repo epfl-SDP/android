@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
 import androidx.compose.runtime.Stable
+import kotlin.time.Duration
 
 /**
  * An interface which defines all the texts and content descriptions which are used in the Pawnies
@@ -92,7 +93,15 @@ interface LocalizedStrings {
   val newGame: String
   val newContest: String
 
-  val tournamentContestsTitle: String
+  val tournamentsContestsTitle: String
+  val tournamentsStartingTime: (Duration) -> String
+  val tournamentsStarted: String
+  val tournamentsAgo: String
+  val tournamentsDone: String
+
+  val tournamentsBadgeJoin: String
+  val tournamentsBadgeParticipant: String
+  val tournamentsBadgeAdmin: String
 
   val prepareGameChooseColor: String
   val prepareGameChooseOpponent: String
@@ -107,8 +116,4 @@ interface LocalizedStrings {
   val prepareGamePlayOnline: String
 
   val playOnlineGames: String
-
-  val tournamentsBadgeJoin: String
-  val tournamentsBadgeParticipant: String
-  val tournamentsBadgeAdmin: String
 }

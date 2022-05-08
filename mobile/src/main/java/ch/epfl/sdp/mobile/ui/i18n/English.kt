@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
+import kotlin.time.Duration
+
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
@@ -89,7 +91,17 @@ object English : LocalizedStrings {
   override val newGame = "New game".uppercase()
   override val newContest = "New contest".uppercase()
 
-  override val tournamentContestsTitle = "Contests"
+  override val tournamentsContestsTitle = "Contests"
+  override val tournamentsStartingTime = { duration: Duration ->
+    "Started ${duration.inWholeDays} ago"
+  }
+  override val tournamentsStarted = "Started"
+  override val tournamentsAgo = "ago"
+  override val tournamentsDone = "Done"
+
+  override val tournamentsBadgeJoin = "Join"
+  override val tournamentsBadgeParticipant = "Participant"
+  override val tournamentsBadgeAdmin = "Admin"
 
   override val prepareGameChooseColor = "Pick your color :"
   override val prepareGameChooseOpponent = "Pick an opponent :"
@@ -104,8 +116,4 @@ object English : LocalizedStrings {
   override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
-
-  override val tournamentsBadgeJoin = "Join"
-  override val tournamentsBadgeParticipant = "Participant"
-  override val tournamentsBadgeAdmin = "Admin"
 }
