@@ -120,11 +120,11 @@ class StatefulPuzzleGameScreenTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val assets =
-        FakeAssetManager(
-            csvString =
-                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
-                    "008Nz,6k1/2p2ppp/pnp5/B7/2P3PP/1P1bPPR1/r6r/3R2K1 b - - 1 29,d3e2 d1d8,600,101,85,298,backRankMate mate mateIn1 middlegame oneMove,https://lichess.org/HNU4zavC/black#58\n",
-        )
+      FakeAssetManager(
+        csvString =
+        "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
+                "008Nz,6k1/2p2ppp/pnp5/B7/2P3PP/1P1bPPR1/r6r/3R2K1 b - - 1 29,d3e2 d1d8,600,101,85,298,backRankMate mate mateIn1 middlegame oneMove,https://lichess.org/HNU4zavC/black#58\n",
+      )
 
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
@@ -136,15 +136,15 @@ class StatefulPuzzleGameScreenTest {
 
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-            StatefulPuzzleGameScreen(
-                user = userAuthenticated,
-                puzzleId = "008Nz",
-                actions = StatefulGameScreenActions(onBack = {}, onShowAr = {}),
-            )
-          }
+      rule.setContentWithLocalizedStrings {
+        ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+          StatefulPuzzleGameScreen(
+            user = userAuthenticated,
+            puzzleId = "008Nz",
+            actions = StatefulGameScreenActions(onBack = {}, onShowAr = {}),
+          )
         }
+      }
 
     val robot = ChessBoardRobot(rule, strings)
 
@@ -155,10 +155,12 @@ class StatefulPuzzleGameScreenTest {
       click('d', 7)
     }
 
-    // Puzzle was reset
     rule.onNodeWithText(strings.puzzleSolved).assertDoesNotExist()
+    // Wait until puzzle is reset
+    rule.waitUntil(timeoutMillis = 2000) {
+      robot.hasPiece(3, 7, ChessBoardState.Color.White, ChessBoardState.Rank.Rook)
+    }
     rule.onNodeWithText(strings.puzzleSolving("White")).assertExists()
-    robot.assertHasPiece(3, 7, ChessBoardState.Color.White, ChessBoardState.Rank.Rook)
   }
 
   @OptIn(ExperimentalPermissionsApi::class)
