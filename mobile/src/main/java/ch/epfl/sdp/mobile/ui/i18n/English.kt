@@ -116,4 +116,15 @@ object English : LocalizedStrings {
   override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
   override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
   override val tournamentsDetailsHeaderDone = "Done".uppercase()
+
+  override val tournamentsCreateTitle = "Create tournament"
+  override val tournamentsCreateNameHint = "Name"
+  override val tournamentsCreateRules = "Rules"
+  override val tournamentsCreateBestOf = "Best of :"
+  override val tournamentsCreatePlayers = "Players"
+  override val tournamentsCreateMaximumPlayerHint = "Maximum player count"
+  override val tournamentsCreatePoolSize = "Pool size :"
+  override val tournamentsCreateDirectElimination = "Direct elim. :"
+  override val tournamentsCreateActionCancel = "Cancel".uppercase()
+  override val tournamentsCreateActionCreate = "Create".uppercase()
 }
