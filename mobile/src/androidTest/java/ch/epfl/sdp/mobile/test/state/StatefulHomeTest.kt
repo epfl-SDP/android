@@ -529,7 +529,7 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
-    rule.onNode(hasText("test") and hasSetTextAction()).performTextInput("2")
+    rule.onNode(hasText("test") and hasSetTextAction()).performTextReplacement("test2")
     rule.onNodeWithText(strings.settingEditSave).performClick()
     rule.onNodeWithText("test2").assertIsDisplayed()
   }
