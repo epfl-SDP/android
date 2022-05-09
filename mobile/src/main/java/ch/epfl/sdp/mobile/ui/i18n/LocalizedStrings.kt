@@ -93,16 +93,6 @@ interface LocalizedStrings {
   val newGame: String
   val newContest: String
 
-  val tournamentsContestsTitle: String
-  val tournamentsStartingTime: (Duration) -> String
-  val tournamentsStarted: String
-  val tournamentsAgo: String
-  val tournamentsDone: String
-
-  val tournamentsBadgeJoin: String
-  val tournamentsBadgeParticipant: String
-  val tournamentsBadgeAdmin: String
-
   val prepareGameChooseColor: String
   val prepareGameChooseOpponent: String
   val prepareGameChooseGame: String
@@ -116,4 +106,26 @@ interface LocalizedStrings {
   val prepareGamePlayOnline: String
 
   val playOnlineGames: String
+
+  val tournamentsBadgeJoin: String
+  val tournamentsBadgeParticipant: String
+  val tournamentsBadgeAdmin: String
+  val tournamentsTableScore: String
+  val tournamentsPoolStillOpen: String
+  val tournamentsPoolRound: (current: Int, total: Int) -> String
+  val tournamentsPoolStartNextRound: String
+  val tournamentsDetailsFinals: String
+  val tournamentsDetailsPools: String
+  val tournamentsDetailsWatch: String
+  val tournamentsDetailsMatchWon: String
+  val tournamentsDetailsMatchLost: String
+  val tournamentsDetailsMatchDrawn: String
+  val tournamentsDetailsHeaderOngoing: String
+  val tournamentsDetailsHeaderDone: String
+
+  val tournamentsContestsTitle: String
+  val tournamentsStartingTime: (Duration) -> String
+  val tournamentsStarted: String
+  val tournamentsAgo: String
+  val tournamentsDone: String
 }

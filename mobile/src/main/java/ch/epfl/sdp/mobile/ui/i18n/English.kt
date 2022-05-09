@@ -91,18 +91,6 @@ object English : LocalizedStrings {
   override val newGame = "New game".uppercase()
   override val newContest = "New contest".uppercase()
 
-  override val tournamentsContestsTitle = "Contests"
-  override val tournamentsStartingTime = { duration: Duration ->
-    "Started ${duration.inWholeDays} ago"
-  }
-  override val tournamentsStarted = "Started"
-  override val tournamentsAgo = "ago"
-  override val tournamentsDone = "Done"
-
-  override val tournamentsBadgeJoin = "Join"
-  override val tournamentsBadgeParticipant = "Participant"
-  override val tournamentsBadgeAdmin = "Admin"
-
   override val prepareGameChooseColor = "Pick your color :"
   override val prepareGameChooseOpponent = "Pick an opponent :"
   override val prepareGameChooseGame = "Pick your game :"
@@ -116,4 +104,28 @@ object English : LocalizedStrings {
   override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
+
+  override val tournamentsBadgeJoin = "Join"
+  override val tournamentsBadgeParticipant = "Participant"
+  override val tournamentsBadgeAdmin = "Admin"
+  override val tournamentsTableScore = "Score"
+  override val tournamentsPoolStillOpen = "Still open"
+  override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
+  override val tournamentsPoolStartNextRound = "Start next round".uppercase()
+  override val tournamentsDetailsFinals = "Finals".uppercase()
+  override val tournamentsDetailsPools = "Pools".uppercase()
+  override val tournamentsDetailsWatch = "Watch".uppercase()
+  override val tournamentsDetailsMatchWon = "Win".uppercase()
+  override val tournamentsDetailsMatchLost = "Loss".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
+  override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
+  override val tournamentsDetailsHeaderDone = "Done".uppercase()
+
+  override val tournamentsContestsTitle = "Contests"
+  override val tournamentsStartingTime = { duration: Duration ->
+    "Started ${duration.inWholeDays} ago"
+  }
+  override val tournamentsStarted = "Started"
+  override val tournamentsAgo = "ago"
+  override val tournamentsDone = "Done"
 }
