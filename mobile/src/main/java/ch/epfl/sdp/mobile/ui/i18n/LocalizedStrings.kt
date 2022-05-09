@@ -111,4 +111,27 @@ interface LocalizedStrings {
   val tournamentsBadgeJoin: String
   val tournamentsBadgeParticipant: String
   val tournamentsBadgeAdmin: String
+  val tournamentsTableScore: String
+  val tournamentsPoolStillOpen: String
+  val tournamentsPoolRound: (current: Int, total: Int) -> String
+  val tournamentsPoolStartNextRound: String
+  val tournamentsDetailsFinals: String
+  val tournamentsDetailsPools: String
+  val tournamentsDetailsWatch: String
+  val tournamentsDetailsMatchWon: String
+  val tournamentsDetailsMatchLost: String
+  val tournamentsDetailsMatchDrawn: String
+  val tournamentsDetailsHeaderOngoing: String
+  val tournamentsDetailsHeaderDone: String
+
+  val tournamentsCreateTitle: String
+  val tournamentsCreateNameHint: String
+  val tournamentsCreateRules: String
+  val tournamentsCreateBestOf: String
+  val tournamentsCreatePlayers: String
+  val tournamentsCreateMaximumPlayerHint: String
+  val tournamentsCreatePoolSize: String
+  val tournamentsCreateDirectElimination: String
+  val tournamentsCreateActionCancel: String
+  val tournamentsCreateActionCreate: String
 }

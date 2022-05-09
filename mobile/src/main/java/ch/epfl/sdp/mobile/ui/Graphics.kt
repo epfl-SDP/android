@@ -67,6 +67,9 @@ val PawniesIcons.LocalPlay
 val PawniesIcons.OnlinePlay
   @Composable get() = painterResource(id = R.drawable.online_play)
 
+val PawniesIcons.TournamentDetailsClose
+  @Composable get() = Icons.Rounded.Close
+
 /** Chess pieces */
 object ChessIcons
 
