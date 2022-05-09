@@ -23,10 +23,24 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Beige050
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green100
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green200
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
+import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState.Choice
 
-/** An interface which can be used to hoist the state of a [CreateDialog]. */
+/**
+ * An interface which can be used to hoist the state of a [CreateDialog].
+ *
+ * @param PoolSize the possible choices for the pool size.
+ * @param EliminationRound the possible choices for the elimination round.
+ */
 @Stable
-interface CreateDialogState {
+interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
+
+  /** A choice available in the [CreateDialogState]. */
+  @Stable
+  interface Choice {
+
+    /** The user-readable name of the choice. */
+    val name: String
+  }
 
   /** The name of the newly created tournament. */
   var name: String
@@ -47,6 +61,32 @@ interface CreateDialogState {
   /** The maximum number of players for the tournament. */
   var maximumPlayerCount: String
 
+  /** The list of possible choices for the pool size. */
+  val poolSizeChoices: List<PoolSize>
+
+  /** The currently selected pool size. */
+  val poolSize: PoolSize?
+
+  /**
+   * Called when the pool size choice is clicked
+   *
+   * @param poolSize the value which is clicked.
+   */
+  fun onPoolSizeClick(poolSize: PoolSize)
+
+  /** The list of possible choices for the elimination rounds. */
+  val eliminationRoundChoices: List<EliminationRound>
+
+  /** The currently selected elimination round. */
+  val eliminationRound: EliminationRound?
+
+  /**
+   * Called when the elimination choice is clicked
+   *
+   * @param eliminationRound the value which is clicked.
+   */
+  fun onEliminationRoundClick(eliminationRound: EliminationRound)
+
   /** True iff the confirm action is enabled. */
   val confirmEnabled: Boolean
 
@@ -58,9 +98,11 @@ interface CreateDialogState {
 }
 
 @Composable
-fun CreateDialog(
-    state: CreateDialogState,
+fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
+    state: CreateDialogState<PoolSize, EliminationRound>,
     modifier: Modifier = Modifier,
+    poolSizeKey: ((Choice) -> Any)? = null,
+    eliminationRoundKey: ((Choice) -> Any)? = null,
 ) {
   val strings = LocalLocalizedStrings.current
   Dialog(
@@ -129,18 +171,20 @@ fun CreateDialog(
           )
           DialogChoices(
               title = strings.tournamentsCreatePoolSize,
-              selected = "No qualifiers",
-              items = listOf("No qualifiers", "2", "3"),
-              onItemClick = {},
+              selected = state.poolSize,
+              items = state.poolSizeChoices,
+              onItemClick = state::onPoolSizeClick,
               contentPadding = PaddingValues(horizontal = 16.dp),
-          ) { Text(it) }
+              key = poolSizeKey,
+          ) { Text(it.name) }
           DialogChoices(
               title = strings.tournamentsCreateDirectElimination,
-              selected = "1 / 4",
-              items = listOf("1 / 4", "1 / 2", "Finals"),
-              onItemClick = {},
+              selected = state.eliminationRound,
+              items = state.eliminationRoundChoices,
+              onItemClick = state::onEliminationRoundClick,
               contentPadding = PaddingValues(horizontal = 16.dp),
-          ) { Text(it) }
+              key = eliminationRoundKey,
+          ) { Text(it.name) }
         }
       },
   )
