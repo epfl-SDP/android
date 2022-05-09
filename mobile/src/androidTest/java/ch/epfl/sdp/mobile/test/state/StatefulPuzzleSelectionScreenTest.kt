@@ -65,7 +65,7 @@ class StatefulPuzzleSelectionScreenTest {
         }
 
     fun scrollAndAssert(uid: String) {
-      rule.onNodeWithContentDescription(strings.puzzleListCD)
+      rule.onNodeWithContentDescription(strings.puzzleListContentDescription)
           .performScrollToNode(hasText(uid, substring = true))
       rule.onNodeWithText(uid, substring = true).performScrollTo() // black pawn 600 elo
     }

@@ -65,7 +65,7 @@ fun PuzzleSelectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         state = lazyListState,
         contentPadding = innerPadding,
-        modifier = Modifier.semantics { contentDescription = strings.puzzleListCD }) {
+        modifier = Modifier.semantics { contentDescription = strings.puzzleListContentDescription }) {
       items(state.puzzles, key) { puzzle ->
         PuzzleListInfo(puzzle, { state.onPuzzleItemClick(puzzle) })
       }
