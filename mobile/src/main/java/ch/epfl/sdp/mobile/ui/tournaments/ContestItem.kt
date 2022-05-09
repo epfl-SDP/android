@@ -24,7 +24,7 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestStatus.*
 @Composable
 fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
-  val title = displayContestStatus(strings, contest)
+  val title = DisplayContestStatus(strings, contest)
 
   ListItem(
       modifier = Modifier.clickable { onClick() },
@@ -38,24 +38,20 @@ fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modi
       },
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
-          displayBadge(contest.personStatus, onClick, modifier)
+          DisplayBadge(contest.personStatus, onClick, modifier)
         }
       })
 }
 
 @Composable
-private fun displayContestStatus(strings: LocalizedStrings, contest: Contest): AnnotatedString {
+private fun DisplayContestStatus(strings: LocalizedStrings, contest: Contest): AnnotatedString {
   return if (contest.status == ONGOING) {
     buildAnnotatedString {
-      withStyle(style = SpanStyle(color = PawniesColors.Green200)) {
-        append(strings.tournamentsStarted)
-      }
+      append(strings.tournamentsStarted)
       withStyle(style = SpanStyle(color = PawniesColors.Orange200)) {
         append(" ${contest.creationDate.absoluteValue} ")
       }
-      withStyle(style = SpanStyle(color = PawniesColors.Green200)) {
-        append(strings.tournamentsAgo)
-      }
+      append(strings.tournamentsAgo)
     }
   } else {
     AnnotatedString(strings.tournamentsDone)
@@ -63,7 +59,7 @@ private fun displayContestStatus(strings: LocalizedStrings, contest: Contest): A
 }
 
 @Composable
-private fun displayBadge(
+private fun DisplayBadge(
     personStatus: ContestPersonStatus,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
