@@ -1,20 +1,41 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.firestore
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreDocumentReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreTransaction
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.DocumentReference as ActualDocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore as ActualFirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Transaction as ActualTransaction
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class FirestoreTransactionTest {
+
+  @Test
+  fun given_store_when_runsTransaction_then_callsFirestoreMethod() = runTest {
+    val actualStore = mockk<ActualFirebaseFirestore>()
+    val actualTransaction = mockk<ActualTransaction>()
+    val store = FirestoreStore(actualStore)
+
+    every { actualStore.runTransaction<Int>(any()) } answers
+        {
+          val function = firstArg<ActualTransaction.Function<Int>>()
+          Tasks.forResult(function.apply(actualTransaction))
+        }
+
+    assertThat<Int>(store.transaction { 123 }).isEqualTo(123)
+
+    verify { actualStore.runTransaction<Int>(any()) }
+  }
 
   @Test
   fun given_transaction_when_set_then_callsFirestoreMethod() {
