@@ -100,31 +100,28 @@ class ChessFacade(
 
   /** Fetches the list of all [Puzzle]s from their source */
   private fun allPuzzles(): List<Puzzle> {
-    val reader = assets.openAsReader(csvPath)
-    val csvReader = CSVReaderHeaderAware(reader)
-    val csvMap = mutableListOf<Map<String, String>>()
-    var line = csvReader.readMap()
-    while (line != null) {
-      csvMap.add(line)
-      line = csvReader.readMap()
+    return sequence {
+      while (true) {
+        val reader = CSVReaderHeaderAware(assets.openAsReader("puzzles/puzzles.csv"))
+        val line = reader.readMap() ?: return@sequence
+        yield(line)
+      }
     }
+      .map {
+        val puzzleId = it["PuzzleId"] ?: return@map null
+        val fen = parseFen(it["FEN"] ?: "") ?: return@map null
+        val moves = parseActions(it["Moves"] ?: "") ?: return@map null
+        val rating = it["Rating"]?.toIntOrNull() ?: return@map null
 
-    val puzzles =
-        csvMap.map {
-          val puzzleId = it[csvPuzzleId] ?: return@map Puzzle()
-          val fen = parseFen(it[csvFen] ?: "") ?: return@map Puzzle()
-          val moves = parseActions(it[csvMoves] ?: "") ?: return@map Puzzle()
-          val rating = (it[csvRating] ?: return@map Puzzle()).toInt()
-
-          SnapshotPuzzle(
-              uid = puzzleId,
-              boardSnapshot = fen,
-              puzzleMoves = moves,
-              elo = rating,
-          )
-        }
-
-    return puzzles
+        SnapshotPuzzle(
+          uid = puzzleId,
+          boardSnapshot = fen,
+          puzzleMoves = moves,
+          elo = rating,
+        )
+      }
+      .filterNotNull()
+      .toList()
   }
 
   /**
