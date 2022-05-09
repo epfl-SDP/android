@@ -22,8 +22,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFact
 import com.google.common.truth.Truth
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
