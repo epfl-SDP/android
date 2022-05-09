@@ -9,6 +9,8 @@ interface AssetManager {
    * Opens a certain asset file as a [Reader]
    *
    * @param path The path to the asset
+   *
+   * @return the opened Reader
    */
   fun openAsReader(path: String): Reader
 }

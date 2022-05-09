@@ -12,12 +12,6 @@ import java.io.Reader
 class AndroidAssetManager(
     private val context: Context,
 ) : AssetManager {
-
-  /**
-   * Opens a certain asset file as a [Reader]
-   *
-   * @param path The path to the asset
-   */
   override fun openAsReader(path: String): Reader {
     return context.assets.open(path).reader()
   }
