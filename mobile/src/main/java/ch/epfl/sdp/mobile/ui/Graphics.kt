@@ -50,7 +50,7 @@ val PawniesIcons.SectionPlay
   get() = Icons.Default.Games
 
 val PawniesIcons.SectionPuzzles
-  get() = Icons.Default.Games // TODO: Use puzzles icon
+  get() = Icons.Default.Games // TODO: Use R.drawable.puzzles icon
 
 val PawniesIcons.Add
   get() = Icons.Default.Add
