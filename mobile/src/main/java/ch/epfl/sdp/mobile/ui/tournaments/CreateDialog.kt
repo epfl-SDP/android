@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -97,12 +99,23 @@ interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
   fun onCancel()
 }
 
+/**
+ * A composable which displays the creation dialog for a tournament, will many configuration
+ * options.
+ *
+ * @param PoolSize the type of the pool size choices.
+ * @param EliminationRound the type of the elimination round choices.
+ * @param state the hoisted [CreateDialogState] for this composable.
+ * @param modifier the [Modifier] for this composable.
+ * @param poolSizeKey the (optional) key for [PoolSize].
+ * @param eliminationRoundKey the (optional) key for [EliminationRound].
+ */
 @Composable
 fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
     state: CreateDialogState<PoolSize, EliminationRound>,
     modifier: Modifier = Modifier,
-    poolSizeKey: ((Choice) -> Any)? = null,
-    eliminationRoundKey: ((Choice) -> Any)? = null,
+    poolSizeKey: ((PoolSize) -> Any)? = null,
+    eliminationRoundKey: ((EliminationRound) -> Any)? = null,
 ) {
   val strings = LocalLocalizedStrings.current
   Dialog(
@@ -114,7 +127,10 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
       confirmEnabled = state.confirmEnabled,
       shape = RoundedCornerShape(16.dp),
       content = {
-        Column(Modifier.padding(vertical = 16.dp), spacedBy(12.dp)) {
+        Column(
+            Modifier.verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+            spacedBy(12.dp),
+        ) {
           Text(
               text = strings.tournamentsCreateTitle,
               style = MaterialTheme.typography.subtitle1,
@@ -190,6 +206,14 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
   )
 }
 
+/**
+ * A pill which displays a choice.
+ *
+ * @param selected true if the pill is currently selected.
+ * @param onClick called when the pill is clicked.
+ * @param modifier the [Modifier] for this composable.
+ * @param content the [content] for this pill.
+ */
 @Composable
 private fun DialogPill(
     selected: Boolean,
