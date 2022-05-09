@@ -17,18 +17,22 @@ import kotlinx.coroutines.flow.map
  * requests.
  *
  * @param user the given [Profile].
+ * @param actions the [ProfileActions] which are available on the screen.
  * @param onGameItemClickAction callback if challenge button clicked
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
+    user: Profile,
+    actions: State<ProfileActions>,
     private val user: Profile,
     onGameItemClickAction: State<(String) -> Unit>,
     chessFacade: ChessFacade,
     scope: CoroutineScope,
 ) :
-    VisitedProfileScreenState,
-    ProfileScreenState by StatefulProfileScreen(user, chessFacade, scope) {
+    VisitedProfileScreenState<ChessMatchAdapter>,
+    ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
+        user, actions, chessFacade, scope) {
   val onGameItemClickAction by onGameItemClickAction
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {
@@ -40,6 +44,7 @@ class FetchedUserProfileScreenState(
  * A stateful composable to visit the profile page of other players
  *
  * @param uid of the player.
+ * @param onMatchClick callback function called when a match is clicked on.
  * @param onChallengeClick callback if challenge button clicked
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
@@ -47,10 +52,12 @@ class FetchedUserProfileScreenState(
 @Composable
 fun StatefulVisitedProfileScreen(
     uid: String,
+    onMatchClick: (ChessMatchAdapter) -> Unit,
     onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
   val onGameItemClickAction = rememberUpdatedState(onChallengeClick)
@@ -60,8 +67,8 @@ fun StatefulVisitedProfileScreen(
           .collectAsState(EmptyProfile)
   val scope = rememberCoroutineScope()
   val state =
-      remember(profile, chessFacade, scope, onGameItemClickAction) {
-        FetchedUserProfileScreenState(profile, onGameItemClickAction, chessFacade, scope)
+      remember(actions, profile, chessFacade, scope) {
+        FetchedUserProfileScreenState(profile, actions, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }

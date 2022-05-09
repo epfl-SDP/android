@@ -1,21 +1,24 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package ch.epfl.sdp.mobile.state
 
+import android.Manifest.permission.RECORD_AUDIO
+import androidx.compose.foundation.MutatePriority.UserInput
+import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
-import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
-import ch.epfl.sdp.mobile.application.chess.engine.Color.White
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
-import ch.epfl.sdp.mobile.state.SnapshotChessBoardState.SnapshotPiece
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.Failure
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.Success
+import ch.epfl.sdp.mobile.state.game.MatchGameScreenState
 import ch.epfl.sdp.mobile.ui.game.*
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message.*
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -38,6 +41,7 @@ data class StatefulGameScreenActions(
  * @param actions the [StatefulGameScreenActions] to perform.
  * @param modifier the [Modifier] for the composable.
  * @param paddingValues the [PaddingValues] for this composable.
+ * @param audioPermissionState the [PermissionState] which provides access to audio content.
  */
 @Composable
 fun StatefulGameScreen(
@@ -46,18 +50,32 @@ fun StatefulGameScreen(
     actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(),
+    audioPermissionState: PermissionState = rememberPermissionState(RECORD_AUDIO),
 ) {
-  val facade = LocalChessFacade.current
-  val scope = rememberCoroutineScope()
-  val match = remember(facade, id) { facade.match(id) }
+  val chessFacade = LocalChessFacade.current
+  val speechFacade = LocalSpeechFacade.current
 
+  val scope = rememberCoroutineScope()
+  val match = remember(chessFacade, id) { chessFacade.match(id) }
+
+  val snackbarHostState = remember { SnackbarHostState() }
+  val speechRecognizerState =
+      remember(audioPermissionState, speechFacade, snackbarHostState, scope) {
+        SnackbarSpeechRecognizerState(
+            permission = audioPermissionState,
+            facade = speechFacade,
+            snackbarHostState = snackbarHostState,
+            scope = scope,
+        )
+      }
   val gameScreenState =
       remember(actions, user, match, scope) {
-        SnapshotChessBoardState(
+        MatchGameScreenState(
             actions = actions,
             user = user,
             match = match,
             scope = scope,
+            speechRecognizerState = speechRecognizerState,
         )
       }
 
@@ -67,6 +85,7 @@ fun StatefulGameScreen(
       state = gameScreenState,
       modifier = modifier,
       contentPadding = paddingValues,
+      snackbarHostState = snackbarHostState,
   )
 }
 
@@ -96,241 +115,51 @@ private fun StatefulPromoteDialog(
 }
 
 /**
- * An implementation of [GameScreenState] and [PromotionState] that starts with default chess
- * positions, can move pieces and has a static move list.
+ * An implementation of [SpeechRecognizerState] which will display the results in a
+ * [SnackbarHostState].
  *
- * @param actions the actions to perform when navigating.
- * @param user the currently authenticated user.
- * @param match the match to display.
- * @param scope a [CoroutineScope] keeping track of the state lifecycle.
+ * @param permission the [PermissionState] for the microphone permission.
+ * @param facade the [SpeechFacade] which is used.
+ * @param snackbarHostState the [SnackbarHostState] used to display some results.
+ * @param scope the [CoroutineScope] in which the actions are performed.
  */
-class SnapshotChessBoardState(
-    private val actions: StatefulGameScreenActions,
-    private val user: AuthenticatedUser,
-    private val match: Match,
+class SnackbarSpeechRecognizerState
+constructor(
+    private val permission: PermissionState,
+    private val facade: SpeechFacade,
+    private val snackbarHostState: SnackbarHostState,
     private val scope: CoroutineScope,
-) : GameScreenState<SnapshotPiece>, PromotionState {
+) : SpeechRecognizerState {
 
-  // TODO : Implement these things.
-  override var listening by mutableStateOf(false)
+  override var listening: Boolean by mutableStateOf(false)
     private set
+
+  /**
+   * A [MutatorMutex] which ensures that multiple speech recognition requests aren't performed
+   * simultaneously, and that clicking on the button again cancels the previous request.
+   */
+  private val mutex = MutatorMutex()
+
   override fun onListenClick() {
-    listening = !listening
-  }
-
-  override fun onArClick() = actions.onShowAr(match)
-
-  override fun onBackClick() = actions.onBack()
-
-  private var game by mutableStateOf(Game.create())
-  private var whiteProfile by mutableStateOf<Profile?>(null)
-  private var blackProfile by mutableStateOf<Profile?>(null)
-
-  override val white: GameScreenState.Player
-    get() = GameScreenState.Player(whiteProfile?.name, message(White))
-
-  override val black: GameScreenState.Player
-    get() = GameScreenState.Player(blackProfile?.name, message(Black))
-
-  /**
-   * Computes the [Message] to display depending on the player color.
-   *
-   * @param color the [Color] of the player in the engine.
-   */
-  private fun message(color: Color): Message {
-    return when (val step = game.nextStep) {
-      is NextStep.Checkmate -> if (step.winner == color) None else Checkmate
-      is NextStep.MovePiece ->
-          if (step.turn == color) if (step.inCheck) InCheck else YourTurn else None
-      NextStep.Stalemate -> if (color == White) Stalemate else None
-    }
-  }
-
-  init {
-    scope.launch { match.game.collect { game = it } }
-    scope.launch { match.white.collect { whiteProfile = it } }
-    scope.launch { match.black.collect { blackProfile = it } }
-  }
-
-  /**
-   * An implementation of [ChessBoardState.Piece] which uses a [PieceIdentifier] to disambiguate
-   * different pieces.
-   *
-   * @param id the unique [PieceIdentifier].
-   * @param color the color for the piece.
-   * @param rank the rank for the piece.
-   */
-  data class SnapshotPiece(
-      val id: PieceIdentifier,
-      override val color: ChessBoardState.Color,
-      override val rank: ChessBoardState.Rank,
-  ) : ChessBoardState.Piece
-
-  /** The currently selected [Position] of the board. */
-  override var selectedPosition by mutableStateOf<ChessBoardState.Position?>(null)
-    private set
-
-  override val checkPosition: ChessBoardState.Position?
-    get() {
-      val nextStep = game.nextStep
-      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
-      return game.board
-          .first { (_, piece) -> piece.color == nextStep.turn && piece.rank == Rank.King }
-          .first
-          .toPosition()
-    }
-
-  override val pieces: Map<ChessBoardState.Position, SnapshotPiece>
-    get() =
-        game.board.asSequence().map { (pos, piece) -> pos.toPosition() to piece.toPiece() }.toMap()
-
-  override val availableMoves: Set<ChessBoardState.Position>
-    // Display all the possible moves for all the pieces on the board.
-    get() {
-      val position = selectedPosition ?: return emptySet()
-      return game.actions(Position(position.x, position.y))
-          .mapNotNull { it.from + it.delta }
-          .map { it.toPosition() }
-          .toSet()
-    }
-
-  override fun onDropPiece(piece: SnapshotPiece, endPosition: ChessBoardState.Position) {
-    val startPosition = pieces.entries.firstOrNull { it.value == piece }?.key ?: return
-    tryPerformMove(startPosition, endPosition)
-  }
-
-  override fun onPositionClick(position: ChessBoardState.Position) {
-    val from = selectedPosition
-    if (from == null) {
-      selectedPosition = position
-    } else {
-      tryPerformMove(from, position)
-    }
-  }
-
-  /**
-   * Attempts to perform a move from the given [ChessBoardState.Position] to the given
-   * [ChessBoardState.Position]. If the move can't be performed, this will result in a no-op.
-   *
-   * @param from the start [ChessBoardState.Position].
-   * @param to the end [ChessBoardState.Position].
-   */
-  private fun tryPerformMove(
-      from: ChessBoardState.Position,
-      to: ChessBoardState.Position,
-  ) {
-    // Hide the current selection.
-    selectedPosition = null
-
-    val step = game.nextStep as? NextStep.MovePiece ?: return
-
-    val currentPlayingId =
-        when (step.turn) {
-          Black -> blackProfile?.uid
-          White -> whiteProfile?.uid
-        }
-
-    if (currentPlayingId == user.uid) {
-      // TODO: Update game locally first, then verify upload was successful?
-      val actions =
-          game.actions(Position(from.x, from.y))
-              .filter { it.from + it.delta == Position(to.x, to.y) }
-              .toList()
-      if (actions.size == 1) {
-        scope.launch {
-          val newGame = step.move(actions.first())
-          match.update(newGame)
-        }
-      } else {
-        promotionFrom = from
-        promotionTo = to
-        choices = actions.filterIsInstance<Action.Promote>().map { it.rank.toChessBoardStateRank() }
-      }
-    }
-  }
-
-  // Promotion management.
-
-  override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())
-    private set
-
-  override val confirmEnabled: Boolean
-    get() = selection != null
-
-  override var selection: ChessBoardState.Rank? by mutableStateOf(null)
-    private set
-
-  private var promotionFrom by mutableStateOf(ChessBoardState.Position(0, 0))
-  private var promotionTo by mutableStateOf(ChessBoardState.Position(0, 0))
-
-  override fun onConfirm() {
-    val rank = selection ?: return
-    selection = null
-    val action =
-        Action.Promote(
-            from = Position(promotionFrom.x, promotionFrom.y),
-            to = Position(promotionTo.x, promotionTo.y),
-            rank = rank.toGameRank(),
-        )
-    val step = game.nextStep as? NextStep.MovePiece ?: return
     scope.launch {
-      val newGame = step.move(action)
-      match.update(newGame)
-      choices = emptyList()
+      val willCancel = listening
+      mutex.mutate(UserInput) {
+        try {
+          if (willCancel) return@mutate
+          listening = true
+          if (!permission.hasPermission) {
+            permission.launchPermissionRequest()
+          } else {
+            when (val speech = facade.recognize()) {
+              // TODO : Display an appropriate message, otherwise act on the board.
+              Failure.Internal -> snackbarHostState.showSnackbar("Internal failure")
+              is Success -> for (result in speech.results) snackbarHostState.showSnackbar(result)
+            }
+          }
+        } finally {
+          listening = false
+        }
+      }
     }
   }
-
-  override fun onSelect(rank: ChessBoardState.Rank) {
-    selection = if (rank == selection) null else rank
-  }
-
-  override val moves: List<Move>
-    get() = game.toAlgebraicNotation().map(::Move)
-}
-
-/** Maps a game engine [Position] to a [ChessBoardState.Position] */
-private fun Position.toPosition(): ChessBoardState.Position {
-  return ChessBoardState.Position(this.x, this.y)
-}
-
-/** Maps a game engine [Rank] to a [ChessBoardState.Rank]. */
-fun Rank.toChessBoardStateRank(): ChessBoardState.Rank =
-    when (this) {
-      Rank.King -> ChessBoardState.Rank.King
-      Rank.Queen -> ChessBoardState.Rank.Queen
-      Rank.Rook -> ChessBoardState.Rank.Rook
-      Rank.Bishop -> ChessBoardState.Rank.Bishop
-      Rank.Knight -> ChessBoardState.Rank.Knight
-      Rank.Pawn -> ChessBoardState.Rank.Pawn
-    }
-
-/** Maps a [ChessBoardState.Rank] to a game engine [Rank]. */
-fun ChessBoardState.Rank.toGameRank(): Rank =
-    when (this) {
-      ChessBoardState.Rank.King -> Rank.King
-      ChessBoardState.Rank.Queen -> Rank.Queen
-      ChessBoardState.Rank.Rook -> Rank.Rook
-      ChessBoardState.Rank.Bishop -> Rank.Bishop
-      ChessBoardState.Rank.Knight -> Rank.Knight
-      ChessBoardState.Rank.Pawn -> Rank.Pawn
-    }
-
-private fun Piece<Color>.toPiece(): SnapshotPiece {
-  val rank =
-      when (this.rank) {
-        Rank.King -> ChessBoardState.Rank.King
-        Rank.Queen -> ChessBoardState.Rank.Queen
-        Rank.Rook -> ChessBoardState.Rank.Rook
-        Rank.Bishop -> ChessBoardState.Rank.Bishop
-        Rank.Knight -> ChessBoardState.Rank.Knight
-        Rank.Pawn -> ChessBoardState.Rank.Pawn
-      }
-
-  val color =
-      when (this.color) {
-        Black -> ChessBoardState.Color.Black
-        White -> ChessBoardState.Color.White
-      }
-
-  return SnapshotPiece(id = this.id, rank = rank, color = color)
 }

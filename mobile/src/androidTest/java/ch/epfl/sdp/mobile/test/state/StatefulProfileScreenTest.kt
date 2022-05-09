@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
@@ -19,6 +20,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -44,11 +46,12 @@ class StatefulProfileScreenTest {
       val authFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store)
+      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade) {
-              StatefulVisitedProfileScreen("1", onChallengeClick = {})
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+              StatefulVisitedProfileScreen("1", {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()

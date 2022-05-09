@@ -60,6 +60,7 @@ object English : LocalizedStrings {
   override val settingEditSave = "Save".uppercase()
   override val settingEditCancel = "Cancel".uppercase()
   override val settingProfileNameLabel = "Profile Name"
+  override val settingProfileImageLabel = "Profile Image"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
@@ -99,4 +100,31 @@ object English : LocalizedStrings {
   override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
+
+  override val tournamentsBadgeJoin = "Join"
+  override val tournamentsBadgeParticipant = "Participant"
+  override val tournamentsBadgeAdmin = "Admin"
+  override val tournamentsTableScore = "Score"
+  override val tournamentsPoolStillOpen = "Still open"
+  override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
+  override val tournamentsPoolStartNextRound = "Start next round".uppercase()
+  override val tournamentsDetailsFinals = "Finals".uppercase()
+  override val tournamentsDetailsPools = "Pools".uppercase()
+  override val tournamentsDetailsWatch = "Watch".uppercase()
+  override val tournamentsDetailsMatchWon = "Win".uppercase()
+  override val tournamentsDetailsMatchLost = "Loss".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
+  override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
+  override val tournamentsDetailsHeaderDone = "Done".uppercase()
+
+  override val tournamentsCreateTitle = "Create tournament"
+  override val tournamentsCreateNameHint = "Name"
+  override val tournamentsCreateRules = "Rules"
+  override val tournamentsCreateBestOf = "Best of :"
+  override val tournamentsCreatePlayers = "Players"
+  override val tournamentsCreateMaximumPlayerHint = "Maximum player count"
+  override val tournamentsCreatePoolSize = "Pool size :"
+  override val tournamentsCreateDirectElimination = "Direct elim. :"
+  override val tournamentsCreateActionCancel = "Cancel".uppercase()
+  override val tournamentsCreateActionCreate = "Create".uppercase()
 }

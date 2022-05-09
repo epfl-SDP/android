@@ -5,19 +5,11 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
+import ch.epfl.sdp.mobile.test.application.chess.engine.truth.PieceBoardSubject.Companion.assertThat
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class FenNotationTest {
-
-  private fun assertEquivalent(actual: Board<Piece<Color>>?, expected: Board<Piece<Color>>) {
-    for (x: Int in 0 until Board.Size) {
-      for (y: Int in 0 until Board.Size) {
-        assertThat(actual?.get(Position(x, y))?.rank).isEqualTo(expected[Position(x, y)]?.rank)
-        assertThat(actual?.get(Position(x, y))?.color).isEqualTo(expected[Position(x, y)]?.color)
-      }
-    }
-  }
 
   @Test
   fun given_startingBoard_when_decodingFromFenNotation_then_hasEquivalentBoard() {
@@ -27,7 +19,7 @@ class FenNotationTest {
     val startingGameBoard = startingGame.board
     val deserializedBoard = parseFen(startingGameFEN)?.board
 
-    assertEquivalent(deserializedBoard, startingGameBoard)
+    assertThat(deserializedBoard).isSamePiecePosition(startingGameBoard)
   }
 
   @Test
@@ -38,7 +30,7 @@ class FenNotationTest {
     val foolsMateGameBoard = foolsMateGame.board
     val deserializedBoard = parseFen(foolsMateFEN)?.board
 
-    assertEquivalent(deserializedBoard, foolsMateGameBoard)
+    assertThat(deserializedBoard).isSamePiecePosition(foolsMateGameBoard)
   }
 
   @Test

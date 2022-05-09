@@ -21,18 +21,20 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
+import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
  *
+ * @param C the type of the [ChessMatch].
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SettingsScreen(
-    state: SettingScreenState,
+fun <C : ChessMatch> SettingsScreen(
+    state: SettingScreenState<C>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -58,18 +60,19 @@ fun SettingsScreen(
       lazyColumnState = lazyColumnState,
       modifier = modifier.fillMaxSize(),
       contentPadding = contentPadding,
-      onMatchClick = {})
+      onMatchClick = state::onMatchClick)
 }
 
 /**
  * Composes the settings header given the profile [SettingScreenState]. Displays also the
  * ProfilePicture, SettingsButton, name and email of the user's profile.
  *
+ * @param C the type of the [ChessMatch].
  * @param state state of the profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
+fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
 
   Column(
@@ -92,19 +95,20 @@ fun SettingHeader(state: SettingScreenState, modifier: Modifier = Modifier) {
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
-    SettingsButton(onClick = state::onSettingsClick)
+    SettingsButton(onClick = state::onEditProfileImageClick)
   }
 }
 
 /**
  * Composes the settings picture given its [state].
  *
+ * @param C the type of the [ChessMatch].
  * @param state state of the setting screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun SettingPicture(
-    state: SettingScreenState,
+fun <C : ChessMatch> SettingPicture(
+    state: SettingScreenState<C>,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -114,7 +118,7 @@ fun SettingPicture(
   ) {
     Text(state.emoji, style = MaterialTheme.typography.h3)
     IconButton(
-        onClick = state::onSettingsClick,
+        onClick = state::onEditProfileImageClick,
         modifier =
             Modifier.align(Alignment.BottomEnd)
                 .shadow(2.dp, CircleShape)
