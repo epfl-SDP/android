@@ -37,7 +37,7 @@ class ClassicChessBoardStateTest {
       collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
     }
     val facade = ChessFacade(auth, store)
-    val user = mockk<AuthenticatedUser>()
+    val user = mockk<AuthenticatedUser<*, *>>()
     every { user.uid } returns "id1"
 
     val job = Job()

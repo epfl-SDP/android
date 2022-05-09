@@ -25,7 +25,7 @@ class AuthenticatedUserProfileScreenStateTest {
 
   @Test
   fun correctBehaviour_takesTheUsernameCorrectly() = runTest {
-    val mockUser = mockk<AuthenticatedUser>()
+    val mockUser = mockk<AuthenticatedUser<*, *>>()
     every { mockUser.name } returns "test name"
     every { mockUser.email } returns "test email"
     every { mockUser.emoji } returns "test emoji"

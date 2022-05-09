@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
+import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -51,7 +52,7 @@ class StatefulSettingsScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authFacade.signInWithEmail("email@example.org", "password")
-      val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+      val user = authFacade.awaitAuthenticatedUser()
 
       val strings =
           rule.setContentWithLocalizedStrings {
@@ -66,7 +67,7 @@ class StatefulSettingsScreenTest {
   @Test
   fun given_SettingScreenLoaded_when_clickingOnEditProfileName_then_functionShouldBeCalled() =
       runTest {
-    val user = mockk<AuthenticatedUser>()
+    val user = mockk<AuthenticatedUser<*, *>>()
     every { user.name } returns "test"
     every { user.email } returns "test"
     every { user.emoji } returns "test"

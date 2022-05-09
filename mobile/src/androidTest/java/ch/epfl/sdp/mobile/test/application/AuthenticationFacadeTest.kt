@@ -4,7 +4,6 @@ import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationResult.*
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.toProfile
@@ -140,7 +139,7 @@ class AuthenticationFacadeTest {
 
     val facade = AuthenticationFacade(auth, store)
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
-    facade.currentUser.filterIsInstance<AuthenticatedUser>().first().signOut()
+    facade.currentUser.filterIsInstance<AuthenticatedUser<*, *>>().first().signOut()
 
     assertThat(auth.currentUser.first()).isNull()
     assertThat(facade.currentUser.filterNotNull().first()).isEqualTo(NotAuthenticatedUser)
@@ -154,7 +153,7 @@ class AuthenticationFacadeTest {
 
     facade.signUpWithEmail("email@email.com", "name", "password")
 
-    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser<*, *>>().first()
 
     userAuthenticated.update {
       emoji("🇺🇦")
@@ -162,7 +161,7 @@ class AuthenticationFacadeTest {
       name("MyNewName")
     }
 
-    val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser<*, *>>().first()
     assertThat(updatedUser.name).isEqualTo("MyNewName")
     assertThat(updatedUser.emoji).isEqualTo("🇺🇦")
     assertThat(updatedUser.backgroundColor).isEqualTo(Color.Orange)
@@ -176,11 +175,11 @@ class AuthenticationFacadeTest {
 
     facade.signUpWithEmail("email@email.com", "Alexandre", "password")
 
-    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser<*, *>>().first()
 
     userAuthenticated.update { emoji("🇺🇦") }
 
-    val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val updatedUser = facade.currentUser.filterIsInstance<AuthenticatedUser<*, *>>().first()
     assertThat(updatedUser.name).isEqualTo("Alexandre")
   }
 
@@ -192,7 +191,7 @@ class AuthenticationFacadeTest {
     val facade = AuthenticationFacade(auth, store)
     facade.signInWithEmail("email@example.org", "password")
 
-    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser<*, *>>().first()
     val following =
         store
             .collection("users")

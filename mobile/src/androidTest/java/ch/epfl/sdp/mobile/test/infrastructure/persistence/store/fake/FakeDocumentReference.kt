@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentEditScope
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.getOrPut
@@ -11,9 +10,14 @@ import ch.epfl.sdp.mobile.test.updateAndGetWithValue
 import kotlin.reflect.KClass
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
-class FakeDocumentReference(id: FakeDocumentId) : DocumentReference, CollectionBuilder {
+class FakeDocumentReference(
+    id: FakeDocumentId,
+) : DocumentReference<FakeCollectionReference>, CollectionBuilder {
 
   data class State(
       val id: FakeDocumentId,
@@ -26,7 +30,7 @@ class FakeDocumentReference(id: FakeDocumentId) : DocumentReference, CollectionB
   override val id: String
     get() = state.value.id.value
 
-  override fun collection(path: String): CollectionReference {
+  override fun collection(path: String): FakeCollectionReference {
     return state.updateAndGetWithValue {
       val (col, ref) = it.collections.getOrPut(path) { FakeCollectionReference() }
       it.copy(collections = col) to ref

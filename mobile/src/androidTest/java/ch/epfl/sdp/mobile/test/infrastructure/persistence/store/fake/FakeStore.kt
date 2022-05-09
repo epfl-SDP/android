@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Transaction
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 
 /**
@@ -13,10 +13,14 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilde
 class FakeStore
 private constructor(
     private val root: FakeDocumentReference,
-) : Store, CollectionBuilder by root {
+) : Store<FakeDocumentReference, FakeCollectionReference>, CollectionBuilder by root {
 
   /** A convenience constructor, which creates an empty [FakeStore]. */
   constructor() : this(FakeDocumentReference(FakeDocumentId.Root))
 
-  override fun collection(path: String): CollectionReference = root.collection(path)
+  override fun collection(path: String): FakeCollectionReference = root.collection(path)
+
+  override suspend fun <R> transaction(scope: Transaction<FakeDocumentReference>.() -> R): R {
+    TODO("Not yet implemented")
+  }
 }

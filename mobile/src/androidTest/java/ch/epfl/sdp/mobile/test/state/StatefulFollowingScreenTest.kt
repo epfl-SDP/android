@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
+import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -32,7 +33,7 @@ class StatefulFollowingScreenTest {
 
   @Test
   fun defaultMode_displayCorrectFollowers() {
-    val mockUser = mockk<AuthenticatedUser>()
+    val mockUser = mockk<AuthenticatedUser<*, *>>()
     every { mockUser.following } returns
         flowOf(
             listOf<Profile>(
@@ -49,9 +50,9 @@ class StatefulFollowingScreenTest {
                     get() = false
                 }))
 
-    val mockSocialFacade = mockk<SocialFacade>()
-    val mockAuthenticationFacade = mockk<AuthenticationFacade>()
-    val mockChessFacade = mockk<ChessFacade>()
+    val mockSocialFacade = mockk<SocialFacade<*, *>>()
+    val mockAuthenticationFacade = mockk<AuthenticationFacade<*, *>>()
+    val mockChessFacade = mockk<ChessFacade<*, *>>()
     val mockSpeechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
@@ -81,7 +82,7 @@ class StatefulFollowingScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
-      val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+      val user = authenticationFacade.awaitAuthenticatedUser()
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
@@ -115,7 +116,7 @@ class StatefulFollowingScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
-      val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+      val user = authenticationFacade.awaitAuthenticatedUser()
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
@@ -137,7 +138,7 @@ class StatefulFollowingScreenTest {
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
-          currentUser.filterIsInstance<AuthenticatedUser>().first()
+          awaitAuthenticatedUser()
         }
 
     val strings =
@@ -162,7 +163,7 @@ class StatefulFollowingScreenTest {
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
-          currentUser.filterIsInstance<AuthenticatedUser>().first()
+          awaitAuthenticatedUser()
         }
 
     val strings =
@@ -194,7 +195,7 @@ class StatefulFollowingScreenTest {
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
-          currentUser.filterIsInstance<AuthenticatedUser>().first()
+          awaitAuthenticatedUser()
         }
 
     val strings =

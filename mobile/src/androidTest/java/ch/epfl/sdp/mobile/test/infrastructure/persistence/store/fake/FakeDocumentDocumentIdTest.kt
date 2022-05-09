@@ -16,7 +16,7 @@ import org.junit.Test
 class FakeDocumentDocumentIdTest {
 
   /** Returns a document reference with the given [name] from the [Store]. */
-  private fun Store.doc(name: String = "doc") = collection("users").document(name)
+  private fun FakeStore.doc(name: String = "doc") = collection("users").document(name)
 
   /** Returns a [Flow] to which [filterNotNull] and [first] are consecutively applied. */
   private suspend fun <T : Any> Flow<T?>.firstNotNull() = filterNotNull().first()

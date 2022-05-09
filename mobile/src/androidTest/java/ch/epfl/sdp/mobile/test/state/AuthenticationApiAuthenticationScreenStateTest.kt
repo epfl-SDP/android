@@ -21,7 +21,7 @@ import org.junit.Test
 // TODO : This could be a unit test.
 class AuthenticationApiAuthenticationScreenStateTest {
 
-  private fun prepareAll(): Triple<AuthenticationFacade, LocalizedStrings, CoroutineScope> {
+  private fun prepareAll(): Triple<AuthenticationFacade<*, *>, LocalizedStrings, CoroutineScope> {
     return Triple(
         AuthenticationFacade(emptyAuth(), emptyStore()),
         English,
@@ -86,7 +86,7 @@ class AuthenticationApiAuthenticationScreenStateTest {
 
   @Test
   fun failingApi_hasErrorMessage() = runTest {
-    val api = mockk<AuthenticationFacade>()
+    val api = mockk<AuthenticationFacade<*, *>>()
     val strings = English
     val state = AuthApiAuthenticationScreenState(api, strings, this)
     coEvery { api.signUpWithEmail(any(), any(), any()) } returns AuthenticationResult.Failure
@@ -97,7 +97,7 @@ class AuthenticationApiAuthenticationScreenStateTest {
 
   @Test
   fun signInMode_usesSignInApi() = runTest {
-    val api = mockk<AuthenticationFacade>(relaxed = true)
+    val api = mockk<AuthenticationFacade<*, *>>(relaxed = true)
     val state = AuthApiAuthenticationScreenState(api, English, this)
     coEvery { api.signInWithEmail(any(), any()) } returns AuthenticationResult.Success
     state.mode = LogIn

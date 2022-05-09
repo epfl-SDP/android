@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.test.combineOrEmpty
 import ch.epfl.sdp.mobile.test.getOrPut
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
@@ -18,7 +17,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery {
+class FakeCollectionReference :
+    CollectionReference<FakeDocumentReference>, DocumentBuilder, FakeQuery {
 
   data class State(
       val documents: PersistentMap<String, FakeDocumentReference> = persistentMapOf(),
@@ -26,7 +26,7 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
 
   private val state = MutableStateFlow(State())
 
-  override fun document(): DocumentReference {
+  override fun document(): FakeDocumentReference {
     return document(UUID.randomUUID().toString())
   }
 

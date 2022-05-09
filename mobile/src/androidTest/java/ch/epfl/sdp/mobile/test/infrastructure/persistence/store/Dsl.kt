@@ -7,7 +7,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeStore
 import kotlin.reflect.KClass
 
 /** Builds and returns a [Store] with no data. */
-fun emptyStore(): Store = FakeStore()
+fun emptyStore(): FakeStore = FakeStore()
 
 /**
  * Builds a [Store] using the provided [CollectionBuilder]
@@ -17,7 +17,7 @@ fun emptyStore(): Store = FakeStore()
  */
 fun buildStore(
     content: CollectionBuilder.() -> Unit,
-): Store = FakeStore().apply(content)
+): FakeStore = FakeStore().apply(content)
 
 /** An interface which defines how a collection of documents is built. */
 interface DocumentBuilder {

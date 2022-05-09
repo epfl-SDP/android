@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -11,7 +10,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import com.google.common.truth.Truth
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.runTest
@@ -100,7 +98,7 @@ class SocialFacadeTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@hotmail.com", "name", "password")
-    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user = authenticationFacade.awaitAuthenticatedUser()
     user.follow(FakeProfile("other"))
     val fakePersonFollowing = user.following.first().map { it.uid }
     Truth.assertThat(fakePersonFollowing).contains("other")
@@ -113,7 +111,7 @@ class SocialFacadeTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@hotmail.com", "name", "password")
-    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user = authenticationFacade.awaitAuthenticatedUser()
     user.follow(FakeProfile("other"))
     user.unfollow((FakeProfile("other")))
     val fakePersonFollowing = user.following.first().map { it.uid }
@@ -127,7 +125,7 @@ class SocialFacadeTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
-    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user = authenticationFacade.awaitAuthenticatedUser()
     user.unfollow((FakeProfile("other")))
     val fakePersonFollowing = user.following.first().map { it.uid }
     Truth.assertThat(fakePersonFollowing).isEmpty()
@@ -140,7 +138,7 @@ class SocialFacadeTest {
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
-    val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user = authenticationFacade.awaitAuthenticatedUser()
     val userFollowing = user.following.first()
     Truth.assertThat(userFollowing).isEmpty()
   }

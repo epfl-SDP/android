@@ -52,11 +52,11 @@ class ChessFacadeTest {
 
     val chessFacade = ChessFacade(auth, store)
     // Player 1
-    val user1 = mockk<AuthenticatedUser>()
+    val user1 = mockk<AuthenticatedUser<*, *>>()
     every { user1.uid } returns "userId1"
 
     // Player 2
-    val user2 = mockk<AuthenticatedUser>()
+    val user2 = mockk<AuthenticatedUser<*, *>>()
     every { user2.uid } returns "userId2"
 
     val createdMatch = chessFacade.createMatch(user1, user2)
@@ -80,7 +80,7 @@ class ChessFacadeTest {
 
     val chessFacade = ChessFacade(auth, store)
     // Player 1
-    val user = mockk<AuthenticatedUser>()
+    val user = mockk<AuthenticatedUser<*, *>>()
     every { user.uid } returns "userId1"
 
     val match = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()

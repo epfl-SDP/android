@@ -79,7 +79,7 @@ class StatefulGameScreenTest {
     val chess = ChessFacade(auth, store)
     val speech = SpeechFacade(recognizer)
 
-    val user1 = mockk<AuthenticatedUser>()
+    val user1 = mockk<AuthenticatedUser<*, *>>()
     every { user1.uid } returns "userId1"
 
     val strings =
@@ -555,7 +555,7 @@ class StatefulGameScreenTest {
     val chess = ChessFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
-    val user1 = mockk<AuthenticatedUser>()
+    val user1 = mockk<AuthenticatedUser<*, *>>()
     every { user1.uid } returns "userId1"
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
@@ -591,7 +591,7 @@ class StatefulGameScreenTest {
     val chess = ChessFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
-    val user1 = mockk<AuthenticatedUser>()
+    val user1 = mockk<AuthenticatedUser<*, *>>()
     every { user1.uid } returns "userId1"
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
