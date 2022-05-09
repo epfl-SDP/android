@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
 
-open class FakeContestScreenState : ContestScreenState {
+open class FakeContestScreenState : ContestScreenState<Contest> {
   override val contests: List<Contest> = listOf(createContest("name", 1.days, ONGOING, ADMIN))
 
   override fun onNewContestClick() = Unit
