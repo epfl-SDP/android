@@ -55,17 +55,16 @@ object VoiceInputCombinator {
           }
 
   val column =
-      convertToken(ChessSpeechEnglishDictionary.letters).filter { it in 'a'..'h' }.map {
-        it!! - 'a'
-      }
+      convertToken(ChessSpeechEnglishDictionary.letters)
+          .filter { it in 'a'..'h' }
+          .filterNotNull()
+          .map { it!! - 'a' }
 
   val row =
       convertToken(ChessSpeechEnglishDictionary.numbers)
           .filter { it in '0'..'9' }
-          .map {
-            // TODO : What happen id it is null ?
-            8 - (it!! - '0')
-          }
+          .filterNotNull()
+          .map { 8 - (it - '0') }
           .filter { it in 0 until Board.Size }
 
   val position =
