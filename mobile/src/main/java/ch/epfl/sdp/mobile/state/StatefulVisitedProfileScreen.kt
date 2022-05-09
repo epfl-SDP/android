@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.map
  * requests.
  *
  * @param user the given [Profile].
+ * @param onGameItemClickAction callback if challenge button clicked
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
@@ -39,6 +40,7 @@ class FetchedUserProfileScreenState(
  * A stateful composable to visit the profile page of other players
  *
  * @param uid of the player.
+ * @param onChallengeClick callback if challenge button clicked
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
