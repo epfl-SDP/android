@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.failure
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filterNotNull
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
@@ -95,7 +96,7 @@ object VoiceInputCombinator {
             actionSeparator.flatMap {
               position.flatMap { to ->
                 // remove word that cannot be converted
-                rank.filter { it != null }.map { rank -> Promote(from, to, rank!!) }
+                rank.filterNotNull().map { rank -> Promote(from, to, rank!!) }
               }
             }
           }
