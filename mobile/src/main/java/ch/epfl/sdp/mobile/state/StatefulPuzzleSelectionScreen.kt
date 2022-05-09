@@ -76,7 +76,7 @@ data class PuzzleInfoAdapter(
     override val uid: String,
     override val playerColor: ChessBoardState.Color,
     override val elo: Int,
-    override val icon: @Composable (() -> Unit)
+    override val icon: @Composable () -> Unit
 ) : PuzzleInfo
 
 /** Transforms a [Puzzle] to a corresponding [PuzzleInfoAdapter] */

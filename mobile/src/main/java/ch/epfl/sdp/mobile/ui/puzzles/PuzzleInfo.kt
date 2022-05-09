@@ -16,5 +16,5 @@ interface PuzzleInfo {
   val playerColor: Color
 
   /** The icon [Composable] to display next to the [Puzzle] description */
-  val icon: @Composable (() -> Unit)
+  val icon: @Composable () -> Unit
 }
