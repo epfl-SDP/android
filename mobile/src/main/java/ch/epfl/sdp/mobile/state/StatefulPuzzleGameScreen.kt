@@ -55,6 +55,7 @@ fun StatefulPuzzleGameScreen(
   val scope = rememberCoroutineScope()
   val puzzle = chessFacade.puzzle(uid = puzzleId) ?: Puzzle()
   val userState = rememberUpdatedState(user)
+  val currentActions = rememberUpdatedState(actions)
 
   val snackbarHostState = remember { SnackbarHostState() }
   val speechRecognizerState =
@@ -68,9 +69,9 @@ fun StatefulPuzzleGameScreen(
       }
 
   val puzzleGameScreenState =
-      remember(actions, user, puzzle, chessFacade, scope) {
+      remember(currentActions, userState, puzzle, chessFacade, scope) {
         SnapshotPuzzleGameScreenState(
-            actions = actions,
+            currentActions = currentActions,
             user = userState,
             puzzle = puzzle,
             scope = scope,
@@ -90,7 +91,7 @@ fun StatefulPuzzleGameScreen(
 }
 
 class SnapshotPuzzleGameScreenState(
-    private val actions: StatefulGameScreenActions,
+    currentActions: State<StatefulGameScreenActions>,
     private val user: State<AuthenticatedUser>,
     private val puzzle: Puzzle,
     private val scope: CoroutineScope,
@@ -101,6 +102,8 @@ class SnapshotPuzzleGameScreenState(
     PromotionState,
     MovableChessBoardState<ChessBoardState.Piece>,
     SpeechRecognizerState by speechRecognizerState {
+
+  private val actions by currentActions
 
   /** The current [Game], which is updated when the [Match] progresses. */
   var game: Game by mutableStateOf(puzzle.baseGame())
