@@ -21,6 +21,6 @@ private constructor(
   override fun collection(path: String): FakeCollectionReference = root.collection(path)
 
   override suspend fun <R> transaction(scope: Transaction<FakeDocumentReference>.() -> R): R {
-    TODO("Not yet implemented")
+    return scope(FakeTransaction())
   }
 }

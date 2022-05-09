@@ -37,22 +37,40 @@ class FakeDocumentReference(
     }
   }
 
+  /** @see get */
+  fun atomicGet(): FakeDocumentSnapshot {
+    val value = state.value
+    return FakeDocumentSnapshot(value.id, value.record)
+  }
+
   override fun asDocumentSnapshotFlow(): Flow<FakeDocumentSnapshot?> =
       state.map { FakeDocumentSnapshot(it.id, it.record) }
 
-  override suspend fun delete() = state.update { it.copy(record = null) }
+  /** @see delete */
+  fun atomicDelete() = state.update { it.copy(record = null) }
 
-  override suspend fun set(scope: DocumentEditScope.() -> Unit) {
+  override suspend fun delete() = atomicDelete()
+
+  /** @see est */
+  fun atomicSet(scope: DocumentEditScope.() -> Unit) {
     state.update { it.copy(record = FakeDocumentRecord().update(scope)) }
   }
 
-  override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) {
+  override suspend fun set(scope: DocumentEditScope.() -> Unit) = atomicSet(scope)
+
+  /** @see set */
+  fun <T : Any> atomicSet(value: T, valueClass: KClass<T>) {
     state.update { it.copy(record = FakeDocumentRecord.fromObject(value, valueClass)) }
   }
 
-  override suspend fun update(scope: DocumentEditScope.() -> Unit) {
+  override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) = atomicSet(value, valueClass)
+
+  /** @see update */
+  fun atomicUpdate(scope: DocumentEditScope.() -> Unit) {
     state.update { it.copy(record = (it.record ?: FakeDocumentRecord()).update(scope)) }
   }
+
+  override suspend fun update(scope: DocumentEditScope.() -> Unit) = atomicUpdate(scope)
 
   override fun collection(path: String, content: DocumentBuilder.() -> Unit) =
       state
