@@ -19,7 +19,13 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.ContestPersonStatus.*
 import ch.epfl.sdp.mobile.ui.tournaments.ContestStatus.*
 
-/** Composes a Contest log. */
+/**
+ * Composes a Contest log.
+ *
+ * @param contest the given [Contest].
+ * @param onClick callback function called when the contest item is clicked on.
+ * @param modifier the [Modifier] for this composable.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -43,6 +49,12 @@ fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modi
       })
 }
 
+/**
+ * Displays the bottom text part containing the status the contest item.
+ *
+ * @param strings the given [LocalizedStrings].
+ * @param contest the given [Contest].
+ */
 @Composable
 private fun DisplayContestStatus(strings: LocalizedStrings, contest: Contest): AnnotatedString {
   return if (contest.status == ONGOING) {
@@ -58,6 +70,13 @@ private fun DisplayContestStatus(strings: LocalizedStrings, contest: Contest): A
   }
 }
 
+/**
+ * Displays the corresponding contest item badge.
+ *
+ * @param personStatus the role of the current user.
+ * @param onClick callback function called when the badge is clicked on.
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 private fun DisplayBadge(
     personStatus: ContestPersonStatus,

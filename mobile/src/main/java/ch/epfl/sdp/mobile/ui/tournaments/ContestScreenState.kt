@@ -2,7 +2,11 @@ package ch.epfl.sdp.mobile.ui.tournaments
 
 import androidx.compose.runtime.Stable
 
-/** The view-model of the list of tournaments screen. */
+/**
+ * The view-model of the list of tournaments screen.
+ *
+ * @param C the type of the [Contest].
+ */
 @Stable
 interface ContestScreenState<C : Contest> {
 

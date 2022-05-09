@@ -1,13 +1,11 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -52,6 +50,11 @@ fun <C : Contest> ContestScreen(
       })
 }
 
+/**
+ * The top bar containing the title and tournaments filter.
+ *
+ * @param strings the given [LocalizedStrings].
+ */
 @Composable
 fun TopAppBar(strings: LocalizedStrings) {
   TopAppBar(
@@ -68,14 +71,15 @@ fun TopAppBar(strings: LocalizedStrings) {
       modifier = Modifier.padding(top = 12.dp))
 }
 
+/**
+ * The button to create a new tournament.
+ *
+ * @param onClick callback function called when the button is clicked on.
+ * @param modifier the [Modifier] for this composable.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NewContestButton(
-    onClick: () -> Unit,
-    elevation: ButtonElevation = ButtonDefaults.elevation(),
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    modifier: Modifier = Modifier
-) {
+fun NewContestButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
 
   FloatingActionButton(
@@ -83,7 +87,6 @@ fun NewContestButton(
       shape = RoundedCornerShape(28.dp),
       backgroundColor = MaterialTheme.colors.onSurface,
       contentColor = MaterialTheme.colors.onPrimary,
-      interactionSource = interactionSource,
       modifier = modifier) {
     Row(
         horizontalArrangement = Arrangement.Start,
