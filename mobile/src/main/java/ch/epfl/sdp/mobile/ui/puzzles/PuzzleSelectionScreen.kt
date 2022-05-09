@@ -109,6 +109,6 @@ fun PuzzleListInfo(
                 },
         )
       },
-      secondaryText = { Text(text = "${strings.puzzlePlayingAs} ${puzzleInfo.playerColor}") },
+      secondaryText = { Text(text = strings.puzzlePlayingAs(puzzleInfo.playerColor.toString())) },
   )
 }
