@@ -23,9 +23,8 @@ import kotlinx.coroutines.flow.map
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
-    user: Profile,
-    actions: State<ProfileActions>,
     private val user: Profile,
+    actions: State<ProfileActions>,
     onGameItemClickAction: State<(String) -> Unit>,
     chessFacade: ChessFacade,
     scope: CoroutineScope,
@@ -68,7 +67,7 @@ fun StatefulVisitedProfileScreen(
   val scope = rememberCoroutineScope()
   val state =
       remember(actions, profile, chessFacade, scope) {
-        FetchedUserProfileScreenState(profile, actions, chessFacade, scope)
+        FetchedUserProfileScreenState(profile, actions, onGameItemClickAction, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }

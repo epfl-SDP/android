@@ -17,10 +17,10 @@ import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -51,7 +51,7 @@ class StatefulProfileScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-              StatefulVisitedProfileScreen("1", {})
+              StatefulVisitedProfileScreen("1", {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -69,6 +69,7 @@ class StatefulProfileScreenTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -78,7 +79,9 @@ class StatefulProfileScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          PawniesTheme { ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() } }
+          PawniesTheme {
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) { Navigation() }
+          }
         }
 
     rule.onNodeWithText(strings.sectionSocial).performClick()
