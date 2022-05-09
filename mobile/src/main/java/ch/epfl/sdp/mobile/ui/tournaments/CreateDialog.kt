@@ -31,6 +31,19 @@ interface CreateDialogState {
   /** The name of the newly created tournament. */
   var name: String
 
+  /** The list of possible "Best of" choices. */
+  val bestOfChoices: List<Int>
+
+  /** The currently selected "Best of", if there's any. */
+  var bestOf: Int?
+
+  /**
+   * Called when the best of action is clicked.
+   *
+   * @param count the value which is clicked.
+   */
+  fun onBestOfClick(count: Int)
+
   /** The maximum number of players for the tournament. */
   var maximumPlayerCount: String
 
@@ -88,10 +101,14 @@ fun CreateDialog(
                 color = PawniesColors.Green500,
                 modifier = Modifier.weight(1f, fill = true),
             )
-            // TODO : Load this from state.
-            DialogPill(selected = false, onClick = {}) { Text(1.toString()) }
-            DialogPill(selected = true, onClick = {}) { Text(3.toString()) }
-            DialogPill(selected = false, onClick = {}) { Text(5.toString()) }
+            for (choice in state.bestOfChoices) {
+              key(choice) {
+                DialogPill(
+                    selected = choice == state.bestOf,
+                    onClick = { state.onBestOfClick(choice) },
+                ) { Text(choice.toString()) }
+              }
+            }
           }
           DashedDivider(
               modifier = Modifier.padding(horizontal = 16.dp),
