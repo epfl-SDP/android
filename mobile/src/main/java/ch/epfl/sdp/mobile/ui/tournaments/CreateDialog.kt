@@ -59,19 +59,29 @@ fun CreateDialog(
       confirmEnabled = state.confirmEnabled,
       shape = RoundedCornerShape(16.dp),
       content = {
-        Column(Modifier.padding(16.dp), spacedBy(12.dp)) {
-          Text(strings.tournamentsCreateTitle, style = MaterialTheme.typography.subtitle1)
+        Column(Modifier.padding(vertical = 16.dp), spacedBy(12.dp)) {
+          Text(
+              text = strings.tournamentsCreateTitle,
+              style = MaterialTheme.typography.subtitle1,
+              modifier = Modifier.padding(horizontal = 16.dp),
+          )
           OutlinedTextField(
               value = state.name,
               onValueChange = { state.name = it },
               placeholder = { Text(strings.tournamentsCreateNameHint) },
               shape = RoundedCornerShape(4.dp),
-              modifier = Modifier.fillMaxWidth(),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
               maxLines = 1,
           )
-          DashedDivider()
-          Text(strings.tournamentsCreateRules, style = MaterialTheme.typography.subtitle1)
-          Row(Modifier, spacedBy(8.dp), CenterVertically) {
+          DashedDivider(
+              modifier = Modifier.padding(horizontal = 16.dp),
+          )
+          Text(
+              text = strings.tournamentsCreateRules,
+              style = MaterialTheme.typography.subtitle1,
+              modifier = Modifier.padding(horizontal = 16.dp),
+          )
+          Row(Modifier.padding(horizontal = 16.dp), spacedBy(8.dp), CenterVertically) {
             Text(
                 text = strings.tournamentsCreateBestOf,
                 style = MaterialTheme.typography.subtitle1,
@@ -83,14 +93,20 @@ fun CreateDialog(
             DialogPill(selected = true, onClick = {}) { Text(3.toString()) }
             DialogPill(selected = false, onClick = {}) { Text(5.toString()) }
           }
-          DashedDivider()
-          Text(strings.tournamentsCreatePlayers, style = MaterialTheme.typography.subtitle1)
+          DashedDivider(
+              modifier = Modifier.padding(horizontal = 16.dp),
+          )
+          Text(
+              text = strings.tournamentsCreatePlayers,
+              style = MaterialTheme.typography.subtitle1,
+              modifier = Modifier.padding(horizontal = 16.dp),
+          )
           OutlinedTextField(
               value = state.maximumPlayerCount,
               onValueChange = { state.maximumPlayerCount = it },
               placeholder = { Text(strings.tournamentsCreateMaximumPlayerHint) },
               shape = RoundedCornerShape(4.dp),
-              modifier = Modifier.fillMaxWidth(),
+              modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
               maxLines = 1,
               keyboardOptions = KeyboardOptions(keyboardType = Number),
           )
@@ -99,12 +115,14 @@ fun CreateDialog(
               selected = "No qualifiers",
               items = listOf("No qualifiers", "2", "3"),
               onItemClick = {},
+              contentPadding = PaddingValues(horizontal = 16.dp),
           ) { Text(it) }
           DialogChoices(
               title = strings.tournamentsCreateDirectElimination,
               selected = "1 / 4",
               items = listOf("1 / 4", "1 / 2", "Finals"),
               onItemClick = {},
+              contentPadding = PaddingValues(horizontal = 16.dp),
           ) { Text(it) }
         }
       },
@@ -150,6 +168,7 @@ private const val KeyTitle = "title"
  * @param onItemClick a callback which is called when an item is pressed.
  * @param modifier the [Modifier] for this composable.
  * @param key the (optional) key for items of type [T].
+ * @param contentPadding the [PaddingValues] for the body of the choices.
  * @param itemContent the body of an item to display.
  */
 @Composable
@@ -160,12 +179,14 @@ private fun <T> DialogChoices(
     onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier,
     key: ((T) -> Any)? = null,
+    contentPadding: PaddingValues = PaddingValues(),
     itemContent: @Composable (T) -> Unit,
 ) {
   LazyRow(
       modifier = modifier,
       horizontalArrangement = spacedBy(8.dp),
       verticalAlignment = CenterVertically,
+      contentPadding = contentPadding,
   ) {
     item(key = KeyTitle) {
       Text(
