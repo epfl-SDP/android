@@ -100,7 +100,7 @@ class ChessFacade(
 
   /** Fetches the list of all [Puzzle]s from their source */
   private fun allPuzzles(): List<Puzzle> {
-    val reader = assets.openAsReader("puzzles/puzzles.csv")
+    val reader = assets.openAsReader(csvPath)
     val csvReader = CSVReaderHeaderAware(reader)
     val csvMap = mutableListOf<Map<String, String>>()
     var line = csvReader.readMap()
@@ -111,10 +111,10 @@ class ChessFacade(
 
     val puzzles =
         csvMap.map {
-          val puzzleId = it["PuzzleId"] ?: return@map Puzzle()
-          val fen = parseFen(it["FEN"] ?: "") ?: return@map Puzzle()
-          val moves = parseActions(it["Moves"] ?: "") ?: return@map Puzzle()
-          val rating = (it["Rating"] ?: return@map Puzzle()).toInt()
+          val puzzleId = it[csvPuzzleId] ?: return@map Puzzle()
+          val fen = parseFen(it[csvFen] ?: "") ?: return@map Puzzle()
+          val moves = parseActions(it[csvMoves] ?: "") ?: return@map Puzzle()
+          val rating = (it[csvRating] ?: return@map Puzzle()).toInt()
 
           SnapshotPuzzle(
               uid = puzzleId,
@@ -199,3 +199,9 @@ private data class StoreMatch(
     store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }
   }
 }
+
+private const val csvPath = "puzzles/puzzles.csv"
+private const val csvPuzzleId = "PuzzleId"
+private const val csvFen = "FEN"
+private const val csvMoves = "Moves"
+private const val csvRating = "Rating"
