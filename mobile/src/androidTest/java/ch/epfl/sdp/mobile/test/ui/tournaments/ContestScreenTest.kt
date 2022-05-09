@@ -13,7 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 
 open class FakeContestScreenState : ContestScreenState<Contest> {
-  override val contests: List<Contest> = listOf(createContest("name", 1.days, ONGOING, ADMIN))
+  override val contests: List<Contest> = listOf(createContest("Name", 1.days, ONGOING, ADMIN))
 
   override fun onNewContestClick() = Unit
 }
@@ -50,9 +50,12 @@ class NewContestButtonTest {
   }
 
   @Test
-  fun given_contestScreen_when_oneGameRegistered_then_gameIsDisplayed() {
+  fun given_contestScreen_when_oneContestRegistered_then_contestIsDisplayed() {
     val state = FakeContestScreenState()
     val strings = rule.setContentWithLocalizedStrings { ContestScreen(state) }
-    rule.onNodeWithText("name").assertIsDisplayed()
+    rule.onNodeWithText("Name").assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsStartingTime(state.contests[0].creationDate))
+        .assertIsDisplayed()
   }
 }

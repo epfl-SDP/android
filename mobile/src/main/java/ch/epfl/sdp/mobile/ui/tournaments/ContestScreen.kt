@@ -25,6 +25,7 @@ import ch.epfl.sdp.mobile.ui.plus
  * @param key a function which uniquely identifies the list items.
  * @param contentPadding the [PaddingValues] for this screen.
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun <C : Contest> ContestScreen(
     state: ContestScreenState<C>,
@@ -44,7 +45,7 @@ fun <C : Contest> ContestScreen(
                   style = MaterialTheme.typography.h4)
             },
             elevation = 0.dp,
-            actions = { IconButton(onClick = {}) { Icon(PawniesIcons.Filter, null) } },
+            actions = { Icon(PawniesIcons.Filter, null) },
             backgroundColor = MaterialTheme.colors.background,
             contentColor = MaterialTheme.colors.primary,
             modifier = Modifier.padding(top = 12.dp))
@@ -63,6 +64,7 @@ fun <C : Contest> ContestScreen(
       })
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NewContestButton(
     onClick: () -> Unit,

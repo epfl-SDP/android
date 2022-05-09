@@ -51,7 +51,7 @@ private fun displayContestStatus(strings: LocalizedStrings, contest: Contest): A
         append(strings.tournamentsStarted)
       }
       withStyle(style = SpanStyle(color = PawniesColors.Orange200)) {
-        append(" ${contest.creationDate} ")
+        append(" ${contest.creationDate.absoluteValue} ")
       }
       withStyle(style = SpanStyle(color = PawniesColors.Green200)) {
         append(strings.tournamentsAgo)
