@@ -55,7 +55,7 @@ private sealed interface UserState {
    *
    * @param user the [AuthenticationUser] information.
    */
-  data class Authenticated(val user: AuthenticatedUser) : UserState {
+  data class Authenticated(val user: AuthenticatedUser<*, *>) : UserState {
     override val key = "Authenticated"
   }
 }
@@ -77,5 +77,5 @@ private fun rememberUserState(): State<UserState> {
 private fun AuthenticationUser.toUserState(): UserState =
     when (this) {
       NotAuthenticatedUser -> UserState.NotAuthenticated
-      is AuthenticatedUser -> UserState.Authenticated(this)
+      is AuthenticatedUser<*, *> -> UserState.Authenticated(this)
     }

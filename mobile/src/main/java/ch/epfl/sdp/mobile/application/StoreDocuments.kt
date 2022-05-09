@@ -45,7 +45,7 @@ fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
  * @param currentUser the [AuthenticationUser] to transform.
  */
 fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
-  return toProfile((currentUser as? AuthenticatedUser)?.uid)
+  return toProfile((currentUser as? AuthenticatedUser<*, *>)?.uid)
 }
 
 /**

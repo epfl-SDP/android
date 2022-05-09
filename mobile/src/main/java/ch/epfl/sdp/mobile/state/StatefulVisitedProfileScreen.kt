@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.map
 class FetchedUserProfileScreenState(
     user: Profile,
     actions: State<ProfileActions>,
-    chessFacade: ChessFacade,
+    chessFacade: ChessFacade<*, *>,
     scope: CoroutineScope,
 ) :
     VisitedProfileScreenState<ChessMatchAdapter>,

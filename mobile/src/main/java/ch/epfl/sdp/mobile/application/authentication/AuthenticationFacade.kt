@@ -4,9 +4,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth.AuthenticationResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User as FacadeUser
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -19,7 +17,10 @@ import kotlinx.coroutines.flow.map
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
  */
-class AuthenticationFacade(private val auth: Auth, private val store: Store) {
+class AuthenticationFacade<D : DocumentReference<C>, C : CollectionReference<D>>(
+    private val auth: Auth,
+    private val store: Store<D, C>,
+) {
 
   /** A [Flow] of the current [AuthenticationUser]. */
   val currentUser: Flow<AuthenticationUser>
@@ -79,7 +80,9 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
   }
 }
 
-private fun FacadeUser?.profileFlow(store: Store): Flow<Pair<FacadeUser, ProfileDocument?>?> {
+private fun <D : DocumentReference<C>, C : CollectionReference<D>> FacadeUser?.profileFlow(
+    store: Store<D, C>,
+): Flow<Pair<FacadeUser, ProfileDocument?>?> {
   return if (this != null) {
     store.collection("users").document(uid).asFlow<ProfileDocument>().map { this to it }
   } else {
@@ -94,8 +97,9 @@ private fun FacadeUser?.profileFlow(store: Store): Flow<Pair<FacadeUser, Profile
  * @param auth the [Auth] instance which is used to build the user.
  * @param store the [Store] instance which is used to build the user.
  */
-private fun Pair<FacadeUser, ProfileDocument?>.toAuthenticatedUser(
+private fun <D : DocumentReference<C>, C : CollectionReference<D>> Pair<
+    FacadeUser, ProfileDocument?>.toAuthenticatedUser(
     auth: Auth,
-    store: Store,
-): AuthenticatedUser =
+    store: Store<D, C>,
+): AuthenticatedUser<D, C> =
     AuthenticatedUser(auth = auth, firestore = store, user = first, document = second)

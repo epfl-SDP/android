@@ -41,7 +41,7 @@ fun StatefulAuthenticationScreen(
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class AuthenticationApiAuthenticationScreenState(
-    private val facade: AuthenticationFacade,
+    private val facade: AuthenticationFacade<*, *>,
     private val strings: LocalizedStrings,
     private val scope: CoroutineScope,
 ) : AuthenticationScreenState {

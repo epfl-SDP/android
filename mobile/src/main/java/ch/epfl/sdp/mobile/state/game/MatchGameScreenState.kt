@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 class MatchGameScreenState
 private constructor(
     private val actions: StatefulGameScreenActions,
-    private val user: AuthenticatedUser,
+    private val user: AuthenticatedUser<*, *>,
     private val match: Match,
     private val scope: CoroutineScope,
     private val chessBoardDelegate: MatchChessBoardState,
@@ -61,7 +61,7 @@ private constructor(
    */
   constructor(
       actions: StatefulGameScreenActions,
-      user: AuthenticatedUser,
+      user: AuthenticatedUser<*, *>,
       match: Match,
       scope: CoroutineScope,
       speechRecognizerState: SpeechRecognizerState,

@@ -10,13 +10,13 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 
 /** A global composition local which provides access to an instance of [AuthenticationFacade]. */
 val LocalAuthenticationFacade =
-    compositionLocalOf<AuthenticationFacade> { error("Missing Authentication API.") }
+    compositionLocalOf<AuthenticationFacade<*, *>> { error("Missing Authentication API.") }
 
 /** A global composition local which provides access to an instance of [SocialFacade]. */
-val LocalSocialFacade = compositionLocalOf<SocialFacade> { error("Missing Social API.") }
+val LocalSocialFacade = compositionLocalOf<SocialFacade<*, *>> { error("Missing Social API.") }
 
 /** A global composition local which provides access to an instance of [ChessFacade]. */
-val LocalChessFacade = compositionLocalOf<ChessFacade> { error("Missing Chess API.") }
+val LocalChessFacade = compositionLocalOf<ChessFacade<*, *>> { error("Missing Chess API.") }
 
 /** A global composition local which provides access to an instance of [SpeechFacade]. */
 val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech Facade.") }
@@ -32,9 +32,9 @@ val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech
  */
 @Composable
 fun ProvideFacades(
-    authentication: AuthenticationFacade,
-    social: SocialFacade,
-    chess: ChessFacade,
+    authentication: AuthenticationFacade<*, *>,
+    social: SocialFacade<*, *>,
+    chess: ChessFacade<*, *>,
     speech: SpeechFacade,
     content: @Composable () -> Unit,
 ) {

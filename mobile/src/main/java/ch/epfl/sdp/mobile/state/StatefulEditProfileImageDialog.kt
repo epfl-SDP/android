@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
  * @param onCloseAction the callback called if dialog need to be closed.
  */
 class EditProfileImageDialogStateImpl(
-    private val user: AuthenticatedUser,
+    private val user: AuthenticatedUser<*, *>,
     private val scope: CoroutineScope,
     onCloseAction: State<() -> Unit>,
 ) : EditProfileImageDialogState {
@@ -60,7 +60,7 @@ class EditProfileImageDialogStateImpl(
  */
 @Composable
 fun StatefulEditProfileImageDialog(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

@@ -24,8 +24,8 @@ import kotlinx.coroutines.CoroutineScope
  */
 class AuthenticatedUserProfileScreenState(
     actions: State<ProfileActions>,
-    user: AuthenticatedUser,
-    chessFacade: ChessFacade,
+    user: AuthenticatedUser<*, *>,
+    chessFacade: ChessFacade<*, *>,
     scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
@@ -59,7 +59,7 @@ class AuthenticatedUserProfileScreenState(
  */
 @Composable
 fun StatefulSettingsScreen(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     onMatchClick: (ChessMatchAdapter) -> Unit,
     onEditProfileNameClick: () -> Unit,
     onEditProfileImageClick: () -> Unit,

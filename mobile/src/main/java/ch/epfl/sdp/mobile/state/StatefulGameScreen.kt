@@ -45,7 +45,7 @@ data class StatefulGameScreenActions(
  */
 @Composable
 fun StatefulGameScreen(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     id: String,
     actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,

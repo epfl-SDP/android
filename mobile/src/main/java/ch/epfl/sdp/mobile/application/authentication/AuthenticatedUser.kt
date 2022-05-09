@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /** Indicates that an [AuthenticatedUser] is currently authenticated. */
-class AuthenticatedUser(
+class AuthenticatedUser<D : DocumentReference<C>, C : CollectionReference<D>>(
     private val auth: Auth,
-    private val firestore: Store,
+    private val firestore: Store<D, C>,
     private val user: User,
     document: ProfileDocument?,
 ) : AuthenticationUser, Profile by document.toProfile(user.uid) {

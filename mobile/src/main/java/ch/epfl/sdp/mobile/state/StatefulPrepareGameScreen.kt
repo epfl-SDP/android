@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun StatefulPrepareGameScreen(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     navigateToGame: (match: Match) -> Unit,
     cancelClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -54,11 +54,11 @@ fun StatefulPrepareGameScreen(
  * @param scope The [Composable]'s [CoroutineScope]
  */
 class SnapshotPrepareGameScreenState(
-    val user: AuthenticatedUser,
+    val user: AuthenticatedUser<*, *>,
     override val opponents: List<ProfileAdapter>,
     val navigateToGame: (match: Match) -> Unit,
     val cancelClick: () -> Unit,
-    val chessFacade: ChessFacade,
+    val chessFacade: ChessFacade<*, *>,
     val scope: CoroutineScope,
 ) : PrepareGameScreenState<ProfileAdapter> {
 

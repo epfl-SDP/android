@@ -20,7 +20,10 @@ import kotlinx.coroutines.flow.*
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
  */
-class ChessFacade(private val auth: Auth, private val store: Store) {
+class ChessFacade<D : DocumentReference<C>, C : CollectionReference<D>>(
+    private val auth: Auth,
+    private val store: Store<D, C>
+) {
 
   /**
    * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
@@ -29,7 +32,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    *
    * @return The created [Match] before storing it in the [Store]
    */
-  suspend fun createLocalMatch(user: AuthenticatedUser): Match {
+  suspend fun createLocalMatch(user: AuthenticatedUser<*, *>): Match {
     val document = store.collection("games").document()
     document.set(ChessDocument(whiteId = user.uid, blackId = user.uid))
     return StoreMatch(document.id, store)
@@ -86,9 +89,9 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   }
 }
 
-private data class StoreMatch(
+private data class StoreMatch<D : DocumentReference<C>, C : CollectionReference<D>>(
     override val id: String,
-    private val store: Store,
+    private val store: Store<D, C>,
 ) : Match {
 
   fun profile(

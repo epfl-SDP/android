@@ -7,6 +7,8 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +21,10 @@ import kotlinx.coroutines.flow.map
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
  */
-class SocialFacade(private val auth: Auth, private val store: Store) {
+class SocialFacade<D : DocumentReference<C>, C : CollectionReference<D>>(
+    private val auth: Auth,
+    private val store: Store<D, C>,
+) {
 
   companion object {
 
@@ -68,7 +73,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
           .limit(MaxSearchResultCount)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
-          .map { list -> list.filterNot { it.uid == (user as? AuthenticatedUser)?.uid } }
+          .map { list -> list.filterNot { it.uid == (user as? AuthenticatedUser<*, *>)?.uid } }
 
   /**
    * Returns a [Flow] of the [Profile] corresponding to a given unique identifier.

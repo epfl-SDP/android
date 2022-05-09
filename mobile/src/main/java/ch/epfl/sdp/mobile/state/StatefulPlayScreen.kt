@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun StatefulPlayScreen(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     onGameItemClick: (ChessMatchAdapter) -> Unit,
     navigateToPrepareGame: () -> Unit,
     navigateToLocalGame: (match: Match) -> Unit,
@@ -135,7 +135,7 @@ data class ChessMatchAdapter(
  */
 fun fetchForUser(
     user: Profile,
-    facade: ChessFacade,
+    facade: ChessFacade<*, *>,
 ): Flow<List<MatchInfo>> =
     facade.matches(user).map { m -> m.map { info(it) } }.flatMapLatest { matches ->
       combine(matches) { it.toList() }
@@ -184,8 +184,8 @@ private class PlayScreenStateImpl(
     onLocalGameClickAction: State<(match: Match) -> Unit>,
     onOnlineGameClickAction: State<() -> Unit>,
     onMatchClickAction: State<(ChessMatchAdapter) -> Unit>,
-    private val user: AuthenticatedUser,
-    private val chessFacade: ChessFacade,
+    private val user: AuthenticatedUser<*, *>,
+    private val chessFacade: ChessFacade<*, *>,
     private val scope: CoroutineScope,
 ) : PlayScreenState<ChessMatchAdapter> {
   val onMatchClickAction by onMatchClickAction

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
  * @param onCloseAction the callback called after we click on Cancel or Save Button.
  */
 class EditProfileNameDialogStateImpl(
-    private val user: AuthenticatedUser,
+    private val user: AuthenticatedUser<*, *>,
     private val scope: CoroutineScope,
     onCloseAction: State<() -> Unit>,
 ) : EditProfileNameDialogState {
@@ -54,7 +54,7 @@ class EditProfileNameDialogStateImpl(
  */
 @Composable
 fun StatefulEditProfileNameDialog(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     onClose: () -> Unit,
 ) {
   val scope = rememberCoroutineScope()

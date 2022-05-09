@@ -44,7 +44,7 @@ data class ProfileAdapter(
  */
 @Composable
 fun StatefulFollowingScreen(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     onShowProfileClick: (ProfileAdapter) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -90,8 +90,8 @@ data class Actions(
  */
 class SnapshotSocialScreenState(
     actions: State<Actions>,
-    private val user: AuthenticatedUser,
-    private val socialFacade: SocialFacade,
+    private val user: AuthenticatedUser<*, *>,
+    private val socialFacade: SocialFacade<*, *>,
     private val scope: CoroutineScope,
 ) : SocialScreenState<ProfileAdapter> {
 

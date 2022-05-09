@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class StatefulProfileScreen(
     user: Profile,
     actions: State<ProfileActions>,
-    private val chessFacade: ChessFacade,
+    private val chessFacade: ChessFacade<*, *>,
     private val scope: CoroutineScope,
 ) : ProfileScreenState<ChessMatchAdapter>, Person by ProfileAdapter(user) {
   private val actions by actions

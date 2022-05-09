@@ -53,7 +53,7 @@ private const val ArRoute = "ar"
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun StatefulHome(
-    user: AuthenticatedUser,
+    user: AuthenticatedUser<*, *>,
     modifier: Modifier = Modifier,
     controller: NavHostController = rememberNavController(),
 ) {
