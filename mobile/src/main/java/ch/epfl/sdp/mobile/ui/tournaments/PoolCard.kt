@@ -111,7 +111,7 @@ private fun PoolNameText(
 }
 
 /**
- * Displays the color of the pool.
+ * Displays the status of the pool.
  *
  * @param status the [PoolInfo.Status] for the pool.
  * @param modifier the [Modifier] for this composable.
