@@ -75,7 +75,7 @@ class CreateDialogTest {
   }
 
   @Test
-  fun given_singleChoice_when_clickingChoice_then_callsCallback() {
+  fun given_singleChoice_when_clickingPoolSizeChoice_then_callsCallback() {
     val channel = Channel<Unit>(1)
     val state =
         object : CreateDialogState<SingleChoice, SingleChoice> {
@@ -102,7 +102,7 @@ class CreateDialogTest {
   }
 
   @Test
-  fun given_bestOfChoices_when_clickingChoice_then_callsCallback() {
+  fun given_bestOfChoices_when_clickingBestOfChoice_then_callsCallback() {
     val channel = Channel<Int>(1)
     val state =
         object : CreateDialogState<SingleChoice, SingleChoice> {
@@ -126,6 +126,33 @@ class CreateDialogTest {
     rule.setContentWithLocalizedStrings { CreateDialog(state) }
     rule.onNodeWithText("3").performClick()
     assertThat(channel.tryReceive().getOrNull()).isEqualTo(3)
+  }
+
+  @Test
+  fun given_bestOfChoices_when_clickingDirectEliminationChoice_then_callsCallback() {
+    val channel = Channel<Unit>(1)
+    val state =
+        object : CreateDialogState<SingleChoice, SingleChoice> {
+          override var name: String = ""
+          override val bestOfChoices: List<Int> = emptyList()
+          override var bestOf: Int? = null
+          override fun onBestOfClick(count: Int) = Unit
+          override var maximumPlayerCount = ""
+          override val poolSizeChoices: List<SingleChoice> = emptyList()
+          override val poolSize: SingleChoice? = null
+          override fun onPoolSizeClick(poolSize: SingleChoice) = Unit
+          override val eliminationRoundChoices: List<SingleChoice> = listOf(SingleChoice)
+          override val eliminationRound: SingleChoice? = null
+          override fun onEliminationRoundClick(eliminationRound: SingleChoice) {
+            channel.trySend(Unit)
+          }
+          override val confirmEnabled = false
+          override fun onConfirm() = Unit
+          override fun onCancel() = Unit
+        }
+    rule.setContentWithLocalizedStrings { CreateDialog(state) }
+    rule.onNodeWithText(SingleChoice.name).performClick()
+    assertThat(channel.tryReceive().getOrNull()).isEqualTo(Unit)
   }
 
   @Test
