@@ -13,7 +13,6 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.Filter
 import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.plus
 
 /**
@@ -23,6 +22,7 @@ import ch.epfl.sdp.mobile.ui.plus
  * @param modifier the [Modifier] for the composable.
  * @param key a function which uniquely identifies the list items.
  * @param contentPadding the [PaddingValues] for this screen.
+ * @param C the type of the [Contest].
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -32,10 +32,9 @@ fun <C : Contest> ContestScreen(
     key: ((C) -> Any)? = null,
     contentPadding: PaddingValues = PaddingValues()
 ) {
-  val strings = LocalLocalizedStrings.current
 
   Scaffold(
-      topBar = { TopAppBar(strings) },
+      topBar = { TopAppBar() },
       modifier = modifier.padding(contentPadding),
       floatingActionButton = { NewContestButton(onClick = state::onNewContestClick) },
       content = { innerPadding ->
@@ -50,13 +49,10 @@ fun <C : Contest> ContestScreen(
       })
 }
 
-/**
- * The top bar containing the title and tournaments filter.
- *
- * @param strings the given [LocalizedStrings].
- */
+/** The top bar containing the title and tournaments filter. */
 @Composable
-fun TopAppBar(strings: LocalizedStrings) {
+fun TopAppBar() {
+  val strings = LocalLocalizedStrings.current
   TopAppBar(
       title = {
         Text(
@@ -68,7 +64,7 @@ fun TopAppBar(strings: LocalizedStrings) {
       actions = { Icon(PawniesIcons.Filter, null) },
       backgroundColor = MaterialTheme.colors.background,
       contentColor = MaterialTheme.colors.primary,
-      modifier = Modifier.padding(top = 12.dp))
+      modifier = Modifier.padding(top = 12.dp, end = 16.dp))
 }
 
 /**

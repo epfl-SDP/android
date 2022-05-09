@@ -16,8 +16,7 @@ import androidx.compose.ui.text.withStyle
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
-import ch.epfl.sdp.mobile.ui.tournaments.ContestPersonStatus.*
-import ch.epfl.sdp.mobile.ui.tournaments.ContestStatus.*
+import ch.epfl.sdp.mobile.ui.tournaments.Status.ContestStatus.*
 
 /**
  * Composes a Contest log.
@@ -30,7 +29,7 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestStatus.*
 @Composable
 fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
-  val title = DisplayContestStatus(strings, contest)
+  val title = displayContestStatus(strings, contest)
 
   ListItem(
       modifier = Modifier.clickable { onClick() },
@@ -44,7 +43,7 @@ fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modi
       },
       trailing = {
         Row(verticalAlignment = Alignment.CenterVertically) {
-          DisplayBadge(contest.personStatus, onClick, modifier)
+          Badge(contest.personStatus, onClick, modifier)
         }
       })
 }
@@ -55,37 +54,16 @@ fun ContestItem(contest: Contest, onClick: () -> Unit, modifier: Modifier = Modi
  * @param strings the given [LocalizedStrings].
  * @param contest the given [Contest].
  */
-@Composable
-private fun DisplayContestStatus(strings: LocalizedStrings, contest: Contest): AnnotatedString {
+private fun displayContestStatus(strings: LocalizedStrings, contest: Contest): AnnotatedString {
   return if (contest.status == ONGOING) {
     buildAnnotatedString {
       append(strings.tournamentsStarted)
       withStyle(style = SpanStyle(color = PawniesColors.Orange200)) {
-        append(" ${contest.creationDate.absoluteValue} ")
+        append(" ${contest.creationTime.absoluteValue} ")
       }
       append(strings.tournamentsAgo)
     }
   } else {
     AnnotatedString(strings.tournamentsDone)
-  }
-}
-
-/**
- * Displays the corresponding contest item badge.
- *
- * @param personStatus the role of the current user.
- * @param onClick callback function called when the badge is clicked on.
- * @param modifier the [Modifier] for this composable.
- */
-@Composable
-private fun DisplayBadge(
-    personStatus: ContestPersonStatus,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-  when (personStatus) {
-    ADMIN -> Badge(type = BadgeType.Admin, onClick = onClick, modifier = modifier)
-    PARTICIPANT -> Badge(type = BadgeType.Participant, onClick = onClick, modifier = modifier)
-    VIEWER -> Badge(type = BadgeType.Join, onClick = onClick, modifier = modifier)
   }
 }

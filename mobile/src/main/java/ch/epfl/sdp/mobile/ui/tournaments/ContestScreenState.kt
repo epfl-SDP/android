@@ -13,6 +13,9 @@ interface ContestScreenState<C : Contest> {
   /** The list of completed and ongoing tournaments. */
   val contests: List<C>
 
+  /** Callback called when a Contest is clicked. */
+  fun onContestClick(C: Contest)
+
   /** Callback called when the "New Contest" button is clicked. */
   fun onNewContestClick()
 }

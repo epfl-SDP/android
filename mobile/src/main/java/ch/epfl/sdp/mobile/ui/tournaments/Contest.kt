@@ -5,18 +5,14 @@ import kotlin.time.Duration
 /** The button to create a new tournament. */
 interface Contest {
   val name: String
-  val creationDate: Duration
-  val personStatus: ContestPersonStatus
-  val status: ContestStatus
+  val creationTime: Duration
+  val personStatus: BadgeType
+  val status: Status.ContestStatus
 }
 
-enum class ContestPersonStatus {
-  ADMIN,
-  PARTICIPANT,
-  VIEWER
-}
-
-enum class ContestStatus {
-  ONGOING,
-  DONE
+sealed interface Status {
+  enum class ContestStatus {
+    ONGOING,
+    DONE
+  }
 }

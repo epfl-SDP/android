@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.ui.tournaments.*
+import ch.epfl.sdp.mobile.ui.tournaments.Status.*
+import ch.epfl.sdp.mobile.ui.tournaments.Status.ContestStatus.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -12,8 +14,8 @@ import kotlin.time.Duration.Companion.hours
 data class ContestAdapter(
     val uid: String,
     override val name: String,
-    override val creationDate: Duration,
-    override val personStatus: ContestPersonStatus,
+    override val creationTime: Duration,
+    override val personStatus: BadgeType,
     override val status: ContestStatus
 ) : Contest {}
 
@@ -26,13 +28,11 @@ class TournamentScreenState() : ContestScreenState<ContestAdapter> {
   // private set
   override val contests =
       listOf(
-          createContest(
-              "1", "EPFL Grand Prix", 1.days, ContestStatus.ONGOING, ContestPersonStatus.ADMIN),
-          createContest(
-              "2", "Pawn Party", 2.days, ContestStatus.DONE, ContestPersonStatus.PARTICIPANT),
-          createContest(
-              "3", "Never gonna chess", 3.hours, ContestStatus.ONGOING, ContestPersonStatus.VIEWER))
+          createContest("1", "EPFL Grand Prix", 1.days, ONGOING, BadgeType.Admin),
+          createContest("2", "Pawn Party", 2.days, DONE, BadgeType.Participant),
+          createContest("3", "Never gonna chess", 3.hours, ONGOING, BadgeType.Join))
   override fun onNewContestClick() {}
+  override fun onContestClick(C: Contest) {}
 }
 
 private fun createContest(
@@ -40,7 +40,7 @@ private fun createContest(
     name: String,
     duration: Duration,
     status: ContestStatus,
-    personStatus: ContestPersonStatus
+    personStatus: BadgeType
 ): ContestAdapter {
   return ContestAdapter(uid, name, duration, personStatus, status)
 }

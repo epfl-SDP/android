@@ -5,28 +5,29 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.*
-import ch.epfl.sdp.mobile.ui.tournaments.ContestPersonStatus.*
-import ch.epfl.sdp.mobile.ui.tournaments.ContestStatus.*
+import ch.epfl.sdp.mobile.ui.tournaments.Status.ContestStatus.*
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
 
 open class FakeContestScreenState : ContestScreenState<Contest> {
-  override val contests: List<Contest> = listOf(createContest("Name", 1.days, ONGOING, ADMIN))
+  override val contests: List<Contest> =
+      listOf(createContest("Name", 1.days, ONGOING, BadgeType.Admin))
 
   override fun onNewContestClick() = Unit
+  override fun onContestClick(C: Contest) = Unit
 }
 
 private fun createContest(
     name: String,
     duration: Duration,
-    status: ContestStatus,
-    personStatus: ContestPersonStatus
+    status: Status.ContestStatus,
+    personStatus: BadgeType
 ): Contest {
   return object : Contest {
     override val name = name
-    override val creationDate = duration
+    override val creationTime = duration
     override val personStatus = personStatus
     override val status = status
   }
