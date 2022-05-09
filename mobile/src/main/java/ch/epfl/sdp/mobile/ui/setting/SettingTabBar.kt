@@ -1,16 +1,14 @@
 package ch.epfl.sdp.mobile.ui.profile
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,21 +38,22 @@ private fun Modifier.borderBottom(
 
 /**
  * Composes the profile tabs [PastGames and Puzzles]
- * @param text text of the tab
- * @param num counter
+ * @param title primary text of the tab item.
+ * @param subtitle secondary text of the tab item.
  * @param onClick callback when the tab is clicked
  * @param selected indicates if the tab is currently selected
  */
 @Composable
 fun SettingTabItem(
-    text: String,
-    num: Int,
+    title: String,
+    subtitle: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     selected: Boolean = true,
 ) {
   val targetColor = if (selected) LocalContentColor.current else Color.Transparent
   val borderColor by animateColorAsState(targetColor)
+  val targetAlpha by animateFloatAsState(if (selected) ContentAlpha.high else ContentAlpha.medium)
   Column(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Center,
@@ -64,12 +63,16 @@ fun SettingTabItem(
               .clickable { onClick() }
               .padding(horizontal = 32.dp, vertical = 8.dp),
   ) {
-    Text(text = text, style = MaterialTheme.typography.overline)
-    Text(
-        text = "$num",
-        style = MaterialTheme.typography.h5,
-        modifier = Modifier.borderBottom(2.dp, borderColor),
-    )
+    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+      Text(text = title.uppercase(), style = MaterialTheme.typography.overline)
+    }
+    CompositionLocalProvider(LocalContentAlpha provides targetAlpha) {
+      Text(
+          text = subtitle,
+          style = MaterialTheme.typography.h5,
+          modifier = Modifier.borderBottom(2.dp, borderColor),
+      )
+    }
   }
 }
 
@@ -146,14 +149,14 @@ fun SettingTabBar(
         modifier = Modifier,
     ) {
       SettingTabItem(
-          text = strings.profilePastGames,
-          num = state.pastGamesCount,
+          title = strings.profilePastGames,
+          subtitle = state.pastGamesCount.toString(),
           onClick = { state.currentTab = SettingTabBarState.Tab.PastGames },
           selected = state.currentTab == SettingTabBarState.Tab.PastGames,
       )
       SettingTabItem(
-          text = strings.profilePuzzle,
-          num = state.puzzlesCount,
+          title = strings.profilePuzzle,
+          subtitle = state.puzzlesCount.toString(),
           onClick = { state.currentTab = SettingTabBarState.Tab.Puzzles },
           selected = state.currentTab == SettingTabBarState.Tab.Puzzles,
       )

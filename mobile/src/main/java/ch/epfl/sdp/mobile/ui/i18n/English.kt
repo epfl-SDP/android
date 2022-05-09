@@ -104,4 +104,16 @@ object English : LocalizedStrings {
   override val tournamentsBadgeJoin = "Join"
   override val tournamentsBadgeParticipant = "Participant"
   override val tournamentsBadgeAdmin = "Admin"
+  override val tournamentsTableScore = "Score"
+  override val tournamentsPoolStillOpen = "Still open"
+  override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
+  override val tournamentsPoolStartNextRound = "Start next round".uppercase()
+  override val tournamentsDetailsFinals = "Finals".uppercase()
+  override val tournamentsDetailsPools = "Pools".uppercase()
+  override val tournamentsDetailsWatch = "Watch".uppercase()
+  override val tournamentsDetailsMatchWon = "Win".uppercase()
+  override val tournamentsDetailsMatchLost = "Loss".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
+  override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
+  override val tournamentsDetailsHeaderDone = "Done".uppercase()
 }
