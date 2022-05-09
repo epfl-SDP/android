@@ -20,6 +20,13 @@ object CommonNotationCombinators {
   /** A [Parser] which returns a [Position]. */
   val position = this.computePosition(column, row)
 
+  /**
+   * Compute the [position] notation given a [column] and a [row]
+   *
+   * @param column The [Parser] for the column
+   * @param row The [Parser] for the row
+   * @return A [Parser] for the [Position]
+   */
   fun computePosition(
       column: Parser<String, Int>,
       row: Parser<String, Int>
