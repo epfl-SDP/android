@@ -6,14 +6,14 @@ import kotlinx.coroutines.flow.Flow
  * An interface representing a collection in the hierarchy. It may contain some documents, and can
  * be observed as a [Flow] of changing values.
  */
-interface CollectionReference : Query {
+interface CollectionReference<out D> : Query {
 
   /**
    * Creates a document with a unique identifier.
    *
    * @return a [DocumentReference] to the document.
    */
-  fun document(): DocumentReference
+  fun document(): D
 
   /**
    * Accesses a document.
@@ -21,5 +21,5 @@ interface CollectionReference : Query {
    * @param path the id of the document.
    * @return a [DocumentReference] to the document.
    */
-  fun document(path: String): DocumentReference
+  fun document(path: String): D
 }

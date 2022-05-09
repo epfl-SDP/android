@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
  * An interface representing a document in the hierarchy. It may contain some nested collections,
  * and can be observed as a [Flow] of changing values.
  */
-interface DocumentReference {
+interface DocumentReference<out C> {
 
   /** The unique identifier of the document within its parent collection. */
   val id: String
@@ -19,7 +19,7 @@ interface DocumentReference {
    * @param path the id of the nested collection path.
    * @return a [CollectionReference] to the nested collection.
    */
-  fun collection(path: String): CollectionReference
+  fun collection(path: String): C
 
   /**
    * Returns a [Flow] of all the snapshots for the current [DocumentReference].
@@ -63,7 +63,7 @@ interface DocumentReference {
  * @param T the type of the document.
  * @return the [Flow] of the document values.
  */
-inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> =
+inline fun <reified T : Any> DocumentReference<*>.asFlow(): Flow<T?> =
     asDocumentSnapshotFlow().map { it?.toObject(T::class) }
 
 /**
@@ -72,7 +72,7 @@ inline fun <reified T : Any> DocumentReference.asFlow(): Flow<T?> =
  * @param T the type of the document.
  * @param value the value of the document which should be set. Existing fields will be discarded.
  */
-suspend inline fun <reified T : Any> DocumentReference.set(value: T): Unit = set(value, T::class)
+suspend inline fun <reified T : Any> DocumentReference<*>.set(value: T): Unit = set(value, T::class)
 
 /**
  * Sets the given document with the provided [values].
@@ -80,7 +80,7 @@ suspend inline fun <reified T : Any> DocumentReference.set(value: T): Unit = set
  * @receiver the [DocumentReference] onto which the items will be set.
  * @param values the [Map] of the values which will be set to the document.
  */
-suspend fun DocumentReference.set(values: Map<String, Any?>) = set {
+suspend fun DocumentReference<*>.set(values: Map<String, Any?>) = set {
   for ((key, value) in values) {
     this[key] = value
   }
