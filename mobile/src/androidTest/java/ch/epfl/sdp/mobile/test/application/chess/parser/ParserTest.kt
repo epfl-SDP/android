@@ -5,7 +5,6 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filterNotNull
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeat
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
