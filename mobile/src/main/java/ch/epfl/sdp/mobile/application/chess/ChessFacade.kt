@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
+import java.io.StringReader
 import kotlinx.coroutines.flow.*
 
 /**
@@ -101,27 +102,27 @@ class ChessFacade(
   /** Fetches the list of all [Puzzle]s from their source */
   private fun allPuzzles(): List<Puzzle> {
     return sequence {
-      while (true) {
-        val reader = CSVReaderHeaderAware(assets.openAsReader("puzzles/puzzles.csv"))
-        val line = reader.readMap() ?: return@sequence
-        yield(line)
-      }
-    }
-      .map {
-        val puzzleId = it["PuzzleId"] ?: return@map null
-        val fen = parseFen(it["FEN"] ?: "") ?: return@map null
-        val moves = parseActions(it["Moves"] ?: "") ?: return@map null
-        val rating = it["Rating"]?.toIntOrNull() ?: return@map null
+          val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
+          while (true) {
+            val line = reader.readMap() ?: return@sequence
+            yield(line)
+          }
+        }
+        .map {
+          val puzzleId = it[csvPuzzleId] ?: return@map null
+          val fen = parseFen(it[csvFen] ?: "") ?: return@map null
+          val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
+          val rating = it[csvRating]?.toIntOrNull() ?: return@map null
 
-        SnapshotPuzzle(
-          uid = puzzleId,
-          boardSnapshot = fen,
-          puzzleMoves = moves,
-          elo = rating,
-        )
-      }
-      .filterNotNull()
-      .toList()
+          SnapshotPuzzle(
+              uid = puzzleId,
+              boardSnapshot = fen,
+              puzzleMoves = moves,
+              elo = rating,
+          )
+        }
+        .filterNotNull()
+        .toList()
   }
 
   /**

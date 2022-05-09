@@ -84,37 +84,4 @@ class StatefulPuzzleSelectionScreenTest {
     scrollAndAssert("00C7m") // white king 1347 elo
     scrollAndAssert("009Os") // white queen 1447 elo
   }
-
-  @Test
-  fun given_statefulPuzzleSelectionScreen_when_erroredCSV_then_errorPuzzleDisplayed() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets =
-        FakeAssetManager(
-            csvString =
-                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
-                    "009tE,6k1/6pp/p1N2p2/1pP2bP1/5P2/8/PPP5/3K4 b - - 1 28,f6g5 c6e7 g8f7 e7f5,600,103,90,340,crushing endgame fork short,https://lichess.org/fUV1iXBx/black#56\n" +
-                    "Bruh,This is not FEN, Not UCI either..., Seven??,74,97,1444,crushing hangingPiece long middlegame,https://lichess.org/787zsVup/black#48\n")
-
-    val authFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-
-    authFacade.signUpWithEmail("email@example.org", "user", "password")
-
-    val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
-            StatefulPuzzleSelectionScreen(
-                user = userAuthenticated,
-                onPuzzleItemClick = {},
-            )
-          }
-        }
-    rule.onNodeWithText(strings.puzzleUnsolvedPuzzles).assertExists()
-    rule.onNodeWithText("009tE", substring = true).assertExists()
-    rule.onNodeWithText("Error", substring = true).assertExists()
-  }
 }
