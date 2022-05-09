@@ -69,6 +69,7 @@ interface PoolData<P : PoolMember> {
  * @param P the type of the [PoolMember] which participate in the pool.
  * @param data the [PoolData] which must be displayed.
  * @param modifier the [Modifier] for this composable.
+ * @param textStyle the [TextStyle] for this composable.
  */
 @Composable
 fun <P : PoolMember> PoolTable(
