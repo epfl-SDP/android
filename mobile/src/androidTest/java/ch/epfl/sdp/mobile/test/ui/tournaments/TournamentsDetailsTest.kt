@@ -24,14 +24,24 @@ class TournamentsDetailsTest {
     override fun PoolMember.scoreAgainst(other: PoolMember): PoolScore? = null
   }
 
+  class TABTournamentsFinalRound(
+      match: TournamentMatch,
+      override val banner: TournamentsFinalsRound.Banner?,
+  ) : TournamentsFinalsRound<TournamentMatch> {
+    override val name = "TAB"
+    override val matches = listOf(match)
+    override fun onBannerClick() = Unit
+  }
+
   class OneMatchTournamentDetails(
       val match: TournamentMatch,
+      banner: TournamentsFinalsRound.Banner? = null,
   ) : TournamentDetailsState<PoolMember, TournamentMatch> {
     var clicked = false
     override val badge: BadgeType? = null
     override val title = ""
     override val pools = listOf(EmptyPoolInfo)
-    override val finals = listOf(TournamentsFinalsRound("TAB", listOf(match)))
+    override val finals = listOf(TABTournamentsFinalRound(match, banner))
     override fun onBadgeClick() = Unit
     override fun onWatchMatchClick(match: TournamentMatch) {
       clicked = true
@@ -132,5 +142,35 @@ class TournamentsDetailsTest {
     rule.onNodeWithText("TAB").performClick()
     rule.onNodeWithText(strings.tournamentsDetailsMatchWon).assertIsDisplayed()
     rule.onNodeWithText(strings.tournamentsDetailsMatchLost).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_greenBanner_when_displayingFinals_then_displaysCorrectText() {
+    val match =
+        object : TournamentMatch {
+          override val firstPlayerName = "Alexandre"
+          override val secondPlayerName = "Matthieu"
+          override val result = TournamentMatch.Result.SecondWon
+        }
+    val details = OneMatchTournamentDetails(match, TournamentsFinalsRound.Banner.NextBestOf(1, 2))
+    val strings = rule.setContentWithLocalizedStrings { TournamentDetails(details) }
+    rule.onNodeWithText("TAB").performClick()
+    rule.onNodeWithText(strings.tournamentsDetailsNextBestOfTitle(1, 2)).assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsDetailsNextBestOfSubtitle).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_orangeBanner_when_displayingFinals_then_displaysCorrectText() {
+    val match =
+        object : TournamentMatch {
+          override val firstPlayerName = "Alexandre"
+          override val secondPlayerName = "Matthieu"
+          override val result = TournamentMatch.Result.SecondWon
+        }
+    val details = OneMatchTournamentDetails(match, TournamentsFinalsRound.Banner.NextRound)
+    val strings = rule.setContentWithLocalizedStrings { TournamentDetails(details) }
+    rule.onNodeWithText("TAB").performClick()
+    rule.onNodeWithText(strings.tournamentsDetailsNextRoundTitle).assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsDetailsNextRoundSubtitle).assertIsDisplayed()
   }
 }
