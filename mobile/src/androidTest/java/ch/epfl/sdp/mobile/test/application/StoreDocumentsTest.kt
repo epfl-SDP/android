@@ -52,4 +52,18 @@ class StoreDocumentsTest {
 
     Truth.assertThat(fetched).isEqualTo(expected)
   }
+
+  @Test
+  fun given_emptyTransactionEmptyPoolDocument_when_settingAndGettingIt_then_itIsTheSame() =
+      runTest {
+    val reference = emptyStore().collection("tournaments").document("id")
+    val tournamentDocument = TournamentDocument(pools = listOf(PoolDocument()))
+
+    reference.set(tournamentDocument)
+
+    val expected = tournamentDocument.copy(uid = "id")
+    val fetched = reference.asFlow<TournamentDocument>().filterNotNull().first()
+
+    Truth.assertThat(fetched).isEqualTo(expected)
+  }
 }
