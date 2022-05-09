@@ -138,8 +138,7 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionContests).assertExists()
     rule.onNodeWithText(strings.sectionContests).performClick()
-    rule.onNodeWithText(strings.sectionContests).assertIsDisplayed()
-    rule.onNodeWithText(strings.sectionContests).assertIsSelected()
+    rule.onAllNodesWithText(strings.sectionContests).assertCountEquals(2)
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
   }
 
@@ -295,35 +294,35 @@ class StatefulHomeTest {
   @Test
   fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
       runTest {
-    val auth = emptyAuth()
-    val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
-    }
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val user2 =
-        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
-    currentUser.follow(user2)
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+        val auth = emptyAuth()
+        val store = buildStore {
+          collection("users") { document("userId2", ProfileDocument(name = "user2")) }
         }
+        val authFacade = AuthenticationFacade(auth, store)
+        val social = SocialFacade(auth, store)
+        val chess = ChessFacade(auth, store)
+        val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-    rule.onNodeWithText("user2").performClick()
-    rule.onNodeWithText(strings.prepareGamePlay).performClick()
+        authFacade.signUpWithEmail("user1@email", "user1", "password")
+        val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+        val user2 =
+            social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
+        currentUser.follow(user2)
 
-    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
-    rule.onNodeWithText("user2").assertExists()
-  }
+        val strings =
+            rule.setContentWithLocalizedStrings {
+              ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+            }
+
+        rule.onNodeWithText(strings.sectionPlay).performClick()
+        rule.onNodeWithText(strings.newGame).performClick()
+        rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
+        rule.onNodeWithText("user2").performClick()
+        rule.onNodeWithText(strings.prepareGamePlay).performClick()
+
+        rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+        rule.onNodeWithText("user2").assertExists()
+      }
 
   @Test
   fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {

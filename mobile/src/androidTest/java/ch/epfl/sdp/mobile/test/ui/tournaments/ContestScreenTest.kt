@@ -55,7 +55,6 @@ class NewContestButtonTest {
     val strings = rule.setContentWithLocalizedStrings { ContestScreen(state) }
     rule.onNodeWithText("Name").assertIsDisplayed()
     rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
-    rule.onNodeWithText(strings.tournamentsStartingTime(state.contests[0].creationDate))
-        .assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsStartingTime(1.days)).assertIsDisplayed()
   }
 }

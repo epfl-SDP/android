@@ -123,7 +123,7 @@ object English : LocalizedStrings {
 
   override val tournamentsContestsTitle = "Contests"
   override val tournamentsStartingTime = { duration: Duration ->
-    "Started ${duration.inWholeDays} ago"
+    "Started ${duration.absoluteValue} ago"
   }
   override val tournamentsStarted = "Started"
   override val tournamentsAgo = "ago"
