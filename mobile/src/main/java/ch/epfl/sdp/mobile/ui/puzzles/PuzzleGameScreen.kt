@@ -37,7 +37,6 @@ fun PuzzleGameScreen(
           Text("Puzzle id: ${state.puzzle.uid}")
           Text("Playing as: ${state.puzzle.playerColor}")
           Text("Elo: ${state.puzzle.elo}")
-          Button(onClick = { state.solve() }) { Text("Solve") }
         }
       },
   )

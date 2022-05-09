@@ -82,9 +82,9 @@ class AuthenticatedUser(
    *
    * @param puzzle the [Puzzle] to mark as solved.
    */
-  suspend fun solvePuzzle(puzzleId: String) {
+  suspend fun solvePuzzle(puzzle: Puzzle) {
     firestore.collection("users").document(this.uid).update {
-      arrayUnion("solvedPuzzles", puzzleId)
+      arrayUnion("solvedPuzzles", puzzle.uid)
     }
   }
 

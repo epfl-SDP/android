@@ -98,17 +98,6 @@ class ChessFacade(
     }
   }
 
-  /** Puzzle side of chess facade */
-
-  /**
-   * Marks a [Puzzle] as solved for the current [AuthenticatedUser]
-   *
-   * @param puzzleId The [Puzzle]'id to mark as solved
-   */
-  suspend fun solvePuzzle(puzzleId: String, user: AuthenticatedUser) {
-    user.solvePuzzle(puzzleId)
-  }
-
   /** Fetches the list of all [Puzzle]s from their source */
   private fun allPuzzles(): List<Puzzle> {
     val reader = assets.openAsReader("puzzles/puzzles.csv")

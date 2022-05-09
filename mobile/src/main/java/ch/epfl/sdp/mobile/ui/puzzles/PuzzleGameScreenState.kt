@@ -11,7 +11,4 @@ import ch.epfl.sdp.mobile.application.chess.Puzzle
 interface PuzzleGameScreenState {
   /** The [Puzzle] that is loaded */
   val puzzle: PuzzleInfo
-
-  /** Marks the [Puzzle] as solved for the current user */
-  fun solve()
 }

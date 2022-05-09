@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * The [StatefulPuzzleGameScreen] to be used for the Navigation
@@ -64,8 +63,4 @@ class SnapshotPuzzleBoardState(
     private val user: AuthenticatedUser,
     private val facade: ChessFacade,
     private val scope: CoroutineScope,
-) : PuzzleGameScreenState {
-  override fun solve() {
-    scope.launch { facade.solvePuzzle(puzzle.uid, user) }
-  }
-}
+) : PuzzleGameScreenState

@@ -125,7 +125,7 @@ class ChessFacadeTest {
 
     val puzzle = unsolvedPuzzles.first()
     assertThat(puzzle.uid).isEqualTo("009tE")
-    chessFacade.solvePuzzle(puzzle.uid, user)
+    user.solvePuzzle(puzzle)
 
     val newUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     assertThat(newUser.solvedPuzzles.size).isEqualTo(1)

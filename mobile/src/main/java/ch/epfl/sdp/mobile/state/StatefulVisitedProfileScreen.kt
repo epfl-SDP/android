@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.PuzzleId
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
@@ -70,5 +71,5 @@ private object EmptyProfile : Profile {
   override val backgroundColor: Profile.Color = Profile.Color.Default
   override val uid: String = ""
   override val followed: Boolean = false
-  override val solvedPuzzles = emptyList<String>()
+  override val solvedPuzzles = emptyList<PuzzleId>()
 }
