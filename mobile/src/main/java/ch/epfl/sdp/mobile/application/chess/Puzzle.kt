@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
@@ -33,7 +33,7 @@ fun Puzzle(): Puzzle =
       override val uid = "Error"
       override val boardSnapshot =
           BoardSnapshot(
-              board = buildBoard {},
+              board = emptyBoard(),
               playing = Color.White,
               castlingRights =
                   FenNotation.CastlingRights(
