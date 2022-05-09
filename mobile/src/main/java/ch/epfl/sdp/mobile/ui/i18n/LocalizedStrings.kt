@@ -118,4 +118,15 @@ interface LocalizedStrings {
   val tournamentsDetailsMatchDrawn: String
   val tournamentsDetailsHeaderOngoing: String
   val tournamentsDetailsHeaderDone: String
+
+  val tournamentsCreateTitle: String
+  val tournamentsCreateNameHint: String
+  val tournamentsCreateRules: String
+  val tournamentsCreateBestOf: String
+  val tournamentsCreatePlayers: String
+  val tournamentsCreateMaximumPlayerHint: String
+  val tournamentsCreatePoolSize: String
+  val tournamentsCreateDirectElimination: String
+  val tournamentsCreateActionCancel: String
+  val tournamentsCreateActionCreate: String
 }
