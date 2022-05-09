@@ -64,8 +64,8 @@ interface Transaction<out D> {
  * @param reference the [DocumentReference] to set.
  * @param value the value of the document which should be set. Existing fields will be discarded.
  */
-inline fun <reified T : Any, D> Transaction<D>.set(
-    reference: D,
+inline fun <reified T : Any> Transaction<DocumentReference>.set(
+    reference: DocumentReference,
     value: T,
 ) = set(reference, value, T::class)
 
@@ -76,6 +76,6 @@ inline fun <reified T : Any, D> Transaction<D>.set(
  * @param T the type of the document.
  * @return the [T] which was fetched.
  */
-inline fun <reified T : Any, D> Transaction<D>.get(
-    reference: D,
+inline fun <reified T : Any> Transaction<DocumentReference>.get(
+    reference: DocumentReference,
 ): T? = getSnapshot(reference).toObject(T::class)
