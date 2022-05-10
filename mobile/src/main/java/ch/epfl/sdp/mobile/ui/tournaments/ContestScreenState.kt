@@ -5,10 +5,10 @@ import androidx.compose.runtime.Stable
 /**
  * The view-model of the list of tournaments screen.
  *
- * @param C the type of the [Contest].
+ * @param C the type of the [ContestInfo].
  */
 @Stable
-interface ContestScreenState<C : Contest> {
+interface ContestScreenState<C : ContestInfo> {
 
   /** The list of completed and ongoing tournaments. */
   val contests: List<C>

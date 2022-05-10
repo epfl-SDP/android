@@ -1,49 +1,49 @@
 package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.ui.tournaments.*
-import ch.epfl.sdp.mobile.ui.tournaments.Status.*
-import ch.epfl.sdp.mobile.ui.tournaments.Status.ContestStatus.*
-import kotlin.time.Duration
+import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
+import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
+import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
+import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
+import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
-/** An adapter that is of type [Contest] and contains the uid. */
-data class ContestAdapter(
+/** An adapter that is of type [ContestInfo] and contains the uid. */
+data class ContestInfoAdapter(
     val uid: String,
     override val name: String,
-    override val creationTime: Duration,
-    override val personStatus: BadgeType,
-    override val status: ContestStatus
-) : Contest
+    override val badge: BadgeType,
+    override val status: Status,
+) : ContestInfo
 
 /**
- * An implementation of the [ContestScreenState] that performs a given profile's [Contest] requests.
+ * An implementation of the [ContestScreenState] that performs a given profile's [ContestInfo]
+ * requests.
  */
-class TournamentScreenState : ContestScreenState<ContestAdapter> {
+class TournamentScreenState : ContestScreenState<ContestInfoAdapter> {
 
   // TODO : Fill this in with some actual data.
   override val contests =
       listOf(
-          createContest("1", "EPFL Grand Prix", 1.days, ONGOING, BadgeType.Admin),
-          createContest("2", "Pawn Party", 2.days, DONE, BadgeType.Participant),
-          createContest("3", "Never gonna chess", 3.hours, ONGOING, BadgeType.Join),
+          createContest("1", "EPFL Grand Prix", Status.Ongoing(1.days), BadgeType.Admin),
+          createContest("2", "Pawn Party", Status.Done, BadgeType.Participant),
+          createContest("3", "Never gonna chess", Status.Ongoing(3.hours), BadgeType.Join),
       )
 
   override fun onNewContestClick() = Unit
-  override fun onContestClick(contest: ContestAdapter) = Unit
+  override fun onContestClick(contest: ContestInfoAdapter) = Unit
 }
 
 private fun createContest(
     uid: String,
     name: String,
-    duration: Duration,
-    status: ContestStatus,
+    status: Status,
     personStatus: BadgeType
-): ContestAdapter {
-  return ContestAdapter(uid, name, duration, personStatus, status)
+): ContestInfoAdapter {
+  return ContestInfoAdapter(uid, name, personStatus, status)
 }
 
 /**

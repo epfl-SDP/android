@@ -3,32 +3,28 @@ package ch.epfl.sdp.mobile.test.ui.tournaments
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.text.SpanStyle
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.*
-import ch.epfl.sdp.mobile.ui.tournaments.Status.ContestStatus.*
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
 
-open class FakeContestScreenState : ContestScreenState<Contest> {
-  override val contests: List<Contest> =
-      listOf(createContest("Name", 1.days, ONGOING, BadgeType.Admin))
-
+open class FakeContestScreenState : ContestScreenState<ContestInfo> {
   override fun onNewContestClick() = Unit
-  override fun onContestClick(C: Contest) = Unit
+  override fun onContestClick(contest: ContestInfo) = Unit
+  override val contests =
+      listOf(createContest("Name", ContestInfo.Status.Ongoing(1.days), BadgeType.Admin))
 }
 
 private fun createContest(
     name: String,
-    duration: Duration,
-    status: Status.ContestStatus,
+    status: ContestInfo.Status,
     personStatus: BadgeType
-): Contest {
-  return object : Contest {
+): ContestInfo {
+  return object : ContestInfo {
     override val name = name
-    override val creationTime = duration
-    override val personStatus = personStatus
+    override val badge = personStatus
     override val status = status
   }
 }
@@ -56,6 +52,7 @@ class NewContestButtonTest {
     val strings = rule.setContentWithLocalizedStrings { ContestScreen(state) }
     rule.onNodeWithText("Name").assertIsDisplayed()
     rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
-    rule.onNodeWithText(strings.tournamentsStartingTime(1.days)).assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsStartingTime(1.days, SpanStyle()).text)
+        .assertIsDisplayed()
   }
 }

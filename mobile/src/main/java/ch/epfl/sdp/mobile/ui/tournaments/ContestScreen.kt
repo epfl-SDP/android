@@ -13,7 +13,6 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
 import ch.epfl.sdp.mobile.ui.Filter
 import ch.epfl.sdp.mobile.ui.PawniesIcons
-import ch.epfl.sdp.mobile.ui.plus
 
 /**
  * This screen displays all the tournaments of the app.
@@ -22,11 +21,11 @@ import ch.epfl.sdp.mobile.ui.plus
  * @param modifier the [Modifier] for the composable.
  * @param key a function which uniquely identifies the list items.
  * @param contentPadding the [PaddingValues] for this screen.
- * @param C the type of the [Contest].
+ * @param C the type of the [ContestInfo].
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun <C : Contest> ContestScreen(
+fun <C : ContestInfo> ContestScreen(
     state: ContestScreenState<C>,
     modifier: Modifier = Modifier,
     key: ((C) -> Any)? = null,
@@ -45,8 +44,8 @@ fun <C : Contest> ContestScreen(
               items = state.contests,
               key = key,
           ) { contest ->
-            ContestItem(
-                contest = contest,
+            Contest(
+                contestInfo = contest,
                 onClick = { state.onContestClick(contest) },
             )
           }
