@@ -17,22 +17,23 @@ data class ContestAdapter(
     override val creationTime: Duration,
     override val personStatus: BadgeType,
     override val status: ContestStatus
-) : Contest {}
+) : Contest
 
 /**
  * An implementation of the [ContestScreenState] that performs a given profile's [Contest] requests.
  */
-class TournamentScreenState() : ContestScreenState<ContestAdapter> {
+class TournamentScreenState : ContestScreenState<ContestAdapter> {
 
-  // override var contests by mutableStateOf(emptyList<Contest>())
-  // private set
+  // TODO : Fill this in with some actual data.
   override val contests =
       listOf(
           createContest("1", "EPFL Grand Prix", 1.days, ONGOING, BadgeType.Admin),
           createContest("2", "Pawn Party", 2.days, DONE, BadgeType.Participant),
-          createContest("3", "Never gonna chess", 3.hours, ONGOING, BadgeType.Join))
-  override fun onNewContestClick() {}
-  override fun onContestClick(C: Contest) {}
+          createContest("3", "Never gonna chess", 3.hours, ONGOING, BadgeType.Join),
+      )
+
+  override fun onNewContestClick() = Unit
+  override fun onContestClick(contest: ContestAdapter) = Unit
 }
 
 private fun createContest(
