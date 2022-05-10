@@ -61,4 +61,12 @@ data class ChessDocument(
     val moves: List<String>? = null,
     val whiteId: String? = null,
     val blackId: String? = null,
+    val lsatUpdatedAt: Long? = null,
+    val metadata: ChessMetadata? = null
+)
+
+data class ChessMetadata(
+  val status: String? = null, // whiteWon, blackWon, draw
+  val blackName: String? = null,
+  val whiteName: String? = null
 )

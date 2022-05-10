@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import com.google.firebase.firestore.FieldPath
 import kotlinx.coroutines.flow.*
 
 /**
@@ -89,6 +90,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
 private data class StoreMatch(
     override val id: String,
     private val store: Store,
+    private val user: Profile?
 ) : Match {
 
   fun profile(
@@ -114,6 +116,8 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }
+    store.collection("games").document(id).update {
+      this[FieldPath(listOf("metadata", "status"))] = game.nextStep, // (switch case) TODO do the same for the other elements in "metadata"
+      this["moves"] = game.toAlgebraicNotation() }
   }
 }
