@@ -58,7 +58,7 @@ object VoiceInputCombinator {
       convertToken(ChessSpeechEnglishDictionary.letters)
           .filter { it in 'a'..'h' }
           .filterNotNull()
-          .map { it!! - 'a' }
+          .map { it - 'a' }
 
   val row =
       convertToken(ChessSpeechEnglishDictionary.numbers)
