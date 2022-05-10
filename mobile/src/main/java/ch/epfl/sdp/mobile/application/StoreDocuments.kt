@@ -94,7 +94,7 @@ data class TournamentDocument(
 
 /**
  * A document which represents a pool in a tournament of chess. All the pool documents are stored
- * inside their corresponding [TournamentDocument], in ``tournaments/tournamentId/`.
+ * inside their corresponding [TournamentDocument], in `tournaments/tournamentId/`.
  *
  * @param uid the unique identifier for this pool.
  * @param currentRound the current round number for the pool.

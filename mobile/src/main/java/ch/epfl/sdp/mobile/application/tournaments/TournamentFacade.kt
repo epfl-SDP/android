@@ -17,6 +17,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param user The [AuthenticatedUser] that wants to join the "Tournament".
    * @param tournament The "Tournament" to join.
    */
+  // TODO: Add the function corresponding to the documentation right above
 
   /**
    * Allows a user to create a tournament. The user in question administrates the tournament.
@@ -24,6 +25,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param user The [AuthenticatedUser] that wants to join the "Tournament".
    * @param parameters The "TournamentParameters" that parametrize the user's "Tournament".
    */
+  // TODO: Add the function corresponding to the documentation right above
 
   /**
    * Allows a user to advance the round number of a certain pool for a certain tournament, if the
@@ -33,6 +35,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param tournament The "Tournament" in which the pool is.
    * @param poolId The id of the pool in the "Tournament".
    */
+  // TODO: Add the function corresponding to the documentation right above
 
   /**
    * Allows a user to advance the round number of direct eliminations for a certain tournament, if
@@ -41,6 +44,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param user The [AuthenticatedUser] that wants to join the "Tournament".
    * @param tournament The "Tournament" to advance direct eliminations round.
    */
+  // TODO: Add the function corresponding to the documentation right above
 
   /**
    * Allows a user to advance the direct elimination stage for a certain tournament, if the user
@@ -49,4 +53,5 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param user The [AuthenticatedUser] that wants to join the "Tournament".
    * @param tournament The "Tournament" to advance the stage of direct eliminations.
    */
+  // TODO: Add the function corresponding to the documentation right above
 }
