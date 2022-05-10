@@ -11,11 +11,18 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
-/** An adapter that is of type [ContestInfo] and contains the uid. */
+/**
+ * An adapter that is of type [ContestInfo] and contains the uid.
+ *
+ * @param uid the unique identifier for this contest.
+ * @param name the name of the contest.
+ * @param badge the badge of the contest.
+ * @param status the status of the contest.
+ */
 data class ContestInfoAdapter(
     val uid: String,
     override val name: String,
-    override val badge: BadgeType,
+    override val badge: BadgeType?,
     override val status: Status,
 ) : ContestInfo
 
@@ -52,7 +59,7 @@ private fun createContest(
     uid: String,
     name: String,
     status: Status,
-    personStatus: BadgeType
+    personStatus: BadgeType?
 ): ContestInfoAdapter {
   return ContestInfoAdapter(uid, name, personStatus, status)
 }
