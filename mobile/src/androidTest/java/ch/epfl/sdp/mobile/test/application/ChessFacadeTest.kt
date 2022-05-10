@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.ChessMetadata
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
@@ -92,5 +93,31 @@ class ChessFacadeTest {
 
     assertThat(fetchedMatch.game.first().board[Position(0, 4)])
         .isEqualTo(newGame.board[Position(0, 4)])
+  }
+
+  @Test
+  fun given_precondition_when_actionPerformed_then_expectedBehavior() = runTest {
+    val auth = mockk<Auth>()
+    val store = buildStore {
+      collection("games") {
+        document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId2", metadata = ChessMetadata("draw", "test1", "test2")))
+      }
+    }
+
+    val chessFacade = ChessFacade(auth, store)
+    // Player 1
+    val user = mockk<AuthenticatedUser>()
+    every { user.uid } returns "userId1"
+
+    val match = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()
+    val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
+
+    match.update(newGame)
+
+    val fetchedMatch = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()
+
+
+    assertThat(fetchedMatch.game.first().board[Position(0, 4)])
+      .isEqualTo(newGame.board[Position(0, 4)])
   }
 }

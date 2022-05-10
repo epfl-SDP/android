@@ -5,13 +5,14 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import com.google.firebase.firestore.FieldPath
 import kotlinx.coroutines.flow.*
 
 /**
@@ -33,7 +34,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
     val document = store.collection("games").document()
     document.set(ChessDocument(whiteId = user.uid, blackId = user.uid))
-    return StoreMatch(document.id, store)
+    return StoreMatch(document.id, store, user)
   }
 
   /**
@@ -47,7 +48,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
   suspend fun createMatch(white: Profile, black: Profile): Match {
     val document = store.collection("games").document()
     document.set(ChessDocument(whiteId = white.uid, blackId = black.uid))
-    return StoreMatch(document.id, store)
+    return StoreMatch(document.id, store, null)
   }
 
   /**
@@ -56,7 +57,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @param id the unique identifier for this [Match].
    */
   fun match(id: String): Match {
-    return StoreMatch(id, store)
+    return StoreMatch(id, store, null)
   }
 
   /**
@@ -82,7 +83,7 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
 
   private fun Query.asMatchListFlow(): Flow<List<Match>> {
     return this.asFlow<ChessDocument>().map {
-      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
+      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store, null) }
     }
   }
 }
@@ -116,8 +117,26 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
+    val chess = store.collection("games").document(id).get<ChessDocument>()
     store.collection("games").document(id).update {
-      this[FieldPath(listOf("metadata", "status"))] = game.nextStep, // (switch case) TODO do the same for the other elements in "metadata"
-      this["moves"] = game.toAlgebraicNotation() }
+      this[FieldPath(listOf("metadata", "status"))] = when (game.nextStep) {
+        NextStep.Stalemate -> "stalemate"
+        is NextStep.MovePiece -> null
+        else -> if ((game.nextStep as NextStep.Checkmate).winner == Color.Black) "blackWon" else "whiteWon"
+      }
+      if (chess?.blackId == user?.uid) {
+        if (chess?.metadata?.blackName == user?.name ) {
+          this[FieldPath(listOf("metadata", "blackName"))] = user?.name
+        }
+      }
+
+      if (chess?.whiteId == user?.uid) {
+        if (chess?.metadata?.whiteName == user?.name ) {
+          this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
+        }
+      }
+
+      this["moves"] = game.toAlgebraicNotation()
+    }
   }
 }
