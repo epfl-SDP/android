@@ -77,8 +77,6 @@ data class ChessDocument(
  * @param eliminationRounds the number of direct elimination rounds. 1 for just a final, 2 for
  * semi-finals, 3 for quarter-finals, etc...
  * @param playerIds the [List] of unique identifier of users that have joined the tournament.
- * @param pools the [List] of [PoolDocument]s keeping track of the pool phase of the tournament, if
- * any.
  */
 data class TournamentDocument(
     @DocumentId val uid: String? = null,
@@ -89,7 +87,6 @@ data class TournamentDocument(
     val poolSize: Int? = null,
     val eliminationRounds: Int? = null,
     val playerIds: List<String>? = null,
-    val pools: List<PoolDocument>? = null,
 )
 
 /**
@@ -97,11 +94,13 @@ data class TournamentDocument(
  * inside their corresponding [TournamentDocument], in `tournaments/tournamentId/`.
  *
  * @param uid the unique identifier for this pool.
+ * @param tournamentId the unique identifier of the tournament in which the pool takes place.
  * @param currentRound the current round number for the pool.
  * @param playerIds the [List] of unique identifier of users that have been placed in this pool.
  */
 data class PoolDocument(
     @DocumentId val uid: String? = null,
+    val tournamentId: String? = null,
     val currentRound: Int? = null,
     val playerIds: List<String>? = null,
 )

@@ -14,8 +14,16 @@ import org.junit.Test
 class StoreDocumentsTest {
 
   @Test
-  fun given_transactionDocument_when_settingAndGettingIt_then_itIsTheSame() = runTest {
-    val reference = emptyStore().collection("tournaments").document("id")
+  fun given_tournamentDocuments_when_settingAndGettingThem_then_theyAreTheSame() = runTest {
+    val tournamentId = "tournamentId"
+    val store = emptyStore()
+    val tournaments = store.collection("tournaments")
+    val pools = store.collection("tournaments/$tournamentId")
+
+    val tournament = tournaments.document(tournamentId)
+    val pool1 = pools.document("pool1")
+    val pool2 = pools.document("pool2")
+
     val tournamentDocument =
         TournamentDocument(
             adminId = "1",
@@ -25,45 +33,63 @@ class StoreDocumentsTest {
             poolSize = 4,
             eliminationRounds = 1,
             playerIds = listOf("1", "2", "3", "4", "5", "6", "7", "8"),
-            pools =
-                listOf(
-                    PoolDocument(currentRound = 1, playerIds = listOf("1", "2", "3", "4")),
-                    PoolDocument(currentRound = 2, playerIds = listOf("5", "6", "7", "8")),
-                ),
+        )
+    val poolDocument1 =
+        PoolDocument(
+            tournamentId = tournamentId,
+            currentRound = 2,
+            playerIds = listOf("1", "2", "3", "4"),
+        )
+    val poolDocument2 =
+        PoolDocument(
+            tournamentId = tournamentId,
+            currentRound = 1,
+            playerIds = listOf("5", "6", "7", "8"),
         )
 
-    reference.set(tournamentDocument)
+    tournament.set(tournamentDocument)
+    pool1.set(poolDocument1)
+    pool2.set(poolDocument2)
 
-    val expected = tournamentDocument.copy(uid = "id")
-    val fetched = reference.asFlow<TournamentDocument>().filterNotNull().first()
+    val expectedTournament = tournamentDocument.copy(uid = tournamentId)
+    val expectedPool1 = poolDocument1.copy(uid = "pool1")
+    val expectedPool2 = poolDocument2.copy(uid = "pool2")
 
-    Truth.assertThat(fetched).isEqualTo(expected)
+    val fetchedTournament = tournament.asFlow<TournamentDocument>().filterNotNull().first()
+    val fetchedPools =
+        pools
+            .whereEquals("tournamentId", tournamentId)
+            .asFlow<PoolDocument>()
+            .filterNotNull()
+            .first()
+
+    Truth.assertThat(fetchedTournament).isEqualTo(expectedTournament)
+    Truth.assertThat(fetchedPools).containsExactly(expectedPool1, expectedPool2)
   }
 
   @Test
-  fun given_emptyTransactionDocument_when_settingAndGettingIt_then_itIsTheSame() = runTest {
-    val reference = emptyStore().collection("tournaments").document("id")
+  fun given_emptyTournamentDocuments_when_settingAndGettingThem_then_theyAreTheSame() = runTest {
+    val tournamentId = "tournamentId"
+    val store = emptyStore()
+    val tournaments = store.collection("tournaments")
+    val pools = store.collection("tournaments/$tournamentId")
+
+    val tournament = tournaments.document(tournamentId)
+    val pool = pools.document("poolId")
+
     val tournamentDocument = TournamentDocument()
+    val poolDocument = PoolDocument()
 
-    reference.set(tournamentDocument)
+    tournament.set(tournamentDocument)
+    pool.set(poolDocument)
 
-    val expected = tournamentDocument.copy(uid = "id")
-    val fetched = reference.asFlow<TournamentDocument>().filterNotNull().first()
+    val expectedTournament = tournamentDocument.copy(uid = tournamentId)
+    val expectedPool1 = poolDocument.copy(uid = "poolId")
 
-    Truth.assertThat(fetched).isEqualTo(expected)
-  }
+    val fetchedTournament = tournament.asFlow<TournamentDocument>().filterNotNull().first()
+    val fetchedPool1 = pool.asFlow<PoolDocument>().filterNotNull().first()
 
-  @Test
-  fun given_emptyTransactionEmptyPoolDocument_when_settingAndGettingIt_then_itIsTheSame() =
-      runTest {
-    val reference = emptyStore().collection("tournaments").document("id")
-    val tournamentDocument = TournamentDocument(pools = listOf(PoolDocument()))
-
-    reference.set(tournamentDocument)
-
-    val expected = tournamentDocument.copy(uid = "id")
-    val fetched = reference.asFlow<TournamentDocument>().filterNotNull().first()
-
-    Truth.assertThat(fetched).isEqualTo(expected)
+    Truth.assertThat(fetchedTournament).isEqualTo(expectedTournament)
+    Truth.assertThat(fetchedPool1).isEqualTo(expectedPool1)
   }
 }
