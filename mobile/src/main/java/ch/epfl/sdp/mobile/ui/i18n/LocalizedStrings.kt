@@ -130,9 +130,8 @@ interface LocalizedStrings {
   val tournamentsDetailsNextRoundSubtitle: String
 
   val tournamentsContestsTitle: String
+  val tournamentsFilter: String
   val tournamentsStartingTime: (Duration, SpanStyle) -> AnnotatedString
-  val tournamentsStarted: String
-  val tournamentsAgo: String
   val tournamentsDone: String
   val tournamentsCreateTitle: String
   val tournamentsCreateNameHint: String

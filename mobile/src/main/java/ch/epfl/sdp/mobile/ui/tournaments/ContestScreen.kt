@@ -82,7 +82,7 @@ fun TopAppBar(
       )
       IconButton(
           onClick = onFilterClick,
-      ) { Icon(PawniesIcons.Filter, null) }
+      ) { Icon(PawniesIcons.Filter, LocalLocalizedStrings.current.tournamentsFilter) }
     }
   }
 }
@@ -98,9 +98,8 @@ private fun NewContestButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  val strings = LocalLocalizedStrings.current
   ExtendedFloatingActionButton(
-      text = { Text(strings.newContest) },
+      text = { Text(LocalLocalizedStrings.current.newContest) },
       icon = { Icon(PawniesIcons.Add, null) },
       backgroundColor = MaterialTheme.colors.primary,
       onClick = onClick,

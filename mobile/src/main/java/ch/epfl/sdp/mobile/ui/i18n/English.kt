@@ -132,6 +132,7 @@ object English : LocalizedStrings {
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
 
   override val tournamentsContestsTitle = "Contests"
+  override val tournamentsFilter = "Filter"
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
       append("Started ")
@@ -139,8 +140,6 @@ object English : LocalizedStrings {
       append(" ago")
     }
   }
-  override val tournamentsStarted = "Started"
-  override val tournamentsAgo = "ago"
   override val tournamentsDone = "Done"
   override val tournamentsCreateTitle = "Create tournament"
   override val tournamentsCreateNameHint = "Name"
