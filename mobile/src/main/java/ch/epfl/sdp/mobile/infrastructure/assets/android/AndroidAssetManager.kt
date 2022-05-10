@@ -12,6 +12,6 @@ class AndroidAssetManager(
     private val context: Context,
 ) : AssetManager {
   override fun readText(path: String): String? {
-    return context.assets.open(path).reader().readText()
+    return runCatching { context.assets.open(path).reader().use { it.readText() } }.getOrNull()
   }
 }
