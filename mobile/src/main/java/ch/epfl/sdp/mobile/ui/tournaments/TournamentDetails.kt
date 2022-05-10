@@ -24,6 +24,7 @@ import ch.epfl.sdp.mobile.ui.TournamentDetailsClose
 import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabItem
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentMatch.Result
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentsFinalsRound.Banner
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -55,11 +56,37 @@ interface TournamentMatch {
  * A class representing the ongoing results of a round of the tournament.
  *
  * @param M the type of the [TournamentMatch]es.
- * @param name the name of this round.
- * @param matches the [List] of matches to display.
  */
 @Stable
-data class TournamentsFinalsRound<M : TournamentMatch>(val name: String, val matches: List<M>)
+interface TournamentsFinalsRound<M : TournamentMatch> {
+
+  /** The name of this round. */
+  val name: String
+
+  /** The [List] of matches to display. */
+  val matches: List<M>
+
+  /** The [Banner] to display. */
+  val banner: Banner?
+
+  /** A callback which is called when the banner is clicked. */
+  fun onBannerClick()
+
+  /** A [Banner] which represents the content to display. */
+  sealed interface Banner {
+
+    /**
+     * The banner to move to the next best of round.
+     *
+     * @param round the next best of.
+     * @param total the total best ofs.
+     */
+    data class NextBestOf(val round: Int, val total: Int) : Banner
+
+    /** The banner to move to the next elimination round. */
+    object NextRound : Banner
+  }
+}
 
 /**
  * The state which will be used to hoist a [TournamentDetails] screen.
@@ -156,9 +183,12 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
                 contentPadding = contentPadding + paddingValues,
             )
           } else {
+            val round = state.finals[index - 1]
             DetailsFinals(
                 modifier = Modifier.fillMaxSize(),
-                matches = state.finals[index - 1].matches,
+                banner = round.banner,
+                onBannerClick = round::onBannerClick,
+                matches = round.matches,
                 contentPadding = contentPadding + paddingValues,
                 onWatchClick = state::onWatchMatchClick,
             )
@@ -270,6 +300,8 @@ private fun <P : PoolMember> DetailsPools(
  * The screen which will be displayed in the finals tab.
  *
  * @param M the type of the [TournamentMatch].
+ * @param banner the [TournamentsFinalsRound.Banner] to display, if there's any.
+ * @param onBannerClick the callback called when the user presses the banner.
  * @param matches the [List] of matches to display.
  * @param onWatchClick the callback called when the user wants to watch a specific match.
  * @param modifier the [Modifier] for this composable.
@@ -278,6 +310,8 @@ private fun <P : PoolMember> DetailsPools(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun <M : TournamentMatch> DetailsFinals(
+    banner: Banner?,
+    onBannerClick: () -> Unit,
     matches: List<M>,
     onWatchClick: (M) -> Unit,
     modifier: Modifier = Modifier,
@@ -291,6 +325,26 @@ private fun <M : TournamentMatch> DetailsFinals(
       contentPadding = contentPadding,
       verticalArrangement = Top,
   ) {
+    if (banner != null) {
+      item {
+        when (banner) {
+          is Banner.NextBestOf ->
+              GreenNextStepBanner(
+                  title = strings.tournamentsDetailsNextBestOfTitle(banner.round, banner.total),
+                  message = strings.tournamentsDetailsNextBestOfSubtitle,
+                  onClick = onBannerClick,
+                  modifier = Modifier.padding(16.dp),
+              )
+          Banner.NextRound ->
+              OrangeNextStepBanner(
+                  title = strings.tournamentsDetailsNextRoundTitle,
+                  message = strings.tournamentsDetailsNextRoundSubtitle,
+                  onClick = onBannerClick,
+                  modifier = Modifier.padding(16.dp),
+              )
+        }
+      }
+    }
     if (ongoingMatches.isNotEmpty()) {
       item { DetailsSectionHeader(strings.tournamentsDetailsHeaderOngoing) }
     }
