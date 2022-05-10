@@ -10,26 +10,26 @@ import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
 
-open class FakeContestScreenState : ContestScreenState<ContestInfo> {
-  override fun onNewContestClick() = Unit
-  override fun onContestClick(contest: ContestInfo) = Unit
-  override val contests =
-      listOf(createContest("Name", ContestInfo.Status.Ongoing(1.days), BadgeType.Admin))
-}
+class ContestScreenTest {
 
-private fun createContest(
-    name: String,
-    status: ContestInfo.Status,
-    personStatus: BadgeType
-): ContestInfo {
-  return object : ContestInfo {
-    override val name = name
-    override val badge = personStatus
-    override val status = status
+  private class FakeContestScreenState : ContestScreenState<ContestInfo> {
+    override fun onNewContestClick() = Unit
+    override fun onContestClick(contest: ContestInfo) = Unit
+    override val contests =
+        listOf(createContest("Name", ContestInfo.Status.Ongoing(1.days), BadgeType.Admin))
+
+    private fun createContest(
+        name: String,
+        status: ContestInfo.Status,
+        personStatus: BadgeType
+    ): ContestInfo {
+      return object : ContestInfo {
+        override val name = name
+        override val badge = personStatus
+        override val status = status
+      }
+    }
   }
-}
-
-class NewContestButtonTest {
 
   @get:Rule val rule = createComposeRule()
 
