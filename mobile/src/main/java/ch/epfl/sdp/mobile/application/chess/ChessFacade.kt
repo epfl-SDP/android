@@ -6,11 +6,18 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
+import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
 import ch.epfl.sdp.mobile.application.toProfile
+import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import com.opencsv.CSVReaderHeaderAware
+import java.io.StringReader
 import kotlinx.coroutines.flow.*
 
 /**
@@ -19,8 +26,15 @@ import kotlinx.coroutines.flow.*
  *
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
+ * @param assets the [AssetManager] which is used to load assets.
  */
-class ChessFacade(private val auth: Auth, private val store: Store) {
+class ChessFacade(
+    private val auth: Auth,
+    private val store: Store,
+    private val assets: AssetManager,
+) {
+
+  /** Chess matches side of chess facade */
 
   /**
    * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
@@ -84,7 +98,78 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
       it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
     }
   }
+
+  /**
+   * Fetches the list of all [Puzzle]s from their source
+   *
+   * As of now, the puzzles come from the Lichess.org Open Database
+   * (https://database.lichess.org/#puzzles)
+   */
+  private fun allPuzzles(): List<Puzzle> {
+    return sequence {
+          val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
+          while (true) {
+            val line = reader.readMap() ?: return@sequence
+            yield(line)
+          }
+        }
+        .map {
+          val puzzleId = it[csvPuzzleId] ?: return@map null
+          val fen = parseFen(it[csvFen] ?: "") ?: return@map null
+          val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
+          val rating = it[csvRating]?.toIntOrNull() ?: return@map null
+
+          SnapshotPuzzle(
+              uid = puzzleId,
+              boardSnapshot = fen,
+              puzzleMoves = moves,
+              elo = rating,
+          )
+        }
+        .filterNotNull()
+        .toList()
+  }
+
+  /**
+   * Gets a certain [Puzzle] by his uid
+   *
+   * @param uid The uid of the [Puzzle] to get
+   *
+   * @return The specified [Puzzle], if it exists
+   */
+  fun puzzle(uid: String): Puzzle? {
+    return allPuzzles().firstOrNull { it.uid == uid }
+  }
+
+  /**
+   * Fetches the list of solved [Puzzle]s for a certain [Profile]
+   *
+   * @param profile the [Profile] in question
+   *
+   * @returns The list of solved [Puzzle]s
+   */
+  fun solvedPuzzles(profile: Profile): List<Puzzle> {
+    return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
+  }
+
+  /**
+   * Fetches the list of unsolved [Puzzle]s for a certain [Profile]
+   *
+   * @param profile the [Profile] in question
+   *
+   * @returns The list of unsolved [Puzzle]s
+   */
+  fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
+    return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
+  }
 }
+
+private data class SnapshotPuzzle(
+    override val uid: String,
+    override val boardSnapshot: FenNotation.BoardSnapshot,
+    override val puzzleMoves: List<Action>,
+    override val elo: Int,
+) : Puzzle
 
 private data class StoreMatch(
     override val id: String,
@@ -117,3 +202,9 @@ private data class StoreMatch(
     store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }
   }
 }
+
+private const val csvPath = "puzzles/puzzles.csv"
+private const val csvPuzzleId = "PuzzleId"
+private const val csvFen = "FEN"
+private const val csvMoves = "Moves"
+private const val csvRating = "Rating"

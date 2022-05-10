@@ -28,6 +28,9 @@ enum class HomeSection(
   /** The section which displays all the past and current contests. */
   Contests({ Icon(PawniesIcons.SectionContests, null) }, { sectionContests }),
 
+  /** The section to play a chess puzzle game */
+  Puzzles({ Icon(PawniesIcons.SectionPuzzles, null) }, { sectionPuzzles }),
+
   /** The section to manage our preferences. */
   Settings({ Icon(PawniesIcons.SectionSettings, null) }, { sectionSettings }),
 }
