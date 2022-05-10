@@ -1,8 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
@@ -87,7 +86,6 @@ class StatefulProfileScreenTest {
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText("user2").performClick()
     rule.onNodeWithText(strings.profileChallenge.uppercase()).performClick()
-    rule.onNodeWithText(strings.prepareGamePlay).performClick()
-    rule.onNodeWithText("user2").assertExists()
+    rule.onNode(hasText("user2") and hasClickAction()).assertIsSelected()
   }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -108,11 +109,10 @@ fun SelectableItem(
     content: @Composable RowScope.() -> Unit
 ) {
   Surface(
-      modifier = modifier,
+      modifier = modifier.selectable(selected, onClick = onClick),
       shape = CircleShape,
       color = opponentColor(selected).backgroundColor(true).value,
       elevation = 0.dp,
-      onClick = onClick,
   ) {
     ProvideTextStyle(value = MaterialTheme.typography.button) {
       Row(
