@@ -126,6 +126,6 @@ object Combinators {
    * @param O the type of the output.
    * @return a [Parser] without null value
    */
-  @Suppress("UNCHECKED_CAST")
-  fun <I, O> Parser<I, O?>.filterNotNull(): Parser<I, O> = filter { it != null }.map { it as O }
+  fun <I, O> Parser<I, O?>.filterNotNull(): Parser<I, O> =
+      filter { it != null }.map { checkNotNull(it) }
 }
