@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import kotlin.time.Duration
 
 /**
@@ -128,7 +130,7 @@ interface LocalizedStrings {
   val tournamentsDetailsNextRoundSubtitle: String
 
   val tournamentsContestsTitle: String
-  val tournamentsStartingTime: (Duration) -> String
+  val tournamentsStartingTime: (Duration, SpanStyle) -> AnnotatedString
   val tournamentsStarted: String
   val tournamentsAgo: String
   val tournamentsDone: String

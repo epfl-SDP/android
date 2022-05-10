@@ -1,5 +1,8 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import kotlin.time.Duration
 
 /** Localized strings for the English language. */
@@ -129,8 +132,12 @@ object English : LocalizedStrings {
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
 
   override val tournamentsContestsTitle = "Contests"
-  override val tournamentsStartingTime = { duration: Duration ->
-    "Started ${duration.absoluteValue} ago"
+  override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
+    buildAnnotatedString {
+      append("Started ")
+      withStyle(style) { append(duration.absoluteValue.toString()) }
+      append(" ago")
+    }
   }
   override val tournamentsStarted = "Started"
   override val tournamentsAgo = "ago"
