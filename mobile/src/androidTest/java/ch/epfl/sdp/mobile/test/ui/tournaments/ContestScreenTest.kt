@@ -15,6 +15,7 @@ class ContestScreenTest {
   private class FakeContestScreenState : ContestScreenState<ContestInfo> {
     override fun onNewContestClick() = Unit
     override fun onContestClick(contest: ContestInfo) = Unit
+    override fun onFilterClick() = Unit
     override val contests =
         listOf(createContest("Name", ContestInfo.Status.Ongoing(1.days), BadgeType.Admin))
 
@@ -34,8 +35,9 @@ class ContestScreenTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun given_newContestButton_when_displayed_then_showsCorrectText() {
-    val strings = rule.setContentWithLocalizedStrings { NewContestButton(onClick = {}) }
+  fun given_contestScreen_when_displayed_then_showsCorrectButtonText() {
+    val state = FakeContestScreenState()
+    val strings = rule.setContentWithLocalizedStrings { ContestScreen(state) }
     rule.onNodeWithText(strings.newContest).assertIsDisplayed()
   }
 

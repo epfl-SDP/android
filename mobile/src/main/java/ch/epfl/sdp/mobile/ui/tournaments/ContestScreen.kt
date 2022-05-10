@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +32,7 @@ fun <C : ContestInfo> ContestScreen(
     contentPadding: PaddingValues = PaddingValues()
 ) {
   Scaffold(
-      topBar = { TopAppBar() },
+      topBar = { TopAppBar(onFilterClick = state::onFilterClick) },
       modifier = modifier.padding(contentPadding),
       floatingActionButton = { NewContestButton(onClick = state::onNewContestClick) },
       content = { innerPadding ->
@@ -57,26 +57,34 @@ fun <C : ContestInfo> ContestScreen(
 /**
  * The top bar containing the title and tournaments filter.
  *
+ * @param onFilterClick a callback called when the filter action is clicked.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 fun TopAppBar(
+    onFilterClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  val strings = LocalLocalizedStrings.current
-  TopAppBar(
-      title = {
-        Text(
-            text = strings.tournamentsContestsTitle,
-            color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.h4)
-      },
-      elevation = 0.dp,
-      actions = { Icon(PawniesIcons.Filter, null) }, // TODO : Make this clickable.
-      backgroundColor = MaterialTheme.colors.background,
+  Surface(
       modifier = modifier,
-      // modifier = modifier.padding(top = 12.dp, end = 16.dp), // TODO : Remove this padding.
+      color = MaterialTheme.colors.background,
+  ) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        horizontalArrangement = spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Text(
+          text = LocalLocalizedStrings.current.tournamentsContestsTitle,
+          color = MaterialTheme.colors.primary,
+          style = MaterialTheme.typography.h4,
+          modifier = Modifier.weight(1f),
       )
+      IconButton(
+          onClick = onFilterClick,
+      ) { Icon(PawniesIcons.Filter, null) }
+    }
+  }
 }
 
 /**
@@ -85,25 +93,17 @@ fun TopAppBar(
  * @param onClick callback function called when the button is clicked on.
  * @param modifier the [Modifier] for this composable.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun NewContestButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun NewContestButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
   val strings = LocalLocalizedStrings.current
-  FloatingActionButton(
+  ExtendedFloatingActionButton(
+      text = { Text(strings.newContest) },
+      icon = { Icon(PawniesIcons.Add, null) },
+      backgroundColor = MaterialTheme.colors.primary,
       onClick = onClick,
-      shape = RoundedCornerShape(28.dp),
-      backgroundColor = MaterialTheme.colors.onSurface,
-      contentColor = MaterialTheme.colors.onPrimary,
-      modifier = modifier,
-  ) {
-    Row(
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-    ) {
-      Icon(PawniesIcons.Add, null)
-      Spacer(Modifier.width(8.dp))
-      Text(strings.newContest)
-    }
-  }
+      modifier = modifier.heightIn(min = 56.dp),
+  )
 }

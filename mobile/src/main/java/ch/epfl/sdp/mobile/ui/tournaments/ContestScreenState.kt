@@ -22,4 +22,7 @@ interface ContestScreenState<C : ContestInfo> {
 
   /** Callback called when the "New Contest" button is clicked. */
   fun onNewContestClick()
+
+  /** Callback called when the filter action is clicked. */
+  fun onFilterClick()
 }

@@ -56,10 +56,7 @@ fun Contest(
       trailing = {
         val badge = contestInfo.badge
         if (badge != null) {
-          Badge(
-              type = badge,
-              onClick = onClick,
-          )
+          Badge(type = badge, enabled = false, onClick = {})
         }
       },
   )

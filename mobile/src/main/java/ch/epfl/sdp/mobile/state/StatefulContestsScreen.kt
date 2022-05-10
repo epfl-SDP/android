@@ -35,6 +35,7 @@ class TournamentScreenState : ContestScreenState<ContestInfoAdapter> {
 
   override fun onNewContestClick() = Unit
   override fun onContestClick(contest: ContestInfoAdapter) = Unit
+  override fun onFilterClick() = Unit
 }
 
 private fun createContest(
