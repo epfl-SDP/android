@@ -1,6 +1,9 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import kotlin.time.Duration
 
 /**
  * An interface which defines all the texts and content descriptions which are used in the Pawnies
@@ -87,7 +90,10 @@ interface LocalizedStrings {
   val sectionSocial: String
   val sectionSettings: String
   val sectionPlay: String
+  val sectionContests: String
+
   val newGame: String
+  val newContest: String
 
   val prepareGameChooseColor: String
   val prepareGameChooseOpponent: String
@@ -123,6 +129,10 @@ interface LocalizedStrings {
   val tournamentsDetailsNextRoundTitle: String
   val tournamentsDetailsNextRoundSubtitle: String
 
+  val tournamentsContestsTitle: String
+  val tournamentsFilter: String
+  val tournamentsStartingTime: (Duration, SpanStyle) -> AnnotatedString
+  val tournamentsDone: String
   val tournamentsCreateTitle: String
   val tournamentsCreateNameHint: String
   val tournamentsCreateRules: String
