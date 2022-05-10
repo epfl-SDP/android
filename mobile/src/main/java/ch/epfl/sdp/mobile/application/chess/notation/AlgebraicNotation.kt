@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.application.chess.notation
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotationCombinators.action
-import ch.epfl.sdp.mobile.ui.game.ChessBoardCells
 
 /**
  * An object which contains some utilities to transform games in algebraic notation, and vice-versa.
@@ -30,7 +29,7 @@ object AlgebraicNotation {
       "?"
     } else {
       val col = (x.toChar() + 'a'.code).toString()
-      val row = ChessBoardCells - y
+      val row = Board.Size - y
       col + row
     }
   }

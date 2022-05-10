@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.game
+package ch.epfl.sdp.mobile.ui.game.classic
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring.StiffnessLow
@@ -24,10 +24,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.min
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
+import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope

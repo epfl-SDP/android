@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toEngineRank
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.PromotionState
 
-class GamePromotionState(
+class ActualPromotionState(
     private val delegate: GameChessBoardState,
 ) : PromotionState, GameChessBoardState by delegate {
 

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.ui.game
+package ch.epfl.sdp.mobile.ui.game.classic
 
 import androidx.compose.animation.core.*
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis

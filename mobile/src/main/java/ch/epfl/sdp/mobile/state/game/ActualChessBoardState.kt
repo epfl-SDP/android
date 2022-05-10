@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
  * @param match the [Match] which should be displayed.
  * @param scope the [CoroutineScope] in which the match is observed.
  */
-class MatchChessBoardState(
+class ActualChessBoardState(
     private val match: Match,
     private val scope: CoroutineScope,
 ) : GameChessBoardState {

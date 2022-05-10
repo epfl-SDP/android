@@ -9,8 +9,9 @@ import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.GameScreen
 import ch.epfl.sdp.mobile.ui.game.GameScreenState
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
 import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
+import ch.epfl.sdp.mobile.ui.game.MovesInfoState.Move
+import ch.epfl.sdp.mobile.ui.game.PlayersInfoState
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,8 +29,8 @@ class GameScreenTest {
               Move("g4"),
               Move("Qh4#"),
           )
-    override val white = GameScreenState.Player("Alex", GameScreenState.Message.None)
-    override val black = GameScreenState.Player("Matt", GameScreenState.Message.None)
+    override val white = PlayersInfoState.Player("Alex", PlayersInfoState.Message.None)
+    override val black = PlayersInfoState.Player("Matt", PlayersInfoState.Message.None)
 
     override fun onArClick() = Unit
 
