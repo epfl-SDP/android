@@ -91,6 +91,7 @@ interface LocalizedStrings {
   val sectionSettings: String
   val sectionPlay: String
   val sectionContests: String
+  val sectionPuzzles: String
 
   val newGame: String
   val newContest: String
@@ -108,6 +109,10 @@ interface LocalizedStrings {
   val prepareGamePlayOnline: String
 
   val playOnlineGames: String
+
+  val puzzlePlayingAs: (color: String) -> String
+  val puzzleUnsolvedPuzzles: String
+  val puzzleListContentDescription: String
 
   val tournamentsBadgeJoin: String
   val tournamentsBadgeParticipant: String

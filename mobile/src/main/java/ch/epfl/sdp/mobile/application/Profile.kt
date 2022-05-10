@@ -21,6 +21,9 @@ interface Profile {
   /** True iff this profile is followed by the current user. */
   val followed: Boolean
 
+  /** The list of solved puzzle's ids by the [Profile] */
+  val solvedPuzzles: List<PuzzleId>
+
   /**
    * A class representing the different colors that the profile picture background might take. It
    * may contain arbitrary [String], but some default values are provided in [Color.Companion].
@@ -52,3 +55,5 @@ interface Profile {
     }
   }
 }
+/** Represents a puzzle's id */
+typealias PuzzleId = String

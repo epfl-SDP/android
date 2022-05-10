@@ -89,6 +89,7 @@ object English : LocalizedStrings {
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
   override val sectionPlay = "Play"
+  override val sectionPuzzles = "Puzzles"
   override val sectionContests = "Contests"
 
   override val newGame = "New game".uppercase()
@@ -107,6 +108,10 @@ object English : LocalizedStrings {
   override val prepareGamePlayOnline = "Online".uppercase()
 
   override val playOnlineGames = "Online games"
+
+  override val puzzlePlayingAs = { color: String -> "Playing as $color" }
+  override val puzzleUnsolvedPuzzles = "Unsolved puzzles"
+  override val puzzleListContentDescription = "Puzzles list"
 
   override val tournamentsBadgeJoin = "Join"
   override val tournamentsBadgeParticipant = "Participant"
