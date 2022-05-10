@@ -38,6 +38,16 @@ class TournamentScreenState : ContestScreenState<ContestInfoAdapter> {
   override fun onFilterClick() = Unit
 }
 
+/**
+ * TODO : Remove this.
+ *
+ * Creates a contest with some fake data.
+ *
+ * @param uid the id of the contest.
+ * @param name the title of the contest.
+ * @param status the [Status] for the contest.
+ * @param personStatus the badge to display.
+ */
 private fun createContest(
     uid: String,
     name: String,
