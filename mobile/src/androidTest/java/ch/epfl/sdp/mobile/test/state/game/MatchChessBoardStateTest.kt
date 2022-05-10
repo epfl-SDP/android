@@ -3,12 +3,12 @@ package ch.epfl.sdp.mobile.test.state.game
 import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toColor
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineColor
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEnginePosition
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toPosition
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toRank
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toColor
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toEngineColor
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toEnginePosition
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toPosition
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toRank
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

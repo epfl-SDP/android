@@ -19,8 +19,8 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.*
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toRank
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toRank
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
