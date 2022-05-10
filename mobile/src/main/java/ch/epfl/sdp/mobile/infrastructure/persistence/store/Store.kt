@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store
 
+import kotlin.jvm.Throws
+
 /**
  * An interface representing a place where collections are stored. This is the top-level of the
  * database hierarchy.
@@ -15,9 +17,11 @@ interface Store {
    *
    * This function may throw an [Exception] if a transaction can't be executed.
    *
+   * @throws Exception if a transaction fails.
    * @param R the type of the return value.
    * @param block the body of the [Transaction] to be executed.
    * @return the return value of the transaction.
    */
+  @Throws(Exception::class)
   suspend fun <R> transaction(block: Transaction<DocumentReference>.() -> R): R
 }
