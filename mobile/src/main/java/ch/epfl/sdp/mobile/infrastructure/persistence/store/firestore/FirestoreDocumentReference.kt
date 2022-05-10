@@ -43,6 +43,9 @@ class FirestoreDocumentReference(
     actual.delete().await()
   }
 
+  override suspend fun getSnapshot(): DocumentSnapshot =
+      FirestoreDocumentSnapshot(actual.get().await())
+
   override suspend fun update(scope: DocumentEditScope.() -> Unit) {
     val values = RecordingDocumentEditScope().apply(scope).mutations
     actual.set(values.toFirestoreDocument(), SetOptions.merge()).await()

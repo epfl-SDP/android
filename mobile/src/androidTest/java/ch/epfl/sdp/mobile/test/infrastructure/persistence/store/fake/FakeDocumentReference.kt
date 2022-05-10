@@ -58,6 +58,8 @@ class FakeDocumentReference(id: FakeDocumentId) : DocumentReference, CollectionB
 
   override suspend fun delete() = atomicDelete()
 
+  override suspend fun getSnapshot() = atomicGet()
+
   override suspend fun set(scope: DocumentEditScope.() -> Unit) = atomicSet(scope)
 
   override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) = atomicSet(value, valueClass)
