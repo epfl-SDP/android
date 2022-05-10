@@ -125,6 +125,31 @@ class StatefulHomeTest {
   }
 
   @Test
+  fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val assets = emptyAssets()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).assertExists()
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onAllNodesWithText(strings.sectionContests).assertCountEquals(2)
+    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+  }
+
+  @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
@@ -578,7 +603,6 @@ class StatefulHomeTest {
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
-    authFacade.signInWithEmail("email@example.org", "password")
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 

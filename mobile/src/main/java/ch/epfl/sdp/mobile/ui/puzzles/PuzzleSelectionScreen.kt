@@ -3,7 +3,10 @@ package ch.epfl.sdp.mobile.ui.puzzles
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -25,6 +28,7 @@ import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
  * Composable that composes the PlayScreen expanded to include history of matches
  * @param state the [PuzzleSelectionScreenState] to manage composable content
  * @param modifier the [Modifier] for this composable.
+ * @param key the key to uniquely identify a [PuzzleInfo] list item
  * @param contentPadding The [PaddingValues] to apply to the content
  */
 @Composable
@@ -64,9 +68,10 @@ fun PuzzleSelectionScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         state = lazyListState,
         contentPadding = innerPadding,
-        modifier = Modifier.semantics { contentDescription = strings.puzzleListCD }) {
+        modifier =
+            Modifier.semantics { contentDescription = strings.puzzleListContentDescription }) {
       items(state.puzzles, key) { puzzle ->
-        PuzzleListInfo(puzzle, { state.onPuzzleItemClick(puzzle) })
+        PuzzleListInfo(puzzle, onClick = { state.onPuzzleItemClick(puzzle) })
       }
     }
   }
@@ -108,6 +113,6 @@ fun PuzzleListInfo(
                 },
         )
       },
-      secondaryText = { Text(text = "${strings.puzzlePlayingAs} ${puzzleInfo.playerColor}") },
+      secondaryText = { Text(text = strings.puzzlePlayingAs(puzzleInfo.playerColor.toString())) },
   )
 }

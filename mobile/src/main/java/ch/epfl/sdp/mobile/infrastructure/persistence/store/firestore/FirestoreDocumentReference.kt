@@ -16,22 +16,22 @@ import kotlinx.coroutines.tasks.await
  * An implementation of [DocumentReference] which uses a Firestore document reference
  * under-the-hood.
  *
- * @param reference the [ActualDocumentReference].
+ * @param actual the [ActualDocumentReference].
  */
 class FirestoreDocumentReference(
-    private val reference: ActualDocumentReference,
+    val actual: ActualDocumentReference,
 ) : DocumentReference {
 
   override val id: String
-    get() = reference.id
+    get() = actual.id
 
   override fun collection(path: String): CollectionReference =
-      FirestoreCollectionReference(reference.collection(path))
+      FirestoreCollectionReference(actual.collection(path))
 
   override fun asDocumentSnapshotFlow(): Flow<DocumentSnapshot?> =
       callbackFlow {
             val registration =
-                reference.addSnapshotListener { value, error ->
+                actual.addSnapshotListener { value, error ->
                   value?.let { trySend(FirestoreDocumentSnapshot(it)) }
                   error?.let { close(it) }
                 }
@@ -40,21 +40,21 @@ class FirestoreDocumentReference(
           .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
   override suspend fun delete() {
-    reference.delete().await()
+    actual.delete().await()
   }
 
   override suspend fun update(scope: DocumentEditScope.() -> Unit) {
     val values = RecordingDocumentEditScope().apply(scope).mutations
-    reference.set(values.toFirestoreDocument(), SetOptions.merge()).await()
+    actual.set(values.toFirestoreDocument(), SetOptions.merge()).await()
   }
 
   override suspend fun set(scope: DocumentEditScope.() -> Unit) {
     val values = RecordingDocumentEditScope().apply(scope).mutations
-    reference.set(values.toFirestoreDocument()).await()
+    actual.set(values.toFirestoreDocument()).await()
   }
 
   override suspend fun <T : Any> set(value: T, valueClass: KClass<T>) {
-    reference.set(value).await()
+    actual.set(value).await()
   }
 }
 
@@ -66,7 +66,7 @@ class FirestoreDocumentReference(
  * @return the [Map] that will be given to Firestore.
  */
 @Suppress("Unchecked_Cast")
-private fun Map<FieldPath, Any?>.toFirestoreDocument(): Map<String, Any?> {
+fun Map<FieldPath, Any?>.toFirestoreDocument(): Map<String, Any?> {
   val document = mutableMapOf<String, Any?>()
   for ((path, value) in this) {
     var root = document

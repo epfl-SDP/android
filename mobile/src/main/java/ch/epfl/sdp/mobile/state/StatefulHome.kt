@@ -51,6 +51,9 @@ private const val PrepareGameRoute = "prepare_game"
 /** The route associated to the ar tab. */
 private const val ArRoute = "ar"
 
+/** The route associated to the contests tab. */
+private const val ContestsRoute = "contests"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -94,6 +97,9 @@ fun StatefulHome(
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
         )
+      }
+      composable(ContestsRoute) {
+        StatefulTournamentScreen(modifier = Modifier.fillMaxSize(), contentPadding = paddingValues)
       }
       composable(SettingsRoute) {
         StatefulSettingsScreen(
@@ -184,6 +190,7 @@ private fun NavBackStackEntry.toSection(): HomeSection =
       SettingsRoute -> HomeSection.Settings
       PlayRoute -> HomeSection.Play
       PuzzleSelectionRoute -> HomeSection.Puzzles
+      ContestsRoute -> HomeSection.Contests
       else -> HomeSection.Social
     }
 
@@ -194,6 +201,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
       HomeSection.Puzzles -> PuzzleSelectionRoute
+      HomeSection.Contests -> ContestsRoute
     }
 
 private fun hideBar(route: String?): Boolean {

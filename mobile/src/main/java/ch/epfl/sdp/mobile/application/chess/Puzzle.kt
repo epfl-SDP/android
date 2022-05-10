@@ -9,6 +9,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
 import kotlinx.collections.immutable.persistentListOf
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
+import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
 
 /**
  * Represents a complete [Puzzle] TODO: Will definitely change in the "Functional Puzzle Game"
@@ -51,7 +55,7 @@ fun Puzzle(): Puzzle =
       override val uid = "Error"
       override val boardSnapshot =
           BoardSnapshot(
-              board = buildBoard {},
+              board = emptyBoard(),
               playing = Color.White,
               castlingRights =
                   FenNotation.CastlingRights(

@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
+import java.io.StringReader
 import kotlinx.coroutines.flow.*
 
 /**
@@ -98,34 +99,25 @@ class ChessFacade(
     }
   }
 
-  /** Puzzle side of chess facade */
-
   /**
-   * Marks a [Puzzle] as solved for the current [AuthenticatedUser]
+   * Fetches the list of all [Puzzle]s from their source
    *
-   * @param puzzleId The [Puzzle]'id to mark as solved
+   * As of now, the puzzles come from the Lichess.org Open Database
+   * (https://database.lichess.org/#puzzles)
    */
-  suspend fun solvePuzzle(puzzleId: String, user: AuthenticatedUser) {
-    user.solvePuzzle(puzzleId)
-  }
-
-  /** Fetches the list of all [Puzzle]s from their source */
   private fun allPuzzles(): List<Puzzle> {
-    val reader = assets.openAsReader("puzzles/puzzles.csv")
-    val csvReader = CSVReaderHeaderAware(reader)
-    val csvMap = mutableListOf<Map<String, String>>()
-    var line = csvReader.readMap()
-    while (line != null) {
-      csvMap.add(line)
-      line = csvReader.readMap()
-    }
-
-    val puzzles =
-        csvMap.map {
-          val puzzleId = it["PuzzleId"] ?: return@map Puzzle()
-          val fen = parseFen(it["FEN"] ?: "") ?: return@map Puzzle()
-          val moves = parseActions(it["Moves"] ?: "") ?: return@map Puzzle()
-          val rating = (it["Rating"] ?: return@map Puzzle()).toInt()
+    return sequence {
+          val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
+          while (true) {
+            val line = reader.readMap() ?: return@sequence
+            yield(line)
+          }
+        }
+        .map {
+          val puzzleId = it[csvPuzzleId] ?: return@map null
+          val fen = parseFen(it[csvFen] ?: "") ?: return@map null
+          val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
+          val rating = it[csvRating]?.toIntOrNull() ?: return@map null
 
           SnapshotPuzzle(
               uid = puzzleId,
@@ -134,8 +126,8 @@ class ChessFacade(
               elo = rating,
           )
         }
-
-    return puzzles
+        .filterNotNull()
+        .toList()
   }
 
   /**
@@ -210,3 +202,9 @@ private data class StoreMatch(
     store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }
   }
 }
+
+private const val csvPath = "puzzles/puzzles.csv"
+private const val csvPuzzleId = "PuzzleId"
+private const val csvFen = "FEN"
+private const val csvMoves = "Moves"
+private const val csvRating = "Rating"

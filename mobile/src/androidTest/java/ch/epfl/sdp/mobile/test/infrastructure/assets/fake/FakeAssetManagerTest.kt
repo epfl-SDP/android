@@ -9,7 +9,7 @@ class FakeAssetManagerTest {
   fun given_fakeAssetManagerWithString_when_readingReaderString_then_isCorrectString() {
     val assets = FakeAssetManager("Test string")
 
-    val res = assets.openAsReader("whatever")
-    assertThat(res.readText()).isEqualTo("Test string")
+    val res = assets.readText("whatever")
+    assertThat(res).isEqualTo("Test string")
   }
 }

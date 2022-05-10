@@ -22,7 +22,7 @@ interface Profile {
   val followed: Boolean
 
   /** The list of solved puzzle's ids by the [Profile] */
-  val solvedPuzzles: List<String>
+  val solvedPuzzles: List<PuzzleId>
 
   /**
    * A class representing the different colors that the profile picture background might take. It
@@ -55,3 +55,5 @@ interface Profile {
     }
   }
 }
+/** Represents a puzzle's id */
+typealias PuzzleId = String

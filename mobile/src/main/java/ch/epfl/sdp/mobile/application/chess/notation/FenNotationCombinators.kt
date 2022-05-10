@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.position
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.CastlingRights
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
@@ -200,7 +201,13 @@ object FenNotationCombinators {
    * A [Parser] which consumes castling rights in FEN notation and returns the corresponding
    * [CastlingRights]
    */
-  val castlingRights = noCastlingRights or justCastlingWhite or justCastlingBlack or bothCastling
+  val castlingRights =
+      combine(
+          noCastlingRights,
+          justCastlingWhite,
+          justCastlingBlack,
+          bothCastling,
+      )
 
   /**
    * A [Parser] which consumes a either a nothing symbol or a position representing an en passant

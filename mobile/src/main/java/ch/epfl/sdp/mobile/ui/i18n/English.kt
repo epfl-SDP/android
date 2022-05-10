@@ -1,5 +1,10 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import kotlin.time.Duration
+
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
@@ -85,8 +90,10 @@ object English : LocalizedStrings {
   override val sectionSettings = "Settings"
   override val sectionPlay = "Play"
   override val sectionPuzzles = "Puzzles"
+  override val sectionContests = "Contests"
 
   override val newGame = "New game".uppercase()
+  override val newContest = "New contest".uppercase()
 
   override val prepareGameChooseColor = "Pick your color :"
   override val prepareGameChooseOpponent = "Pick an opponent :"
@@ -102,9 +109,9 @@ object English : LocalizedStrings {
 
   override val playOnlineGames = "Online games"
 
-  override val puzzlePlayingAs = "Playing as"
+  override val puzzlePlayingAs = { color: String -> "Playing as $color" }
   override val puzzleUnsolvedPuzzles = "Unsolved puzzles"
-  override val puzzleListCD = "puzzle_list"
+  override val puzzleListContentDescription = "Puzzles list"
   override val puzzlesTitle = "Puzzles"
   override val puzzleSolving = { color: String -> "Find the best move for $color" }
   override val puzzleFailed = "You've failed! Try again!"
@@ -115,4 +122,44 @@ object English : LocalizedStrings {
   override val tournamentsBadgeJoin = "Join"
   override val tournamentsBadgeParticipant = "Participant"
   override val tournamentsBadgeAdmin = "Admin"
+  override val tournamentsTableScore = "Score"
+  override val tournamentsPoolStillOpen = "Still open"
+  override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
+  override val tournamentsPoolStartNextRound = "Start next round".uppercase()
+  override val tournamentsDetailsFinals = "Finals".uppercase()
+  override val tournamentsDetailsPools = "Pools".uppercase()
+  override val tournamentsDetailsWatch = "Watch".uppercase()
+  override val tournamentsDetailsMatchWon = "Win".uppercase()
+  override val tournamentsDetailsMatchLost = "Loss".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
+  override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
+  override val tournamentsDetailsHeaderDone = "Done".uppercase()
+  override val tournamentsDetailsNextBestOfTitle = { round: Int, total: Int ->
+    "Create match $round / $total"
+  }
+  override val tournamentsDetailsNextBestOfSubtitle =
+      "Add a new match to all the players in this round."
+  override val tournamentsDetailsNextRoundTitle = "Next round"
+  override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
+
+  override val tournamentsContestsTitle = "Contests"
+  override val tournamentsFilter = "Filter"
+  override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
+    buildAnnotatedString {
+      append("Started ")
+      withStyle(style) { append(duration.absoluteValue.toString()) }
+      append(" ago")
+    }
+  }
+  override val tournamentsDone = "Done"
+  override val tournamentsCreateTitle = "Create tournament"
+  override val tournamentsCreateNameHint = "Name"
+  override val tournamentsCreateRules = "Rules"
+  override val tournamentsCreateBestOf = "Best of :"
+  override val tournamentsCreatePlayers = "Players"
+  override val tournamentsCreateMaximumPlayerHint = "Maximum player count"
+  override val tournamentsCreatePoolSize = "Pool size :"
+  override val tournamentsCreateDirectElimination = "Direct elim. :"
+  override val tournamentsCreateActionCancel = "Cancel".uppercase()
+  override val tournamentsCreateActionCreate = "Create".uppercase()
 }

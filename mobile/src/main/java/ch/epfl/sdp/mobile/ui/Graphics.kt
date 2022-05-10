@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
@@ -50,7 +51,11 @@ val PawniesIcons.SectionPlay
   get() = Icons.Default.Games
 
 val PawniesIcons.SectionPuzzles
-  get() = Icons.Default.Games // TODO: Use puzzles icon
+  @Composable get() = painterResource(id = R.drawable.puzzles)
+
+/** An icon for the tournament section. */
+val PawniesIcons.SectionContests
+  @Composable get() = painterResource(id = R.drawable.tournament_icon)
 
 val PawniesIcons.Add
   get() = Icons.Default.Add
@@ -66,6 +71,16 @@ val PawniesIcons.LocalPlay
 
 val PawniesIcons.OnlinePlay
   @Composable get() = painterResource(id = R.drawable.online_play)
+
+/** An icon to filter results. */
+val PawniesIcons.Filter
+  @Composable get() = painterResource(id = R.drawable.filtervariant)
+
+val PawniesIcons.TournamentDetailsClose
+  @Composable get() = Icons.Rounded.Close
+
+val PawniesIcons.TournamentsNextStep
+  get() = Icons.Outlined.SkipNext
 
 /** Chess pieces */
 object ChessIcons
