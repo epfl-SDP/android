@@ -65,6 +65,48 @@ data class ChessDocument(
     val metadata: ChessMetadata? = null
 )
 
+/**
+ * A document which represents a tournament of chess between many users. All the tournament
+ * documents are stored in the `/tournaments/` collection.
+ *
+ * @param uid the unique identifier for this tournament.
+ * @param adminId the unique identifier of the user administrating the tournament.
+ * @param name the name of the tournament.
+ * @param maxPlayers the maximum number of players than can join this tournament.
+ * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination phase.
+ * @param poolSize the target size of each pool. The number of pools derives from this number and
+ * the total number of players.
+ * @param eliminationRounds the number of direct elimination rounds. 1 for just a final, 2 for
+ * semi-finals, 3 for quarter-finals, etc...
+ * @param playerIds the [List] of unique identifier of users that have joined the tournament.
+ */
+data class TournamentDocument(
+    @DocumentId val uid: String? = null,
+    val adminId: String? = null,
+    val name: String? = null,
+    val maxPlayers: Int? = null,
+    val bestOf: Int? = null,
+    val poolSize: Int? = null,
+    val eliminationRounds: Int? = null,
+    val playerIds: List<String>? = null,
+)
+
+/**
+ * A document which represents a pool in a tournament of chess. All the pool documents are stored
+ * inside their corresponding [TournamentDocument], in `tournaments/tournamentId/`.
+ *
+ * @param uid the unique identifier for this pool.
+ * @param tournamentId the unique identifier of the tournament in which the pool takes place.
+ * @param currentRound the current round number for the pool.
+ * @param playerIds the [List] of unique identifier of users that have been placed in this pool.
+ */
+data class PoolDocument(
+    @DocumentId val uid: String? = null,
+    val tournamentId: String? = null,
+    val currentRound: Int? = null,
+    val playerIds: List<String>? = null,
+)
+
 data class ChessMetadata(
   val status: String? = null, // whiteWon, blackWon, draw
   val blackName: String? = null,

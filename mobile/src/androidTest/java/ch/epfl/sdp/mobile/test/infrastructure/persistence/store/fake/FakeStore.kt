@@ -1,7 +1,9 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.CollectionReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.DocumentReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Transaction
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.CollectionBuilder
 
 /**
@@ -19,4 +21,8 @@ private constructor(
   constructor() : this(FakeDocumentReference(FakeDocumentId.Root))
 
   override fun collection(path: String): CollectionReference = root.collection(path)
+
+  override suspend fun <R> transaction(
+      block: Transaction<DocumentReference>.() -> R,
+  ): R = block(FakeTransaction())
 }
