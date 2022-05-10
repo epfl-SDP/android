@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.SkipNext
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
@@ -69,6 +70,9 @@ val PawniesIcons.OnlinePlay
 
 val PawniesIcons.TournamentDetailsClose
   @Composable get() = Icons.Rounded.Close
+
+val PawniesIcons.TournamentsNextStep
+  get() = Icons.Outlined.SkipNext
 
 /** Chess pieces */
 object ChessIcons
