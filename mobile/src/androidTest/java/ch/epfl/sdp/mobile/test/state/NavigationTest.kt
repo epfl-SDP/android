@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.SuspendingAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
@@ -31,9 +32,10 @@ class NavigationTest {
   @Test
   fun loadingSection_isEmpty() {
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(SuspendingAuth, store)
     val socialFacade = SocialFacade(SuspendingAuth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade) { Navigation() }
@@ -45,9 +47,10 @@ class NavigationTest {
   fun notAuthenticated_displaysAuthenticationScreen() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -62,9 +65,10 @@ class NavigationTest {
   fun authenticated_displaysHome() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -84,8 +88,9 @@ class NavigationTest {
     val store = buildStore {
       collection("users") { document("id", ProfileDocument(name = "Alice")) }
     }
+    val assets = emptyAssets()
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val strings =
