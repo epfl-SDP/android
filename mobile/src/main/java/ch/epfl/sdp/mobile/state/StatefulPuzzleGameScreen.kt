@@ -206,7 +206,7 @@ class SnapshotPuzzleGameScreenState(
       currentMoveNumber++
     } else {
       puzzleState = PuzzleState.Solved
-      scope.launch { facade.solvePuzzle(puzzle.uid, user.value) }
+      scope.launch { user.value.solvePuzzle(puzzle) }
     }
   }
 

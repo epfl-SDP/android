@@ -4,15 +4,11 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
-import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
-import kotlinx.collections.immutable.persistentListOf
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
+import kotlinx.collections.immutable.persistentListOf
 
 /**
  * Represents a complete [Puzzle] TODO: Will definitely change in the "Functional Puzzle Game"
