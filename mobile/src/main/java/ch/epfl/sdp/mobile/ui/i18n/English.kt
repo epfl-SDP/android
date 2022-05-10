@@ -120,6 +120,13 @@ object English : LocalizedStrings {
   override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
   override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
   override val tournamentsDetailsHeaderDone = "Done".uppercase()
+  override val tournamentsDetailsNextBestOfTitle = { round: Int, total: Int ->
+    "Create match $round / $total"
+  }
+  override val tournamentsDetailsNextBestOfSubtitle =
+      "Add a new match to all the players in this round."
+  override val tournamentsDetailsNextRoundTitle = "Next round"
+  override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
 
   override val tournamentsContestsTitle = "Contests"
   override val tournamentsStartingTime = { duration: Duration ->

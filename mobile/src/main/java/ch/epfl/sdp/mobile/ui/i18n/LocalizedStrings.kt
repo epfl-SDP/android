@@ -122,6 +122,10 @@ interface LocalizedStrings {
   val tournamentsDetailsMatchDrawn: String
   val tournamentsDetailsHeaderOngoing: String
   val tournamentsDetailsHeaderDone: String
+  val tournamentsDetailsNextBestOfTitle: (Int, Int) -> String
+  val tournamentsDetailsNextBestOfSubtitle: String
+  val tournamentsDetailsNextRoundTitle: String
+  val tournamentsDetailsNextRoundSubtitle: String
 
   val tournamentsContestsTitle: String
   val tournamentsStartingTime: (Duration) -> String
