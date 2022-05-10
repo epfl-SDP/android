@@ -1,5 +1,10 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import kotlin.time.Duration
+
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
@@ -85,8 +90,10 @@ object English : LocalizedStrings {
   override val sectionSettings = "Settings"
   override val sectionPlay = "Play"
   override val sectionPuzzles = "Puzzles"
+  override val sectionContests = "Contests"
 
   override val newGame = "New game".uppercase()
+  override val newContest = "New contest".uppercase()
 
   override val prepareGameChooseColor = "Pick your color :"
   override val prepareGameChooseOpponent = "Pick an opponent :"
@@ -129,6 +136,16 @@ object English : LocalizedStrings {
   override val tournamentsDetailsNextRoundTitle = "Next round"
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
 
+  override val tournamentsContestsTitle = "Contests"
+  override val tournamentsFilter = "Filter"
+  override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
+    buildAnnotatedString {
+      append("Started ")
+      withStyle(style) { append(duration.absoluteValue.toString()) }
+      append(" ago")
+    }
+  }
+  override val tournamentsDone = "Done"
   override val tournamentsCreateTitle = "Create tournament"
   override val tournamentsCreateNameHint = "Name"
   override val tournamentsCreateRules = "Rules"
