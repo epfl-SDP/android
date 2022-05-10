@@ -51,7 +51,7 @@ val PawniesIcons.SectionPlay
   get() = Icons.Default.Games
 
 val PawniesIcons.SectionPuzzles
-  get() = Icons.Default.Games // TODO: Use R.drawable.puzzles icon
+  @Composable get() = painterResource(id = R.drawable.puzzles)
 
 /** An icon for the tournament section. */
 val PawniesIcons.SectionContests
