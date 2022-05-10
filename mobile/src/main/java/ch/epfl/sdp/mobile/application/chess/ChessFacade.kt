@@ -99,7 +99,11 @@ class ChessFacade(
     }
   }
 
-  /** Fetches the list of all [Puzzle]s from their source */
+  /** Fetches the list of all [Puzzle]s from their source
+   *
+   * As of now, the puzzles come from the Lichess.org Open Database
+   * (https://database.lichess.org/#puzzles)
+   */
   private fun allPuzzles(): List<Puzzle> {
     return sequence {
           val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
