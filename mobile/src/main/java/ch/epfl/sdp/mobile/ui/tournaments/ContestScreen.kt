@@ -29,7 +29,7 @@ fun <C : ContestInfo> ContestScreen(
     state: ContestScreenState<C>,
     modifier: Modifier = Modifier,
     key: ((C) -> Any)? = null,
-    contentPadding: PaddingValues = PaddingValues()
+    contentPadding: PaddingValues = PaddingValues(),
 ) {
   Scaffold(
       topBar = { TopAppBar(onFilterClick = state::onFilterClick) },
