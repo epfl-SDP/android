@@ -603,7 +603,6 @@ class StatefulHomeTest {
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
-    authFacade.signInWithEmail("email@example.org", "password")
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
