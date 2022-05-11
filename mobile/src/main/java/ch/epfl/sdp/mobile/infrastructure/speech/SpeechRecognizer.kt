@@ -1,7 +1,5 @@
 package ch.epfl.sdp.mobile.infrastructure.speech
 
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-
 /** An interface providing access to the native [SpeechRecognizer] of the platform. */
 interface SpeechRecognizer {
 
