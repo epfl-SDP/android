@@ -2,7 +2,9 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
@@ -32,7 +34,7 @@ data class ContestInfoAdapter(
  * requests.
  */
 class TournamentScreenState(
-    private val onNewContestClickAction: () -> Unit,
+    private val onNewContestClickAction: State<() -> Unit>,
 ) : ContestScreenState<ContestInfoAdapter> {
 
   // TODO : Fill this in with some actual data.
@@ -43,7 +45,7 @@ class TournamentScreenState(
           createContest("3", "Never gonna chess", Status.Ongoing(3.hours), BadgeType.Join),
       )
 
-  override fun onNewContestClick() = onNewContestClickAction()
+  override fun onNewContestClick() = onNewContestClickAction.value()
   override fun onContestClick(contest: ContestInfoAdapter) = Unit
   override fun onFilterClick() = Unit
 }
@@ -79,12 +81,14 @@ fun StatefulTournamentScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val action = rememberUpdatedState(onNewContestClickAction)
+
   val state =
       remember(
-          onNewContestClickAction,
+          action,
       ) {
         TournamentScreenState(
-            onNewContestClickAction = onNewContestClickAction,
+            onNewContestClickAction = action,
         )
       }
 
