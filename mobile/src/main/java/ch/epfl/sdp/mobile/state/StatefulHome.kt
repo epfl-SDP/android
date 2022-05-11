@@ -190,7 +190,9 @@ fun StatefulHome(
       dialog(CreateTournamentRoute) {
         StatefulCreateTournamentScreen(
             user,
-            navigateToTournament = {},
+            navigateToTournament = { tournament ->
+              controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
+            },
             cancelClick = { controller.popBackStack() },
         )
       }

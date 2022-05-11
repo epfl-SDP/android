@@ -39,7 +39,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
       bestOf: Int,
       poolSize: Int,
       eliminationRounds: Int,
-  ) {
+  ): TournamentReference {
     val document = store.collection("tournaments").document()
     document.set(
         TournamentDocument(
@@ -50,6 +50,8 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
             poolSize = poolSize,
             eliminationRounds = eliminationRounds,
         ))
+
+    return TournamentReference(uid = document.id)
   }
 
   /**

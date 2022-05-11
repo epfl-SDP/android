@@ -5,16 +5,18 @@ import androidx.compose.ui.Modifier
 import androidx.core.text.isDigitsOnly
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialog
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun StatefulCreateTournamentScreen(
     user: AuthenticatedUser,
-    navigateToTournament: () -> Unit,
+    navigateToTournament: (reference: TournamentReference) -> Unit,
     cancelClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -44,7 +46,7 @@ fun StatefulCreateTournamentScreen(
 
 class ActualCreateTournamentScreenState(
     val user: AuthenticatedUser,
-    val navigateToTournament: () -> Unit,
+    val navigateToTournament: (reference: TournamentReference) -> Unit,
     val cancelClick: () -> Unit,
     val tournamentFacade: TournamentFacade,
     val strings: LocalizedStrings,
@@ -65,8 +67,8 @@ class ActualCreateTournamentScreenState(
     this.poolSize = poolSize
   }
   override val poolSizeChoices: List<Choice> =
-      listOf(ActualChoice(name = strings.tournamentCreateQualifierSize0)) +
-          (2..7).map { ActualChoice(name = strings.tournamentCreateQualifierSizeN(it.toString())) }
+      listOf(IntChoice(name = strings.tournamentCreateQualifierSize0)) +
+          (2..7).map { IntChoice(name = strings.tournamentCreateQualifierSizeN(it.toString())) }
 
   override var poolSize: Choice? by mutableStateOf(null)
 
@@ -74,9 +76,9 @@ class ActualCreateTournamentScreenState(
     this.eliminationRound = eliminationRound
   }
   override val eliminationRoundChoices: List<Choice> =
-      listOf(ActualChoice(name = strings.tournamentCreateElimDepthFinal)) +
+      listOf(IntChoice(name = strings.tournamentCreateElimDepthFinal)) +
           listOf(2, 4, 8, 16, 32, 64).map {
-            ActualChoice(name = strings.tournamentCreateElimDepthN(it.toString()))
+            IntChoice(name = strings.tournamentCreateElimDepthN(it.toString()))
           }
   override var eliminationRound: Choice? by mutableStateOf(null)
 
@@ -88,10 +90,23 @@ class ActualCreateTournamentScreenState(
             poolSize != null &&
             eliminationRound != null
 
-  override fun onConfirm() = navigateToTournament()
+  override fun onConfirm(): Unit = run {
+    scope.launch {
+      val reference =
+          tournamentFacade.createTournament(
+              user = user,
+              name = name,
+              maxPlayers = maximumPlayerCount.toInt(),
+              bestOf = bestOf ?: 1,
+              poolSize = poolSize?.name?.toIntOrNull() ?: 0,
+              eliminationRounds = eliminationRound?.name?.toIntOrNull() ?: 1,
+          )
+      navigateToTournament(reference)
+    }
+  }
   override fun onCancel() = cancelClick()
 }
 
-data class ActualChoice(
+data class IntChoice(
     override val name: String,
 ) : Choice
