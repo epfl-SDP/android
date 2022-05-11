@@ -83,6 +83,7 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
+    every { user1.name } returns "userName1"
 
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -560,6 +561,7 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
+    every { user1.name } returns "userName1"
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
 
@@ -597,6 +599,7 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
+    every { user1.name } returns "userName1"
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
 
@@ -672,6 +675,7 @@ class StatefulGameScreenTest {
 
   @Test
   fun playingUntilStalemate_displaysStalemate() {
+
     val robot = emptyGameAgainstOneselfRobot()
     robot.play(Stalemate)
     robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
