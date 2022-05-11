@@ -22,8 +22,9 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
 import ch.epfl.sdp.mobile.ui.WhiteKing
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
+import ch.epfl.sdp.mobile.ui.game.MovesInfoState.*
+import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.Message
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 import com.google.accompanist.flowlayout.FlowRow
 
 /**

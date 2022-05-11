@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState
+import ch.epfl.sdp.mobile.state.game.ActualChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ar.ArChessBoardScreen
 
 /**
@@ -23,7 +23,7 @@ fun StatefulArScreen(
 
   val gameScreenState =
       remember(match, scope) {
-        MatchChessBoardState(
+        ActualChessBoardState(
             match = match,
             scope = scope,
         )

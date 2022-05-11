@@ -31,6 +31,9 @@ interface DocumentReference {
   /** Deletes the given document. Does nothing if the document was previously missing. */
   suspend fun delete()
 
+  /** Returns the [DocumentSnapshot] of this document. */
+  suspend fun getSnapshot(): DocumentSnapshot
+
   /**
    * Sets the given document with the [scope].
    *
@@ -85,3 +88,10 @@ suspend fun DocumentReference.set(values: Map<String, Any?>) = set {
     this[key] = value
   }
 }
+
+/**
+ * Gets the document and transforms it to [T].
+ *
+ * @param T the type of the document.
+ */
+suspend inline fun <reified T : Any> DocumentReference.get(): T? = getSnapshot().toObject(T::class)

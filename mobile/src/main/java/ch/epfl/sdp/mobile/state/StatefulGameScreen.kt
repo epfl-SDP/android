@@ -3,24 +3,17 @@
 package ch.epfl.sdp.mobile.state
 
 import android.Manifest.permission.RECORD_AUDIO
-import androidx.compose.foundation.MutatePriority.UserInput
-import androidx.compose.foundation.MutatorMutex
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.Failure
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.Success
-import ch.epfl.sdp.mobile.state.game.MatchGameScreenState
+import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.ui.game.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * The different navigation actions which may be performed by the [StatefulGameScreen].
@@ -59,23 +52,16 @@ fun StatefulGameScreen(
   val match = remember(chessFacade, id) { chessFacade.match(id) }
 
   val snackbarHostState = remember { SnackbarHostState() }
-  val speechRecognizerState =
-      remember(audioPermissionState, speechFacade, snackbarHostState, scope) {
-        SnackbarSpeechRecognizerState(
-            permission = audioPermissionState,
-            facade = speechFacade,
-            snackbarHostState = snackbarHostState,
-            scope = scope,
-        )
-      }
   val gameScreenState =
-      remember(actions, user, match, scope) {
-        MatchGameScreenState(
+      remember(actions, user, match, audioPermissionState, speechFacade, snackbarHostState, scope) {
+        ActualGameScreenState(
             actions = actions,
             user = user,
             match = match,
+            permission = audioPermissionState,
+            speechFacade = speechFacade,
+            snackbarHostState = snackbarHostState,
             scope = scope,
-            speechRecognizerState = speechRecognizerState,
         )
       }
 
@@ -111,55 +97,5 @@ fun StatefulPromoteDialog(
         choices = state.choices,
         modifier = modifier,
     )
-  }
-}
-
-/**
- * An implementation of [SpeechRecognizerState] which will display the results in a
- * [SnackbarHostState].
- *
- * @param permission the [PermissionState] for the microphone permission.
- * @param facade the [SpeechFacade] which is used.
- * @param snackbarHostState the [SnackbarHostState] used to display some results.
- * @param scope the [CoroutineScope] in which the actions are performed.
- */
-class SnackbarSpeechRecognizerState
-constructor(
-    private val permission: PermissionState,
-    private val facade: SpeechFacade,
-    private val snackbarHostState: SnackbarHostState,
-    private val scope: CoroutineScope,
-) : SpeechRecognizerState {
-
-  override var listening: Boolean by mutableStateOf(false)
-    private set
-
-  /**
-   * A [MutatorMutex] which ensures that multiple speech recognition requests aren't performed
-   * simultaneously, and that clicking on the button again cancels the previous request.
-   */
-  private val mutex = MutatorMutex()
-
-  override fun onListenClick() {
-    scope.launch {
-      val willCancel = listening
-      mutex.mutate(UserInput) {
-        try {
-          if (willCancel) return@mutate
-          listening = true
-          if (!permission.hasPermission) {
-            permission.launchPermissionRequest()
-          } else {
-            when (val speech = facade.recognize()) {
-              // TODO : Display an appropriate message, otherwise act on the board.
-              Failure.Internal -> snackbarHostState.showSnackbar("Internal failure")
-              is Success -> for (result in speech.results) snackbarHostState.showSnackbar(result)
-            }
-          }
-        } finally {
-          listening = false
-        }
-      }
-    }
   }
 }
