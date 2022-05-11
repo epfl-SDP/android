@@ -654,4 +654,32 @@ class StatefulHomeTest {
     rule.onNodeWithText("Puzzle id: 00008").assertExists()
     rule.onNodeWithText("Elo: 1852").assertExists()
   }
+
+  @Test
+  fun given_tournamentScreen_when_clickingCreate_createTournamentDialogIsOpened() = runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText(strings.newContest).performClick()
+
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertExists()
+  }
 }

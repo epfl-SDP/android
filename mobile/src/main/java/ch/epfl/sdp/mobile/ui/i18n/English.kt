@@ -157,8 +157,8 @@ object English : LocalizedStrings {
   override val tournamentsCreateActionCancel = "Cancel".uppercase()
   override val tournamentsCreateActionCreate = "Create".uppercase()
 
-  override val tournamentCreateQualifierSize0 = "No qualifiers"
-  override val tournamentCreateQualifierSizeN = { size: String -> size }
-  override val tournamentCreateElimDepthN = { depth: String -> "1 / $depth" }
-  override val tournamentCreateElimDepthFinal = "Final"
+  override val tournamentsCreateQualifierSize0 = "No qualifiers"
+  override val tournamentsCreateQualifierSizeN = { size: String -> size }
+  override val tournamentsCreateElimDemomN = { denominator: String -> "1 / $denominator" }
+  override val tournamentsCreateElimDepthFinal = "Final"
 }

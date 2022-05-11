@@ -53,7 +53,7 @@ class ActualCreateTournamentScreenState(
     val tournamentFacade: TournamentFacade,
     val strings: LocalizedStrings,
     val scope: CoroutineScope,
-) : CreateDialogState<Choice, Choice> {
+) : CreateDialogState<IntChoice, IntChoice> {
 
   override var name: String by mutableStateOf("")
 
@@ -66,23 +66,23 @@ class ActualCreateTournamentScreenState(
 
   override var maximumPlayerCount: String by mutableStateOf("")
 
-  override fun onPoolSizeClick(poolSize: Choice) {
+  override fun onPoolSizeClick(poolSize: IntChoice) {
     this.poolSize = poolSize
   }
-  override val poolSizeChoices: List<Choice>
+  override val poolSizeChoices: List<IntChoice>
     get() =
-        listOf(IntChoice(name = strings.tournamentCreateQualifierSize0)) +
+        listOf(IntChoice(name = strings.tournamentsCreateQualifierSize0, value = 0)) +
             (2..(maximumPlayerCount.toIntOrNull() ?: 0)).map {
-              IntChoice(name = strings.tournamentCreateQualifierSizeN(it.toString()))
+              IntChoice(name = strings.tournamentsCreateQualifierSizeN(it.toString()), value = it)
             }
 
-  override var poolSize: Choice? by mutableStateOf(null)
+  override var poolSize: IntChoice? by mutableStateOf(null)
     private set
 
-  override fun onEliminationRoundClick(eliminationRound: Choice) {
+  override fun onEliminationRoundClick(eliminationRound: IntChoice) {
     this.eliminationRound = eliminationRound
   }
-  override val eliminationRoundChoices: List<Choice>
+  override val eliminationRoundChoices: List<IntChoice>
     get() {
       val players = (maximumPlayerCount.toIntOrNull() ?: 0) / 2
       val depth = log2(players.toDouble()).toInt()
@@ -91,14 +91,15 @@ class ActualCreateTournamentScreenState(
         return base.toDouble().pow(exponent).toInt()
       }
 
-      return listOf(IntChoice(name = strings.tournamentCreateElimDepthFinal)) +
+      return listOf(IntChoice(name = strings.tournamentsCreateElimDepthFinal, value = 1)) +
           (1..depth).map {
             IntChoice(
-                name = strings.tournamentCreateElimDepthN(intPow(2, it).toString()),
+                name = strings.tournamentsCreateElimDemomN(intPow(2, it).toString()),
+                value = it + 1,
             )
           }
     }
-  override var eliminationRound: Choice? by mutableStateOf(null)
+  override var eliminationRound: IntChoice? by mutableStateOf(null)
     private set
 
   override val confirmEnabled: Boolean
@@ -117,8 +118,8 @@ class ActualCreateTournamentScreenState(
               name = name,
               maxPlayers = maximumPlayerCount.toInt(),
               bestOf = bestOf ?: 1,
-              poolSize = poolSize?.name?.toIntOrNull() ?: 0,
-              eliminationRounds = eliminationRound?.name?.toIntOrNull() ?: 1,
+              poolSize = poolSize?.value ?: 0,
+              eliminationRounds = eliminationRound?.value ?: 1,
           )
       // TODO: Uncomment this line once tournament details is implement
       // navigateToTournament(reference)
@@ -129,4 +130,5 @@ class ActualCreateTournamentScreenState(
 
 data class IntChoice(
     override val name: String,
+    val value: Int,
 ) : Choice
