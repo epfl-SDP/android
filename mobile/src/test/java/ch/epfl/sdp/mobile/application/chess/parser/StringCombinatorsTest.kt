@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.application.chess.parser
 
+import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.convertToken
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
+import ch.epfl.sdp.mobile.application.speech.ChessSpeechEnglishDictionary
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
@@ -36,5 +38,11 @@ class StringCombinatorsTest {
   fun given_aStringWithOnlyDelimiter_when_parsed_then_returnEmptySequence() {
     val res = token(delimiter = '-').parse("---")
     assertThat(res.count()).isEqualTo(0)
+  }
+
+  @Test
+  fun given_aHomophone_when_parsedWithDictionary_then_giveCorrectToken() {
+    val res = convertToken(ChessSpeechEnglishDictionary.chessPieces).parse("quean a2 to g3")
+    assertThat(res.first()).isEqualTo(Parser.Result("a2 to g3", "queen"))
   }
 }

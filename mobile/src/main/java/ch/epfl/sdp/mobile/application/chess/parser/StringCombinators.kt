@@ -53,6 +53,26 @@ object StringCombinators {
       token(delimiter).filter { it == value }
 
   /**
+   * Parse the first [Token] of a [String], and try to find the corresponding [DictKey] homophone
+   *
+   * @param DictKey Key type of dictionary
+   * @param dictionary where to look the search the homophone
+   * @param delimiter the delimiter between each token.
+   */
+  fun <DictKey> convertToken(
+      dictionary: Map<DictKey, List<String>>,
+      delimiter: Char = ' '
+  ): Parser<String, DictKey?> =
+      token(delimiter).map { token ->
+        for (entry in dictionary) {
+          if (entry.value.any { it == token }) {
+            return@map entry.key
+          }
+        }
+        return@map null
+      }
+
+  /**
    * Filters the results from this [Parser] which have an empty remaining input to parse,
    * effectively making sure the remaining string is empty.
    *
