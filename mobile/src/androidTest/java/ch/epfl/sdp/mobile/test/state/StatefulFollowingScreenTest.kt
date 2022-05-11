@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
@@ -57,6 +58,7 @@ class StatefulFollowingScreenTest {
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
     val mockChessFacade = mockk<ChessFacade>()
     val mockSpeechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val mockTournamentFacade = mockk<TournamentFacade>()
 
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
 
@@ -66,7 +68,7 @@ class StatefulFollowingScreenTest {
           mockSocialFacade,
           mockChessFacade,
           mockSpeechFacade,
-      ) { StatefulFollowingScreen(mockUser, {}) }
+          mockTournamentFacade) { StatefulFollowingScreen(mockUser, {}) }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
@@ -84,12 +86,14 @@ class StatefulFollowingScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+      val tournamentFacade = TournamentFacade(auth, store)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
+            ProvideFacades(
+                authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
               StatefulFollowingScreen(user, {})
             }
           }
@@ -119,12 +123,14 @@ class StatefulFollowingScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+      val tournamentFacade = TournamentFacade(auth, store)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authenticationFacade, socialFacade, chessFacade, speechFacade) {
+            ProvideFacades(
+                authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
               StatefulFollowingScreen(user, {})
             }
           }
@@ -154,6 +160,7 @@ class StatefulFollowingScreenTest {
               social = remember { SocialFacade(auth, store) },
               chess = remember { ChessFacade(auth, store, assets) },
               speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
+              tournament = remember { TournamentFacade(auth, store) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
@@ -180,6 +187,7 @@ class StatefulFollowingScreenTest {
               social = remember { SocialFacade(auth, store) },
               chess = remember { ChessFacade(auth, store, assets) },
               speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
+              tournament = remember { TournamentFacade(auth, store) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
@@ -213,6 +221,7 @@ class StatefulFollowingScreenTest {
               social = remember { SocialFacade(auth, store) },
               chess = remember { ChessFacade(auth, store, assets) },
               speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
+              tournament = remember { TournamentFacade(auth, store) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
 
