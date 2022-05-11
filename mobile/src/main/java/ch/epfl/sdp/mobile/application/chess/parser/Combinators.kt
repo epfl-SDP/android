@@ -124,6 +124,7 @@ object Combinators {
    *
    * @param I the type of the input.
    * @param O the type of the output.
+   * @receiver the filtered [Parser]
    * @return a [Parser] without null value
    */
   fun <I, O> Parser<I, O?>.filterNotNull(): Parser<I, O> =
