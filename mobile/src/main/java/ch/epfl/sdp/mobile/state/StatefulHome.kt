@@ -54,6 +54,12 @@ private const val ArRoute = "ar"
 /** The route associated to the contests tab. */
 private const val ContestsRoute = "contests"
 
+/** The route associated with some tournament details. */
+private const val TournamentDetailsRoute = "tournament"
+
+/** The default identifier for a tournament. */
+private const val TournamentDefaultId = ""
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
