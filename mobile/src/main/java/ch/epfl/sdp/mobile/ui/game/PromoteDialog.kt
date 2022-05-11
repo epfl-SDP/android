@@ -18,6 +18,8 @@ import androidx.compose.ui.window.DialogProperties
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import ch.epfl.sdp.mobile.ui.game.classic.contentDescription
+import ch.epfl.sdp.mobile.ui.game.classic.icon
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
 /**

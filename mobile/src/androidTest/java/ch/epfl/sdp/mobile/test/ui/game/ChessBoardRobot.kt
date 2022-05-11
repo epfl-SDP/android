@@ -7,7 +7,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.contentDescription
+import ch.epfl.sdp.mobile.ui.game.classic.contentDescription
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
