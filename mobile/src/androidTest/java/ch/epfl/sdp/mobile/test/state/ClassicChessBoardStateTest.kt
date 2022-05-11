@@ -5,7 +5,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
-import ch.epfl.sdp.mobile.state.game.DelegatingGameScreenState
+import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -48,7 +48,7 @@ class ClassicChessBoardStateTest {
     val match = facade.createMatch(user, user)
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
-    val state = DelegatingGameScreenState(actions, user, match, scope, NoOpSpeechRecognizerState)
+    val state = ActualGameScreenState(actions, user, match, scope, NoOpSpeechRecognizerState)
 
     state.onPositionClick(ChessBoardState.Position(4, 6))
     assertThat(state.availableMoves)

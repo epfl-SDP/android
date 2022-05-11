@@ -14,7 +14,7 @@ import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.Failure
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.Success
-import ch.epfl.sdp.mobile.state.game.DelegatingGameScreenState
+import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.ui.game.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
@@ -70,7 +70,7 @@ fun StatefulGameScreen(
       }
   val gameScreenState =
       remember(actions, user, match, scope) {
-        DelegatingGameScreenState(
+        ActualGameScreenState(
             actions = actions,
             user = user,
             match = match,

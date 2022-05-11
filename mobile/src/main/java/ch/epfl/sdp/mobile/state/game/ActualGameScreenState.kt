@@ -7,12 +7,13 @@ import ch.epfl.sdp.mobile.state.game.core.MatchGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingMovesInfoState
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingPlayersInfoState
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingPromotionMovableChessBoardState
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingPromotionState
 import ch.epfl.sdp.mobile.ui.game.*
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Creates a new [DelegatingGameScreenState].
+ * Creates a new [ActualGameScreenState].
  *
  * @param actions the actions to perform when navigating.
  * @param user the currently authenticated user.
@@ -20,21 +21,30 @@ import kotlinx.coroutines.CoroutineScope
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  * @param speechRecognizerState the [SpeechRecognizerState] that speech recognition uses.
  */
-fun DelegatingGameScreenState(
+fun ActualGameScreenState(
     actions: StatefulGameScreenActions,
     user: AuthenticatedUser,
     match: Match,
     scope: CoroutineScope,
     speechRecognizerState: SpeechRecognizerState,
-): DelegatingGameScreenState {
+): ActualGameScreenState {
 
+  // The backing MutableGameDelegate.
   val chessBoard = MatchGameDelegate(match, scope)
+
+  // The delegates which use the MutableGameDelegate.
   val promotions = DelegatingPromotionState(chessBoard)
   val players = DelegatingPlayersInfoState(match, scope, chessBoard)
   val moves = DelegatingMovesInfoState(chessBoard)
-  val moveableChessBoard = PromotionMovableChessBoardState(user, chessBoard, players, promotions)
+  val moveableChessBoard =
+      DelegatingPromotionMovableChessBoardState(
+          user,
+          chessBoard,
+          players,
+          promotions,
+      )
 
-  return DelegatingGameScreenState(
+  return ActualGameScreenState(
       actions = actions,
       match = match,
       moveableChessBoard = moveableChessBoard,
@@ -45,18 +55,18 @@ fun DelegatingGameScreenState(
   )
 }
 
-class DelegatingGameScreenState
+class ActualGameScreenState
 constructor(
     private val actions: StatefulGameScreenActions,
     private val match: Match,
-    moveableChessBoard: AbstractMovableChessBoardState,
-    promotionState: DelegatingPromotionState,
+    moveableChessBoard: MovableChessBoardState<Piece>,
+    promotionState: PromotionState,
     movesInfo: MovesInfoState,
-    playersInfo: DelegatingPlayersInfoState,
+    playersInfo: PlayersInfoState,
     speechRecognizer: SpeechRecognizerState,
 ) :
-    MovableChessBoardState<Piece> by moveableChessBoard,
     GameScreenState<Piece>,
+    MovableChessBoardState<Piece> by moveableChessBoard,
     PromotionState by promotionState,
     MovesInfoState by movesInfo,
     PlayersInfoState by playersInfo,

@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.state.game.delegating
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
@@ -41,8 +40,7 @@ class DelegatingPromotionState(private val delegate: MutableGameDelegate) : Prom
             to = Position(promotionTo.x, promotionTo.y),
             rank = rank.toEngineRank(),
         )
-    val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
-    delegate.game = step.move(action)
+    delegate.tryPerformAction(action)
     choices = emptyList()
   }
 

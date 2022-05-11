@@ -15,9 +15,9 @@ import kotlinx.coroutines.launch
 
 // TODO : Document this.
 class DelegatingPlayersInfoState(
-  match: Match,
-  scope: CoroutineScope,
-  private val delegate: GameDelegate,
+    match: Match,
+    scope: CoroutineScope,
+    private val delegate: GameDelegate,
 ) : PlayersInfoState {
 
   /** The [Profile] of the white player, if it has been loaded successfully. */

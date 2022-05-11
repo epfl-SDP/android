@@ -1,18 +1,17 @@
-package ch.epfl.sdp.mobile.state.game
+package ch.epfl.sdp.mobile.state.game.delegating
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.state.game.AbstractMovableChessBoardState
+import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEnginePosition
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toRank
-import ch.epfl.sdp.mobile.state.game.delegating.DelegatingPlayersInfoState
-import ch.epfl.sdp.mobile.state.game.delegating.DelegatingPromotionState
-import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
-class PromotionMovableChessBoardState(
+class DelegatingPromotionMovableChessBoardState(
     private val user: AuthenticatedUser,
     private val delegate: MutableGameDelegate,
     private val playersInfo: DelegatingPlayersInfoState,
