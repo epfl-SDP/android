@@ -8,9 +8,11 @@ interface ChessDictionary {
   /** A mapping of chess pieces keywords to their homophones */
   val chessPieces: Map<String, List<String>>
   /** A mapping of chess number keywords to their homophones */
-  val numbers: Map<String, List<String>>
+  val numbers: Map<Char, List<String>>
   /** A mapping of chess letter keywords to their homophones */
-  val letters: Map<String, List<String>>
+  val letters: Map<Char, List<String>>
+  /** A mapping of action keywords to their homophones */
+  val actions: Map<String, List<String>>
   /** All possible combinations of chess board placement */
   val placements: Set<String>
 }

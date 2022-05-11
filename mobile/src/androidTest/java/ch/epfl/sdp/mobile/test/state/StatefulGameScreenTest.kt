@@ -31,7 +31,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
@@ -723,7 +722,8 @@ class StatefulGameScreenTest {
             audioPermission = GrantedPermissionState,
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
-    robot.onNodeWithText(SuccessfulSpeechRecognizer.Results[0]).assertExists()
+    // Print null because the input in not recognized
+    robot.onNodeWithText("null").assertExists()
   }
 
   @Test
