@@ -14,7 +14,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -25,11 +24,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class ClassicChessBoardStateTest {
-
-  private object NoOpSpeechRecognizerState : SpeechRecognizerState {
-    override val listening = false
-    override fun onListenClick() = Unit
-  }
 
   @OptIn(ExperimentalPermissionsApi::class)
   @Test
