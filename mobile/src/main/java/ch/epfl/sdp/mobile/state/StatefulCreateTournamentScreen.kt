@@ -10,11 +10,10 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialog
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState.*
-import java.lang.Math.pow
+import kotlin.math.log2
 import kotlin.math.pow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.log2
 
 @Composable
 fun StatefulCreateTournamentScreen(
@@ -95,8 +94,7 @@ class ActualCreateTournamentScreenState(
       return listOf(IntChoice(name = strings.tournamentCreateElimDepthFinal)) +
           (1..depth).map {
             IntChoice(
-                name =
-                    strings.tournamentCreateElimDepthN(intPow(2, it).toString()),
+                name = strings.tournamentCreateElimDepthN(intPow(2, it).toString()),
             )
           }
     }
@@ -123,7 +121,7 @@ class ActualCreateTournamentScreenState(
               eliminationRounds = eliminationRound?.name?.toIntOrNull() ?: 1,
           )
       // TODO: Uncomment this line once tournament details is implement
-      //navigateToTournament(reference)
+      // navigateToTournament(reference)
     }
   }
   override fun onCancel() = cancelClick()
