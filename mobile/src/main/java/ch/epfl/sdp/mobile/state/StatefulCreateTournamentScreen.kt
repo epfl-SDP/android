@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.core.text.isDigitsOnly
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
@@ -128,10 +127,10 @@ class ActualCreateTournamentScreenState(
 
   override val confirmEnabled: Boolean
     get() =
-        validParameters(
+        tournamentFacade.validParameters(
             name = name,
             bestOf = bestOf,
-            maximumPlayerCount = maximumPlayerCount,
+            maximumPlayerCount = maximumPlayerCount.toIntOrNull(),
             poolSize = poolSize?.value,
             eliminationRounds = eliminationRound?.value,
         )
@@ -152,27 +151,6 @@ class ActualCreateTournamentScreenState(
     }
   }
   override fun onCancel() = actions.value.cancelClick()
-}
-
-/** Validates the tournament parameters */
-private fun validParameters(
-    name: String,
-    bestOf: Int?,
-    maximumPlayerCount: String,
-    poolSize: Int?,
-    eliminationRounds: Int?,
-): Boolean {
-  val players = (maximumPlayerCount.toIntOrNull() ?: 0) / 2
-  val depth = log2(players.toDouble()).toInt() + 1
-
-  return if (bestOf != null && poolSize != null && eliminationRounds != null) {
-    name.isNotBlank() &&
-        maximumPlayerCount.isDigitsOnly() &&
-        poolSize <= players &&
-        eliminationRounds <= depth
-  } else {
-    false
-  }
 }
 
 /**

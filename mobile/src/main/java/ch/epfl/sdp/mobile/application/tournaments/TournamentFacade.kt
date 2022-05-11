@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import kotlin.math.log2
 
 /**
  * An interface which represents all the endpoints and available features for tournaments.
@@ -31,6 +32,8 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param poolSize The target size of each pool.
    * @param eliminationRounds The number of direct elimination rounds. Directly influences number of
    * player selected from the pool phase.
+   *
+   * @return The corresponding [TournamentReference] of the parameters are valid, null otherwise.
    */
   suspend fun createTournament(
       user: AuthenticatedUser,
@@ -39,19 +42,29 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
       bestOf: Int,
       poolSize: Int,
       eliminationRounds: Int,
-  ): TournamentReference {
-    val document = store.collection("tournaments").document()
-    document.set(
-        TournamentDocument(
-            adminId = user.uid,
-            name = name,
-            maxPlayers = maxPlayers,
-            bestOf = bestOf,
-            poolSize = poolSize,
-            eliminationRounds = eliminationRounds,
-        ))
+  ): TournamentReference? {
+    if (validParameters(
+        name = name,
+        bestOf = bestOf,
+        poolSize = poolSize,
+        eliminationRounds = eliminationRounds,
+        maximumPlayerCount = maxPlayers,
+    )) {
+      val document = store.collection("tournaments").document()
+      document.set(
+          TournamentDocument(
+              adminId = user.uid,
+              name = name,
+              maxPlayers = maxPlayers,
+              bestOf = bestOf,
+              poolSize = poolSize,
+              eliminationRounds = eliminationRounds,
+          ))
 
-    return TournamentReference(uid = document.id)
+      return TournamentReference(uid = document.id)
+    } else {
+      return null
+    }
   }
 
   /**
@@ -81,4 +94,35 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param tournament The "Tournament" to advance the stage of direct eliminations.
    */
   // TODO: Add the function corresponding to the documentation right above
+
+  /**
+   * Validates the parameters of a tournament
+   *
+   * @param name The name of the tournament parameter.
+   * @param bestOf The number of "best-of" rounds parameter.
+   * @param maximumPlayerCount The maximum player count parameter.
+   * @param poolSize The target pool size parameter.
+   * @param eliminationRounds The number of elimination rounds parameter.
+   *
+   * @return True if the parameters are valid, otherwise false.
+   */
+  fun validParameters(
+      name: String,
+      bestOf: Int?,
+      maximumPlayerCount: Int?,
+      poolSize: Int?,
+      eliminationRounds: Int?,
+  ): Boolean {
+    val players = maximumPlayerCount ?: 0
+    val depth = log2((players / 2).toDouble()).toInt() + 1
+
+    return if (bestOf != null &&
+        poolSize != null &&
+        eliminationRounds != null &&
+        maximumPlayerCount != null) {
+      name.isNotBlank() && poolSize <= players && eliminationRounds <= depth
+    } else {
+      false
+    }
+  }
 }
