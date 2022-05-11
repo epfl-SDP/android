@@ -15,6 +15,14 @@ import kotlin.math.pow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * A composable that makes a [CreateDialog] stateful
+ *
+ * @param user the current [AuthenticatedUser]
+ * @param navigateToTournament
+ * @param cancelClick
+ * @param modifier
+ */
 @Composable
 fun StatefulCreateTournamentScreen(
     user: AuthenticatedUser,
@@ -27,12 +35,19 @@ fun StatefulCreateTournamentScreen(
   val tournamentFacade = LocalTournamentFacade.current
   val strings = LocalLocalizedStrings.current
 
+  val actions =
+      rememberUpdatedState(
+          CreateTournamentDialogActions(
+              navigateToTournament = navigateToTournament,
+              cancelClick = cancelClick,
+          ),
+      )
+
   val state =
-      remember(user, navigateToTournament, cancelClick, scope, tournamentFacade) {
+      remember(user, actions, scope, tournamentFacade) {
         ActualCreateTournamentScreenState(
             user = user,
-            navigateToTournament = navigateToTournament,
-            cancelClick = cancelClick,
+            actions = actions,
             tournamentFacade = tournamentFacade,
             strings = strings,
             scope = scope,
@@ -48,8 +63,7 @@ fun StatefulCreateTournamentScreen(
 
 class ActualCreateTournamentScreenState(
     val user: AuthenticatedUser,
-    val navigateToTournament: (reference: TournamentReference) -> Unit,
-    val cancelClick: () -> Unit,
+    val actions: State<CreateTournamentDialogActions>,
     val tournamentFacade: TournamentFacade,
     val strings: LocalizedStrings,
     val scope: CoroutineScope,
@@ -122,11 +136,16 @@ class ActualCreateTournamentScreenState(
               eliminationRounds = eliminationRound?.value ?: 1,
           )
       // TODO: Uncomment this line once tournament details is implement
-      // navigateToTournament(reference)
+      // actions.value.navigateToTournament(reference)
     }
   }
-  override fun onCancel() = cancelClick()
+  override fun onCancel() = actions.value.cancelClick()
 }
+
+data class CreateTournamentDialogActions(
+    val navigateToTournament: (reference: TournamentReference) -> Unit,
+    val cancelClick: () -> Unit,
+)
 
 data class IntChoice(
     override val name: String,
