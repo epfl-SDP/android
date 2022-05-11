@@ -23,7 +23,8 @@ val LocalChessFacade = compositionLocalOf<ChessFacade> { error("Missing Chess AP
 val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech Facade.") }
 
 /** A global composition local which provides access to an instance of [TournamentFacade]. */
-val LocalTournamentFacade = compositionLocalOf<TournamentFacade> { error("Missing Tournament Facade.") }
+val LocalTournamentFacade =
+    compositionLocalOf<TournamentFacade> { error("Missing Tournament Facade.") }
 
 /**
  * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values

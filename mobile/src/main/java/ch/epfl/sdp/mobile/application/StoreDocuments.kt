@@ -92,24 +92,22 @@ data class TournamentDocument(
     val playerIds: List<String>? = null,
 )
 
-/**
- * Transforms a [TournamentDocument] to a [Tournament].
- */
+/** Transforms a [TournamentDocument] to a [Tournament]. */
 fun TournamentDocument?.toTournament(): Tournament {
-    return object : Tournament {
-        override val uid: String = this@toTournament?.uid ?: ""
-        override val name: String = this@toTournament?.name ?: ""
-        override val adminId: String = this@toTournament?.adminId ?: ""
-        override val creationDate: LocalDateTime
-            get() = TODO("Not yet implemented")
-        override val status: ContestInfo.Status
-            get() = TODO("Not yet implemented")
-        override val maxPlayers: Int = this@toTournament?.maxPlayers ?: 0
-        override val bestOf: Int = this@toTournament?.bestOf ?: 1
-        override val poolSize: Int = this@toTournament?.poolSize ?: 0
-        override val eliminationRounds: Int = this@toTournament?.eliminationRounds ?: 0
-        override val playerIds: List<String> = this@toTournament?.playerIds ?: emptyList()
-    }
+  return object : Tournament {
+    override val uid: String = this@toTournament?.uid ?: ""
+    override val name: String = this@toTournament?.name ?: ""
+    override val adminId: String = this@toTournament?.adminId ?: ""
+    override val creationDate: LocalDateTime
+      get() = TODO("Not yet implemented")
+    override val status: ContestInfo.Status
+      get() = TODO("Not yet implemented")
+    override val maxPlayers: Int = this@toTournament?.maxPlayers ?: 0
+    override val bestOf: Int = this@toTournament?.bestOf ?: 1
+    override val poolSize: Int = this@toTournament?.poolSize ?: 0
+    override val eliminationRounds: Int = this@toTournament?.eliminationRounds ?: 0
+    override val playerIds: List<String> = this@toTournament?.playerIds ?: emptyList()
+  }
 }
 
 /**
