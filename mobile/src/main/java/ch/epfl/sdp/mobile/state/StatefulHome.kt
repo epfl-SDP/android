@@ -54,6 +54,9 @@ private const val ArRoute = "ar"
 /** The route associated to the contests tab. */
 private const val ContestsRoute = "contests"
 
+/** The route associated to new contest button in play screen */
+private const val CreateTournamentRoute = "create_tournament"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -99,7 +102,11 @@ fun StatefulHome(
         )
       }
       composable(ContestsRoute) {
-        StatefulTournamentScreen(modifier = Modifier.fillMaxSize(), contentPadding = paddingValues)
+        StatefulTournamentScreen(
+            onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
       }
       composable(SettingsRoute) {
         StatefulSettingsScreen(
@@ -172,6 +179,13 @@ fun StatefulHome(
             puzzleId = id,
             modifier = Modifier.fillMaxSize(),
             paddingValues = paddingValues,
+        )
+      }
+      dialog(CreateTournamentRoute) {
+        StatefulCreateTournamentScreen(
+            user,
+            navigateToTournament = {},
+            cancelClick = { controller.popBackStack() },
         )
       }
     }
