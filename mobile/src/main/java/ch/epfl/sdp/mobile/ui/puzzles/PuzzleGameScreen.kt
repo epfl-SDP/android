@@ -13,6 +13,8 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
 import ch.epfl.sdp.mobile.ui.ChessIcons
 import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfoState.*
 
 /**
  * This screen display an ongoing chess puzzle
@@ -20,6 +22,7 @@ import ch.epfl.sdp.mobile.ui.game.*
  * @param state the [GameScreenState] that manage the composable contents
  * @param modifier the [Modifier] for the composable
  * @param contentPadding the [PaddingValues] for this composable.
+ * @param snackbarHostState the [SnackbarHostState] for this composable.
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
@@ -70,12 +73,13 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
  * A composable which displays some basic information about what is going on in a puzzle.
  *
  * @param color the [ChessBoardState.Color] of the player.
+ * @param puzzleState the [PuzzleState] for this puzzle.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
 private fun PuzzleDirective(
     color: ChessBoardState.Color,
-    puzzleState: PuzzleGameScreenState.PuzzleState,
+    puzzleState: PuzzleState,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -84,19 +88,19 @@ private fun PuzzleDirective(
   @Composable
   fun Directive() =
       when (puzzleState) {
-        PuzzleGameScreenState.PuzzleState.Solving ->
+        PuzzleState.Solving ->
             Text(
                 strings.puzzleSolving(color.toString()),
                 color = colors.primary,
                 style = MaterialTheme.typography.subtitle1,
             )
-        PuzzleGameScreenState.PuzzleState.Failed ->
+        PuzzleState.Failed ->
             Text(
                 strings.puzzleFailed,
                 color = colors.secondary,
                 style = MaterialTheme.typography.subtitle1,
             )
-        PuzzleGameScreenState.PuzzleState.Solved ->
+        PuzzleState.Solved ->
             Text(
                 strings.puzzleSolved,
                 color = colors.primaryVariant,
