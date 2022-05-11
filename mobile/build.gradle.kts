@@ -94,6 +94,9 @@ dependencies {
   implementation(libs.bundles.compose.android)
 
   implementation(libs.arsceneview)
+
+  // OpenCSV
+  implementation(libs.opencsv)
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }

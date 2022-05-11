@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.firestore
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreDocumentReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import com.google.android.gms.tasks.Tasks
 import com.google.common.truth.Truth
@@ -94,6 +95,34 @@ class FirestoreDocumentReferenceTest {
     reference.delete()
 
     verify { document.delete() }
+  }
+
+  @Test
+  fun given_reference_when_callsGet_then_callsApi() = runTest {
+    val actualDocumentReference = mockk<DocumentReference>()
+    val actualDocumentSnapshot = mockk<DocumentSnapshot>()
+    val documentReference = FirestoreDocumentReference(actualDocumentReference)
+
+    every { actualDocumentReference.get() } returns Tasks.forResult(actualDocumentSnapshot)
+
+    documentReference.getSnapshot()
+
+    verify { actualDocumentReference.get() }
+  }
+
+  @Test
+  fun given_reference_when_callsGenericGet_then_callsApi() = runTest {
+    val actualDocumentReference = mockk<DocumentReference>()
+    val actualDocumentSnapshot = mockk<DocumentSnapshot>()
+    val documentReference = FirestoreDocumentReference(actualDocumentReference)
+
+    every { actualDocumentReference.get() } returns Tasks.forResult(actualDocumentSnapshot)
+    every { actualDocumentSnapshot.toObject<Unit>(any()) } returns Unit
+
+    assertThat(documentReference.get<Unit>()).isEqualTo(Unit)
+
+    verify { actualDocumentReference.get() }
+    verify { actualDocumentSnapshot.toObject<Unit>(any()) }
   }
 
   @Test

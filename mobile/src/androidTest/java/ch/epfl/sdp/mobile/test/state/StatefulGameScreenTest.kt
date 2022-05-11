@@ -19,12 +19,13 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.*
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toRank
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toRank
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -67,6 +68,7 @@ class StatefulGameScreenTest {
       audioPermission: PermissionState = GrantedPermissionState,
   ): ChessBoardRobot {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") {
@@ -76,7 +78,7 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(recognizer)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -545,6 +547,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
@@ -552,7 +555,7 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -581,6 +584,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingGameWithNoBlackId_isUnsuccessful() {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
@@ -588,7 +592,7 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -755,7 +759,7 @@ class StatefulGameScreenTest {
   }
 }
 
-private object GrantedPermissionState : PermissionState {
+object GrantedPermissionState : PermissionState {
   override val hasPermission = true
   override val permission = RECORD_AUDIO
   override val permissionRequested = true
@@ -763,7 +767,7 @@ private object GrantedPermissionState : PermissionState {
   override fun launchPermissionRequest() = Unit
 }
 
-private class MissingPermissionState : PermissionState {
+class MissingPermissionState : PermissionState {
   override var permissionRequested by mutableStateOf(false)
   override val permission = RECORD_AUDIO
   override val hasPermission

@@ -50,6 +50,13 @@ val PawniesIcons.SectionSettings
 val PawniesIcons.SectionPlay
   get() = Icons.Default.Games
 
+val PawniesIcons.SectionPuzzles
+  @Composable get() = painterResource(id = R.drawable.puzzles)
+
+/** An icon for the tournament section. */
+val PawniesIcons.SectionContests
+  @Composable get() = painterResource(id = R.drawable.tournament_icon)
+
 val PawniesIcons.Add
   get() = Icons.Default.Add
 
@@ -64,6 +71,10 @@ val PawniesIcons.LocalPlay
 
 val PawniesIcons.OnlinePlay
   @Composable get() = painterResource(id = R.drawable.online_play)
+
+/** An icon to filter results. */
+val PawniesIcons.Filter
+  @Composable get() = painterResource(id = R.drawable.filtervariant)
 
 val PawniesIcons.TournamentDetailsClose
   @Composable get() = Icons.Rounded.Close

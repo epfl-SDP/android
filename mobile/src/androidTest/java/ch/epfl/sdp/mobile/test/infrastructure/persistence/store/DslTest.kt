@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store
 
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.filter
@@ -196,5 +197,18 @@ class DslTest {
     val store = emptyStore()
     val reference = store.collection("col").document("id")
     assertThat(reference.id).isEqualTo("id")
+  }
+
+  @Test
+  fun given_document_when_readingThenSettingInTransaction_then_succeeds() = runTest {
+    val store = buildStore { collection("users") { document("alexandre", alexandre) } }
+    store.transaction {
+      val document = get<User>(store.collection("users").document("alexandre"))
+      if (document != null) {
+        set(store.collection("users").document("matthieu"), document)
+      }
+    }
+    val fetched = store.collection("users").document("matthieu").asFlow<User>().first()
+    assertThat(fetched).isEqualTo(alexandre)
   }
 }
