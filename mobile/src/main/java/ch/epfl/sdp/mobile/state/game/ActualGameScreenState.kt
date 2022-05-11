@@ -55,6 +55,18 @@ fun ActualGameScreenState(
   )
 }
 
+/**
+ * An implementation of [GameScreenState] which delegates its behaviors to different underlying
+ * states.
+ *
+ * @param actions the [StatefulGameScreenActions] for this screen.
+ * @param match the [Match] for this screen.
+ * @param moveableChessBoard the underlying [MovableChessBoardState].
+ * @param promotionState the underlying [PromotionState].
+ * @param movesInfo the underlying [MovesInfoState].
+ * @param playersInfo the underlying [PlayersInfoState].
+ * @param speechRecognizer the underlying [SpeechRecognizerState].
+ */
 class ActualGameScreenState
 constructor(
     private val actions: StatefulGameScreenActions,

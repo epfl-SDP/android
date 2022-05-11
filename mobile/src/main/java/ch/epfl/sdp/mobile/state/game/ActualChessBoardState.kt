@@ -8,6 +8,12 @@ import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * Builds an [ActualChessBoardState].
+ *
+ * @param match the [Match] for which the state is built.
+ * @param scope the [CoroutineScope] with which the match will be loaded.
+ */
 fun ActualChessBoardState(
     match: Match,
     scope: CoroutineScope,
@@ -16,6 +22,11 @@ fun ActualChessBoardState(
   return ActualChessBoardState(delegate)
 }
 
+/**
+ * An implementation of [ChessBoardState] which delegates its state to a [GameDelegate].
+ *
+ * @param delegate the underlying [GameDelegate].
+ */
 class ActualChessBoardState(
     delegate: GameDelegate,
 ) : ChessBoardState<Piece> by DelegatingChessBoardState(delegate)

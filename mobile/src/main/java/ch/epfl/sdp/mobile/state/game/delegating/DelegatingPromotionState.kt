@@ -10,7 +10,12 @@ import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Compan
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.PromotionState
 
-// TODO : Document this.
+/**
+ * An implementation of [MutableGameDelegate] which uses a [MutableGameDelegate] to perform
+ * promotion actions.
+ *
+ * @param delegate the underlying [MutableGameDelegate].
+ */
 class DelegatingPromotionState(private val delegate: MutableGameDelegate) : PromotionState {
 
   override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())

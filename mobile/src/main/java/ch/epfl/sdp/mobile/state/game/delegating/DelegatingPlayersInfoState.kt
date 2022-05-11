@@ -13,7 +13,14 @@ import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.Message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-// TODO : Document this.
+/**
+ * An implementation of [PlayersInfoState] which uses a [GameDelegate], as well as a [Match] to
+ * access the profile information of the players.
+ *
+ * @param match the [Match] used to fetch the player profiles.
+ * @param scope the [CoroutineScope] to fetch the profiles..
+ * @param delegate the underlying [GameDelegate].
+ */
 class DelegatingPlayersInfoState(
     match: Match,
     scope: CoroutineScope,
