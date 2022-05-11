@@ -163,7 +163,7 @@ private fun validParameters(
     eliminationRounds: Int?,
 ): Boolean {
   val players = (maximumPlayerCount.toIntOrNull() ?: 0) / 2
-  val depth = log2(players.toDouble()).toInt()
+  val depth = log2(players.toDouble()).toInt() + 1
 
   return if (bestOf != null && poolSize != null && eliminationRounds != null) {
     name.isNotBlank() &&
@@ -190,8 +190,8 @@ data class CreateTournamentDialogActions(
 /**
  * Represents a [Choice] with underlying integer values
  *
- * @property name
- * @property value
+ * @property name the name of the choice
+ * @property value the underlying [Int] value
  */
 data class IntChoice(
     override val name: String,
