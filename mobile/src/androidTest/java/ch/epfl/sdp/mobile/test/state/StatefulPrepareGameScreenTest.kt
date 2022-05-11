@@ -10,8 +10,10 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPrepareGameScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -34,16 +36,18 @@ class StatefulPrepareGameScreenTest {
   fun defaultScreen_isDisplayed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = user, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
@@ -57,16 +61,18 @@ class StatefulPrepareGameScreenTest {
   fun switchColorToBlack_works() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = user, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
@@ -80,16 +86,18 @@ class StatefulPrepareGameScreenTest {
   fun switchColorBackToWhite_works() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = user, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
@@ -106,10 +114,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -118,7 +128,7 @@ class StatefulPrepareGameScreenTest {
     authUser1.follow(user2)
 
     rule.setContentWithLocalizedStrings {
-      ProvideFacades(facade, social, chess, speech) {
+      ProvideFacades(facade, social, chess, speech, tournament) {
         StatefulPrepareGameScreen(
             user = authUser1, navigateToGame = {}, cancelClick = {}, opponentId = "")
       }
@@ -133,10 +143,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -146,7 +158,7 @@ class StatefulPrepareGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = currentUser, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
@@ -166,10 +178,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -179,7 +193,7 @@ class StatefulPrepareGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = currentUser, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
@@ -200,10 +214,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -212,7 +228,7 @@ class StatefulPrepareGameScreenTest {
     authUser1.follow(user2)
 
     rule.setContentWithLocalizedStrings {
-      ProvideFacades(facade, social, chess, speech) {
+      ProvideFacades(facade, social, chess, speech, tournament) {
         StatefulPrepareGameScreen(
             user = authUser1, navigateToGame = {}, cancelClick = {}, opponentId = "")
       }
@@ -229,10 +245,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -243,7 +261,7 @@ class StatefulPrepareGameScreenTest {
     val channel = Channel<Unit>(capacity = 1)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = currentUser,
                 navigateToGame = { _ ->
@@ -267,10 +285,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -281,7 +301,7 @@ class StatefulPrepareGameScreenTest {
     val channel = Channel<Unit>(capacity = 1)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = currentUser,
                 navigateToGame = {},
@@ -304,10 +324,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -318,7 +340,7 @@ class StatefulPrepareGameScreenTest {
     val channel = Channel<Unit>(capacity = 1)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = currentUser,
                 navigateToGame = {
@@ -340,10 +362,12 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -354,7 +378,7 @@ class StatefulPrepareGameScreenTest {
     val channel = Channel<Unit>(capacity = 1)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) {
+          ProvideFacades(facade, social, chess, speech, tournament) {
             StatefulPrepareGameScreen(
                 user = currentUser,
                 navigateToGame = {

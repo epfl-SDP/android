@@ -16,16 +16,23 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
  * @param title the title of the section.
  */
 enum class HomeSection(
-    val icon: ImageVector,
+    val icon: @Composable () -> Unit,
     val title: LocalizedStrings.() -> String,
 ) {
   /** The section to play a chess game */
-  Play(PawniesIcons.SectionPlay, { sectionPlay }),
+  Play({ Icon(PawniesIcons.SectionPlay, null) }, { sectionPlay }),
+
   /** The section which displays all the people we follow. */
-  Social(PawniesIcons.SectionSocial, { sectionSocial }),
+  Social({ Icon(PawniesIcons.SectionSocial, null) }, { sectionSocial }),
+
+  /** The section which displays all the past and current contests. */
+  Contests({ Icon(PawniesIcons.SectionContests, null) }, { sectionContests }),
+
+  /** The section to play a chess puzzle game */
+  Puzzles({ Icon(PawniesIcons.SectionPuzzles, null) }, { sectionPuzzles }),
 
   /** The section to manage our preferences. */
-  Settings(PawniesIcons.SectionSettings, { sectionSettings }),
+  Settings({ Icon(PawniesIcons.SectionSettings, null) }, { sectionSettings }),
 }
 
 /**
@@ -77,7 +84,7 @@ private fun BottomNavigation(
       BottomNavigationItem(
           selected = section == it,
           onClick = { onSectionChange(it) },
-          icon = { Icon(it.icon, null) },
+          icon = it.icon,
           label = { Text(it.title(LocalLocalizedStrings.current)) },
           alwaysShowLabel = false,
       )

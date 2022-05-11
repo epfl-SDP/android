@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.application.authentication
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.User
@@ -73,6 +74,17 @@ class AuthenticatedUser(
   suspend fun unfollow(unfollowed: Profile) {
     firestore.collection("users").document(unfollowed.uid).update {
       arrayRemove("followers", user.uid)
+    }
+  }
+
+  /**
+   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user
+   *
+   * @param puzzle the [Puzzle] to mark as solved.
+   */
+  suspend fun solvePuzzle(puzzle: Puzzle) {
+    firestore.collection("users").document(this.uid).update {
+      arrayUnion("solvedPuzzles", puzzle.uid)
     }
   }
 
