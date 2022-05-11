@@ -1,9 +1,12 @@
 package ch.epfl.sdp.mobile.application
 
+import Tournament
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import com.google.firebase.firestore.DocumentId
+import java.time.LocalDateTime
 
 /**
  * A document which represents the profile of a user. All the profile documents are stored in the
@@ -88,6 +91,26 @@ data class TournamentDocument(
     val eliminationRounds: Int? = null,
     val playerIds: List<String>? = null,
 )
+
+/**
+ * Transforms a [TournamentDocument] to a [Tournament].
+ */
+fun TournamentDocument?.toTournament(): Tournament {
+    return object : Tournament {
+        override val uid: String = this@toTournament?.uid ?: ""
+        override val name: String = this@toTournament?.name ?: ""
+        override val adminId: String = this@toTournament?.adminId ?: ""
+        override val creationDate: LocalDateTime
+            get() = TODO("Not yet implemented")
+        override val status: ContestInfo.Status
+            get() = TODO("Not yet implemented")
+        override val maxPlayers: Int = this@toTournament?.maxPlayers ?: 0
+        override val bestOf: Int = this@toTournament?.bestOf ?: 1
+        override val poolSize: Int = this@toTournament?.poolSize ?: 0
+        override val eliminationRounds: Int = this@toTournament?.eliminationRounds ?: 0
+        override val playerIds: List<String> = this@toTournament?.playerIds ?: emptyList()
+    }
+}
 
 /**
  * A document which represents a pool in a tournament of chess. All the pool documents are stored

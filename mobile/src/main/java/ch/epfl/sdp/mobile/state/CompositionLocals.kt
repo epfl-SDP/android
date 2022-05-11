@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 
 /** A global composition local which provides access to an instance of [AuthenticationFacade]. */
 val LocalAuthenticationFacade =
@@ -20,6 +21,9 @@ val LocalChessFacade = compositionLocalOf<ChessFacade> { error("Missing Chess AP
 
 /** A global composition local which provides access to an instance of [SpeechFacade]. */
 val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech Facade.") }
+
+/** A global composition local which provides access to an instance of [TournamentFacade]. */
+val LocalTournamentFacade = compositionLocalOf<TournamentFacade> { error("Missing Tournament Facade.") }
 
 /**
  * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values
