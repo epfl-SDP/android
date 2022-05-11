@@ -31,6 +31,11 @@ interface Puzzle {
   val elo: Int
 }
 
+/**
+ * Creates the base [Game] from the [Puzzle]'s information
+ *
+ * @return The corresponding base [Game]
+ */
 fun Puzzle.baseGame(): Game {
   val baseGame =
       PersistentGame(

@@ -12,9 +12,12 @@ interface PuzzleInfoState {
   /** The state of the puzzle */
   var puzzleState: PuzzleState
 
+  /** The current move number. Includes the bot's moves. */
   var currentMoveNumber: Int // Always start with playing "computer" move
 
+  /** The number of expected moves in the puzzle. Includes the bot's moves. */
   var expectedMoves: Int
+
   /** Represents the three possible states for a puzzle */
   enum class PuzzleState {
     Solving,
