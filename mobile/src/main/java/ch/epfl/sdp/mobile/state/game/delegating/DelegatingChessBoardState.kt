@@ -1,28 +1,35 @@
-package ch.epfl.sdp.mobile.state.game
+package ch.epfl.sdp.mobile.state.game.delegating
 
-import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
+import ch.epfl.sdp.mobile.application.chess.engine.Rank as EngineRank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Piece
+import ch.epfl.sdp.mobile.state.game.core.GameDelegate
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
-interface GameChessBoardState : ChessBoardState<Piece> {
-
-  /** The current [Game], which is updated when the [Match] progresses. */
-  var game: Game
+/**
+ * An implementation of [ChessBoardState] which uses a [GameDelegate] to extract the chess board
+ * information.
+ *
+ * @param delegate the underlying [GameDelegate].
+ */
+class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoardState<Piece> {
 
   override val pieces: Map<ChessBoardState.Position, Piece>
-    get() = game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
+    get() = delegate.game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
 
   override val checkPosition: ChessBoardState.Position?
     get() {
-      val nextStep = game.nextStep
+      val nextStep = delegate.game.nextStep
       if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
-      return game.board
+      return delegate
+          .game
+          .board
           .firstNotNullOf { (position, piece) ->
-            position.takeIf { piece.color == nextStep.turn && piece.rank == Rank.King }
+            position.takeIf { piece.color == nextStep.turn && piece.rank == EngineRank.King }
           }
           .toPosition()
     }
@@ -32,7 +39,9 @@ interface GameChessBoardState : ChessBoardState<Piece> {
       from: ChessBoardState.Position,
       to: ChessBoardState.Position,
   ): List<Action> {
-    return game.actions(EnginePosition(from.x, from.y))
+    return delegate
+        .game
+        .actions(EnginePosition(from.x, from.y))
         .filter { it.from + it.delta == EnginePosition(to.x, to.y) }
         .toList()
   }
@@ -42,7 +51,7 @@ interface GameChessBoardState : ChessBoardState<Piece> {
    *
    * @param piece backing [EnginePiece].
    */
-  data class Piece(private val piece: EnginePiece<Color>) : ChessBoardState.Piece {
+  data class Piece(private val piece: EnginePiece<EngineColor>) : ChessBoardState.Piece {
     override val rank = piece.rank.toRank()
     override val color = piece.color.toColor()
   }
@@ -55,10 +64,10 @@ interface GameChessBoardState : ChessBoardState<Piece> {
      * @receiver the [ChessBoardState.Color] to map.
      * @return the resulting [EngineColor].
      */
-    fun ChessBoardState.Color.toEngineColor(): Color =
+    fun ChessBoardState.Color.toEngineColor(): EngineColor =
         when (this) {
-          ChessBoardState.Color.Black -> Color.Black
-          ChessBoardState.Color.White -> Color.White
+          ChessBoardState.Color.Black -> EngineColor.Black
+          ChessBoardState.Color.White -> EngineColor.White
         }
 
     /**
@@ -75,14 +84,14 @@ interface GameChessBoardState : ChessBoardState<Piece> {
      * @receiver the [ChessBoardState.Rank] to map.
      * @return the resulting [EngineRank].
      */
-    fun ChessBoardState.Rank.toEngineRank(): Rank =
+    fun ChessBoardState.Rank.toEngineRank(): EngineRank =
         when (this) {
-          ChessBoardState.Rank.King -> Rank.King
-          ChessBoardState.Rank.Queen -> Rank.Queen
-          ChessBoardState.Rank.Rook -> Rank.Rook
-          ChessBoardState.Rank.Bishop -> Rank.Bishop
-          ChessBoardState.Rank.Knight -> Rank.Knight
-          ChessBoardState.Rank.Pawn -> Rank.Pawn
+          ChessBoardState.Rank.King -> EngineRank.King
+          ChessBoardState.Rank.Queen -> EngineRank.Queen
+          ChessBoardState.Rank.Rook -> EngineRank.Rook
+          ChessBoardState.Rank.Bishop -> EngineRank.Bishop
+          ChessBoardState.Rank.Knight -> EngineRank.Knight
+          ChessBoardState.Rank.Pawn -> EngineRank.Pawn
         }
 
     /**
@@ -91,10 +100,10 @@ interface GameChessBoardState : ChessBoardState<Piece> {
      * @receiver the [EngineColor] to map.
      * @return the resulting [ChessBoardState.Color].
      */
-    fun Color.toColor(): ChessBoardState.Color =
+    fun EngineColor.toColor(): ChessBoardState.Color =
         when (this) {
-          Color.Black -> ChessBoardState.Color.Black
-          Color.White -> ChessBoardState.Color.White
+          EngineColor.Black -> ChessBoardState.Color.Black
+          EngineColor.White -> ChessBoardState.Color.White
         }
 
     /**
@@ -111,14 +120,14 @@ interface GameChessBoardState : ChessBoardState<Piece> {
      * @receiver the [EngineRank] to map.
      * @return the resulting [ChessBoardState.Rank].
      */
-    fun Rank.toRank(): ChessBoardState.Rank =
+    fun EngineRank.toRank(): ChessBoardState.Rank =
         when (this) {
-          Rank.King -> ChessBoardState.Rank.King
-          Rank.Queen -> ChessBoardState.Rank.Queen
-          Rank.Rook -> ChessBoardState.Rank.Rook
-          Rank.Bishop -> ChessBoardState.Rank.Bishop
-          Rank.Knight -> ChessBoardState.Rank.Knight
-          Rank.Pawn -> ChessBoardState.Rank.Pawn
+          EngineRank.King -> ChessBoardState.Rank.King
+          EngineRank.Queen -> ChessBoardState.Rank.Queen
+          EngineRank.Rook -> ChessBoardState.Rank.Rook
+          EngineRank.Bishop -> ChessBoardState.Rank.Bishop
+          EngineRank.Knight -> ChessBoardState.Rank.Knight
+          EngineRank.Pawn -> ChessBoardState.Rank.Pawn
         }
   }
 }

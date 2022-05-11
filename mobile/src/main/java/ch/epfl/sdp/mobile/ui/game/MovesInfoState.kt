@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
 
+/** An interface that represents current game moves in the user interface. */
 @Stable
 interface MovesInfoState {
 

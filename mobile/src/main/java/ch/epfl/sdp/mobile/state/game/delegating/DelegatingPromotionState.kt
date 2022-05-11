@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.state.game
+package ch.epfl.sdp.mobile.state.game.delegating
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -6,13 +6,13 @@ import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.state.game.GameChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineRank
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.PromotionState
 
-class ActualPromotionState(
-    private val delegate: GameChessBoardState,
-) : PromotionState, GameChessBoardState by delegate {
+// TODO : Document this.
+class DelegatingPromotionState(private val delegate: MutableGameDelegate) : PromotionState {
 
   override var choices: List<ChessBoardState.Rank> by mutableStateOf(emptyList())
 
@@ -41,8 +41,8 @@ class ActualPromotionState(
             to = Position(promotionTo.x, promotionTo.y),
             rank = rank.toEngineRank(),
         )
-    val step = game.nextStep as? NextStep.MovePiece ?: return
-    game = step.move(action)
+    val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
+    delegate.game = step.move(action)
     choices = emptyList()
   }
 

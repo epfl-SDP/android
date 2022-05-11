@@ -2,6 +2,10 @@ package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
 
+/**
+ * An interface that represents the user interface information about the white and black players of
+ * a game.
+ */
 @Stable
 interface PlayersInfoState {
 

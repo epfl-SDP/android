@@ -1,26 +1,25 @@
-package ch.epfl.sdp.mobile.state.game
+package ch.epfl.sdp.mobile.state.game.core
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * A [ChessBoardState] which uses a [Match] to implement the display of pieces through
- * [ChessBoardState].
+ * An implementation of [MutableGameDelegate] which writes its updates to a [Match].
  *
- * @param match the [Match] which should be displayed.
- * @param scope the [CoroutineScope] in which the match is observed.
+ * @param match the underlying [Match].
+ * @param scope the [CoroutineScope] used to read and write the match updates.
  */
-class ActualChessBoardState(
+class MatchGameDelegate(
     private val match: Match,
     private val scope: CoroutineScope,
-) : GameChessBoardState {
+) : MutableGameDelegate {
 
+  /** The underlying snapshot-aware [Game]. */
   private var backing by mutableStateOf(Game.create())
 
   override var game: Game

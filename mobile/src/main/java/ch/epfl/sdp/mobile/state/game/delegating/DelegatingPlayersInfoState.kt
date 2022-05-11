@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.state.game
+package ch.epfl.sdp.mobile.state.game.delegating
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,28 +7,37 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
+import ch.epfl.sdp.mobile.state.game.core.GameDelegate
 import ch.epfl.sdp.mobile.ui.game.PlayersInfoState
-import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.*
+import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.Message
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ActualPlayersInfoState(
-    match: Match,
-    scope: CoroutineScope,
-    private val delegate: GameChessBoardState,
+// TODO : Document this.
+class DelegatingPlayersInfoState(
+  match: Match,
+  scope: CoroutineScope,
+  private val delegate: GameDelegate,
 ) : PlayersInfoState {
 
+  /** The [Profile] of the white player, if it has been loaded successfully. */
   var whiteProfile by mutableStateOf<Profile?>(null)
     private set
 
+  /** The [Profile] of the black player, if it has been loaded successfully. */
   var blackProfile by mutableStateOf<Profile?>(null)
     private set
 
-  override val white: Player
-    get() = Player(whiteProfile?.name, message(Color.White))
+  init {
+    scope.launch { match.white.collect { whiteProfile = it } }
+    scope.launch { match.black.collect { blackProfile = it } }
+  }
 
-  override val black: Player
-    get() = Player(blackProfile?.name, message(Color.Black))
+  override val white: PlayersInfoState.Player
+    get() = PlayersInfoState.Player(whiteProfile?.name, message(Color.White))
+
+  override val black: PlayersInfoState.Player
+    get() = PlayersInfoState.Player(blackProfile?.name, message(Color.Black))
 
   /**
    * Computes the [Message] to display depending on the player color.
@@ -43,10 +52,5 @@ class ActualPlayersInfoState(
           else Message.None
       NextStep.Stalemate -> if (color == Color.White) Message.Stalemate else Message.None
     }
-  }
-
-  init {
-    scope.launch { match.white.collect { whiteProfile = it } }
-    scope.launch { match.black.collect { blackProfile = it } }
   }
 }
