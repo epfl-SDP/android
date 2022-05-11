@@ -77,9 +77,9 @@ interface LocalizedStrings {
   val gamePromoteTitle: String
   val gamePromoteConfirm: String
 
-  val gameSnackBarIllegalAction : String
-  val gameSnackBarInternalFailure : String
-  val gameSnackBarUnknownCommand : String
+  val gameSnackBarIllegalAction: String
+  val gameSnackBarInternalFailure: String
+  val gameSnackBarUnknownCommand: String
 
   val socialFollowingTitle: String
   val socialPerformPlay: String
