@@ -146,6 +146,7 @@ class ChessFacadeTest {
   fun given_userChanngedName_when_aGameMovehasBeenMade_then_whiteNameInMetadataShouldUpdate() =
       runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("games") {
         document(
@@ -157,7 +158,7 @@ class ChessFacadeTest {
       }
     }
 
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val authFacade = AuthenticationFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
@@ -177,6 +178,7 @@ class ChessFacadeTest {
   @Test
   fun given_userChanngedName_when_aGameMovehasBeenMade_then_blackNameInMetadataShouldUpdate() =
       runTest {
+    val assets = emptyAssets()
     val auth = emptyAuth()
     val store = buildStore {
       collection("games") {
@@ -189,7 +191,7 @@ class ChessFacadeTest {
       }
     }
 
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val authFacade = AuthenticationFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
@@ -210,6 +212,7 @@ class ChessFacadeTest {
   fun given_blackUserMakesFinalStep_when_gameIsNotDecidedYet_then_gameStateShouldShowBlackWins() =
       runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("games") {
         document(
@@ -221,7 +224,7 @@ class ChessFacadeTest {
       }
     }
 
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val authFacade = AuthenticationFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
@@ -242,6 +245,8 @@ class ChessFacadeTest {
   fun given_blackUserMakesFinalStep_when_gameIsNotDecidedYet_then_gameStateShouldShowStalemate() =
       runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
+
     val store = buildStore {
       collection("games") {
         document(
@@ -253,7 +258,7 @@ class ChessFacadeTest {
       }
     }
 
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val authFacade = AuthenticationFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
