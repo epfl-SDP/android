@@ -150,7 +150,7 @@ interface LocalizedStrings {
   val tournamentsCreateActionCreate: String
 
   val tournamentsCreateQualifierSize0: String
-  val tournamentsCreateQualifierSizeN: (size: String) -> String
-  val tournamentsCreateElimDemomN: (denominator: String) -> String
+  val tournamentsCreateQualifierSizeN: (size: Int) -> String
+  val tournamentsCreateElimDemomN: (denominator: Int) -> String
   val tournamentsCreateElimDepthFinal: String
 }

@@ -83,7 +83,7 @@ class StatefulCreateTournamentScreenTest {
     rule.onNodeWithText("1").performClick()
     rule.onNodeWithText(strings.tournamentsCreateMaximumPlayerHint).performTextInput("4")
     rule.onNodeWithText(strings.tournamentsCreateQualifierSize0).performClick()
-    rule.onNodeWithText(strings.tournamentsCreateElimDemomN("2")).performClick()
+    rule.onNodeWithText(strings.tournamentsCreateElimDemomN(2)).performClick()
 
     rule.onNodeWithText(strings.tournamentsCreateActionCreate).assertIsEnabled()
   }
@@ -113,7 +113,7 @@ class StatefulCreateTournamentScreenTest {
     rule.onNodeWithText("1").performClick()
     rule.onNodeWithText(strings.tournamentsCreateMaximumPlayerHint).performTextInput("4")
     rule.onNodeWithText(strings.tournamentsCreateQualifierSize0).performClick()
-    rule.onNodeWithText(strings.tournamentsCreateElimDemomN("2")).performClick()
+    rule.onNodeWithText(strings.tournamentsCreateElimDemomN(2)).performClick()
 
     rule.onNodeWithText(strings.tournamentsCreateActionCreate).performClick()
 

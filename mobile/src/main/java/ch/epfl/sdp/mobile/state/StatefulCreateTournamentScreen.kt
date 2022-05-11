@@ -87,7 +87,7 @@ class ActualCreateTournamentScreenState(
     get() =
         listOf(IntChoice(name = strings.tournamentsCreateQualifierSize0, value = 0)) +
             (2..(maximumPlayerCount.toIntOrNull() ?: 0)).map {
-              IntChoice(name = strings.tournamentsCreateQualifierSizeN(it.toString()), value = it)
+              IntChoice(name = strings.tournamentsCreateQualifierSizeN(it), value = it)
             }
 
   override var poolSize: IntChoice? by mutableStateOf(null)
@@ -108,7 +108,7 @@ class ActualCreateTournamentScreenState(
       return listOf(IntChoice(name = strings.tournamentsCreateElimDepthFinal, value = 1)) +
           (1..depth).map {
             IntChoice(
-                name = strings.tournamentsCreateElimDemomN(intPow(2, it).toString()),
+                name = strings.tournamentsCreateElimDemomN(intPow(2, it)),
                 value = it + 1,
             )
           }
