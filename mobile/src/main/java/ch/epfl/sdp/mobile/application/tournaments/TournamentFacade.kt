@@ -1,8 +1,10 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
+import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 
 /**
  * An interface which represents all the endpoints and available features for tournaments.
@@ -23,9 +25,32 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * Allows a user to create a tournament. The user in question administrates the tournament.
    *
    * @param user The [AuthenticatedUser] that wants to join the "Tournament".
-   * @param parameters The "TournamentParameters" that parametrize the user's "Tournament".
+   * @param name The name of the tournament.
+   * @param maxPlayers The maximal number of players allowed to join the tournament.
+   * @param bestOf The number of best-of rounds.
+   * @param poolSize The target size of each pool.
+   * @param eliminationRounds The number of direct elimination rounds. Directly influences number of
+   * player selected from the pool phase.
    */
-  // TODO: Add the function corresponding to the documentation right above
+  suspend fun createTournament(
+      user: AuthenticatedUser,
+      name: String,
+      maxPlayers: Int,
+      bestOf: Int,
+      poolSize: Int,
+      eliminationRounds: Int,
+  ) {
+    val document = store.collection("tournaments").document()
+    document.set(
+        TournamentDocument(
+            adminId = user.uid,
+            name = name,
+            maxPlayers = maxPlayers,
+            bestOf = bestOf,
+            poolSize = poolSize,
+            eliminationRounds = eliminationRounds,
+        ))
+  }
 
   /**
    * Allows a user to advance the round number of a certain pool for a certain tournament, if the
