@@ -65,11 +65,10 @@ data class ChessDocument(
     val metadata: ChessMetadata? = null
 )
 
-
 data class ChessMetadata(
-  val status: String? = null, // whiteWon, blackWon, draw
-  val blackName: String? = null,
-  val whiteName: String? = null
+    val status: String? = null, // whiteWon, blackWon, draw
+    val blackName: String? = null,
+    val whiteName: String? = null
 )
 
 /**

@@ -88,7 +88,7 @@ class SnapshotPrepareGameScreenState(
               ColorChoice.White -> ProfileAdapter(user) to it
               ColorChoice.Black -> it to ProfileAdapter(user)
             }
-        val match = chessFacade.createMatch(white = white.profile, black = black.profile)
+        val match = chessFacade.createMatch(white = white.profile, black = black.profile, user)
         navigateToGame(match)
       }
     }

@@ -45,10 +45,10 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    *
    * @return The created [Match] before storing it in the [Store]
    */
-  suspend fun createMatch(white: Profile, black: Profile): Match {
+  suspend fun createMatch(white: Profile, black: Profile, user: Profile? = null): Match {
     val document = store.collection("games").document()
     document.set(ChessDocument(whiteId = white.uid, blackId = black.uid))
-    return StoreMatch(document.id, store, null)
+    return StoreMatch(document.id, store, user)
   }
 
   /**
@@ -56,8 +56,8 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    *
    * @param id the unique identifier for this [Match].
    */
-  fun match(id: String): Match {
-    return StoreMatch(id, store, null)
+  fun match(id: String, user: Profile? = null): Match {
+    return StoreMatch(id, store, user)
   }
 
   /**
@@ -69,21 +69,27 @@ class ChessFacade(private val auth: Auth, private val store: Store) {
    * @return The [Flow] of [List] of [Match]s for the [Profile]
    */
   fun matches(profile: Profile): Flow<List<Match>> {
-    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
-    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
+    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid, profile)
+    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid, profile)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
-  private fun getMatchesForPlayer(colorField: String, playerId: String): Flow<List<Match>> {
-    return store.collection("games").whereEquals(colorField, playerId).asMatchListFlow().onStart {
-      emit(emptyList())
-    }
+  private fun getMatchesForPlayer(
+      colorField: String,
+      playerId: String,
+      user: Profile? = null
+  ): Flow<List<Match>> {
+    return store
+        .collection("games")
+        .whereEquals(colorField, playerId)
+        .asMatchListFlow(user)
+        .onStart { emit(emptyList()) }
   }
 
-  private fun Query.asMatchListFlow(): Flow<List<Match>> {
+  private fun Query.asMatchListFlow(user: Profile? = null): Flow<List<Match>> {
     return this.asFlow<ChessDocument>().map {
-      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store, null) }
+      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store, user) }
     }
   }
 }
@@ -118,22 +124,23 @@ private data class StoreMatch(
 
   override suspend fun update(game: Game) {
     val chess = store.collection("games").document(id).get<ChessDocument>()
+
     store.collection("games").document(id).update {
-      this[FieldPath(listOf("metadata", "status"))] = when (game.nextStep) {
-        NextStep.Stalemate -> "stalemate"
-        is NextStep.MovePiece -> null
-        else -> if ((game.nextStep as NextStep.Checkmate).winner == Color.Black) "blackWon" else "whiteWon"
-      }
-      if (chess?.blackId == user?.uid) {
-        if (chess?.metadata?.blackName == user?.name ) {
-          this[FieldPath(listOf("metadata", "blackName"))] = user?.name
-        }
+      this[FieldPath(listOf("metadata", "status"))] =
+          when (game.nextStep) {
+            NextStep.Stalemate -> "stalemate"
+            is NextStep.MovePiece -> null
+            else ->
+                if ((game.nextStep as NextStep.Checkmate).winner == Color.Black) "blackWon"
+                else "whiteWon"
+          }
+
+      if (chess?.blackId == user?.uid && chess?.metadata?.blackName != user?.name) {
+        this[FieldPath(listOf("metadata", "blackName"))] = user?.name
       }
 
-      if (chess?.whiteId == user?.uid) {
-        if (chess?.metadata?.whiteName == user?.name ) {
-          this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
-        }
+      if (chess?.whiteId == user?.uid && chess?.metadata?.whiteName != user?.name) {
+        this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
       }
 
       this["moves"] = game.toAlgebraicNotation()
