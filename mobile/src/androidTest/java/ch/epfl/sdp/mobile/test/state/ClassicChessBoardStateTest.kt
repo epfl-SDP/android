@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.state.game.MatchGameScreenState
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -29,6 +30,7 @@ class ClassicChessBoardStateTest {
   @Test
   fun selectingPiece_displaysAvailableMoves() = runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") {
         document("id1", ProfileDocument())
@@ -36,7 +38,7 @@ class ClassicChessBoardStateTest {
       }
       collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
     }
-    val facade = ChessFacade(auth, store)
+    val facade = ChessFacade(auth, store, assets)
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id1"
 

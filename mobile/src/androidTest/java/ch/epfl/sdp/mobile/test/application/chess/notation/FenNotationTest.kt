@@ -80,7 +80,7 @@ class FenNotationTest {
 
   @Test
   fun given_fenNoCastlingRights_when_decodingFromFenNotation_then_castlingRightsAreCorrect() {
-    val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b -- c6 1 3"
+    val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b - c6 1 3"
 
     val deserializedBoardSnapshot = parseFen(fen)
 
@@ -112,7 +112,7 @@ class FenNotationTest {
 
   @Test
   fun given_fenNoWhiteCastlingRights_when_decodingFromFenNotation_then_castlingRightsAreCorrect() {
-    val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b -kq c6 1 3"
+    val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b kq c6 1 3"
 
     val deserializedBoardSnapshot = parseFen(fen)
 
@@ -128,7 +128,7 @@ class FenNotationTest {
 
   @Test
   fun given_fenNoBlackCastlingRights_when_decodingFromFenNotation_then_castlingRightsAreCorrect() {
-    val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQ- c6 1 3"
+    val fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQ c6 1 3"
 
     val deserializedBoardSnapshot = parseFen(fen)
 

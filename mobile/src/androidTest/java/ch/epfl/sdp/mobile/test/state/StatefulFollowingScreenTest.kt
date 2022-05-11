@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.PuzzleId
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
@@ -14,6 +15,7 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -47,6 +49,8 @@ class StatefulFollowingScreenTest {
                     get() = ""
                   override val followed: Boolean
                     get() = false
+                  override val solvedPuzzles: List<PuzzleId>
+                    get() = emptyList()
                 }))
 
     val mockSocialFacade = mockk<SocialFacade>()
@@ -72,12 +76,13 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val auth = emptyAuth()
+      val assets = emptyAssets()
       val store = buildStore {
         collection("users") { document("other", ProfileDocument(name = name)) }
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
@@ -106,12 +111,13 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val auth = emptyAuth()
+      val assets = emptyAssets()
       val store = buildStore {
         collection("users") { document("other", ProfileDocument(name = name)) }
       }
       val authenticationFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
       authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
@@ -134,6 +140,7 @@ class StatefulFollowingScreenTest {
   fun focusedSearchField_isInSearchMode() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
@@ -145,7 +152,7 @@ class StatefulFollowingScreenTest {
           ProvideFacades(
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store, assets) },
               speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
@@ -159,6 +166,7 @@ class StatefulFollowingScreenTest {
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val user =
         with(AuthenticationFacade(auth, store)) {
           signUpWithEmail("email@epfl.ch", "name", "password")
@@ -170,7 +178,7 @@ class StatefulFollowingScreenTest {
           ProvideFacades(
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store, assets) },
               speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }
@@ -188,6 +196,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("a", ProfileDocument(name = "Alexandre")) }
     }
@@ -202,7 +211,7 @@ class StatefulFollowingScreenTest {
           ProvideFacades(
               authentication = remember { AuthenticationFacade(auth, store) },
               social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store) },
+              chess = remember { ChessFacade(auth, store, assets) },
               speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
           ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
         }

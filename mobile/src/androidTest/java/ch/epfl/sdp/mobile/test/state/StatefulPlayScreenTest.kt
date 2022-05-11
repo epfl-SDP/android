@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPlayScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -42,10 +43,11 @@ class StatefulPlayScreenTest {
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
     }
+    val assets = emptyAssets()
 
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signInWithEmail("email@example.org", "password")
@@ -85,10 +87,11 @@ class StatefulPlayScreenTest {
                 moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
       }
     }
+    val assets = emptyAssets()
 
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signInWithEmail("email@example.org", "password")
@@ -127,10 +130,11 @@ class StatefulPlayScreenTest {
                 moves = listOf("f2-f3", "e7-e6", "g2-g4", "Qd8-h4")))
       }
     }
+    val assets = emptyAssets()
 
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signInWithEmail("email@example.org", "password")
@@ -159,10 +163,11 @@ class StatefulPlayScreenTest {
         document("id", ChessDocument(uid = null, whiteId = null, blackId = "1"))
       }
     }
+    val assets = emptyAssets()
 
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signInWithEmail("email@example.org", "password")
@@ -191,10 +196,11 @@ class StatefulPlayScreenTest {
         document("id", ChessDocument(uid = null, whiteId = "1", blackId = null))
       }
     }
+    val assets = emptyAssets()
 
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signInWithEmail("email@example.org", "password")
@@ -218,9 +224,10 @@ class StatefulPlayScreenTest {
   fun statefulPlayScreen_isNotDisplayed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signUpWithEmail("email@example.org", "test", "password")
@@ -244,9 +251,10 @@ class StatefulPlayScreenTest {
   fun given_playScreen_when_clickingNewGame_then_localAndOnlinePlayAreDisplayed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
@@ -275,9 +283,11 @@ class StatefulPlayScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
+
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
@@ -312,9 +322,11 @@ class StatefulPlayScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
+
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
 
     facade.signUpWithEmail("user1@email", "user1", "password")

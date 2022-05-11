@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentId
  * @param emoji the emoji associated with this profile.
  * @param backgroundColor the hex color code for this profile.
  * @param followers a list of unique identifiers of the users who follow this profile.
+ * @param solvedPuzzles a list of unique puzzle ids representing puzzles solved by the user
  */
 data class ProfileDocument(
     @DocumentId val uid: String? = null,
@@ -21,6 +22,7 @@ data class ProfileDocument(
     val emoji: String? = null,
     val backgroundColor: String? = null,
     val followers: List<String>? = null,
+    val solvedPuzzles: List<String>? = null,
 )
 
 /**
@@ -36,6 +38,7 @@ fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
         this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
     override val uid: String = this@toProfile?.uid ?: ""
     override val followed: Boolean = currentUserUid in (this@toProfile?.followers ?: emptyList())
+    override val solvedPuzzles = this@toProfile?.solvedPuzzles ?: emptyList()
   }
 }
 
