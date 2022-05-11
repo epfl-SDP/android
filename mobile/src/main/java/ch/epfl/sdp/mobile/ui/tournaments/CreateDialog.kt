@@ -51,7 +51,7 @@ interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
   val bestOfChoices: List<Int>
 
   /** The currently selected "Best of", if there's any. */
-  var bestOf: Int?
+  val bestOf: Int?
 
   /**
    * Called when the best of action is clicked.
@@ -67,7 +67,7 @@ interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
   val poolSizeChoices: List<PoolSize>
 
   /** The currently selected pool size. */
-  var poolSize: PoolSize?
+  val poolSize: PoolSize?
 
   /**
    * Called when the pool size choice is clicked
@@ -80,7 +80,7 @@ interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
   val eliminationRoundChoices: List<EliminationRound>
 
   /** The currently selected elimination round. */
-  var eliminationRound: EliminationRound?
+  val eliminationRound: EliminationRound?
 
   /**
    * Called when the elimination choice is clicked

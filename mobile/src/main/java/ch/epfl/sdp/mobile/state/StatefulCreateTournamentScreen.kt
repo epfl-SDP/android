@@ -10,8 +10,11 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialog
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState
 import ch.epfl.sdp.mobile.ui.tournaments.CreateDialogState.*
+import java.lang.Math.pow
+import kotlin.math.pow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.log2
 
 @Composable
 fun StatefulCreateTournamentScreen(
@@ -60,27 +63,45 @@ class ActualCreateTournamentScreenState(
   }
   override val bestOfChoices: List<Int> = listOf(1, 3, 5)
   override var bestOf: Int? by mutableStateOf(null)
+    private set
 
   override var maximumPlayerCount: String by mutableStateOf("")
 
   override fun onPoolSizeClick(poolSize: Choice) {
     this.poolSize = poolSize
   }
-  override val poolSizeChoices: List<Choice> =
-      listOf(IntChoice(name = strings.tournamentCreateQualifierSize0)) +
-          (2..7).map { IntChoice(name = strings.tournamentCreateQualifierSizeN(it.toString())) }
+  override val poolSizeChoices: List<Choice>
+    get() =
+        listOf(IntChoice(name = strings.tournamentCreateQualifierSize0)) +
+            (2..(maximumPlayerCount.toIntOrNull() ?: 0)).map {
+              IntChoice(name = strings.tournamentCreateQualifierSizeN(it.toString()))
+            }
 
   override var poolSize: Choice? by mutableStateOf(null)
+    private set
 
   override fun onEliminationRoundClick(eliminationRound: Choice) {
     this.eliminationRound = eliminationRound
   }
-  override val eliminationRoundChoices: List<Choice> =
-      listOf(IntChoice(name = strings.tournamentCreateElimDepthFinal)) +
-          listOf(2, 4, 8, 16, 32, 64).map {
-            IntChoice(name = strings.tournamentCreateElimDepthN(it.toString()))
+  override val eliminationRoundChoices: List<Choice>
+    get() {
+      val players = (maximumPlayerCount.toIntOrNull() ?: 0) / 2
+      val depth = log2(players.toDouble()).toInt()
+
+      fun intPow(base: Int, exponent: Int): Int {
+        return base.toDouble().pow(exponent).toInt()
+      }
+
+      return listOf(IntChoice(name = strings.tournamentCreateElimDepthFinal)) +
+          (1..depth).map {
+            IntChoice(
+                name =
+                    strings.tournamentCreateElimDepthN(intPow(2, it).toString()),
+            )
           }
+    }
   override var eliminationRound: Choice? by mutableStateOf(null)
+    private set
 
   override val confirmEnabled: Boolean
     get() =
@@ -90,7 +111,7 @@ class ActualCreateTournamentScreenState(
             poolSize != null &&
             eliminationRound != null
 
-  override fun onConfirm(): Unit = run {
+  override fun onConfirm() {
     scope.launch {
       val reference =
           tournamentFacade.createTournament(
@@ -101,7 +122,8 @@ class ActualCreateTournamentScreenState(
               poolSize = poolSize?.name?.toIntOrNull() ?: 0,
               eliminationRounds = eliminationRound?.name?.toIntOrNull() ?: 1,
           )
-      navigateToTournament(reference)
+      // TODO: Uncomment this line once tournament details is implement
+      //navigateToTournament(reference)
     }
   }
   override fun onCancel() = cancelClick()
