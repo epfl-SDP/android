@@ -56,8 +56,8 @@ fun StatefulCreateTournamentScreen(
   CreateDialog(
       state = state,
       modifier = modifier,
-      poolSizeKey = { it.name },
-      eliminationRoundKey = { it.name },
+      poolSizeKey = { it.value },
+      eliminationRoundKey = { it.value },
   )
 }
 
