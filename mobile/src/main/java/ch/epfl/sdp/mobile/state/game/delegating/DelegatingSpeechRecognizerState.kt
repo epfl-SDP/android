@@ -5,12 +5,13 @@ package ch.epfl.sdp.mobile.state.game.delegating
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -62,14 +63,17 @@ constructor(
                   snackbarHostState.showSnackbar("Internal failure")
               is SpeechFacade.RecognitionResult.Success -> {
 
-                val parsedValue = VoiceInput.parseInput(speech.results)
-                snackbarHostState.showSnackbar(parsedValue.toString())
-
-                // TODO(Chau) : Do something more interesting
-                Position.all()
-                    .flatMap { delegate.game.actions(it) }
-                    .onEach { delegate.tryPerformAction(it) }
-                    .firstOrNull()
+                // Parsed the input
+                val parsedAction = VoiceInput.parseInput(speech.results)
+                if (parsedAction != null) {
+                  // Try to perform the action
+                  val isSuccessful = delegate.tryPerformAction(parsedAction)
+                  if (!isSuccessful)
+                  // If the action is illegal show in the snackbar
+                  snackbarHostState.showSnackbar(SpeechRecognizerError.IllegalAction.toString())
+                } else { // If cannot be parsed show error message
+                  snackbarHostState.showSnackbar(SpeechRecognizerError.UnknownCommand.toString())
+                }
               }
             }
           }
@@ -78,5 +82,29 @@ constructor(
         }
       }
     }
+  }
+}
+
+/** Enum class that defined different error related to the speech recognizer */
+enum class SpeechRecognizerError {
+
+  // FIXME General error, temporary
+  InternalError,
+
+  /** The asked command cannot be performed */
+  IllegalAction,
+
+  /** The command cannot be parsed */
+  UnknownCommand
+}
+
+/** Transform a [SpeechRecognizerError] into a [String] */
+@Composable
+fun SpeechRecognizerError.toString() {
+  val strings = LocalLocalizedStrings.current
+  when (this) {
+    SpeechRecognizerError.InternalError -> strings.gameSnackBarInternalFailure
+    SpeechRecognizerError.IllegalAction -> strings.gameSnackBarIllegalAction
+    SpeechRecognizerError.UnknownCommand -> strings.gameSnackBarUnknownCommand
   }
 }

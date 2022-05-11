@@ -52,6 +52,10 @@ object English : LocalizedStrings {
   override val gamePromoteTitle = "Promote to:"
   override val gamePromoteConfirm = "Ok".uppercase()
 
+  override val gameSnackBarIllegalAction: String = "Illegal action, please try again"
+  override val gameSnackBarInternalFailure = "Internal failure"
+  override val gameSnackBarUnknownCommand: String = "Unknown command, please try again"
+
   override val profileMatchTitle = { opponent: String -> "Against $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
   override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
