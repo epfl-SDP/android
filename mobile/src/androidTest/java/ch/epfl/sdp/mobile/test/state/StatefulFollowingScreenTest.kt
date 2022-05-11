@@ -68,8 +68,7 @@ class StatefulFollowingScreenTest {
           mockSocialFacade,
           mockChessFacade,
           mockSpeechFacade,
-          mockTournamentFacade,
-      ) { StatefulFollowingScreen(mockUser, {}) }
+          mockTournamentFacade) { StatefulFollowingScreen(mockUser, {}) }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
   }

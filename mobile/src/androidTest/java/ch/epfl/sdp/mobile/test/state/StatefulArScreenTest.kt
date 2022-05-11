@@ -46,13 +46,11 @@ class StatefulArScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournaments = TournamentFacade(auth, store)
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech, tournamentFacade) {
-            StatefulArScreen("gameId")
-          }
+          ProvideFacades(authApi, social, chess, speech, tournaments) { StatefulArScreen("gameId") }
         }
 
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()

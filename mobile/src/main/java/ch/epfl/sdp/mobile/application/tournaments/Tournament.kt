@@ -1,35 +1,35 @@
-import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.*
-import java.time.LocalDateTime
+package ch.epfl.sdp.mobile.application.tournaments
 
-/**
- * Represents a [Tournament] in the application, containing internal information on its
- * customization.
- */
+import ch.epfl.sdp.mobile.application.TournamentDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+
+/** An interface which represents information about a fetched tournament. */
 interface Tournament {
 
-  /** The unique identifier of the tournament. */
-  val uid: String
+  /** The [TournamentReference], which can be used to uniquely identify this tournament. */
+  val reference: TournamentReference
 
-  /** The user-readable name of the tournament. */
+  /** The unique name for this [Tournament]. */
   val name: String
 
-  /** The creator of the tournament's unique identifier. */
-  val adminId: String
+  /** True iff the user who fetched the [Tournament] participates in it. */
+  val isAdmin: Boolean
 
-  // TODO: Add Creation Date and Status attributes.
-
-  /** The maximal number of players specified for this tournament. */
-  val maxPlayers: Int
-
-  /** The number of "best-of" rounds for the pool phase and the direct elimination phase. */
-  val bestOf: Int
-
-  /** The target size of each pool. */
-  val poolSize: Int
-
-  /** The number of direct elimination rounds of the tournament. */
-  val eliminationRounds: Int
-
-  /** The List of unique identifiers of the players of the tournament. */
-  val playerIds: List<String>
+  /** True iff the user who fetched the [Tournament] participates in it. */
+  val isParticipant: Boolean
 }
+
+/**
+ * Transforms a [TournamentDocument] to a [Tournament].
+ *
+ * @receiver the [TournamentDocument] that we're transforming.
+ * @param user the [AuthenticatedUser] that we see this [Tournament] as.
+ * @return the [Tournament] instance.
+ */
+fun TournamentDocument.toTournament(user: AuthenticatedUser): Tournament =
+    object : Tournament {
+      override val reference = TournamentReference(this@toTournament.uid ?: "")
+      override val name = this@toTournament.name ?: ""
+      override val isAdmin = this@toTournament.adminId == user.uid
+      override val isParticipant = this@toTournament.playerIds?.contains(user.uid) ?: false
+    }

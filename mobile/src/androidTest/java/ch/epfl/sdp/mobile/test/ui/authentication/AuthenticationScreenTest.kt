@@ -70,7 +70,6 @@ class AuthenticationScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
@@ -96,7 +95,6 @@ class AuthenticationScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
@@ -122,7 +120,6 @@ class AuthenticationScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
@@ -148,7 +145,6 @@ class AuthenticationScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
@@ -174,7 +170,6 @@ class AuthenticationScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(

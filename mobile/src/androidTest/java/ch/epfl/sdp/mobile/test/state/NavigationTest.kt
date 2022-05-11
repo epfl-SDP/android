@@ -39,7 +39,6 @@ class NavigationTest {
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(SuspendingAuth, store)
-
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
         Navigation()
@@ -58,7 +57,6 @@ class NavigationTest {
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
@@ -80,7 +78,6 @@ class NavigationTest {
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
@@ -107,7 +104,6 @@ class NavigationTest {
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
-
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {

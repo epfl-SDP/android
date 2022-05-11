@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.application.speech
 
-typealias Rule = (List<String>) -> Boolean
+typealias Rule = (String) -> String?
 
 /** Object that contains all the chess speech filter rules for chess pieces */
 object ChessSpeechFilterRules {
@@ -13,33 +13,34 @@ object ChessSpeechFilterRules {
 
   val rulesSet =
       setOf(
-          ChessSpeechRule("pawn", this::filterForPawn),
-          ChessSpeechRule("king", this::filterForKing),
-          ChessSpeechRule("rook", this::filterForRook))
+          ChessSpeechRule("pawn", this::tryConvertPawn),
+          ChessSpeechRule("king", this::tryConvertKing),
+          ChessSpeechRule("rook", this::tryConvertRook))
 
   /**
-   * Filter rule for Pawn
-   * @param speech list of speech' words
-   * @return true if the rule applies to the speech, false otherwise
+   * Convert rule for Pawn
+   * @param token token that we want to change
+   * @return "pawn" if it can be transformed otherwise null
    */
-  private fun filterForPawn(speech: List<String>): Boolean {
-    return speech.any { sp -> sp.endsOrStartsWithAny(String::startsWith, "bon", "pon") }
+  private fun tryConvertPawn(token: String): String? {
+    return if (token.endsOrStartsWithAny(String::startsWith, "bon", "pon")) "pawn" else null
   }
   /**
-   * Filter rule for King
-   * @param speech list of speech' words
-   * @return true if the rule applies to the speech, false otherwise
+   * Convert rule for King
+   * @param token token that we want to change
+   * @return "king" if it can be transformed otherwise null
    */
-  private fun filterForKing(speech: List<String>): Boolean {
-    return speech.any { sp -> sp.endsOrStartsWithAny(String::endsWith, "inc", "ink", "ing") }
+  private fun tryConvertKing(token: String): String? {
+    return if (token.endsOrStartsWithAny(String::endsWith, "inc", "ink", "ing")) "king" else null
   }
   /**
-   * Filter rule for Rook
-   * @param speech list of speech' words
-   * @return true if the rule applies to the speech, false otherwise
+   * Convert rule for Rook
+   * @param token token that we want to change
+   * @return "rook" if it can be transformed otherwise null
    */
-  private fun filterForRook(speech: List<String>): Boolean {
-    return speech.any { sp -> sp.endsOrStartsWithAny(String::endsWith, "ouk", "uk", "uch", "och") }
+  private fun tryConvertRook(token: String): String? {
+    return if (token.endsOrStartsWithAny(String::endsWith, "ouk", "uk", "uch", "och")) "rook"
+    else null
   }
 
   /**

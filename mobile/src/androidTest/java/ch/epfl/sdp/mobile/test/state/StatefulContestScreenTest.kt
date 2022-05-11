@@ -34,7 +34,8 @@ class StatefulContestScreenTest {
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection("tournaments") {
-          document("id", TournamentDocument("tid1", "1", "Tournament 1"))
+          document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
+          document("id2", TournamentDocument("tid2", "2", "Tournament 2"))
         }
       }
       val assets = emptyAssets()
@@ -54,6 +55,38 @@ class StatefulContestScreenTest {
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
+      rule.onNodeWithText("Tournament 2").assertIsDisplayed()
+      rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun given_statefulContestScreen_when_userJoinedTournament_then_participantBadgeIsDisplayed() {
+    runTest {
+      val auth = buildAuth { user("email@example.org", "password", "1") }
+      val store = buildStore {
+        collection("users") { document("1", ProfileDocument("1", name = "A")) }
+        collection("tournaments") {
+          document("id1", TournamentDocument("tid1", "2", "Tournament 1", playerIds = listOf("1")))
+        }
+      }
+      val assets = emptyAssets()
+      val authFacade = AuthenticationFacade(auth, store)
+      val socialFacade = SocialFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
+      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+      val tournamentFacade = TournamentFacade(auth, store)
+
+      val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+      val strings =
+          rule.setContentWithLocalizedStrings {
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+              StatefulTournamentScreen(currentUser)
+            }
+          }
+      rule.onNodeWithText("Tournament 1").assertIsDisplayed()
+      rule.onNodeWithText(strings.tournamentsBadgeParticipant).assertIsDisplayed()
     }
   }
 }

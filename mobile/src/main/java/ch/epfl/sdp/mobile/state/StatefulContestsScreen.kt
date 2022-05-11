@@ -1,10 +1,10 @@
 package ch.epfl.sdp.mobile.state
 
-import Tournament
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.Tournament
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -23,12 +22,12 @@ import kotlinx.coroutines.launch
  */
 data class TournamentAdapter(val tournament: Tournament, val currentUser: AuthenticatedUser) :
     ContestInfo {
-  val uid = tournament.uid
+  val uid = tournament.reference.uid
   override val name: String = tournament.name
   override val badge: BadgeType? =
-      if (tournament.adminId == currentUser.uid) {
+      if (tournament.isAdmin) {
         BadgeType.Admin
-      } else if (tournament.playerIds.contains(currentUser.uid)) {
+      } else if (tournament.isParticipant) {
         BadgeType.Participant
       } else {
         BadgeType.Join
@@ -56,7 +55,7 @@ class TournamentScreenState(
 
   init {
     scope.launch {
-      tournamentFacade.getTournaments().collect { list ->
+      tournamentFacade.getTournaments(currentUser).collect { list ->
         contests = list.map { TournamentAdapter(it, currentUser) }
       }
     }

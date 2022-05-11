@@ -1,9 +1,7 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
-import Tournament
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.toTournament
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
@@ -19,13 +17,17 @@ import kotlinx.coroutines.flow.map
  */
 class TournamentFacade(private val auth: Auth, private val store: Store) {
 
-  /** Returns all of the registered tournaments of the application. */
-  fun getTournaments(): Flow<List<Tournament>> {
+  /**
+   * Returns all of the registered tournaments of the application.
+   *
+   * @param user the current [AuthenticatedUser].
+   */
+  fun getTournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     return store
         .collection("tournaments")
         .orderBy("creationDate", Descending)
         .asFlow<TournamentDocument>()
-        .map { it.mapNotNull { doc -> doc?.toTournament() } }
+        .map { it.mapNotNull { doc -> doc?.toTournament(user) } }
   }
 
   /**
