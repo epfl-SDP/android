@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * An implementation of [MutableGameDelegate] which writes its updates to a [Match].
+ * An implementation of [MutableGameDelegate] which implements [Puzzle] mechanics.
  *
  * @param user the [State] of the current [AuthenticatedUser].
  * @param puzzle the underlying [Puzzle].

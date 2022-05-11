@@ -19,7 +19,7 @@ import com.google.accompanist.permissions.PermissionState
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Creates a new [ActualGameScreenState].
+ * Creates a new [ActualPuzzleGameScreenState].
  *
  * @param currentActions the [State] of actions to perform when navigating.
  * @param currentUser the currently authenticated user.

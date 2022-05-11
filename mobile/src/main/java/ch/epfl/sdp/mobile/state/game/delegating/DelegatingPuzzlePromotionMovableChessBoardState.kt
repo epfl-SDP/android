@@ -13,7 +13,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
 /**
  * An implementation of [AbstractMovableChessBoardState] which uses the [DelegatingPromotionState]
- * to trigger the promotion dialog, and the [DelegatingPlayersInfoState] to check whose turn it is
+ * to trigger the promotion dialog, and the [DelegatingPuzzleInfoState] to check whose turn it is
  * to play.
  *
  * @param user the current [AuthenticatedUser].
