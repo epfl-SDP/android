@@ -118,11 +118,13 @@ class ActualCreateTournamentScreenState(
 
   override val confirmEnabled: Boolean
     get() =
-        name.isNotBlank() &&
-            bestOf != null &&
-            maximumPlayerCount.isDigitsOnly() &&
-            poolSize != null &&
-            eliminationRound != null
+        validParameters(
+            name = name,
+            bestOf = bestOf,
+            maximumPlayerCount = maximumPlayerCount,
+            poolSize = poolSize?.value,
+            eliminationRounds = eliminationRound?.value,
+        )
 
   override fun onConfirm() {
     scope.launch {
@@ -140,6 +142,27 @@ class ActualCreateTournamentScreenState(
     }
   }
   override fun onCancel() = actions.value.cancelClick()
+}
+
+/** Validates the tournament parameters */
+private fun validParameters(
+    name: String,
+    bestOf: Int?,
+    maximumPlayerCount: String,
+    poolSize: Int?,
+    eliminationRounds: Int?,
+): Boolean {
+  val players = (maximumPlayerCount.toIntOrNull() ?: 0) / 2
+  val depth = log2(players.toDouble()).toInt()
+
+  return if (bestOf != null && poolSize != null && eliminationRounds != null) {
+    name.isNotBlank() &&
+        maximumPlayerCount.isDigitsOnly() &&
+        poolSize <= players &&
+        eliminationRounds <= depth
+  } else {
+    false
+  }
 }
 
 data class CreateTournamentDialogActions(
