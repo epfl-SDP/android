@@ -34,6 +34,7 @@ val LocalTournamentFacade =
  * @param social the [SocialFacade] that will be provided.
  * @param chess the [ChessFacade] that will be provided.
  * @param speech the [SpeechFacade] that will be provided.
+ * @param tournament the [TournamentFacade] that will be provided.
  */
 @Composable
 fun ProvideFacades(
@@ -41,6 +42,7 @@ fun ProvideFacades(
     social: SocialFacade,
     chess: ChessFacade,
     speech: SpeechFacade,
+    tournament: TournamentFacade,
     content: @Composable () -> Unit,
 ) {
   CompositionLocalProvider(
@@ -48,5 +50,6 @@ fun ProvideFacades(
       LocalSocialFacade provides social,
       LocalChessFacade provides chess,
       LocalSpeechFacade provides speech,
+      LocalTournamentFacade provides tournament,
   ) { content() }
 }

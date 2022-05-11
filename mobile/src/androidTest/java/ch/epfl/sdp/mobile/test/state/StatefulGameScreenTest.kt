@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
@@ -78,13 +79,14 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
     val speech = SpeechFacade(recognizer)
+    val tournament = TournamentFacade(auth, store)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech) {
+          ProvideFacades(authApi, social, chess, speech, tournament) {
             StatefulGameScreen(user1, "gameId", actions, audioPermissionState = audioPermission)
           }
         }
@@ -554,6 +556,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -562,7 +565,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech) {
+          ProvideFacades(authApi, social, chess, speech, tournament) {
             StatefulGameScreen(user1, "gameId", actions)
           }
         }
@@ -590,6 +593,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -598,7 +602,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech) {
+          ProvideFacades(authApi, social, chess, speech, tournament) {
             StatefulGameScreen(user1, "gameId", actions)
           }
         }
