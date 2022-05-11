@@ -34,12 +34,7 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
-  testOptions {
-    packagingOptions { jniLibs { useLegacyPackaging = true } }
-
-    // Allow us to have Log during testing
-    unitTests.isReturnDefaultValues = true
-  }
+  testOptions { packagingOptions { jniLibs { useLegacyPackaging = true } } }
 
   composeOptions { kotlinCompilerExtensionVersion = libs.versions.compose.get() }
   packagingOptions { resources.excludes.add("META-INF/*") }
