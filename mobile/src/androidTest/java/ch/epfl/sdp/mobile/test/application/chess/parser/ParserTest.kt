@@ -1,5 +1,8 @@
 package ch.epfl.sdp.mobile.test.application.chess.parser
 
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filterNotNull
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeat
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
 import com.google.common.truth.Truth.assertThat
@@ -35,5 +38,17 @@ class ParserTest {
 
     assertThat(result.output).containsExactly(1, 2, 3, 4).inOrder()
     assertThat(result.remaining).isEqualTo("hello567890")
+  }
+
+  @Test
+  fun given_inputThatCanOutputNull_when_parsed_then_containsOnlyNotNullValue() {
+    val digit = StringCombinators.digit()
+    val even = digit.map { if (it % 2 == 0) null else it }
+    val multipleThree = digit.map { if (it % 3 == 0) null else it }
+    val parserWithoutNull = Combinators.combine(even, multipleThree).filterNotNull()
+
+    val result = parserWithoutNull.parse("3456789")
+
+    assertThat(result.count()).isEqualTo(1)
   }
 }
