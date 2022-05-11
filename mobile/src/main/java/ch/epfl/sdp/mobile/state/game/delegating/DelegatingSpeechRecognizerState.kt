@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.chess.engine.Position
+import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState
@@ -61,7 +62,8 @@ constructor(
                   snackbarHostState.showSnackbar("Internal failure")
               is SpeechFacade.RecognitionResult.Success -> {
 
-                snackbarHostState.showSnackbar(speech.results.toString())
+                val parsedValue = VoiceInput.parseInput(speech.results)
+                snackbarHostState.showSnackbar(parsedValue.toString())
 
                 // TODO(Chau) : Do something more interesting
                 Position.all()

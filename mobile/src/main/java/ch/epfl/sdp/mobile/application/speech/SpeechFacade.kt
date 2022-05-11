@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.application.speech
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -30,8 +29,7 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
      *
      * @param results the [List] of possible results.
      */
-    data class Success(val results: Pair<ChessBoardState.Position, ChessBoardState.Position>) :
-        RecognitionResult
+    data class Success(val results: List<String>) : RecognitionResult
   }
 
   /**
@@ -55,16 +53,9 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
             cont.resume(Failure.Internal)
           }
 
-          override fun onResults(
-              results: Pair<ChessBoardState.Position, ChessBoardState.Position>?
-          ) {
+          override fun onResults(results: List<String>) {
             cleanup()
-            // TODO : it's duplicate with [AndroidSpeechRecognizer] ?
-            if (results == null) {
-              cont.resume(Failure.Internal)
-            } else {
-              cont.resume(Success(results))
-            }
+            cont.resume(Success(results))
           }
         },
     )

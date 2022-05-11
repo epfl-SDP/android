@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.speech.RecognizerIntent.*
 import android.speech.SpeechRecognizer as NativeSpeechRecognizer
 import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
-import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
-import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 
 /** The default locale we'll be using for speech recognition. */
 private const val DefaultLanguage = "en-US"
@@ -57,18 +55,7 @@ class AndroidSpeechRecognizer(
             override fun onError(error: Int) = listener.onError()
             override fun onResults(
                 results: Bundle?,
-            ) {
-              val input = results?.getStringArrayList(RESULTS_RECOGNITION) ?: emptyList()
-              val action = VoiceInput.parseInput(input)
-              if (action == null) {
-                listener.onError()
-              } else {
-                listener.onResults(
-                    // Note(Chau)  : Maybe take Engine.Action as a parameter
-                    // We can treat a move or a promotion
-                    Pair(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition()))
-              }
-            }
+            ) = listener.onResults(results?.getStringArrayList(RESULTS_RECOGNITION) ?: emptyList())
           },
       )
 

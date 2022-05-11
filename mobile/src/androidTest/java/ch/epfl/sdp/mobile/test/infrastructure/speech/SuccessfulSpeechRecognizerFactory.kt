@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.test.infrastructure.speech
 
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
 /** An implementation of [SpeechRecognizerFactory] which always succeeds. */
 object SuccessfulSpeechRecognizerFactory : SpeechRecognizerFactory {
@@ -15,7 +14,7 @@ class SuccessfulSpeechRecognizer : SpeechRecognizer {
   companion object {
 
     /** The results which will always be returned on success. */
-    val Results = Pair(ChessBoardState.Position(0, 0), ChessBoardState.Position(0, 0))
+    val Results = listOf("Hello", "World")
   }
 
   private var listener: SpeechRecognizer.Listener? = null
