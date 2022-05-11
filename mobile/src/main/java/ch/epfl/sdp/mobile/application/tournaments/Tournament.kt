@@ -17,6 +17,23 @@ interface Tournament {
 
   /** True iff the user who fetched the [Tournament] participates in it. */
   val isParticipant: Boolean
+
+  /** The [Status] of the [Tournament]. */
+  val status: Status
+
+  /** A sealed interface representing the current status of this [Tournament]. */
+  sealed interface Status {
+
+    /**
+     * Indicates that the tournament has not been started yet.
+     *
+     * @param enoughParticipants true iff there would be enough players to play all the matches.
+     */
+    data class NotStarted(val enoughParticipants: Boolean) : Status
+
+    /** Indicates that the status is still loading and is not known yet. */
+    object Unknown : Status
+  }
 }
 
 /**
@@ -32,4 +49,11 @@ fun TournamentDocument.toTournament(user: AuthenticatedUser): Tournament =
       override val name = this@toTournament.name ?: ""
       override val isAdmin = this@toTournament.adminId == user.uid
       override val isParticipant = this@toTournament.playerIds?.contains(user.uid) ?: false
+
+      // TODO : Refine the tournament rules.
+      override val status: Tournament.Status =
+          Tournament.Status.NotStarted(
+              enoughParticipants = (this@toTournament.playerIds?.size
+                      ?: 0 >= (this@toTournament.maxPlayers ?: 0)),
+          )
     }

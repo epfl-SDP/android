@@ -3,9 +3,14 @@ package ch.epfl.sdp.mobile.state.tournaments
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament
+import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status
+import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.tournaments.*
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.*
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.EnoughPlayers
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.NotEnoughPlayers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -18,6 +23,7 @@ object EmptyTournament : Tournament {
   override val name = ""
   override val isAdmin = false
   override val isParticipant = false
+  override val status = Status.Unknown
 }
 
 /**
@@ -57,10 +63,11 @@ class ActualTournamentDetailsState(
   override val badge: BadgeType?
     get() =
         when {
-          // TODO : Detect tournaments which are not started yet.
+          // Let admins join their tournament.
+          !tournament.isParticipant && tournament.status is NotStarted -> BadgeType.Join
           tournament.isAdmin -> BadgeType.Admin
           tournament.isParticipant -> BadgeType.Participant
-          else -> BadgeType.Join
+          else -> null
         }
 
   override val title: String
@@ -69,6 +76,16 @@ class ActualTournamentDetailsState(
   override val pools: List<PoolInfo<PoolMember>> = emptyList()
 
   override val finals: List<TournamentsFinalsRound<TournamentMatch>> = emptyList()
+
+  override val startTournamentBanner: StartTournamentBanner?
+    get() {
+      val status = tournament.status
+      return if (tournament.isAdmin && status is NotStarted) {
+        if (status.enoughParticipants) EnoughPlayers else NotEnoughPlayers
+      } else null
+    }
+
+  override fun onStartTournament() = Unit
 
   override fun onBadgeClick() {
     scope.launch { facade.join(user, reference) }

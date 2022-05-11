@@ -135,6 +135,12 @@ object English : LocalizedStrings {
       "Add a new match to all the players in this round."
   override val tournamentsDetailsNextRoundTitle = "Next round"
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
+  override val tournamentsDetailsStartEnoughPlayersTitle = "Start the tournament"
+  override val tournamentsDetailsStartEnoughPlayersSubtitle =
+      "Once started, the tournament will assign players and the first matches will be created."
+  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Start the tournament"
+  override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
+      "If you start the tournament now, there won't be enough players to play all the matches."
 
   override val tournamentsContestsTitle = "Contests"
   override val tournamentsFilter = "Filter"

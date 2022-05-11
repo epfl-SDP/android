@@ -23,6 +23,7 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.TournamentDetailsClose
 import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabItem
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentMatch.Result
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentsFinalsRound.Banner
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -109,6 +110,22 @@ interface TournamentDetailsState<P : PoolMember, M : TournamentMatch> {
   /** The list of [TournamentsFinalsRound] to be displayed in supplementary tabs. */
   val finals: List<TournamentsFinalsRound<M>>
 
+  /** The banner to display to start the tournament. */
+  enum class StartTournamentBanner {
+
+    /** The banner if there are enough not players to start the tournament. */
+    NotEnoughPlayers,
+
+    /** The banner if there is enough players to start. */
+    EnoughPlayers,
+  }
+
+  /** The action to start the tournament that should be displayed. */
+  val startTournamentBanner: StartTournamentBanner?
+
+  /** A callback which is called the action to start the tournament is clicked. */
+  fun onStartTournament()
+
   /**
    * A callback which is called when the badge is clicked (typically, if the user wants to join the
    * tournament).
@@ -179,8 +196,10 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
         ) { index ->
           if (index == 0) {
             DetailsPools(
-                modifier = Modifier.fillMaxSize(),
                 pools = state.pools,
+                startTournamentBanner = state.startTournamentBanner,
+                onStartTournamentClick = state::onStartTournament,
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = contentPadding + paddingValues,
             )
           } else {
@@ -285,20 +304,47 @@ private fun DetailsTopBar(
  *
  * @param P the type of the [PoolMember]s.
  * @param pools the [List] of pools to display.
+ * @param startTournamentBanner the banner to start the tournament which should be displayed.
+ * @param onStartTournamentClick the callback which is called when the start tournament action is
+ * clicked.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this tab.
  */
 @Composable
 private fun <P : PoolMember> DetailsPools(
     pools: List<PoolInfo<P>>,
+    startTournamentBanner: TournamentDetailsState.StartTournamentBanner?,
+    onStartTournamentClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val strings = LocalLocalizedStrings.current
   LazyColumn(
       modifier = modifier,
       contentPadding = contentPadding + PaddingValues(16.dp),
       verticalArrangement = spacedBy(16.dp),
-  ) { items(pools) { PoolCard(it) } }
+  ) {
+    when (startTournamentBanner) {
+      NotEnoughPlayers ->
+          item {
+            OrangeNextStepBanner(
+                title = strings.tournamentsDetailsStartNotEnoughPlayersTitle,
+                message = strings.tournamentsDetailsStartNotEnoughPlayersSubtitle,
+                onClick = onStartTournamentClick,
+            )
+          }
+      EnoughPlayers ->
+          item {
+            GreenNextStepBanner(
+                title = strings.tournamentsDetailsStartEnoughPlayersTitle,
+                message = strings.tournamentsDetailsStartEnoughPlayersSubtitle,
+                onClick = onStartTournamentClick,
+            )
+          }
+      else -> Unit
+    }
+    items(pools) { PoolCard(it) }
+  }
 }
 
 /**
