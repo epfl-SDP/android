@@ -9,7 +9,7 @@ import android.speech.SpeechRecognizer.RESULTS_RECOGNITION
 import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toPosition
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 
 /** The default locale we'll be using for speech recognition. */
 private const val DefaultLanguage = "en-US"

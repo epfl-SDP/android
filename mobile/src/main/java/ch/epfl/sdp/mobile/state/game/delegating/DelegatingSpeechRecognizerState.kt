@@ -60,9 +60,9 @@ constructor(
               SpeechFacade.RecognitionResult.Failure.Internal ->
                   snackbarHostState.showSnackbar("Internal failure")
               is SpeechFacade.RecognitionResult.Success -> {
-                for (result in speech.results) {
-                  snackbarHostState.showSnackbar(result)
-                }
+
+                snackbarHostState.showSnackbar(speech.results.toString())
+
                 // TODO(Chau) : Do something more interesting
                 Position.all()
                     .flatMap { delegate.game.actions(it) }
