@@ -54,6 +54,12 @@ private const val ArRoute = "ar"
 /** The route associated to the contests tab. */
 private const val ContestsRoute = "contests"
 
+/** The route associated with some tournament details. */
+private const val TournamentDetailsRoute = "tournament"
+
+/** The default identifier for a tournament. */
+private const val TournamentDefaultId = ""
+
 /** The route associated to new contest button in play screen */
 private const val CreateTournamentRoute = "create_tournament"
 
