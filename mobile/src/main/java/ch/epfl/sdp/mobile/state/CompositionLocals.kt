@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 
 /** A global composition local which provides access to an instance of [AuthenticationFacade]. */
 val LocalAuthenticationFacade =
@@ -21,6 +22,10 @@ val LocalChessFacade = compositionLocalOf<ChessFacade> { error("Missing Chess AP
 /** A global composition local which provides access to an instance of [SpeechFacade]. */
 val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech Facade.") }
 
+/** A global composition local which provides access to an instance of [TournamentFacade]. */
+val LocalTournamentFacade =
+    compositionLocalOf<TournamentFacade> { error("Missing Tournament Facade.") }
+
 /**
  * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values
  * available throughout the hierarchy.
@@ -29,6 +34,7 @@ val LocalSpeechFacade = compositionLocalOf<SpeechFacade> { error("Missing Speech
  * @param social the [SocialFacade] that will be provided.
  * @param chess the [ChessFacade] that will be provided.
  * @param speech the [SpeechFacade] that will be provided.
+ * @param tournament the [TournamentFacade] that will be provided.
  */
 @Composable
 fun ProvideFacades(
@@ -36,6 +42,7 @@ fun ProvideFacades(
     social: SocialFacade,
     chess: ChessFacade,
     speech: SpeechFacade,
+    tournament: TournamentFacade,
     content: @Composable () -> Unit,
 ) {
   CompositionLocalProvider(
@@ -43,5 +50,6 @@ fun ProvideFacades(
       LocalSocialFacade provides social,
       LocalChessFacade provides chess,
       LocalSpeechFacade provides speech,
+      LocalTournamentFacade provides tournament,
   ) { content() }
 }

@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.assets.android.AndroidAssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
@@ -31,6 +32,7 @@ class HomeActivity : ComponentActivity() {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assetManager)
     val speechFacade = SpeechFacade(AndroidSpeechRecognizerFactory(this))
+    val tournamentFacade = TournamentFacade(auth, store)
 
     setContent {
       PawniesTheme {
@@ -40,6 +42,7 @@ class HomeActivity : ComponentActivity() {
               social = socialFacade,
               chess = chessFacade,
               speech = speechFacade,
+              tournament = tournamentFacade,
           ) { Navigation() }
         }
       }
