@@ -43,7 +43,7 @@ fun StatefulCreateTournamentScreen(
       )
 
   val state =
-      remember(user, actions, scope, tournamentFacade) {
+      remember(user, actions, strings, tournamentFacade, scope) {
         ActualCreateTournamentScreenState(
             user = user,
             actions = actions,
