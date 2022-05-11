@@ -76,8 +76,6 @@ data class ChessDocument(
  * @param uid the unique identifier for this tournament.
  * @param adminId the unique identifier of the user administrating the tournament.
  * @param name the name of the tournament.
- * @param creationDate the date the tournament was created.
- * @param status the current status of the tournament.
  * @param maxPlayers the maximum number of players than can join this tournament.
  * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination phase.
  * @param poolSize the target size of each pool. The number of pools derives from this number and
@@ -90,8 +88,6 @@ data class TournamentDocument(
     @DocumentId val uid: String? = null,
     val adminId: String? = null,
     val name: String? = null,
-    val creationDate: LocalDateTime? = null,
-    val status: ContestInfo.Status? = null,
     val maxPlayers: Int? = null,
     val bestOf: Int? = null,
     val poolSize: Int? = null,
