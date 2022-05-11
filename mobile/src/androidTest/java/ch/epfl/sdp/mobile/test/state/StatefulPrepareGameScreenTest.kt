@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPrepareGameScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -35,9 +36,10 @@ class StatefulPrepareGameScreenTest {
   fun defaultScreen_isDisplayed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -58,9 +60,10 @@ class StatefulPrepareGameScreenTest {
   fun switchColorToBlack_works() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -81,9 +84,10 @@ class StatefulPrepareGameScreenTest {
   fun switchColorBackToWhite_works() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -107,9 +111,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -134,9 +139,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -167,9 +173,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -201,9 +208,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -230,9 +238,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -268,9 +277,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -305,9 +315,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 
@@ -341,9 +352,10 @@ class StatefulPrepareGameScreenTest {
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournament = TournamentFacade(auth, store)
 

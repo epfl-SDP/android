@@ -30,11 +30,20 @@ private const val ProfileRoute = "profile"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
+/** The route associated to the puzzle tab. */
+private const val PuzzleSelectionRoute = "puzzles"
+
+/** The route associated to a puzzle game. */
+private const val PuzzleGameRoute = "puzzle_game"
+
 /** The route associated to new game screen */
 private const val GameRoute = "match"
 
 /** The default identifier for a game. */
 private const val GameDefaultId = ""
+
+/** The default identifier for a puzzle. */
+private const val PuzzleGameDefaultId = ""
 
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
@@ -150,6 +159,22 @@ fun StatefulHome(
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
         StatefulArScreen(id, Modifier.fillMaxSize())
       }
+      composable(PuzzleSelectionRoute) {
+        StatefulPuzzleSelectionScreen(
+            user = user,
+            onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
+            contentPadding = paddingValues,
+        )
+      }
+      composable("$PuzzleGameRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", PuzzleGameDefaultId)
+        StatefulPuzzleGameScreen(
+            user = user,
+            puzzleId = id,
+            modifier = Modifier.fillMaxSize(),
+            paddingValues = paddingValues,
+        )
+      }
     }
   }
 }
@@ -159,6 +184,7 @@ private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
       PlayRoute -> HomeSection.Play
+      PuzzleSelectionRoute -> HomeSection.Puzzles
       ContestsRoute -> HomeSection.Contests
       else -> HomeSection.Social
     }
@@ -169,6 +195,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
+      HomeSection.Puzzles -> PuzzleSelectionRoute
       HomeSection.Contests -> ContestsRoute
     }
 

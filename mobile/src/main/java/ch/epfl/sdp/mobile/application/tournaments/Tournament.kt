@@ -16,11 +16,7 @@ interface Tournament {
   /** The creator of the tournament's unique identifier. */
   val adminId: String
 
-  /** The creation date of the tournament. */
-  val creationDate: LocalDateTime
-
-  /** The status of the tournament. */
-  val status: Status
+  // TODO: Add Creation Date and Status attributes.
 
   /** The maximal number of players specified for this tournament. */
   val maxPlayers: Int

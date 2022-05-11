@@ -1,53 +1,50 @@
-package ch.epfl.sdp.mobile.state.game
+package ch.epfl.sdp.mobile.state.game.delegating
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import ch.epfl.sdp.mobile.application.chess.Match
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
-import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
 import ch.epfl.sdp.mobile.application.chess.engine.Rank as EngineRank
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Piece
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.state.game.core.GameDelegate
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
- * A [ChessBoardState] which uses a [Match] to implement the display of pieces through
- * [ChessBoardState].
+ * An implementation of [ChessBoardState] which uses a [GameDelegate] to extract the chess board
+ * information.
  *
- * @param match the [Match] which should be displayed.
- * @param scope the [CoroutineScope] in which the match is observed.
+ * @param delegate the underlying [GameDelegate].
  */
-class MatchChessBoardState(
-    match: Match,
-    scope: CoroutineScope,
-) : ChessBoardState<Piece> {
-
-  /** The current [Game], which is updated when the [Match] progresses. */
-  var game by mutableStateOf(Game.create())
-    private set
-
-  init {
-    scope.launch { match.game.collect { game = it } }
-  }
+class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoardState<Piece> {
 
   override val pieces: Map<ChessBoardState.Position, Piece>
-    get() = game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
+    get() = delegate.game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
 
   override val checkPosition: ChessBoardState.Position?
     get() {
-      val nextStep = game.nextStep
+      val nextStep = delegate.game.nextStep
       if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
-      return game.board
+      return delegate
+          .game
+          .board
           .firstNotNullOf { (position, piece) ->
             position.takeIf { piece.color == nextStep.turn && piece.rank == EngineRank.King }
           }
           .toPosition()
     }
+
+  /** Returns the available actions [from] a position [to] another. */
+  fun availableActions(
+      from: ChessBoardState.Position,
+      to: ChessBoardState.Position,
+  ): List<Action> {
+    return delegate
+        .game
+        .actions(EnginePosition(from.x, from.y))
+        .filter { it.from + it.delta == EnginePosition(to.x, to.y) }
+        .toList()
+  }
 
   /**
    * An implementation of [Piece] which uses an [EnginePiece] internally.

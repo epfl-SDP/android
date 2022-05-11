@@ -33,7 +33,8 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
       } else {
         BadgeType.Join
       }
-  override val status: Status = tournament.status
+  // TODO: Change to tournament.status when added.
+  override val status: Status = Status.Done
 }
 
 /**

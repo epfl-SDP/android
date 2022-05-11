@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -36,9 +37,10 @@ class StatefulContestScreenTest {
           document("id", TournamentDocument("tid1", "1", "Tournament 1"))
         }
       }
+      val assets = emptyAssets()
       val authFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, store)
 

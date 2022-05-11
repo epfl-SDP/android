@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
 
-/** An interface which represents the state of the user */
+/** An interface which represents the state of the speech recognition user interface. */
 @Stable
 interface SpeechRecognizerState {
 

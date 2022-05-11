@@ -17,6 +17,7 @@ import java.time.LocalDateTime
  * @param emoji the emoji associated with this profile.
  * @param backgroundColor the hex color code for this profile.
  * @param followers a list of unique identifiers of the users who follow this profile.
+ * @param solvedPuzzles a list of unique puzzle ids representing puzzles solved by the user
  */
 data class ProfileDocument(
     @DocumentId val uid: String? = null,
@@ -24,6 +25,7 @@ data class ProfileDocument(
     val emoji: String? = null,
     val backgroundColor: String? = null,
     val followers: List<String>? = null,
+    val solvedPuzzles: List<String>? = null,
 )
 
 /**
@@ -39,6 +41,7 @@ fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
         this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
     override val uid: String = this@toProfile?.uid ?: ""
     override val followed: Boolean = currentUserUid in (this@toProfile?.followers ?: emptyList())
+    override val solvedPuzzles = this@toProfile?.solvedPuzzles ?: emptyList()
   }
 }
 
@@ -73,6 +76,8 @@ data class ChessDocument(
  * @param uid the unique identifier for this tournament.
  * @param adminId the unique identifier of the user administrating the tournament.
  * @param name the name of the tournament.
+ * @param creationDate the date the tournament was created.
+ * @param status the current status of the tournament.
  * @param maxPlayers the maximum number of players than can join this tournament.
  * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination phase.
  * @param poolSize the target size of each pool. The number of pools derives from this number and
@@ -85,6 +90,8 @@ data class TournamentDocument(
     @DocumentId val uid: String? = null,
     val adminId: String? = null,
     val name: String? = null,
+    val creationDate: LocalDateTime? = null,
+    val status: ContestInfo.Status? = null,
     val maxPlayers: Int? = null,
     val bestOf: Int? = null,
     val poolSize: Int? = null,
@@ -98,10 +105,7 @@ fun TournamentDocument?.toTournament(): Tournament {
     override val uid: String = this@toTournament?.uid ?: ""
     override val name: String = this@toTournament?.name ?: ""
     override val adminId: String = this@toTournament?.adminId ?: ""
-    override val creationDate: LocalDateTime
-      get() = TODO("Not yet implemented")
-    override val status: ContestInfo.Status
-      get() = TODO("Not yet implemented")
+    // TODO : Add Creation Date and Status parameters.
     override val maxPlayers: Int = this@toTournament?.maxPlayers ?: 0
     override val bestOf: Int = this@toTournament?.bestOf ?: 1
     override val poolSize: Int = this@toTournament?.poolSize ?: 0
