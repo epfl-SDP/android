@@ -101,6 +101,5 @@ constructor(
     PuzzleInfoState by puzzleInfo,
     SpeechRecognizerState by speechRecognizer {
 
-  override fun onArClick() = Unit // TODO: Adapt AR screen to suppport puzzles?
   override fun onBackClick() = currentActions.value.onBack()
 }
