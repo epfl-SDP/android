@@ -699,11 +699,11 @@ class StatefulHomeTest {
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
-      rule.setContentWithLocalizedStrings {
-        ProvideFacades(authFacade, social, chess, speech, tournament) {
-          StatefulHome(currentUser)
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
-      }
 
     rule.onNodeWithText(strings.sectionContests).performClick()
     rule.onNodeWithText(strings.newContest).performClick()

@@ -16,12 +16,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * A composable that makes a [CreateDialog] stateful
+ * A composable that makes a [CreateDialog] stateful.
  *
- * @param user the current [AuthenticatedUser]
- * @param navigateToTournament
- * @param cancelClick
- * @param modifier
+ * @param user the current [AuthenticatedUser].
+ * @param navigateToTournament The action to navigate to a certain tournament via its reference.
+ * @param cancelClick The action to take when clicking on the cancel button.
+ * @param modifier The [Composable]'s modifier.
  */
 @Composable
 fun StatefulCreateTournamentScreen(
@@ -61,6 +61,16 @@ fun StatefulCreateTournamentScreen(
   )
 }
 
+/**
+ * An implementation of the [CreateDialogState]
+ *
+ * @property user The current [AuthenticatedUser].
+ * @property actions The actions to perform for navigating when interacting with the dialog's
+ * buttons.
+ * @property tournamentFacade The tournament facade to act on the store.
+ * @property strings The current [LocalizedStrings].
+ * @property scope The [Composable]'s [CoroutineScope].
+ */
 class ActualCreateTournamentScreenState(
     val user: AuthenticatedUser,
     val actions: State<CreateTournamentDialogActions>,
@@ -165,11 +175,24 @@ private fun validParameters(
   }
 }
 
+/**
+ * A data class that contains [CreateDialog] actions
+ *
+ * @property navigateToTournament the action to perform to navigate to a certain tournament after
+ * clicking the create button
+ * @property cancelClick the action to perform when clicking the cancel buttons
+ */
 data class CreateTournamentDialogActions(
     val navigateToTournament: (reference: TournamentReference) -> Unit,
     val cancelClick: () -> Unit,
 )
 
+/**
+ * Represents a [Choice] with underlying integer values
+ *
+ * @property name
+ * @property value
+ */
 data class IntChoice(
     override val name: String,
     val value: Int,
