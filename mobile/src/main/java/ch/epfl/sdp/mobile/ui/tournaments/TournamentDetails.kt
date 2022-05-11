@@ -150,6 +150,7 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
       topBar = {
         DetailsTopBar(
             title = state.title,
+            badge = state.badge,
             onClose = state::onCloseClick,
             onBadgeClick = state::onBadgeClick,
             badgeEnabled = state.badge == BadgeType.Join,
@@ -202,6 +203,7 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
  * The top app bar, which will be displayed on the tournaments screen.
  *
  * @param title the title of the top bar.
+ * @param badge the badge of the top bar, if any.
  * @param onClose the callback called when the user presses the back action.
  * @param onBadgeClick the callback called then the user presses the badge icon.
  * @param badgeEnabled true if the badge should be clickable.
@@ -215,6 +217,7 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
 @Composable
 private fun DetailsTopBar(
     title: String,
+    badge: BadgeType?,
     onClose: () -> Unit,
     onBadgeClick: () -> Unit,
     badgeEnabled: Boolean,
@@ -247,12 +250,14 @@ private fun DetailsTopBar(
                 style = MaterialTheme.typography.h5,
             )
           }
-          Badge(
-              type = BadgeType.Join,
-              onClick = onBadgeClick,
-              modifier = Modifier.padding(start = 24.dp, end = 16.dp),
-              enabled = badgeEnabled,
-          )
+          if (badge != null) {
+            Badge(
+                type = badge,
+                onClick = onBadgeClick,
+                modifier = Modifier.padding(start = 24.dp, end = 16.dp),
+                enabled = badgeEnabled,
+            )
+          }
         }
         // Tabs.
         ScrollableTabRow(
