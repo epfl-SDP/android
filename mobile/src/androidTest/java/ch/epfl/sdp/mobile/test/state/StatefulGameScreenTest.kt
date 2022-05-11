@@ -759,7 +759,7 @@ class StatefulGameScreenTest {
   }
 }
 
-private object GrantedPermissionState : PermissionState {
+object GrantedPermissionState : PermissionState {
   override val hasPermission = true
   override val permission = RECORD_AUDIO
   override val permissionRequested = true
@@ -767,7 +767,7 @@ private object GrantedPermissionState : PermissionState {
   override fun launchPermissionRequest() = Unit
 }
 
-private class MissingPermissionState : PermissionState {
+class MissingPermissionState : PermissionState {
   override var permissionRequested by mutableStateOf(false)
   override val permission = RECORD_AUDIO
   override val hasPermission
