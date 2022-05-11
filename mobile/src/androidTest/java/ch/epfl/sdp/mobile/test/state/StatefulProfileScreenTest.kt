@@ -64,15 +64,18 @@ class StatefulProfileScreenTest {
   @Test
   fun given_userIsLoggedIn_when_clickedOnChallengeFriend_then_prepareGameDialogWithCorrectlySelectedProfile() =
       runTest {
+    val assets = emptyAssets()
+
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
     }
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -83,7 +86,9 @@ class StatefulProfileScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           PawniesTheme {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) { Navigation() }
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+              Navigation()
+            }
           }
         }
 
