@@ -51,7 +51,6 @@ class StatefulPuzzleSelectionScreenTest {
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
-    authFacade.signInWithEmail("email@example.org", "password")
 
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
