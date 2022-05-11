@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -34,12 +35,15 @@ class StatefulEditProfileNameDialogTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            Navigation()
+          }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
@@ -61,12 +65,15 @@ class StatefulEditProfileNameDialogTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            Navigation()
+          }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()

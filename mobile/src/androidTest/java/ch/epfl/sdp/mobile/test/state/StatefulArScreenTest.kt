@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.HomeActivity
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulArScreen
@@ -45,10 +46,11 @@ class StatefulArScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournaments = TournamentFacade(auth, store)
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech) { StatefulArScreen("gameId") }
+          ProvideFacades(authApi, social, chess, speech, tournaments) { StatefulArScreen("gameId") }
         }
 
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
