@@ -10,8 +10,8 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
-import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
