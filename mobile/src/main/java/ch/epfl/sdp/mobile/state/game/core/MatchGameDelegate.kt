@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.NextStep
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -31,5 +33,12 @@ class MatchGameDelegate(
 
   init {
     scope.launch { match.game.collect { backing = it } }
+  }
+
+  override fun tryPerformAction(action: Action): Boolean {
+    val step = game.nextStep as? NextStep.MovePiece ?: return false
+    if (action !in game.actions(action.from)) return false
+    game = step.move(action)
+    return true
   }
 }
