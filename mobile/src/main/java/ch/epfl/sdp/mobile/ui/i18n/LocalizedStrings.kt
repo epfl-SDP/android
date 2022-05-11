@@ -148,4 +148,9 @@ interface LocalizedStrings {
   val tournamentsCreateDirectElimination: String
   val tournamentsCreateActionCancel: String
   val tournamentsCreateActionCreate: String
+
+  val tournamentCreateQualifierSize0: String
+  val tournamentCreateQualifierSizeN: (size: String) -> String
+  val tournamentCreateElimDepthN: (size: String) -> String
+  val tournamentCreateElimDepthFinal: String
 }
