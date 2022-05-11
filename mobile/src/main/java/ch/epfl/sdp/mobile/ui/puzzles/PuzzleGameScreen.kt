@@ -33,10 +33,11 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
 ) {
   val strings = LocalLocalizedStrings.current
   val typo = MaterialTheme.typography
-  val firstColor = when(state.puzzleInfo.playerColor) {
-    ChessBoardState.Color.White -> ChessBoardState.Color.Black
-    ChessBoardState.Color.Black -> ChessBoardState.Color.White
-  }
+  val firstColor =
+      when (state.puzzleInfo.playerColor) {
+        ChessBoardState.Color.White -> ChessBoardState.Color.Black
+        ChessBoardState.Color.Black -> ChessBoardState.Color.White
+      }
   Scaffold(
       modifier = modifier,
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),

@@ -128,10 +128,11 @@ fun Moves(
     modifier: Modifier = Modifier,
     firstColor: ChessBoardState.Color = White,
 ) {
-  val (firstTextColor, secondTextColor) = when(firstColor) {
-    White -> Pair(Green500, Green800)
-    Black -> Pair(Green800, Green500)
-  }
+  val (firstTextColor, secondTextColor) =
+      when (firstColor) {
+        White -> Pair(Green500, Green800)
+        Black -> Pair(Green800, Green500)
+      }
 
   FlowRow(
       modifier =
