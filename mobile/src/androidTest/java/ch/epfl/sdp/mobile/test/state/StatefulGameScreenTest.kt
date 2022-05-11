@@ -723,7 +723,8 @@ class StatefulGameScreenTest {
             audioPermission = GrantedPermissionState,
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
-    robot.onNodeWithText(SuccessfulSpeechRecognizer.Results.toString()).assertExists()
+    // Print null because the input in not recognized
+    robot.onNodeWithText("null").assertExists()
   }
 
   @Test
