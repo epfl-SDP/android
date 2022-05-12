@@ -49,7 +49,7 @@ fun StatefulGameScreen(
   val speechFacade = LocalSpeechFacade.current
 
   val scope = rememberCoroutineScope()
-  val match = remember(chessFacade, id) { chessFacade.match(id) }
+  val match = remember(chessFacade, id, user) { chessFacade.match(id, user) }
 
   val snackbarHostState = remember { SnackbarHostState() }
   val gameScreenState =

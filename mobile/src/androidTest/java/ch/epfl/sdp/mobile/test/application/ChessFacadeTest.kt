@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.ChessMetadata
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -9,6 +10,9 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games
+import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.play
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -87,6 +91,7 @@ class ChessFacadeTest {
     // Player 1
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "userId1"
+    every { user.name } returns "userName1"
 
     val match = chessFacade.matches(user).mapNotNull { it.firstOrNull() }.first()
     val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
@@ -135,5 +140,137 @@ class ChessFacadeTest {
 
     assertThat(newSolvedPuzzles.size).isEqualTo(1)
     assertThat(newUnsolvedPuzzles).isEmpty()
+  }
+
+  @Test
+  fun given_userChangedName_when_aGameMoveHasBeenMade_then_whiteNameInMetadataShouldUpdate() =
+      runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+    val store = buildStore {
+      collection("games") {
+        document(
+            "gameId",
+            ChessDocument(
+                whiteId = "userId1",
+                blackId = "userId2",
+                metadata = ChessMetadata(null, "test1", "test2")))
+      }
+    }
+
+    val chessFacade = ChessFacade(auth, store, assets)
+    val authFacade = AuthenticationFacade(auth, store)
+
+    authFacade.signUpWithEmail("email@example.org", "test3", "password")
+    val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    store.collection("games").document("gameId").update { set("whiteId", userAuthenticated.uid) }
+
+    val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
+    val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
+
+    match.update(newGame)
+
+    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+
+    assertThat(chess?.metadata?.whiteName).isEqualTo("test3")
+  }
+
+  @Test
+  fun given_userChanngedName_when_aGameMovehasBeenMade_then_blackNameInMetadataShouldUpdate() =
+      runTest {
+    val assets = emptyAssets()
+    val auth = emptyAuth()
+    val store = buildStore {
+      collection("games") {
+        document(
+            "gameId",
+            ChessDocument(
+                whiteId = "userId1",
+                blackId = "userId2",
+                metadata = ChessMetadata(null, "test1", "test2")))
+      }
+    }
+
+    val chessFacade = ChessFacade(auth, store, assets)
+    val authFacade = AuthenticationFacade(auth, store)
+
+    authFacade.signUpWithEmail("email@example.org", "test3", "password")
+    val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    store.collection("games").document("gameId").update { set("blackId", userAuthenticated.uid) }
+
+    val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
+    val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
+
+    match.update(newGame)
+
+    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+
+    assertThat(chess?.metadata?.blackName).isEqualTo("test3")
+  }
+
+  @Test
+  fun given_blackUserMakesFinalStep_when_gameIsNotDecidedYet_then_gameStateShouldShowBlackWins() =
+      runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+    val store = buildStore {
+      collection("games") {
+        document(
+            "gameId",
+            ChessDocument(
+                whiteId = "userId1",
+                blackId = "test3",
+                metadata = ChessMetadata(null, "test1", "test2")))
+      }
+    }
+
+    val chessFacade = ChessFacade(auth, store, assets)
+    val authFacade = AuthenticationFacade(auth, store)
+
+    authFacade.signUpWithEmail("email@example.org", "test3", "password")
+    val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    store.collection("games").document("gameId").update { set("blackId", userAuthenticated.uid) }
+
+    val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
+    val newGame = Game.create().play(FoolsMate)
+
+    match.update(newGame)
+
+    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+
+    assertThat(chess?.metadata?.status).isEqualTo("blackWon")
+  }
+
+  @Test
+  fun given_blackUserMakesFinalStep_when_gameIsNotDecidedYet_then_gameStateShouldShowStalemate() =
+      runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+
+    val store = buildStore {
+      collection("games") {
+        document(
+            "gameId",
+            ChessDocument(
+                whiteId = "test3",
+                blackId = "userId1",
+                metadata = ChessMetadata(null, "test1", "test2")))
+      }
+    }
+
+    val chessFacade = ChessFacade(auth, store, assets)
+    val authFacade = AuthenticationFacade(auth, store)
+
+    authFacade.signUpWithEmail("email@example.org", "test3", "password")
+    val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    store.collection("games").document("gameId").update { set("whiteId", userAuthenticated.uid) }
+
+    val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
+    val newGame = Game.create().play(Games.Stalemate)
+    match.update(newGame)
+
+    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+
+    assertThat(chess?.metadata?.status).isEqualTo("stalemate")
   }
 }
