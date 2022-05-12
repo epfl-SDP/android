@@ -24,7 +24,6 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
 import java.io.StringReader
 import kotlinx.coroutines.flow.*
-import java.time.LocalDateTime
 
 /**
  * An interface which represents all the endpoints and available features for online chess
@@ -93,10 +92,7 @@ class ChessFacade(
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
-  private fun getMatchesForPlayer(
-      colorField: String,
-      user: Profile
-  ): Flow<List<Match>> {
+  private fun getMatchesForPlayer(colorField: String, user: Profile): Flow<List<Match>> {
     return store
         .collection("games")
         .whereEquals(colorField, user.uid)
@@ -211,28 +207,26 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    val chess = store.collection("games").document(id).get<ChessDocument>()
+    val document = store.collection("games").document(id).get<ChessDocument>()
 
     store.collection("games").document(id).update {
       this[FieldPath(listOf("metadata", "status"))] =
           when (val step = game.nextStep) {
             NextStep.Stalemate -> STALEMATE
             is NextStep.MovePiece -> null
-            is NextStep.Checkmate ->
-                if (step.winner == Color.Black) BLACKWON
-                else WHITEWON
+            is NextStep.Checkmate -> if (step.winner == Color.Black) BLACKWON else WHITEWON
           }
 
-      if (chess?.blackId == user?.uid) {
+      if (document?.blackId == user?.uid) {
         this[FieldPath(listOf("metadata", "blackName"))] = user?.name
       }
 
-      if (chess?.whiteId == user?.uid) {
+      if (document?.whiteId == user?.uid) {
         this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
       }
 
       this["moves"] = game.toAlgebraicNotation()
-      this["lastUpdatedAt"] = LocalDateTime.now()
+      this["lastUpdatedAt"] = System.currentTimeMillis()
     }
   }
 }
