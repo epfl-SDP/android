@@ -52,6 +52,7 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
             cleanup()
             cont.resume(Failure.Internal)
           }
+
           override fun onResults(results: List<String>) {
             cleanup()
             cont.resume(Success(results))
