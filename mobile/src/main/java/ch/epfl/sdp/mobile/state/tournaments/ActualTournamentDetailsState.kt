@@ -92,6 +92,35 @@ class PlayerIdPoolInfo(
 }
 
 /**
+ * An adapter for [TournamentMatch] which wraps an [EliminationMatch].
+ *
+ * @param match the [EliminationMatch] that is wrapped.
+ */
+class EliminationMatchAdapter(match: EliminationMatch) : TournamentMatch {
+  val id = match.id
+  val depth = match.depth
+  override val firstPlayerName = match.whiteName
+  override val secondPlayerName = match.blackName
+  override val result =
+      when (match.status) {
+        EliminationMatch.Status.WhiteWon -> TournamentMatch.Result.FirstWon
+        EliminationMatch.Status.BlackWon -> TournamentMatch.Result.SecondWon
+        EliminationMatch.Status.Drawn -> TournamentMatch.Result.Draw
+        EliminationMatch.Status.None -> TournamentMatch.Result.Ongoing
+      }
+}
+
+class EliminationMatchAdapterTournamentsFinalsRound(
+    round: Status.Round,
+    allMatches: List<EliminationMatchAdapter>,
+) : TournamentsFinalsRound<EliminationMatchAdapter> {
+  override val name = round.name
+  override val matches = allMatches.filter { it.depth == round.depth }
+  override val banner: TournamentsFinalsRound.Banner? = null
+  override fun onBannerClick() = Unit
+}
+
+/**
  * An implementation of [TournamentDetailsState] which uses a [TournamentReference] to fetch a
  * [Tournament], and delegate some responsibility to it.
  *
@@ -107,7 +136,7 @@ class ActualTournamentDetailsState(
     private val facade: TournamentFacade,
     private val reference: TournamentReference,
     private val scope: CoroutineScope,
-) : TournamentDetailsState<PlayerIdPoolMember, TournamentMatch> {
+) : TournamentDetailsState<PlayerIdPoolMember, EliminationMatchAdapter> {
 
   /** The current [TournamentDetailsActions]. */
   private val actions by actions
@@ -160,7 +189,26 @@ class ActualTournamentDetailsState(
           )
         }
 
-  override val finals: List<TournamentsFinalsRound<TournamentMatch>> = emptyList()
+  private var eliminationMatchesState by mutableStateOf(emptyList<EliminationMatchAdapter>())
+
+  init {
+    scope.launch {
+      facade
+          .eliminationMatches(reference)
+          .onEach { list -> eliminationMatchesState = list.map { EliminationMatchAdapter(it) } }
+          .collect()
+    }
+  }
+
+  override val finals: List<TournamentsFinalsRound<EliminationMatchAdapter>>
+    get() =
+        when (val status = tournament.status) {
+          is Status.DirectElimination ->
+              status.rounds.map {
+                EliminationMatchAdapterTournamentsFinalsRound(it, eliminationMatchesState)
+              }
+          else -> emptyList()
+        }
 
   override val poolBanner: PoolBanner?
     get() {
@@ -188,7 +236,7 @@ class ActualTournamentDetailsState(
     scope.launch { facade.join(user, reference) }
   }
 
-  override fun onWatchMatchClick(match: TournamentMatch) = Unit
+  override fun onWatchMatchClick(match: EliminationMatchAdapter) = Unit
 
   override fun onCloseClick() = actions.onBackClick()
 }

@@ -35,6 +35,21 @@ interface Tournament {
     /** Indicates that we are currently in the pools phase. */
     object Pools : Status
 
+    /**
+     * Indicates that we are in a direct elimination phase, with a [List] of current [Round].
+     *
+     * @param rounds the [List] of all the [Round].
+     */
+    data class DirectElimination(val rounds: List<Round>) : Status
+
+    /**
+     * An elimination round.
+     *
+     * @param name the name of the elimination round.
+     * @param depth the depth of the elimination round.
+     */
+    data class Round(val name: String, val depth: Int)
+
     /** Indicates that the status is still loading and is not known yet. */
     object Unknown : Status
   }

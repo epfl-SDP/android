@@ -144,32 +144,18 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
           .map { it.filterNotNull().toPoolResults() }
 
   /**
-   * Allows a user to advance the round number of a certain pool for a certain tournament, if the
-   * user administrates the tournament.
+   * Returns the [Flow] of all the [EliminationMatch] in this [TournamentReference].
    *
-   * @param user The [AuthenticatedUser] that wants to join the "Tournament".
-   * @param tournament The "Tournament" in which the pool is.
-   * @param poolId The id of the pool in the "Tournament".
+   * @param reference the [TournamentReference] for this tournament.
+   * @return the [Flow] of [EliminationMatch].
    */
-  // TODO: Add the function corresponding to the documentation right above
-
-  /**
-   * Allows a user to advance the round number of direct eliminations for a certain tournament, if
-   * the user administrates the tournament.
-   *
-   * @param user The [AuthenticatedUser] that wants to join the "Tournament".
-   * @param tournament The "Tournament" to advance direct eliminations round.
-   */
-  // TODO: Add the function corresponding to the documentation right above
-
-  /**
-   * Allows a user to advance the direct elimination stage for a certain tournament, if the user
-   * administrates the tournament.
-   *
-   * @param user The [AuthenticatedUser] that wants to join the "Tournament".
-   * @param tournament The "Tournament" to advance the stage of direct eliminations.
-   */
-  // TODO: Add the function corresponding to the documentation right above
+  fun eliminationMatches(reference: TournamentReference): Flow<List<EliminationMatch>> =
+      store
+          .collection("games")
+          .whereEquals("tournamentId", reference.uid)
+          .whereEquals("poolId", null)
+          .asFlow<ChessDocument>()
+          .map { list -> list.mapNotNull { it?.toEliminationMatch() } }
 
   /**
    * Validates the parameters of a tournament

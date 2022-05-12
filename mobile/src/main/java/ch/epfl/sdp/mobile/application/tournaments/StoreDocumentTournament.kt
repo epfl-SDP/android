@@ -8,6 +8,8 @@ import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.Collection
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.StagePools
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.stageDirectElimination
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
+import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
@@ -35,9 +37,18 @@ class StoreDocumentTournament(
   override val status: Tournament.Status
     get() {
       val enoughParticipants = document.playerIds?.size ?: 0 >= (document.maxPlayers ?: 0)
-      return when (document.stage) {
-        null -> Tournament.Status.NotStarted(enoughParticipants)
-        StagePools -> Tournament.Status.Pools
+      val stageAsRound = document.stage?.toIntOrNull()
+      val eliminationRounds = document.eliminationRounds ?: 1
+      return when {
+        document.stage == null -> NotStarted(enoughParticipants)
+        document.stage == StagePools -> Pools
+        stageAsRound != null ->
+            Tournament.Status.DirectElimination(
+                List(eliminationRounds - stageAsRound + 1) { index ->
+                  val round = eliminationRounds - index
+                  val pow = 2.0.pow(round - 1).toInt()
+                  Tournament.Status.Round("1 / $pow", round)
+                })
         else -> Tournament.Status.Unknown
       }
     }
@@ -121,7 +132,7 @@ class StoreDocumentTournament(
         val bestOf = currentDocument.bestOf ?: return@transaction
         val depth = currentDocument.eliminationRounds ?: return@transaction
         val count = 2.0.pow(depth).toInt()
-        val matches = ranked.take(count).zipWithNext()
+        val matches = ranked.take(count).chunked(2)
 
         set(
             reference = ref,
@@ -130,8 +141,7 @@ class StoreDocumentTournament(
 
         for (match in matches) {
           repeat(bestOf) { index ->
-            val (first, second) =
-                if (index % 2 == 0) match.first to match.second else match.second to match.first
+            val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
             val matchRef = store.collection("games").document()
             val matchDocument =
                 ChessDocument(
