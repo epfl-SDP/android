@@ -1,6 +1,9 @@
 package ch.epfl.sdp.mobile.ui.i18n
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import kotlin.time.Duration
 
 /**
  * An interface which defines all the texts and content descriptions which are used in the Pawnies
@@ -87,7 +90,11 @@ interface LocalizedStrings {
   val sectionSocial: String
   val sectionSettings: String
   val sectionPlay: String
+  val sectionContests: String
+  val sectionPuzzles: String
+
   val newGame: String
+  val newContest: String
 
   val prepareGameChooseColor: String
   val prepareGameChooseOpponent: String
@@ -102,4 +109,59 @@ interface LocalizedStrings {
   val prepareGamePlayOnline: String
 
   val playOnlineGames: String
+
+  val puzzlePlayingAs: (color: String) -> String
+  val puzzleUnsolvedPuzzles: String
+  val puzzleListContentDescription: String
+  val puzzlesTitle: String
+  val puzzleSolving: (color: String) -> String
+  val puzzleFailed: String
+  val puzzleSolved: String
+  val puzzleNumber: (id: String) -> String
+  val puzzleRating: (rating: String) -> String
+
+  val tournamentsBadgeJoin: String
+  val tournamentsBadgeParticipant: String
+  val tournamentsBadgeAdmin: String
+  val tournamentsTableScore: String
+  val tournamentsPoolStillOpen: String
+  val tournamentsPoolRound: (current: Int, total: Int) -> String
+  val tournamentsPoolStartNextRound: String
+  val tournamentsDetailsFinals: String
+  val tournamentsDetailsPools: String
+  val tournamentsDetailsWatch: String
+  val tournamentsDetailsMatchWon: String
+  val tournamentsDetailsMatchLost: String
+  val tournamentsDetailsMatchDrawn: String
+  val tournamentsDetailsHeaderOngoing: String
+  val tournamentsDetailsHeaderDone: String
+  val tournamentsDetailsNextBestOfTitle: (Int, Int) -> String
+  val tournamentsDetailsNextBestOfSubtitle: String
+  val tournamentsDetailsNextRoundTitle: String
+  val tournamentsDetailsNextRoundSubtitle: String
+  val tournamentsDetailsStartEnoughPlayersTitle: String
+  val tournamentsDetailsStartEnoughPlayersSubtitle: String
+  val tournamentsDetailsStartNotEnoughPlayersTitle: String
+  val tournamentsDetailsStartNotEnoughPlayersSubtitle: String
+  val tournamentDetailsBackContentDescription: String
+
+  val tournamentsContestsTitle: String
+  val tournamentsFilter: String
+  val tournamentsStartingTime: (Duration, SpanStyle) -> AnnotatedString
+  val tournamentsDone: String
+  val tournamentsCreateTitle: String
+  val tournamentsCreateNameHint: String
+  val tournamentsCreateRules: String
+  val tournamentsCreateBestOf: String
+  val tournamentsCreatePlayers: String
+  val tournamentsCreateMaximumPlayerHint: String
+  val tournamentsCreatePoolSize: String
+  val tournamentsCreateDirectElimination: String
+  val tournamentsCreateActionCancel: String
+  val tournamentsCreateActionCreate: String
+
+  val tournamentsCreateQualifierSize0: String
+  val tournamentsCreateQualifierSizeN: (size: Int) -> String
+  val tournamentsCreateElimDemomN: (denominator: Int) -> String
+  val tournamentsCreateElimDepthFinal: String
 }

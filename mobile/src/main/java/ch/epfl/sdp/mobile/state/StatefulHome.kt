@@ -7,9 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
+import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 /** The route associated to the social tab. */
 private const val SocialRoute = "social"
@@ -29,17 +34,38 @@ private const val ProfileRoute = "profile"
 /** The route associated to the play tab. */
 private const val PlayRoute = "play"
 
+/** The route associated to the puzzle tab. */
+private const val PuzzleSelectionRoute = "puzzles"
+
+/** The route associated to a puzzle game. */
+private const val PuzzleGameRoute = "puzzle_game"
+
 /** The route associated to new game screen */
 private const val GameRoute = "match"
 
 /** The default identifier for a game. */
 private const val GameDefaultId = ""
 
+/** The default identifier for a puzzle. */
+private const val PuzzleGameDefaultId = ""
+
 /** The route associated to new game button in play screen */
 private const val PrepareGameRoute = "prepare_game"
 
 /** The route associated to the ar tab. */
 private const val ArRoute = "ar"
+
+/** The route associated to the contests tab. */
+private const val ContestsRoute = "contests"
+
+/** The route associated with some tournament details. */
+private const val TournamentDetailsRoute = "tournament"
+
+/** The default identifier for a tournament. */
+private const val TournamentDefaultId = ""
+
+/** The route associated to new contest button in play screen */
+private const val CreateTournamentRoute = "create_tournament"
 
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
@@ -49,6 +75,7 @@ private const val ArRoute = "ar"
  * @param modifier the [Modifier] for this composable.
  * @param controller the [NavHostController] used to control the current destination.
  */
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun StatefulHome(
     user: AuthenticatedUser,
@@ -66,6 +93,10 @@ fun StatefulHome(
     controller.navigate("$GameRoute/${match.uid}")
   }
 
+  val openTournament: (ref: TournamentReference) -> Unit = { tournament ->
+    controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -80,6 +111,15 @@ fun StatefulHome(
         StatefulFollowingScreen(
             user = user,
             onShowProfileClick = onPersonItemClick,
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
+      }
+      composable(ContestsRoute) {
+        StatefulTournamentScreen(
+            currentUser = user,
+            onTournamentClick = openTournament,
+            onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
         )
@@ -105,6 +145,7 @@ fun StatefulHome(
             onMatchClick = onGameItemClick,
             onBackToSocialClick = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
+            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
             contentPadding = paddingValues)
       }
       composable(PlayRoute) {
@@ -116,9 +157,12 @@ fun StatefulHome(
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
-      dialog(PrepareGameRoute) {
+      dialog(
+          "$PrepareGameRoute?opponentId={opponentId}",
+          arguments = listOf(navArgument("opponentId") { nullable = true })) {
         StatefulPrepareGameScreen(
             user,
+            opponentId = it.arguments?.getString("opponentId"),
             navigateToGame = { match -> controller.navigate("$GameRoute/${match.id}") },
             cancelClick = { controller.popBackStack() },
         )
@@ -142,6 +186,51 @@ fun StatefulHome(
         val id = requireNotNull(entry.arguments).getString("id", GameDefaultId)
         StatefulArScreen(id, Modifier.fillMaxSize())
       }
+      composable(PuzzleSelectionRoute) {
+        StatefulPuzzleSelectionScreen(
+            user = user,
+            onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
+            contentPadding = paddingValues,
+        )
+      }
+      composable("$PuzzleGameRoute/{id}") { entry ->
+        val id = requireNotNull(entry.arguments).getString("id", PuzzleGameDefaultId)
+        val actions =
+            StatefulGameScreenActions(
+                onBack = { controller.popBackStack() },
+                onShowAr = {}, // TODO: Refactor AR to show puzzle?...
+            )
+        StatefulPuzzleGameScreen(
+            user = user,
+            puzzleId = id,
+            actions = actions,
+            modifier = Modifier.fillMaxSize(),
+            paddingValues = paddingValues,
+        )
+      }
+      composable("$TournamentDetailsRoute/{id}") { entry ->
+        val actions =
+            TournamentDetailsActions(
+                onBackClick = { controller.popBackStack() },
+            )
+        val id = requireNotNull(entry.arguments).getString("id", TournamentDefaultId)
+        StatefulTournamentDetailsScreen(
+            actions = actions,
+            user = user,
+            reference = TournamentReference(id),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
+      }
+      dialog(CreateTournamentRoute) {
+        StatefulCreateTournamentScreen(
+            user,
+            navigateToTournament = { tournament ->
+              controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
+            },
+            cancelClick = { controller.popBackStack() },
+        )
+      }
     }
   }
 }
@@ -151,6 +240,8 @@ private fun NavBackStackEntry.toSection(): HomeSection =
     when (destination.route) {
       SettingsRoute -> HomeSection.Settings
       PlayRoute -> HomeSection.Play
+      PuzzleSelectionRoute -> HomeSection.Puzzles
+      ContestsRoute -> HomeSection.Contests
       else -> HomeSection.Social
     }
 
@@ -160,8 +251,9 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Social -> SocialRoute
       HomeSection.Settings -> SettingsRoute
       HomeSection.Play -> PlayRoute
+      HomeSection.Puzzles -> PuzzleSelectionRoute
+      HomeSection.Contests -> ContestsRoute
     }
 
-private fun hideBar(route: String?): Boolean {
-  return route?.startsWith(GameRoute) ?: false
-}
+private fun hideBar(route: String?): Boolean =
+    route?.let { it.startsWith(GameRoute) || it.startsWith(TournamentDetailsRoute) } ?: false

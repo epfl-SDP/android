@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.application
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
-import ch.epfl.sdp.mobile.application.chess.engine.*
 import com.google.firebase.firestore.DocumentId
 
 /**
@@ -14,6 +13,7 @@ import com.google.firebase.firestore.DocumentId
  * @param emoji the emoji associated with this profile.
  * @param backgroundColor the hex color code for this profile.
  * @param followers a list of unique identifiers of the users who follow this profile.
+ * @param solvedPuzzles a list of unique puzzle ids representing puzzles solved by the user
  */
 data class ProfileDocument(
     @DocumentId val uid: String? = null,
@@ -21,6 +21,7 @@ data class ProfileDocument(
     val emoji: String? = null,
     val backgroundColor: String? = null,
     val followers: List<String>? = null,
+    val solvedPuzzles: List<String>? = null,
 )
 
 /**
@@ -36,6 +37,7 @@ fun ProfileDocument?.toProfile(currentUserUid: String?): Profile {
         this@toProfile?.backgroundColor?.let(Profile::Color) ?: Profile.Color.Default
     override val uid: String = this@toProfile?.uid ?: ""
     override val followed: Boolean = currentUserUid in (this@toProfile?.followers ?: emptyList())
+    override val solvedPuzzles = this@toProfile?.solvedPuzzles ?: emptyList()
   }
 }
 
@@ -61,4 +63,55 @@ data class ChessDocument(
     val moves: List<String>? = null,
     val whiteId: String? = null,
     val blackId: String? = null,
+)
+
+/**
+ * A document which represents a tournament of chess between many users. All the tournament
+ * documents are stored in the `/tournaments/` collection.
+ *
+ * @param uid the unique identifier for this tournament.
+ * @param adminId the unique identifier of the user administrating the tournament.
+ * @param name the name of the tournament.
+ * @param maxPlayers the maximum number of players than can join this tournament.
+ * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination phase.
+ * @param poolSize the target size of each pool. The number of pools derives from this number and
+ * the total number of players.
+ * @param eliminationRounds the number of direct elimination rounds. 1 for just a final, 2 for
+ * semi-finals, 3 for quarter-finals, etc...
+ * @param playerIds the [List] of unique identifier of users that have joined the tournament.
+ */
+data class TournamentDocument(
+    @DocumentId val uid: String? = null,
+    val adminId: String? = null,
+    val name: String? = null,
+    val maxPlayers: Int? = null,
+    val bestOf: Int? = null,
+    val poolSize: Int? = null,
+    val eliminationRounds: Int? = null,
+    val playerIds: List<String>? = null,
+) {
+  companion object {
+
+    /** The name of the collection. */
+    const val Collection = "tournaments"
+
+    /** The field with the tournament participants. */
+    const val Participants = "playerIds"
+  }
+}
+
+/**
+ * A document which represents a pool in a tournament of chess. All the pool documents are stored
+ * inside their corresponding [TournamentDocument], in `tournaments/tournamentId/`.
+ *
+ * @param uid the unique identifier for this pool.
+ * @param tournamentId the unique identifier of the tournament in which the pool takes place.
+ * @param currentRound the current round number for the pool.
+ * @param playerIds the [List] of unique identifier of users that have been placed in this pool.
+ */
+data class PoolDocument(
+    @DocumentId val uid: String? = null,
+    val tournamentId: String? = null,
+    val currentRound: Int? = null,
+    val playerIds: List<String>? = null,
 )

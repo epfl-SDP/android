@@ -10,14 +10,18 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.SuspendingAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +33,16 @@ class NavigationTest {
   @Test
   fun loadingSection_isEmpty() {
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(SuspendingAuth, store)
     val socialFacade = SocialFacade(SuspendingAuth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(SuspendingAuth, store)
     rule.setContentWithLocalizedStrings {
-      ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
+      ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+        Navigation()
+      }
     }
     rule.onAllNodes(keyIsDefined(SemanticsProperties.Text)).assertCountEquals(0)
   }
@@ -42,12 +51,17 @@ class NavigationTest {
   fun notAuthenticated_displaysAuthenticationScreen() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
+          ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            Navigation()
+          }
         }
 
     // Do we see the authentication screen actions ?
@@ -58,12 +72,17 @@ class NavigationTest {
   fun authenticated_displaysHome() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store)
+    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade, chessFacade) { Navigation() }
+          ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            Navigation()
+          }
         }
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
 
@@ -79,12 +98,17 @@ class NavigationTest {
     val store = buildStore {
       collection("users") { document("id", ProfileDocument(name = "Alice")) }
     }
+    val assets = emptyAssets()
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            Navigation()
+          }
         }
     authFacade.signInWithEmail("email@epfl.ch", "password")
 

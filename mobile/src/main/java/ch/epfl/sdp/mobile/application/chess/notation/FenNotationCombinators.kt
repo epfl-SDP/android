@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.position
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.CastlingRights
+import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.filter
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
@@ -120,23 +121,45 @@ object FenNotationCombinators {
       char().filter { it.lowercaseChar() == value }
 
   /**
-   * A [Parser] which consumes half of the castling rights in FEN notation and returns a
-   * corresponding [Pair] of rights, the first component indicating the kingside rights and the
-   * second one representing the queenside rights, regardless of color
+   * A [Parser] which consumes a "-" in FEN notation and returns the corresponding [CastlingRights]
    */
-  private val castlingRightsHalf =
-      charLower('k').flatMap { charLower('q').map { Pair(first = true, second = true) } } or
-          charLower(NothingSymbol).map { Pair(first = false, second = false) } or
-          charLower('q').map { Pair(first = false, second = true) } or
-          charLower('k').map { Pair(first = true, second = false) }
+  private val noCastlingRights =
+      charLower(NothingSymbol).map {
+        CastlingRights(
+            kingSideWhite = false,
+            queenSideWhite = false,
+            kingSideBlack = false,
+            queenSideBlack = false,
+        )
+      }
 
   /**
-   * A [Parser] which consumes castling rights in FEN notation and returns the corresponding
-   * [CastlingRights]
+   * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
+   * [Pair] of rights for white, the first component indicating the kingside rights and the second
+   * one representing the queenside rights
    */
-  val castlingRights =
-      castlingRightsHalf.flatMap { white ->
-        castlingRightsHalf.map { black ->
+  private val castlingWhite =
+      char('K').flatMap { char('Q').map { Pair(first = true, second = true) } } or
+          char('K').map { Pair(first = true, second = false) } or
+          char('Q').map { Pair(first = false, second = true) }
+
+  /**
+   * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
+   * [Pair] of rights for black, the first component indicating the kingside rights and the second
+   * one representing the queenside rights
+   */
+  private val castlingBlack =
+      char('k').flatMap { char('q').map { Pair(first = true, second = true) } } or
+          char('k').map { Pair(first = true, second = false) } or
+          char('q').map { Pair(first = false, second = true) }
+
+  /**
+   * A [Parser] which consumes up to four characters in FEN notation and returns a corresponding
+   * [CastlingRights] for when both white and black have at least one side allowed to castle
+   */
+  private val bothCastling =
+      castlingWhite.flatMap { white ->
+        castlingBlack.map { black ->
           CastlingRights(
               kingSideWhite = white.first,
               queenSideWhite = white.second,
@@ -145,6 +168,46 @@ object FenNotationCombinators {
           )
         }
       }
+
+  /**
+   * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
+   * [Pair] of rights for when only white has some castling rights
+   */
+  private val justCastlingWhite =
+      castlingWhite.map {
+        CastlingRights(
+            kingSideWhite = it.first,
+            queenSideWhite = it.second,
+            kingSideBlack = false,
+            queenSideBlack = false,
+        )
+      }
+
+  /**
+   * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
+   * [Pair] of rights for when only black has some castling rights
+   */
+  private val justCastlingBlack =
+      castlingBlack.map {
+        CastlingRights(
+            kingSideWhite = false,
+            queenSideWhite = false,
+            kingSideBlack = it.first,
+            queenSideBlack = it.second,
+        )
+      }
+
+  /**
+   * A [Parser] which consumes castling rights in FEN notation and returns the corresponding
+   * [CastlingRights]
+   */
+  val castlingRights =
+      combine(
+          noCastlingRights,
+          justCastlingWhite,
+          justCastlingBlack,
+          bothCastling,
+      )
 
   /**
    * A [Parser] which consumes a either a nothing symbol or a position representing an en passant

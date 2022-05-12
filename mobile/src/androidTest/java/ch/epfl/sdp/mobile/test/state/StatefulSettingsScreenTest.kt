@@ -9,13 +9,17 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import com.google.common.truth.Truth
 import io.mockk.every
 import io.mockk.mockk
@@ -43,16 +47,19 @@ class StatefulSettingsScreenTest {
               ChessDocument(uid = "45", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
         }
       }
+      val assets = emptyAssets()
       val authFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store)
+      val chessFacade = ChessFacade(auth, store, assets)
+      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+      val tournamentFacade = TournamentFacade(auth, store)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade) {
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
               StatefulSettingsScreen(user, {}, {}, {})
             }
           }
@@ -76,14 +83,17 @@ class StatefulSettingsScreenTest {
 
     val auth = emptyAuth()
     val store = emptyStore()
+    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
             StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
           }
         }

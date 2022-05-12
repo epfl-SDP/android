@@ -1,7 +1,14 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package ch.epfl.sdp.mobile.test.state
 
+import android.Manifest.permission.RECORD_AUDIO
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -9,16 +16,23 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
+import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.*
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toEngineRank
-import ch.epfl.sdp.mobile.state.game.MatchChessBoardState.Companion.toRank
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineRank
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toRank
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.FoolsMate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.Stalemate
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -27,6 +41,8 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -43,11 +59,16 @@ class StatefulGameScreenTest {
    * playing against himself
    *
    * @param actions the [StatefulGameScreenActions] for this composable.
+   * @param recognizer the [SpeechRecognizerFactory] used to make the speech request.
+   * @param audioPermission the [PermissionState] to access audio.
    */
   private fun emptyGameAgainstOneselfRobot(
       actions: StatefulGameScreenActions = StatefulGameScreenActions(onBack = {}, onShowAr = {}),
+      recognizer: SpeechRecognizerFactory = SuspendingSpeechRecognizerFactory,
+      audioPermission: PermissionState = GrantedPermissionState,
   ): ChessBoardRobot {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") {
@@ -57,14 +78,18 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(recognizer)
+    val tournament = TournamentFacade(auth, store)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
+          ProvideFacades(authApi, social, chess, speech, tournament) {
+            StatefulGameScreen(user1, "gameId", actions, audioPermissionState = audioPermission)
+          }
         }
 
     return ChessBoardRobot(rule, strings)
@@ -523,6 +548,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
@@ -530,7 +556,9 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -539,7 +567,9 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
+          ProvideFacades(authApi, social, chess, speech, tournament) {
+            StatefulGameScreen(user1, "gameId", actions)
+          }
         }
 
     val robot = ChessBoardRobot(rule, strings)
@@ -556,6 +586,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingGameWithNoBlackId_isUnsuccessful() {
     val auth = emptyAuth()
+    val assets = emptyAssets()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
@@ -563,7 +594,9 @@ class StatefulGameScreenTest {
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -572,7 +605,9 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess) { StatefulGameScreen(user1, "gameId", actions) }
+          ProvideFacades(authApi, social, chess, speech, tournament) {
+            StatefulGameScreen(user1, "gameId", actions)
+          }
         }
 
     val robot = ChessBoardRobot(rule, strings)
@@ -589,6 +624,8 @@ class StatefulGameScreenTest {
     // Pawn did not move
     robot.assertHasPiece(4, 1, Black, Pawn)
   }
+
+  @get:Rule val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(RECORD_AUDIO)
 
   @Test
   fun clickingListening_showsListeningText() {
@@ -674,5 +711,73 @@ class StatefulGameScreenTest {
     robot.onNodeWithContentDescription(robot.strings.boardPieceQueen).performClick()
     robot.onNodeWithContentDescription(robot.strings.boardPieceQueen).performClick()
     robot.onNodeWithLocalizedText { robot.strings.gamePromoteConfirm }.assertIsNotEnabled()
+  }
+
+  @Test
+  fun given_successfulRecognizer_when_clicksListening_then_displaysRecognitionResults() {
+    // This will fail once we want to move the pieces instead.
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = SuccessfulSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    // Print null because the input in not recognized
+    robot.onNodeWithText("null").assertExists()
+  }
+
+  @Test
+  fun given_failingRecognizer_when_clicksListening_then_displaysFailedRecognitionResults() {
+    // This will fail once we want to move the pieces instead.
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = FailingSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithText("Internal failure").assertExists()
+  }
+
+  @Test
+  fun given_noPermission_when_clicksListening_then_requestsPermission() {
+    val permission = MissingPermissionState()
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = SuspendingSpeechRecognizerFactory,
+            audioPermission = permission,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    assertThat(permission.permissionRequested).isTrue()
+  }
+
+  @Test
+  fun given_suspendingRecognizer_when_clickingListeningTwice_then_cancelsRecognition() {
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = SuspendingSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithLocalizedText { gameListening }.performClick()
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.assertExists()
+  }
+}
+
+object GrantedPermissionState : PermissionState {
+  override val hasPermission = true
+  override val permission = RECORD_AUDIO
+  override val permissionRequested = true
+  override val shouldShowRationale = false
+  override fun launchPermissionRequest() = Unit
+}
+
+class MissingPermissionState : PermissionState {
+  override var permissionRequested by mutableStateOf(false)
+  override val permission = RECORD_AUDIO
+  override val hasPermission
+    get() = permissionRequested
+  override val shouldShowRationale = false
+  override fun launchPermissionRequest() {
+    permissionRequested = true
   }
 }

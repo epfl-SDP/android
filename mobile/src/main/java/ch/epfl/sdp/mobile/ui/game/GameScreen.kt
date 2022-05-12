@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,8 +22,9 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.PawniesColors.Orange200
 import ch.epfl.sdp.mobile.ui.WhiteKing
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Message
-import ch.epfl.sdp.mobile.ui.game.GameScreenState.Move
+import ch.epfl.sdp.mobile.ui.game.MovesInfoState.*
+import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.Message
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 import com.google.accompanist.flowlayout.FlowRow
 
 /**
@@ -37,9 +39,11 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
     state: GameScreenState<Piece>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
   Scaffold(
       modifier = modifier,
+      scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
             onBackClick = state::onBackClick,
@@ -119,10 +123,17 @@ private val Message.text: String
  * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-private fun Moves(
+fun Moves(
     moves: List<Move>,
     modifier: Modifier = Modifier,
+    firstColor: ChessBoardState.Color = White,
 ) {
+  val (firstTextColor, secondTextColor) =
+      when (firstColor) {
+        White -> Pair(Green500, Green800)
+        Black -> Pair(Green800, Green500)
+      }
+
   FlowRow(
       modifier =
           modifier
@@ -139,7 +150,7 @@ private fun Moves(
         key(index) {
           Text(
               text = "${index + 1}. ${move.text}",
-              color = if (index % 2 == 0) Green500 else Green800,
+              color = if (index % 2 == 0) firstTextColor else secondTextColor,
           )
         }
       }

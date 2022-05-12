@@ -1,17 +1,19 @@
+@file:OptIn(ExperimentalPermissionsApi::class)
+
 package ch.epfl.sdp.mobile.state
 
+import android.Manifest.permission.RECORD_AUDIO
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
-import ch.epfl.sdp.mobile.state.game.MatchGameScreenState
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
-import ch.epfl.sdp.mobile.ui.game.GameScreen
-import ch.epfl.sdp.mobile.ui.game.PromoteDialog
-import ch.epfl.sdp.mobile.ui.game.PromotionState
+import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
+import ch.epfl.sdp.mobile.ui.game.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
+import com.google.accompanist.permissions.rememberPermissionState
 
 /**
  * The different navigation actions which may be performed by the [StatefulGameScreen].
@@ -32,6 +34,7 @@ data class StatefulGameScreenActions(
  * @param actions the [StatefulGameScreenActions] to perform.
  * @param modifier the [Modifier] for the composable.
  * @param paddingValues the [PaddingValues] for this composable.
+ * @param audioPermissionState the [PermissionState] which provides access to audio content.
  */
 @Composable
 fun StatefulGameScreen(
@@ -40,17 +43,24 @@ fun StatefulGameScreen(
     actions: StatefulGameScreenActions,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(),
+    audioPermissionState: PermissionState = rememberPermissionState(RECORD_AUDIO),
 ) {
-  val facade = LocalChessFacade.current
-  val scope = rememberCoroutineScope()
-  val match = remember(facade, id) { facade.match(id) }
+  val chessFacade = LocalChessFacade.current
+  val speechFacade = LocalSpeechFacade.current
 
+  val scope = rememberCoroutineScope()
+  val match = remember(chessFacade, id) { chessFacade.match(id) }
+
+  val snackbarHostState = remember { SnackbarHostState() }
   val gameScreenState =
-      remember(actions, user, match, scope) {
-        MatchGameScreenState(
+      remember(actions, user, match, audioPermissionState, speechFacade, snackbarHostState, scope) {
+        ActualGameScreenState(
             actions = actions,
             user = user,
             match = match,
+            permission = audioPermissionState,
+            speechFacade = speechFacade,
+            snackbarHostState = snackbarHostState,
             scope = scope,
         )
       }
@@ -61,6 +71,7 @@ fun StatefulGameScreen(
       state = gameScreenState,
       modifier = modifier,
       contentPadding = paddingValues,
+      snackbarHostState = snackbarHostState,
   )
 }
 
@@ -71,7 +82,7 @@ fun StatefulGameScreen(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-private fun StatefulPromoteDialog(
+fun StatefulPromoteDialog(
     state: PromotionState,
     modifier: Modifier = Modifier,
 ) {

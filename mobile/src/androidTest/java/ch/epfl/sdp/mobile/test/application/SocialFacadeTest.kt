@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.PuzzleId
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
@@ -26,6 +27,7 @@ class SocialFacadeTest {
     override val name: String = "Andy"
     override val emoji: String = ":3"
     override val followed: Boolean = false
+    override val solvedPuzzles = emptyList<PuzzleId>()
   }
 
   @Test
