@@ -109,7 +109,7 @@ fun SelectableItem(
     content: @Composable RowScope.() -> Unit
 ) {
   Surface(
-      modifier = modifier.selectable(selected, onClick = onClick),
+      modifier = modifier.clip(CircleShape).selectable(selected, onClick = onClick),
       shape = CircleShape,
       color = opponentColor(selected).backgroundColor(true).value,
       elevation = 0.dp,
