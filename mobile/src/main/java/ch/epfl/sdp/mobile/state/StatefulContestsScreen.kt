@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -34,7 +35,8 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
         null
       }
   // TODO: Change to tournament.status when added.
-  override val status: Status = Status.Done
+  override val status: Status =
+      Status.Ongoing(tournament.creationTime.minus(System.currentTimeMillis()).milliseconds)
 }
 
 /**

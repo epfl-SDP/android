@@ -18,6 +18,9 @@ interface Tournament {
   /** True iff the user who fetched the [Tournament] participates in it. */
   val isParticipant: Boolean
 
+  /** The time of creation of the tournament. */
+  val creationTime: Long
+
   /** The [Status] of the [Tournament]. */
   val status: Status
 
@@ -49,6 +52,7 @@ fun TournamentDocument.toTournament(user: AuthenticatedUser): Tournament =
       override val name = this@toTournament.name ?: ""
       override val isAdmin = this@toTournament.adminId == user.uid
       override val isParticipant = this@toTournament.playerIds?.contains(user.uid) ?: false
+      override val creationTime = this@toTournament.creationTime ?: System.currentTimeMillis()
 
       // TODO : Refine the tournament rules.
       override val status: Tournament.Status =
