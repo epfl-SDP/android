@@ -28,10 +28,14 @@ class StoreDocumentTournament(
   override val isParticipant = document.playerIds?.contains(user.uid) ?: false
 
   // TODO : Refine the tournament rules.
-  override val status: Tournament.Status =
-      Tournament.Status.NotStarted(
-          enoughParticipants = (document.playerIds?.size ?: 0 >= (document.maxPlayers ?: 0)),
-      )
+  override val status: Tournament.Status
+    get() {
+      val enoughParticipants = document.playerIds?.size ?: 0 >= (document.maxPlayers ?: 0)
+      return when (document.stage) {
+        null -> Tournament.Status.NotStarted(enoughParticipants)
+        else -> Tournament.Status.Unknown
+      }
+    }
 
   override suspend fun start(): Boolean =
       runCatching {
@@ -71,6 +75,8 @@ class StoreDocumentTournament(
                     tournamentId = reference.uid,
                     minOpponentsForAnyPool = minOpponentsPerPool,
                     remainingBestOfCount = bestOf,
+                    tournamentBestOf = bestOf,
+                    tournamentAdminId = adminId,
                     playerIds = participants.map { it.first },
                     playerNames = participants.map { it.second },
                 )

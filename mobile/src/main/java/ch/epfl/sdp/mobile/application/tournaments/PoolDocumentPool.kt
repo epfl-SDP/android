@@ -10,6 +10,12 @@ class PoolDocumentPool(
 
   override val name: String = document.name ?: ""
 
+  override val remainingRounds: Int = document.remainingBestOfCount ?: 0
+  override val totalRounds: Int = document.tournamentBestOf ?: 0
+
+  override val isStartNextRoundEnabled: Boolean =
+      user.uid == document.tournamentAdminId && remainingRounds > 0
+
   override val players: List<Pool.Player>
     get() {
       val ids = document.playerIds ?: emptyList()
