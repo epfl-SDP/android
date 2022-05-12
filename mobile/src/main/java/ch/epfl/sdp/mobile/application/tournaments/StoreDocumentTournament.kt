@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
-import android.util.Log
 import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
