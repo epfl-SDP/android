@@ -1,18 +1,20 @@
 package ch.epfl.sdp.mobile.application.chess
 
-import ch.epfl.sdp.mobile.application.ChessDocument
-import ch.epfl.sdp.mobile.application.Profile
-import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.*
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.BlackWon
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.Stalemate
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.WhiteWon
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
+import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotation.toAlgebraicNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
 import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
-import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
@@ -45,8 +47,10 @@ class ChessFacade(
    */
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
     val document = store.collection("games").document()
-    document.set(ChessDocument(whiteId = user.uid, blackId = user.uid))
-    return StoreMatch(document.id, store)
+    document.set(
+        ChessDocument(
+            whiteId = user.uid, blackId = user.uid, lastUpdatedAt = System.currentTimeMillis()))
+    return StoreMatch(document.id, store, user)
   }
 
   /**
@@ -57,10 +61,12 @@ class ChessFacade(
    *
    * @return The created [Match] before storing it in the [Store]
    */
-  suspend fun createMatch(white: Profile, black: Profile): Match {
+  suspend fun createMatch(white: Profile, black: Profile, user: Profile? = null): Match {
     val document = store.collection("games").document()
-    document.set(ChessDocument(whiteId = white.uid, blackId = black.uid))
-    return StoreMatch(document.id, store)
+    document.set(
+        ChessDocument(
+            whiteId = white.uid, blackId = black.uid, lastUpdatedAt = System.currentTimeMillis()))
+    return StoreMatch(document.id, store, user)
   }
 
   /**
@@ -68,8 +74,8 @@ class ChessFacade(
    *
    * @param id the unique identifier for this [Match].
    */
-  fun match(id: String): Match {
-    return StoreMatch(id, store)
+  fun match(id: String, user: Profile? = null): Match {
+    return StoreMatch(id, store, user)
   }
 
   /**
@@ -81,21 +87,23 @@ class ChessFacade(
    * @return The [Flow] of [List] of [Match]s for the [Profile]
    */
   fun matches(profile: Profile): Flow<List<Match>> {
-    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid)
-    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid)
+    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", profile)
+    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", profile)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
-  private fun getMatchesForPlayer(colorField: String, playerId: String): Flow<List<Match>> {
-    return store.collection("games").whereEquals(colorField, playerId).asMatchListFlow().onStart {
-      emit(emptyList())
-    }
+  private fun getMatchesForPlayer(colorField: String, user: Profile): Flow<List<Match>> {
+    return store
+        .collection("games")
+        .whereEquals(colorField, user.uid)
+        .asMatchListFlow(user)
+        .onStart { emit(emptyList()) }
   }
 
-  private fun Query.asMatchListFlow(): Flow<List<Match>> {
+  private fun Query.asMatchListFlow(user: Profile? = null): Flow<List<Match>> {
     return this.asFlow<ChessDocument>().map {
-      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store) }
+      it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store, user) }
     }
   }
 
@@ -174,6 +182,7 @@ private data class SnapshotPuzzle(
 private data class StoreMatch(
     override val id: String,
     private val store: Store,
+    private val user: Profile?
 ) : Match {
 
   fun profile(
@@ -199,7 +208,27 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    store.collection("games").document(id).update { this["moves"] = game.toAlgebraicNotation() }
+    val document = store.collection("games").document(id).get<ChessDocument>()
+
+    store.collection("games").document(id).update {
+      this[FieldPath(listOf("metadata", "status"))] =
+          when (val step = game.nextStep) {
+            NextStep.Stalemate -> Stalemate
+            is NextStep.MovePiece -> null
+            is NextStep.Checkmate -> if (step.winner == Color.Black) BlackWon else WhiteWon
+          }
+
+      if (document?.blackId == user?.uid) {
+        this[FieldPath(listOf("metadata", "blackName"))] = user?.name
+      }
+
+      if (document?.whiteId == user?.uid) {
+        this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
+      }
+
+      this["moves"] = game.toAlgebraicNotation()
+      this["lastUpdatedAt"] = System.currentTimeMillis()
+    }
   }
 }
 
