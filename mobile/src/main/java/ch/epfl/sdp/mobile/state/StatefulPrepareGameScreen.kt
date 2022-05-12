@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 /**
  * A composable that makes a [PrepareGameScreen] stateful
  * @param user authenticated user
+ * @param opponentId the id of the opponent if it exists
  * @param navigateToGame The action to take for navigating to a created game
  * @param cancelClick The action to take when clicking on the dialog's cancel button
  * @param modifier [Modifier] for this composable
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun StatefulPrepareGameScreen(
     user: AuthenticatedUser,
+    opponentId: String?,
     navigateToGame: (match: Match) -> Unit,
     cancelClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -29,11 +31,11 @@ fun StatefulPrepareGameScreen(
   val chessFacade = LocalChessFacade.current
   val opponents =
       remember(user) { user.following }.collectAsState(emptyList()).value.map { ProfileAdapter(it) }
-
   val state =
-      remember(user, opponents, navigateToGame, cancelClick, scope, chessFacade) {
+      remember(user, opponents, navigateToGame, cancelClick, scope, chessFacade, opponentId) {
         SnapshotPrepareGameScreenState(
             user = user,
+            selected = opponentId,
             opponents = opponents,
             navigateToGame = navigateToGame,
             cancelClick = cancelClick,
@@ -41,6 +43,7 @@ fun StatefulPrepareGameScreen(
             scope = scope,
         )
       }
+
   PrepareGameScreen(state = state, modifier = modifier, key = { it.uid })
 }
 
@@ -48,6 +51,7 @@ fun StatefulPrepareGameScreen(
  * An implementation of the [PrepareGameScreenState]
  *
  * @param user The current [AuthenticatedUser]
+ * @param selected the item which is selected
  * @param navigateToGame The action to take for navigating to a created game
  * @param cancelClick The action to take when clicking on the dialog's cancel button
  * @param chessFacade The chess facade to act on the store
@@ -55,6 +59,7 @@ fun StatefulPrepareGameScreen(
  */
 class SnapshotPrepareGameScreenState(
     val user: AuthenticatedUser,
+    selected: String?,
     override val opponents: List<ProfileAdapter>,
     val navigateToGame: (match: Match) -> Unit,
     val cancelClick: () -> Unit,
@@ -64,7 +69,8 @@ class SnapshotPrepareGameScreenState(
 
   override var colorChoice: ColorChoice by mutableStateOf(ColorChoice.White)
 
-  override var selectedOpponent: ProfileAdapter? by mutableStateOf(null)
+  override var selectedOpponent: ProfileAdapter? by
+      mutableStateOf(opponents.firstOrNull { it.uid == selected })
     private set
 
   override var playEnabled: Boolean by mutableStateOf(selectedOpponent != null)
