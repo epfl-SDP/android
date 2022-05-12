@@ -764,7 +764,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
