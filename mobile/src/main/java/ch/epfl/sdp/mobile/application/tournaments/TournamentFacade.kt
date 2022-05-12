@@ -50,6 +50,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    * @param user The [AuthenticatedUser] that wants to join the "Tournament".
    * @param name The name of the tournament.
    * @param maxPlayers The maximal number of players allowed to join the tournament.
+   * @param creationTime the time of creation of the tournament.
    * @param bestOf The number of best-of rounds.
    * @param poolSize The target size of each pool.
    * @param eliminationRounds The number of direct elimination rounds. Directly influences number of
@@ -61,6 +62,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
       user: AuthenticatedUser,
       name: String,
       maxPlayers: Int,
+      creationTime: Long,
       bestOf: Int,
       poolSize: Int,
       eliminationRounds: Int,
@@ -78,6 +80,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
               adminId = user.uid,
               name = name,
               maxPlayers = maxPlayers,
+              creationTime = creationTime,
               bestOf = bestOf,
               poolSize = poolSize,
               eliminationRounds = eliminationRounds,

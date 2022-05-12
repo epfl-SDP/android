@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 object EmptyTournament : Tournament {
   override val reference = TournamentReference("")
   override val name = ""
+  override val creationTime = System.currentTimeMillis()
   override val isAdmin = false
   override val isParticipant = false
   override val status = Status.Unknown
