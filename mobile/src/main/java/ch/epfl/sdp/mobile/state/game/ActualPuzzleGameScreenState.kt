@@ -63,7 +63,6 @@ fun ActualPuzzleGameScreenState(
       )
   return ActualPuzzleGameScreenState(
       currentActions = currentActions,
-      puzzle = puzzle,
       moveableChessBoard = moveableChessBoard,
       promotionState = promotions,
       movesInfo = moves,
@@ -77,7 +76,6 @@ fun ActualPuzzleGameScreenState(
  * underlying states.
  *
  * @param currentActions the [State] of actions to perform when navigating.
- * @param puzzle the [Puzzle] for this screen.
  * @param moveableChessBoard the underlying [MovableChessBoardState].
  * @param promotionState the underlying [PromotionState].
  * @param movesInfo the underlying [MovesInfoState].
@@ -87,7 +85,6 @@ fun ActualPuzzleGameScreenState(
 class ActualPuzzleGameScreenState
 constructor(
     private val currentActions: State<StatefulGameScreenActions>,
-    private val puzzle: Puzzle,
     moveableChessBoard: MovableChessBoardState<Piece>,
     promotionState: PromotionState,
     movesInfo: MovesInfoState,
