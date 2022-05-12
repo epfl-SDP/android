@@ -18,8 +18,8 @@ import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
-import kotlinx.coroutines.flow.*
 import java.io.StringReader
+import kotlinx.coroutines.flow.*
 
 /**
  * An interface which represents all the endpoints and available features for online chess
@@ -47,12 +47,8 @@ class ChessFacade(
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
     val document = store.collection("games").document()
     document.set(
-      ChessDocument(
-        whiteId = user.uid,
-        blackId = user.uid,
-        lastUpdatedAt = System.currentTimeMillis()
-      )
-    )
+        ChessDocument(
+            whiteId = user.uid, blackId = user.uid, lastUpdatedAt = System.currentTimeMillis()))
     return StoreMatch(document.id, store, user)
   }
 
@@ -67,10 +63,8 @@ class ChessFacade(
   suspend fun createMatch(white: Profile, black: Profile, user: Profile? = null): Match {
     val document = store.collection("games").document()
     document.set(
-      ChessDocument(
-        whiteId = white.uid, blackId = black.uid, lastUpdatedAt = System.currentTimeMillis()
-      )
-    )
+        ChessDocument(
+            whiteId = white.uid, blackId = black.uid, lastUpdatedAt = System.currentTimeMillis()))
     return StoreMatch(document.id, store, user)
   }
 
