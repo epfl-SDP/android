@@ -1,14 +1,17 @@
 package ch.epfl.sdp.mobile.test.state
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -16,6 +19,9 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.ui.PawniesTheme
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -48,10 +54,47 @@ class StatefulProfileScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulVisitedProfileScreen("1", {})
+              StatefulVisitedProfileScreen("1", {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
     }
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_clickedOnChallengeFriend_then_prepareGameDialogWithCorrectlySelectedProfile() =
+      runTest {
+    val assets = emptyAssets()
+
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        socialFacade.profile(uid = "userId2", user = authUser1).filterIsInstance<Profile>().first()
+    authUser1.follow(user2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          PawniesTheme {
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+              Navigation()
+            }
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("user2").performClick()
+    rule.onNodeWithText(strings.profileChallenge.uppercase()).performClick()
+    rule.onNode(hasText("user2") and hasClickAction()).assertIsSelected()
   }
 }

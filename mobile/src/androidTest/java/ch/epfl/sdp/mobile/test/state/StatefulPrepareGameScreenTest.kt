@@ -48,7 +48,8 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulPrepareGameScreen(user = user, navigateToGame = {}, cancelClick = {})
+            StatefulPrepareGameScreen(
+                user = user, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
         }
 
@@ -72,7 +73,8 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulPrepareGameScreen(user = user, navigateToGame = {}, cancelClick = {})
+            StatefulPrepareGameScreen(
+                user = user, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
         }
 
@@ -96,7 +98,8 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulPrepareGameScreen(user = user, navigateToGame = {}, cancelClick = {})
+            StatefulPrepareGameScreen(
+                user = user, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
         }
 
@@ -126,7 +129,8 @@ class StatefulPrepareGameScreenTest {
 
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, social, chess, speech, tournament) {
-        StatefulPrepareGameScreen(user = authUser1, navigateToGame = {}, cancelClick = {})
+        StatefulPrepareGameScreen(
+            user = authUser1, navigateToGame = {}, cancelClick = {}, opponentId = "")
       }
     }
 
@@ -155,7 +159,8 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulPrepareGameScreen(user = currentUser, navigateToGame = {}, cancelClick = {})
+            StatefulPrepareGameScreen(
+                user = currentUser, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
         }
 
@@ -189,7 +194,8 @@ class StatefulPrepareGameScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulPrepareGameScreen(user = currentUser, navigateToGame = {}, cancelClick = {})
+            StatefulPrepareGameScreen(
+                user = currentUser, navigateToGame = {}, cancelClick = {}, opponentId = "")
           }
         }
 
@@ -223,7 +229,8 @@ class StatefulPrepareGameScreenTest {
 
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, social, chess, speech, tournament) {
-        StatefulPrepareGameScreen(user = authUser1, navigateToGame = {}, cancelClick = {})
+        StatefulPrepareGameScreen(
+            user = authUser1, navigateToGame = {}, cancelClick = {}, opponentId = "")
       }
     }
 
@@ -261,7 +268,8 @@ class StatefulPrepareGameScreenTest {
                   channel.trySend(Unit)
                   channel.close()
                 },
-                cancelClick = {})
+                cancelClick = {},
+                opponentId = "")
           }
         }
 
@@ -300,7 +308,8 @@ class StatefulPrepareGameScreenTest {
                 cancelClick = {
                   channel.trySend(Unit)
                   channel.close()
-                })
+                },
+                opponentId = "")
           }
         }
 
@@ -338,7 +347,8 @@ class StatefulPrepareGameScreenTest {
                   channel.trySend(Unit)
                   channel.close()
                 },
-                cancelClick = {})
+                cancelClick = {},
+                opponentId = "")
           }
         }
 
@@ -375,7 +385,8 @@ class StatefulPrepareGameScreenTest {
                   channel.trySend(Unit)
                   channel.close()
                 },
-                cancelClick = {})
+                cancelClick = {},
+                opponentId = "")
           }
         }
     // Select opponent
