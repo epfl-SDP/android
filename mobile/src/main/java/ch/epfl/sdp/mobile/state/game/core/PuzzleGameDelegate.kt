@@ -56,7 +56,7 @@ class PuzzleGameDelegate(
     val expected = puzzle.puzzleMoves[currentMoveNumber]
 
     game = step.move(action)
-    currentMoveNumber++
+    delegate.currentMoveNumber++
 
     if (action == expected) {
       scope.launch { attemptNextBotMove(delay) }
@@ -67,11 +67,11 @@ class PuzzleGameDelegate(
 
   /** Marks the puzzle as failed, then resets the puzzle after delay milliseconds. */
   private suspend fun resetPuzzle(delay: Long) {
-    puzzleState = PuzzleInfoState.PuzzleState.Failed
+    delegate.puzzleState = PuzzleInfoState.PuzzleState.Failed
     delay(delay)
     game = puzzle.baseGame()
-    currentMoveNumber = 1
-    puzzleState = PuzzleInfoState.PuzzleState.Solving
+    delegate.currentMoveNumber = 1
+    delegate.puzzleState = PuzzleInfoState.PuzzleState.Solving
   }
 
   /**
@@ -85,9 +85,9 @@ class PuzzleGameDelegate(
       val step = game.nextStep as? NextStep.MovePiece ?: return
 
       game = step.move(action)
-      currentMoveNumber++
+      delegate.currentMoveNumber++
     } else {
-      puzzleState = PuzzleInfoState.PuzzleState.Solved
+      delegate.puzzleState = PuzzleInfoState.PuzzleState.Solved
       // TODO: Only mark puzzles as solved once the "Solved Puzzles" screen is implemented
       // scope.launch { user.value.solvePuzzle(puzzle) }
     }
