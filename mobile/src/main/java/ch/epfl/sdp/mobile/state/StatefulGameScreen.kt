@@ -82,7 +82,7 @@ fun StatefulGameScreen(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-private fun StatefulPromoteDialog(
+fun StatefulPromoteDialog(
     state: PromotionState,
     modifier: Modifier = Modifier,
 ) {

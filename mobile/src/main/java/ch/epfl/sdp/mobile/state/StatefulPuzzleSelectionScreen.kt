@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toColor
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
@@ -81,11 +82,8 @@ data class PuzzleInfoAdapter(
 
 /** Transforms a [Puzzle] to a corresponding [PuzzleInfoAdapter] */
 fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
-  val playerColor =
-      when (this.boardSnapshot.playing) {
-        Color.White -> ChessBoardState.Color.White
-        Color.Black -> ChessBoardState.Color.Black
-      }
+  // Inverted colors to FEN since first UCI moves describes "computer" move
+  val playerColor = this.boardSnapshot.playing.other().toColor()
 
   val board = this.boardSnapshot.board
   val firstMove = this.puzzleMoves.firstOrNull()?.from

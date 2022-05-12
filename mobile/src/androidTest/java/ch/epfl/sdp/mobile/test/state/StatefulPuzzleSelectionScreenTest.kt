@@ -53,7 +53,6 @@ class StatefulPuzzleSelectionScreenTest {
     val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
-    authFacade.signInWithEmail("email@example.org", "password")
 
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =

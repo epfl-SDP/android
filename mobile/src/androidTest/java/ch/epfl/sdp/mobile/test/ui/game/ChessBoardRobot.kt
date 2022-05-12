@@ -78,6 +78,20 @@ fun ChessBoardRobotInputScope.click(x: Int, y: Int, pointerId: Int = 0) {
 }
 
 /**
+ * Performs a click gesture with the pointer with the given id at a specific position in algebraic
+ * notation.
+ *
+ * @param x the row coordinate, as a character in algebraic notation.
+ * @param y the col coordinate, as an integer in algebraic notation.
+ * @param pointerId the identifier of the pointer.
+ */
+fun ChessBoardRobotInputScope.click(x: Char, y: Int, pointerId: Int = 0) {
+  require(x in 'a'..'h') { "x out of valid range" }
+  require(y in 1..8) { "y out of valid range" }
+  click(x = x - 'a', y = 8 - y, pointerId = pointerId)
+}
+
+/**
  * Performs a drag gesture between two positions with the pointer with the given id.
  *
  * @param from the original [ChessBoardState.Position].
@@ -131,6 +145,28 @@ class ChessBoardRobot(
    * @param rank the [ChessBoardState.Rank] to check for.
    */
   fun assertHasPiece(x: Int, y: Int, color: ChessBoardState.Color, rank: ChessBoardState.Rank) {
+    hasPieceSemantics(x, y, color, rank).onFirst().assertExists()
+  }
+
+  /**
+   * Informs that a piece with the given [color] and [rank] is present at the given position. This
+   * will essentially check that the center of the piece is present in a specific cell.
+   *
+   * @param x the first coordinate of the cell.
+   * @param y the second coordinate of the cell.
+   * @param color the [ChessBoardState.Color] to check for.
+   * @param rank the [ChessBoardState.Rank] to check for.
+   */
+  fun hasPiece(x: Int, y: Int, color: ChessBoardState.Color, rank: ChessBoardState.Rank): Boolean {
+    return hasPieceSemantics(x, y, color, rank).fetchSemanticsNodes().isNotEmpty()
+  }
+
+  private fun hasPieceSemantics(
+      x: Int,
+      y: Int,
+      color: ChessBoardState.Color,
+      rank: ChessBoardState.Rank
+  ): SemanticsNodeInteractionCollection {
     val boardBounds = onChessBoard().fetchSemanticsNode().boundsInRoot
     val sizeInfo = BoardSizeInfo(onChessBoard())
     val matcher =
@@ -143,13 +179,13 @@ class ChessBoardRobot(
                   .translate(x * sizeInfo.squareSize, y * sizeInfo.squareSize)
           bounds.contains(piece.boundsInRoot.center)
         }
-    onAllNodesWithLocalizedContentDescription {
+    return onAllNodesWithLocalizedContentDescription {
           boardPieceContentDescription(
               color.contentDescription(this),
               rank.contentDescription(this),
           )
         }
-        .assertAny(matcher)
+        .filter(matcher)
   }
 }
 
