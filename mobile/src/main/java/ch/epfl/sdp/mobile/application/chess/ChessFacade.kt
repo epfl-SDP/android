@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.chess
 
 import ch.epfl.sdp.mobile.application.*
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.BlackWon
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.Stalemate
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.WhiteWon
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
@@ -212,7 +213,7 @@ private data class StoreMatch(
     store.collection("games").document(id).update {
       this[FieldPath(listOf("metadata", "status"))] =
           when (val step = game.nextStep) {
-            NextStep.Stalemate -> NextStep.Stalemate
+            NextStep.Stalemate -> Stalemate
             is NextStep.MovePiece -> null
             is NextStep.Checkmate -> if (step.winner == Color.Black) BlackWon else WhiteWon
           }
