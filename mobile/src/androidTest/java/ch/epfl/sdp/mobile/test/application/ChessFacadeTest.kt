@@ -143,7 +143,7 @@ class ChessFacadeTest {
   }
 
   @Test
-  fun given_userChanngedName_when_aGameMovehasBeenMade_then_whiteNameInMetadataShouldUpdate() =
+  fun given_userChangedName_when_aGameMoveHasBeenMade_then_whiteNameInMetadataShouldUpdate() =
       runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
