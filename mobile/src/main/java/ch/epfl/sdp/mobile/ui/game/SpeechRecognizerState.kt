@@ -6,6 +6,10 @@ import androidx.compose.runtime.Stable
 @Stable
 interface SpeechRecognizerState {
 
+  /**
+   * Store the current error value, if there are not error involved the value is set to
+   * [SpeechRecognizerError.None]
+   */
   var currentError: SpeechRecognizerError
 
   /** Enum class that defined different error related to the speech recognizer */
@@ -19,7 +23,9 @@ interface SpeechRecognizerState {
 
     /** The command cannot be parsed */
     UnknownCommand,
-    None
+
+    /** None error */
+    None,
   }
 
   /** A [Boolean] which indicates if the device is currently listening to voice inputs. */

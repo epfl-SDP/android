@@ -4,8 +4,8 @@ import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 
 /**
- * An implementation of [SpeechRecognizerFactory] which is recognized but the resulting action is
- * legal.
+ * An implementation of [SpeechRecognizerFactory] which result is recognized but and lead to a legal
+ * move.
  */
 object LegalActionSpeechRecognizerFactory : SpeechRecognizerFactory {
   override fun createSpeechRecognizer() = LegalActionSpeechRecognizer()
