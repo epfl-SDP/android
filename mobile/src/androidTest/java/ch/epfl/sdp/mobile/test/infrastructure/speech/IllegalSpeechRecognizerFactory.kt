@@ -3,18 +3,20 @@ package ch.epfl.sdp.mobile.test.infrastructure.speech
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 
-/** An implementation of [SpeechRecognizerFactory] which always succeeds. */
-object SuccessfulSpeechRecognizerFactory : SpeechRecognizerFactory {
-  override fun createSpeechRecognizer() = SuccessfulSpeechRecognizer()
+/**
+ * An implementation of [SpeechRecognizerFactory] which result is recognized but lead to a illegal
+ * move.
+ */
+object IllegalActionSpeechRecognizerFactory : SpeechRecognizerFactory {
+  override fun createSpeechRecognizer() = IllegalActionSpeechRecognizer()
 }
 
-/** A [SpeechRecognizer] which always succeeds to recognize the user input, and return [Results]. */
-class SuccessfulSpeechRecognizer : SpeechRecognizer {
+class IllegalActionSpeechRecognizer : SpeechRecognizer {
 
   companion object {
 
     /** The results which will always be returned on success. */
-    val Results = listOf("Hello", "World")
+    val Results = listOf("King a3 to b3", "World")
   }
 
   private var listener: SpeechRecognizer.Listener? = null
