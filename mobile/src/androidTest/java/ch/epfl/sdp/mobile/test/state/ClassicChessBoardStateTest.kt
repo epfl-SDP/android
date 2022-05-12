@@ -12,7 +12,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.truth.Truth.assertThat
@@ -38,7 +38,7 @@ class ClassicChessBoardStateTest {
       collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
     }
     val facade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id1"
 

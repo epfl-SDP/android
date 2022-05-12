@@ -4,7 +4,7 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.cancelAndJoin
@@ -31,7 +31,7 @@ class SpeechFacadeTest {
 
   @Test
   fun given_successfulRecognizer_when_recognizes_then_returnsResults() = runTest {
-    val facade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val facade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     assertThat(facade.recognize()).isEqualTo(Success(SuccessfulSpeechRecognizer.Results))
   }
 }

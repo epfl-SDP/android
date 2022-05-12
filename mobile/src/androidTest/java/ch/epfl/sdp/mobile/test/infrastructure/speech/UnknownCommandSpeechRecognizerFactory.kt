@@ -4,7 +4,7 @@ import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 
 /** An implementation of [SpeechRecognizerFactory] which always succeeds. */
-object SuccessfulSpeechRecognizerFactory : SpeechRecognizerFactory {
+object UnknownCommandSpeechRecognizerFactory : SpeechRecognizerFactory {
   override fun createSpeechRecognizer() = SuccessfulSpeechRecognizer()
 }
 

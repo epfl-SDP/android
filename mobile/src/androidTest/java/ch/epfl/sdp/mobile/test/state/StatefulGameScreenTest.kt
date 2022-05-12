@@ -712,11 +712,10 @@ class StatefulGameScreenTest {
   }
 
   @Test
-  fun given_successfulRecognizer_when_clicksListening_then_displaysRecognitionResults() {
-    // This will fail once we want to move the pieces instead.
+  fun given_successfulRecognizer_when_clicksListening_then_displaysUnknownCmdResults() {
     val robot =
         emptyGameAgainstOneselfRobot(
-            recognizer = SuccessfulSpeechRecognizerFactory,
+            recognizer = UnknownCommandSpeechRecognizerFactory,
             audioPermission = GrantedPermissionState,
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
@@ -725,7 +724,6 @@ class StatefulGameScreenTest {
 
   @Test
   fun given_failingRecognizer_when_clicksListening_then_displaysFailedRecognitionResults() {
-    // This will fail once we want to move the pieces instead.
     val robot =
         emptyGameAgainstOneselfRobot(
             recognizer = FailingSpeechRecognizerFactory,

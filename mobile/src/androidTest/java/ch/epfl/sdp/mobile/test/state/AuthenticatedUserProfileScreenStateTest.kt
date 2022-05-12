@@ -14,7 +14,7 @@ import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -41,7 +41,7 @@ class AuthenticatedUserProfileScreenStateTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val authenticationFacade = AuthenticationFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
 
     rule.setContent {
