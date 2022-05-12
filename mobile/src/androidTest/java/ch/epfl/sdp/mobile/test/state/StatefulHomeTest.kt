@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
@@ -324,8 +325,7 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
-      runTest {
+  fun given_statefulHome_when_creatingOnlineGame_then_showsGameWithOpponent() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
     val store = buildStore {
@@ -652,48 +652,103 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPuzzles).performClick()
     rule.onNodeWithText("00008", substring = true).performClick()
-    rule.onNodeWithText("Puzzle id: 00008").assertExists()
-    rule.onNodeWithText("Elo: 1852").assertExists()
+    rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
+    rule.onNodeWithText(strings.puzzleRating("1852")).assertExists()
   }
 
   @Test
-  fun given_tournamentDetailsScreen_when_tournamentIsClicked_then_tournamentScreenIsDisplayed() =
-      runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val store = buildStore {
-      collection("users") {
-        document("1", ProfileDocument("1", name = "Player 1"))
-        document("2", ProfileDocument("2", name = "Player 2"))
-      }
-      collection("tournaments") {
-        document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
-        document("id2", TournamentDocument("tid2", "2", "Tournament 2"))
-      }
-    }
+  fun given_home_when_routeUpdatedToTournamentDetails_then_displaysTournament() = runTest {
+    val env =
+        rule.setContentWithTestEnvironment {
+          val controller = rememberNavController()
+          StatefulHome(
+              user = user,
+              // We must call controller.navigate() after the first composition (so the
+              // NavController has all the routes set up), and a Modifier which has the property
+              // of being called after composition is onGloballyPositioned.
+              modifier = Modifier.onGloballyPositioned { controller.navigate("tournament/123") },
+              controller = controller,
+          )
+        }
+    env.infrastructure
+        .store
+        .collection(TournamentDocument.Collection)
+        .document("123")
+        .set(TournamentDocument(name = "Hello"))
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_home_when_creatingTournament_then_navigatesToTournament() = runTest {
+    val env = rule.setContentWithTestEnvironment { StatefulHome(user = user) }
+    rule.onNodeWithText(env.strings.sectionContests).performClick()
+    rule.onNodeWithText(env.strings.newContest).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateNameHint).performTextInput("Hello")
+    rule.onNodeWithText("1").performClick() // Best of 1
+    rule.onNodeWithText(env.strings.tournamentsCreateMaximumPlayerHint).performTextInput("2")
+    rule.onNodeWithText(env.strings.tournamentsCreateQualifierSize0).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateElimDepthFinal).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateActionCreate).assertIsEnabled().performClick()
+
+    // We can now join the tournament, since we've navigated to its details screen.
+    rule.onNodeWithText(env.strings.tournamentsBadgeJoin).assertIsDisplayed()
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_tournamentScreen_when_clickingCreate_createTournamentDialogIsOpened() = runTest {
+    val auth = emptyAuth()
     val assets = emptyAssets()
+    val store = emptyStore()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
-    authFacade.signInWithEmail("email@example.org", "password")
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val player2 = socialFacade.profile(uid = "2", user = user).filterIsInstance<Profile>().first()
-    user.follow(player2)
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulHome(
-                user = user,
-                controller = controller,
-            )
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
           }
         }
 
     rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText(strings.newContest).performClick()
+
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertExists()
+  }
+
+  @Test
+  fun given_tournamentScreen_when_clickingCancel_createTournamentDialogIsClosed() = runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText(strings.newContest).performClick()
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertExists()
+    rule.onNodeWithText(strings.tournamentsCreateActionCancel).performClick()
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertDoesNotExist()
   }
 }

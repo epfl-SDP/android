@@ -49,7 +49,7 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
  */
 class TournamentScreenState(
     actions: State<TournamentActions>,
-    onNewContestClickAction: State<() -> Unit>,
+    private val onNewContestClickAction: State<() -> Unit>,
     private val currentUser: AuthenticatedUser,
     private val tournamentFacade: TournamentFacade,
     private val scope: CoroutineScope,
@@ -66,9 +66,7 @@ class TournamentScreenState(
     }
   }
 
-  private val onNewContestClickAction by onNewContestClickAction
-
-  override fun onNewContestClick() = onNewContestClickAction()
+  override fun onNewContestClick() = onNewContestClickAction.value()
   override fun onContestClick(contest: TournamentAdapter) =
       actions.onTournamentClick(contest.tournament.reference)
   override fun onFilterClick() = Unit
@@ -79,7 +77,7 @@ class TournamentScreenState(
  *
  * @param currentUser the current [AuthenticatedUser] of the application.
  * @param onTournamentClick callback called when a tournament item is clicked on.
- * @param onNewTournamentClick callback called when the new contest button is clicked on.
+ * @param onNewContestClickAction callback called when the new contest button is clicked on.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
@@ -87,13 +85,13 @@ class TournamentScreenState(
 fun StatefulTournamentScreen(
     currentUser: AuthenticatedUser,
     onTournamentClick: (TournamentReference) -> Unit,
-    onNewTournamentClick: () -> Unit,
+    onNewContestClickAction: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val actions = rememberUpdatedState(TournamentActions(onTournamentClick = onTournamentClick))
   val tournamentFacade = LocalTournamentFacade.current
-  val currentOnNewTournamentClick = rememberUpdatedState(onNewTournamentClick)
+  val currentOnNewTournamentClick = rememberUpdatedState(onNewContestClickAction)
   val scope = rememberCoroutineScope()
   val state =
       remember(

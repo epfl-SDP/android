@@ -113,6 +113,12 @@ interface LocalizedStrings {
   val puzzlePlayingAs: (color: String) -> String
   val puzzleUnsolvedPuzzles: String
   val puzzleListContentDescription: String
+  val puzzlesTitle: String
+  val puzzleSolving: (color: String) -> String
+  val puzzleFailed: String
+  val puzzleSolved: String
+  val puzzleNumber: (id: String) -> String
+  val puzzleRating: (rating: String) -> String
 
   val tournamentsBadgeJoin: String
   val tournamentsBadgeParticipant: String
@@ -133,6 +139,11 @@ interface LocalizedStrings {
   val tournamentsDetailsNextBestOfSubtitle: String
   val tournamentsDetailsNextRoundTitle: String
   val tournamentsDetailsNextRoundSubtitle: String
+  val tournamentsDetailsStartEnoughPlayersTitle: String
+  val tournamentsDetailsStartEnoughPlayersSubtitle: String
+  val tournamentsDetailsStartNotEnoughPlayersTitle: String
+  val tournamentsDetailsStartNotEnoughPlayersSubtitle: String
+  val tournamentDetailsBackContentDescription: String
 
   val tournamentsContestsTitle: String
   val tournamentsFilter: String
@@ -148,4 +159,9 @@ interface LocalizedStrings {
   val tournamentsCreateDirectElimination: String
   val tournamentsCreateActionCancel: String
   val tournamentsCreateActionCreate: String
+
+  val tournamentsCreateQualifierSize0: String
+  val tournamentsCreateQualifierSizeN: (size: Int) -> String
+  val tournamentsCreateElimDemomN: (denominator: Int) -> String
+  val tournamentsCreateElimDepthFinal: String
 }

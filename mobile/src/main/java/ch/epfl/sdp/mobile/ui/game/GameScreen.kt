@@ -123,10 +123,17 @@ private val Message.text: String
  * @param modifier modifier the [Modifier] for this composable.
  */
 @Composable
-private fun Moves(
+fun Moves(
     moves: List<Move>,
     modifier: Modifier = Modifier,
+    firstColor: ChessBoardState.Color = White,
 ) {
+  val (firstTextColor, secondTextColor) =
+      when (firstColor) {
+        White -> Pair(Green500, Green800)
+        Black -> Pair(Green800, Green500)
+      }
+
   FlowRow(
       modifier =
           modifier
@@ -143,7 +150,7 @@ private fun Moves(
         key(index) {
           Text(
               text = "${index + 1}. ${move.text}",
-              color = if (index % 2 == 0) Green500 else Green800,
+              color = if (index % 2 == 0) firstTextColor else secondTextColor,
           )
         }
       }
