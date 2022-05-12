@@ -17,12 +17,13 @@ import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfoState.*
 
 /**
- * This screen display an ongoing chess puzzle
+ * This screen display an ongoing chess puzzle.
  *
- * @param state the [GameScreenState] that manage the composable contents
- * @param modifier the [Modifier] for the composable
- * @param contentPadding the [PaddingValues] for this composable.
- * @param snackbarHostState the [SnackbarHostState] for this composable.
+ * @param Piece The actual type of [ChessBoardState.Piece] used.
+ * @param state The [GameScreenState] that manage the composable contents.
+ * @param modifier The [Modifier] for the composable.
+ * @param contentPadding The [PaddingValues] for this composable.
+ * @param snackbarHostState The [SnackbarHostState] for this composable.
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
