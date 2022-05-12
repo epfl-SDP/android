@@ -69,9 +69,10 @@ constructor(
                 if (parsedAction != null) {
                   // Try to perform the action
                   val isSuccessful = delegate.tryPerformAction(parsedAction)
+
+                  // If the action is illegal
                   if (!isSuccessful) currentError = SpeechRecognizerError.IllegalAction
-                  // If the action is illegal show in the snackbar
-                } else { // If cannot be parsed show error message
+                } else { // If cannot be parsed
                   currentError = SpeechRecognizerError.UnknownCommand
                 }
               }
