@@ -104,28 +104,28 @@ private fun StatefulPromoteDialog(
   }
 }
 
+/**
+ * A composable which displays a snackbar to show the [SpeechRecognizerState.currentError] when it's
+ * modified
+ *
+ * @param state the [SpeechRecognizerState] which backs this dialog.
+ * @param snackbarHostState the [SnackbarHostState] used to display some results.
+ */
 @Composable
 private fun StatefulSnackBar(
     state: SpeechRecognizerState,
     snackbarHostState: SnackbarHostState,
 ) {
-  LaunchedEffect(state.currentError) {
-    if (state.currentError != SpeechRecognizerError.None) {
-      // FIXME : Why we can't call toMessage() ?
-      snackbarHostState.showSnackbar(
-          state.currentError.toString(), duration = SnackbarDuration.Long)
-    }
-  }
-}
 
-/** Transform a [SpeechRecognizerError] into a [String] */
-@Composable
-fun SpeechRecognizerError.toMessage(): String {
   val strings = LocalLocalizedStrings.current
-  return when (this) {
-    SpeechRecognizerError.InternalError -> strings.gameSnackBarInternalFailure
-    SpeechRecognizerError.IllegalAction -> strings.gameSnackBarIllegalAction
-    SpeechRecognizerError.UnknownCommand -> strings.gameSnackBarUnknownCommand
-    SpeechRecognizerError.None -> ""
+  LaunchedEffect(state.currentError) {
+    val msg =
+        when (state.currentError) {
+          SpeechRecognizerError.InternalError -> strings.gameSnackBarInternalFailure
+          SpeechRecognizerError.IllegalAction -> strings.gameSnackBarIllegalAction
+          SpeechRecognizerError.UnknownCommand -> strings.gameSnackBarUnknownCommand
+          SpeechRecognizerError.None -> return@LaunchedEffect // Nothing to show
+        }
+    snackbarHostState.showSnackbar(msg, duration = SnackbarDuration.Long)
   }
 }
