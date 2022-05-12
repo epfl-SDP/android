@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.GameClose
+import ch.epfl.sdp.mobile.ui.Close
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
@@ -211,5 +211,5 @@ private fun Modifier.borderBottom(
  */
 @Composable
 private fun BackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-  IconButton(modifier = modifier, onClick = onClick) { Icon(PawniesIcons.GameClose, "cancel") }
+  IconButton(modifier = modifier, onClick = onClick) { Icon(PawniesIcons.Close, "cancel") }
 }

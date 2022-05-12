@@ -19,7 +19,7 @@ val PawniesIcons.ArView
   get() = Icons.Default.ViewInAr
 
 /** An icon to close the game screen. */
-val PawniesIcons.GameClose
+val PawniesIcons.Close
   get() = Icons.Rounded.Close
 
 /** An icon that indicates that the mic if on. */
@@ -72,9 +72,6 @@ val PawniesIcons.LocalPlay
 val PawniesIcons.OnlinePlay
   @Composable get() = painterResource(id = R.drawable.online_play)
 
-val PawniesIcons.Close
-  get() = Icons.Default.Close
-
 /** An icon to filter results. */
 val PawniesIcons.Filter
   @Composable get() = painterResource(id = R.drawable.filtervariant)
@@ -84,7 +81,6 @@ val PawniesIcons.TournamentDetailsClose
 
 val PawniesIcons.TournamentsNextStep
   get() = Icons.Outlined.SkipNext
-
 
 /** Chess pieces */
 object ChessIcons

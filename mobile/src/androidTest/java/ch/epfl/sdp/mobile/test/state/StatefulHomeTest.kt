@@ -573,7 +573,10 @@ class StatefulHomeTest {
     }
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
+    val assets = emptyAssets()
+    val chessFacade = ChessFacade(auth, store, assets)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -582,13 +585,16 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade) { StatefulHome(user) }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) {
+            StatefulHome(user)
+          }
         }
 
     rule.onNodeWithText("B").assertExists().performClick()
     rule.onNodeWithContentDescription("cancel").assertExists().performClick()
     rule.onNodeWithText(strings.socialFollowingTitle).assertExists()
-
+  }
+  @Test
   fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
