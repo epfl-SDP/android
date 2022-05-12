@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
@@ -40,29 +41,36 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
  * An implementation of the [ContestScreenState] that performs a given profile's [ContestInfo]
  * requests.
  *
+ * @param actions the [TournamentActions] which are available on the screen.
+ * @param onNewContestClickAction Callable lambda to navigate to the tournament creation pop up.
  * @param currentUser the current [AuthenticatedUser] of the application.
  * @param tournamentFacade the [TournamentFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class TournamentScreenState(
+    actions: State<TournamentActions>,
+    onNewContestClickAction: State<() -> Unit>,
     private val currentUser: AuthenticatedUser,
     private val tournamentFacade: TournamentFacade,
     private val scope: CoroutineScope,
 ) : ContestScreenState<TournamentAdapter> {
-
+  private val actions by actions
   override var contests by mutableStateOf(emptyList<TournamentAdapter>())
     private set
 
   init {
     scope.launch {
-      tournamentFacade.getTournaments(currentUser).collect { list ->
+      tournamentFacade.tournaments(currentUser).collect { list ->
         contests = list.map { TournamentAdapter(it, currentUser) }
       }
     }
   }
 
-  override fun onNewContestClick() = Unit
-  override fun onContestClick(contest: TournamentAdapter) = Unit
+  private val onNewContestClickAction by onNewContestClickAction
+
+  override fun onNewContestClick() = onNewContestClickAction()
+  override fun onContestClick(contest: TournamentAdapter) =
+      actions.onTournamentClick(contest.tournament.reference)
   override fun onFilterClick() = Unit
 }
 
@@ -70,21 +78,43 @@ class TournamentScreenState(
  * A stateful composable to view the list of tournaments completed and ongoing.
  *
  * @param currentUser the current [AuthenticatedUser] of the application.
+ * @param onTournamentClick callback called when a tournament item is clicked on.
+ * @param onNewTournamentClick callback called when the new contest button is clicked on.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
 fun StatefulTournamentScreen(
     currentUser: AuthenticatedUser,
+    onTournamentClick: (TournamentReference) -> Unit,
+    onNewTournamentClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
+  val actions = rememberUpdatedState(TournamentActions(onTournamentClick = onTournamentClick))
   val tournamentFacade = LocalTournamentFacade.current
+  val currentOnNewTournamentClick = rememberUpdatedState(onNewTournamentClick)
   val scope = rememberCoroutineScope()
+  val state =
+      remember(
+          actions,
+          currentOnNewTournamentClick,
+          currentUser,
+          tournamentFacade,
+          scope,
+      ) {
+        TournamentScreenState(
+            actions, currentOnNewTournamentClick, currentUser, tournamentFacade, scope)
+      }
 
-  ContestScreen(
-      TournamentScreenState(currentUser, tournamentFacade, scope),
-      modifier,
-      key = { it.uid },
-      contentPadding)
+  ContestScreen(state, modifier, key = { it.uid }, contentPadding)
 }
+
+/**
+ * A class representing the different actions available on the tournament screen.
+ *
+ * @param onTournamentClick callback called when a tournament item is clicked on.
+ */
+data class TournamentActions(
+    val onTournamentClick: (TournamentReference) -> Unit,
+)

@@ -8,6 +8,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -60,6 +61,9 @@ private const val TournamentDetailsRoute = "tournament"
 /** The default identifier for a tournament. */
 private const val TournamentDefaultId = ""
 
+/** The route associated to new contest button in play screen */
+private const val CreateTournamentRoute = "create_tournament"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -86,6 +90,10 @@ fun StatefulHome(
     controller.navigate("$GameRoute/${match.uid}")
   }
 
+  val openTournament: (ref: TournamentReference) -> Unit = { tournament ->
+    controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -106,7 +114,11 @@ fun StatefulHome(
       }
       composable(ContestsRoute) {
         StatefulTournamentScreen(
-            currentUser = user, modifier = Modifier.fillMaxSize(), contentPadding = paddingValues)
+            currentUser = user,
+            onTournamentClick = openTournament,
+            onNewTournamentClick = {},
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues)
       }
       composable(SettingsRoute) {
         StatefulSettingsScreen(

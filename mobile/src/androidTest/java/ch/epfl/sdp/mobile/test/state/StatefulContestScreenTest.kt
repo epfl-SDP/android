@@ -50,7 +50,7 @@ class StatefulContestScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulTournamentScreen(currentUser)
+              StatefulTournamentScreen(currentUser, {}, {})
             }
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
@@ -82,7 +82,7 @@ class StatefulContestScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulTournamentScreen(currentUser)
+              StatefulTournamentScreen(currentUser, {}, {})
             }
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()

@@ -22,7 +22,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    *
    * @param user the current [AuthenticatedUser].
    */
-  fun getTournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
+  fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     return store
         .collection("tournaments")
         .orderBy("creationDate", Descending)
