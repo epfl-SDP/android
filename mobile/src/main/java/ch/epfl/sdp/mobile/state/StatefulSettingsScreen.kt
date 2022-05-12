@@ -66,7 +66,7 @@ fun StatefulSettingsScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
+  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick, onBack = {}))
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)

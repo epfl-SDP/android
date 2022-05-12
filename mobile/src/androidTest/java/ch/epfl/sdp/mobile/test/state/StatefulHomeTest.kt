@@ -479,10 +479,6 @@ class StatefulHomeTest {
         document("1", ProfileDocument("1", name = "A"))
         document("2", ProfileDocument("2", name = "B"))
       }
-      collection("games") {
-        document(
-            "id", ChessDocument(uid = "45", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
-      }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)

@@ -40,13 +40,16 @@ class StatefulProfileScreen(
     }
   }
   override fun onMatchClick(match: ChessMatchAdapter) = actions.onMatchClick(match)
+  override fun onBack() = actions.onBack()
 }
 
 /**
  * A class representing the different actions available on the profile and settings screen.
  *
  * @param onMatchClick callback function called when a match is clicked on.
+ * @param onBack call back function called when back button is clicked on
  */
 data class ProfileActions(
     val onMatchClick: (ChessMatchAdapter) -> Unit,
+    val onBack: () -> Unit,
 )

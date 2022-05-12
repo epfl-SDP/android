@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.profile
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,12 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.Close
+import ch.epfl.sdp.mobile.ui.GameClose
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
@@ -57,8 +55,6 @@ fun <C : ChessMatch> ProfileScreen(
       onMatchClick = state::onMatchClick,
       lazyColumnState = lazyColumnState,
       modifier = modifier)
-
-  BackButton(onClick = state::onBackClick, modifier = modifier.offset(16.dp, 16.dp))
 }
 
 /**
@@ -72,7 +68,7 @@ fun <C : ChessMatch> ProfileScreen(
 @Composable
 fun <C : ChessMatch> ProfileHeader(
     state: VisitedProfileScreenState<C>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
 
   Column(
@@ -80,6 +76,7 @@ fun <C : ChessMatch> ProfileHeader(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
+    BackButton(state::onBack, modifier.align(Alignment.Start))
     ProfilePicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(state.name, style = MaterialTheme.typography.h5)
@@ -205,13 +202,14 @@ private fun Modifier.borderBottom(
   drawLine(color, start, end, width.toPx(), StrokeCap.Round)
 }
 
+/**
+ * A back button composable for the visited profile screen the that gets back to the previous screen
+ * when actioned
+ *
+ * @param onClick call back methode to action the back button
+ * @param modifier a Modifier for this composable
+ */
 @Composable
 private fun BackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-  OutlinedButton(
-      onClick = onClick,
-      shape = RectangleShape,
-      contentPadding = PaddingValues(5.dp),
-      border = BorderStroke(Dp.Hairline, MaterialTheme.colors.background.copy(0f))) {
-    Icon(PawniesIcons.Close, "cancel")
-  }
+  IconButton(modifier = modifier, onClick = onClick) { Icon(PawniesIcons.GameClose, "cancel") }
 }

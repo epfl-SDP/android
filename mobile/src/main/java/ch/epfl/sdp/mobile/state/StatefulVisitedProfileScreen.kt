@@ -25,7 +25,6 @@ class FetchedUserProfileScreenState(
     user: Profile,
     actions: State<ProfileActions>,
     chessFacade: ChessFacade,
-    val onBackToSocialClick: () -> Unit,
     scope: CoroutineScope,
 ) :
     VisitedProfileScreenState<ChessMatchAdapter>,
@@ -34,9 +33,6 @@ class FetchedUserProfileScreenState(
 
   override fun onUnfollowClick() {}
   override fun onChallengeClick() {}
-  override fun onBackClick() {
-    onBackToSocialClick()
-  }
 }
 
 /**
@@ -51,11 +47,13 @@ class FetchedUserProfileScreenState(
 fun StatefulVisitedProfileScreen(
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
+    onBackToSocialClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onBackToSocialClick: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
+  val actions =
+      rememberUpdatedState(
+          ProfileActions(onMatchClick = onMatchClick, onBack = onBackToSocialClick))
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
   val profile by
@@ -64,7 +62,7 @@ fun StatefulVisitedProfileScreen(
   val scope = rememberCoroutineScope()
   val state =
       remember(actions, profile, chessFacade, onBackToSocialClick, scope) {
-        FetchedUserProfileScreenState(profile, actions, chessFacade, onBackToSocialClick, scope)
+        FetchedUserProfileScreenState(profile, actions, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }

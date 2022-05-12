@@ -15,7 +15,4 @@ interface VisitedProfileScreenState<C : ChessMatch> : ProfileScreenState<C> {
 
   /** On challenge button clicked */
   fun onChallengeClick()
-
-  /** On back button clicked */
-  fun onBackClick()
 }
