@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
+import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
@@ -106,6 +107,25 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
           .document(reference.uid)
           .asFlow<TournamentDocument>()
           .map { it?.toTournament(user, store) }
+
+  /**
+   * Returns the [Flow] of the [List] of [Pool]s for a given [TournamentReference].
+   *
+   * @param reference the uniquely identifying [TournamentReference] for the tournament we're
+   * fetching.
+   * @param user the [AuthenticatedUser] that is fetching the pools.
+   * @return the [Flow] of [Pool]s.
+   */
+  fun pools(
+      reference: TournamentReference,
+      user: AuthenticatedUser,
+  ): Flow<List<Pool>> =
+      store
+          .collection(PoolDocument.Collection)
+          .whereEquals(PoolDocument.TournamentId, reference.uid)
+          .orderBy(PoolDocument.Name)
+          .asFlow<PoolDocument>()
+          .map { list -> list.mapNotNull { it?.toPool(user, store) } }
 
   /**
    * Allows a user to advance the round number of a certain pool for a certain tournament, if the

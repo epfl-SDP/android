@@ -135,6 +135,7 @@ data class TournamentDocument(
  * inside their corresponding [TournamentDocument], in `tournaments/tournamentId/`.
  *
  * @param uid the unique identifier for this pool.
+ * @param name the name of this pool.
  * @param tournamentId the unique identifier of the tournament in which the pool takes place.
  * @param minOpponentsForAnyPool the minimum number of opponents played by each player.
  * @param remainingBestOfCount the number of remaining matches to play in the current round.
@@ -143,6 +144,7 @@ data class TournamentDocument(
  */
 data class PoolDocument(
     @DocumentId val uid: String? = null,
+    val name: String? = null,
     val tournamentId: String? = null,
     val minOpponentsForAnyPool: Int? = null,
     val remainingBestOfCount: Int? = null,
@@ -153,5 +155,9 @@ data class PoolDocument(
 
     /** The name of the collection. */
     const val Collection = "pools"
+
+    const val TournamentId = "tournamentId"
+
+    const val Name = "name"
   }
 }

@@ -65,8 +65,9 @@ class StoreDocumentTournament(
 
           pools
               .asSequence()
-              .map { participants ->
+              .mapIndexed { index, participants ->
                 PoolDocument(
+                    name = "Pool #${index + 1}",
                     tournamentId = reference.uid,
                     minOpponentsForAnyPool = minOpponentsPerPool,
                     remainingBestOfCount = bestOf,

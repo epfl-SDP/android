@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.state.tournaments
 
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.Pool
 import ch.epfl.sdp.mobile.application.tournaments.Tournament
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
@@ -61,6 +62,12 @@ class ActualTournamentDetailsState(
     }
   }
 
+  private var poolsState by mutableStateOf<List<Pool>>(emptyList())
+
+  init {
+    scope.launch { facade.pools(reference, user).onEach { poolsState = it }.collect() }
+  }
+
   override val badge: BadgeType?
     get() =
         when {
@@ -74,7 +81,26 @@ class ActualTournamentDetailsState(
   override val title: String
     get() = tournament.name
 
-  override val pools: List<PoolInfo<PoolMember>> = emptyList()
+  override val pools: List<PoolInfo<PoolMember>>
+    get() =
+        poolsState.map { pool ->
+          object : PoolInfo<PoolMember> {
+            override val name: String = pool.name
+            override val status: PoolInfo.Status = PoolInfo.Status.StillOpen
+            override val startNextRoundEnabled: Boolean = true
+            override fun onStartNextRound() = Unit
+            override val members: List<PoolMember>
+              get() =
+                  pool.players.map { player ->
+                    object : PoolMember {
+                      override val name: String = player.name
+                      override val total: PoolScore? = 0
+                    }
+                  }
+
+            override fun PoolMember.scoreAgainst(other: PoolMember): PoolScore? = 0
+          }
+        }
 
   override val finals: List<TournamentsFinalsRound<TournamentMatch>> = emptyList()
 
