@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState.SpeechRecognizerError
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
@@ -67,6 +68,8 @@ fun StatefulGameScreen(
 
   StatefulPromoteDialog(gameScreenState)
 
+  StatefulSnackBar(gameScreenState, snackbarHostState)
+
   GameScreen(
       state = gameScreenState,
       modifier = modifier,
@@ -97,5 +100,32 @@ private fun StatefulPromoteDialog(
         choices = state.choices,
         modifier = modifier,
     )
+  }
+}
+
+@Composable
+private fun StatefulSnackBar(
+    state: SpeechRecognizerState,
+    snackbarHostState: SnackbarHostState,
+) {
+
+  // FIXME : Why this don't launch we we change the currentError ?
+  LaunchedEffect(state) {
+    if (state.currentError != SpeechRecognizerError.None) {
+      // FIXME : Why we can't call toMessage() ?
+      snackbarHostState.showSnackbar(state.currentError.toString())
+    }
+  }
+}
+
+/** Transform a [SpeechRecognizerError] into a [String] */
+@Composable
+fun SpeechRecognizerError.toMessage(): String {
+  val strings = LocalLocalizedStrings.current
+  return when (this) {
+    SpeechRecognizerError.InternalError -> strings.gameSnackBarInternalFailure
+    SpeechRecognizerError.IllegalAction -> strings.gameSnackBarIllegalAction
+    SpeechRecognizerError.UnknownCommand -> strings.gameSnackBarUnknownCommand
+    SpeechRecognizerError.None -> ""
   }
 }

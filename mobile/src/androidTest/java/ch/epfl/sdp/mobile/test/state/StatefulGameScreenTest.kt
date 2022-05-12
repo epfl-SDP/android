@@ -41,6 +41,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
+import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState.SpeechRecognizerError.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.common.truth.Truth.assertThat
@@ -735,7 +736,7 @@ class StatefulGameScreenTest {
             audioPermission = GrantedPermissionState,
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
-    robot.onNodeWithText("Internal failure").assertExists()
+    robot.onNodeWithText(robot.strings.gameSnackBarInternalFailure).assertExists()
   }
 
   @Test

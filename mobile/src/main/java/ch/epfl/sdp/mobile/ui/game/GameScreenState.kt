@@ -10,7 +10,7 @@ import androidx.compose.runtime.Stable
  */
 @Stable
 interface GameScreenState<Piece : ChessBoardState.Piece> :
-    MovableChessBoardState<Piece>, MovesInfoState, PlayersInfoState, SpeechRecognizerState {
+    MovableChessBoardState<Piece>, MovesInfoState, PlayersInfoState, SpeechRecognizerState{
 
   /** A callback which will be invoked when the user clicks on the AR button. */
   fun onArClick()

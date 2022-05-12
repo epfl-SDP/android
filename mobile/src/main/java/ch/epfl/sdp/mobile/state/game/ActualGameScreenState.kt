@@ -65,8 +65,7 @@ fun ActualGameScreenState(
       promotionState = promotions,
       movesInfo = moves,
       playersInfo = players,
-      speechRecognizer = speechRecognizer,
-  )
+      speechRecognizer = speechRecognizer)
 }
 
 /**
