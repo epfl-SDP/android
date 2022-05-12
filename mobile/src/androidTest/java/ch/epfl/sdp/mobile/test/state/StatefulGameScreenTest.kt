@@ -30,9 +30,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.*
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -41,7 +39,6 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.Black
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.*
-import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState.SpeechRecognizerError.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.common.truth.Truth.assertThat
@@ -736,6 +733,30 @@ class StatefulGameScreenTest {
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
     robot.onNodeWithText(robot.strings.gameSnackBarInternalFailure).assertExists()
+  }
+
+  @Test
+  fun given_legalActionRecognizer_when_clicksListening_then_noneMessagesDisplayed() {
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = LegalActionSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithText(robot.strings.gameSnackBarIllegalAction).assertDoesNotExist()
+    robot.onNodeWithText(robot.strings.gameSnackBarUnknownCommand).assertDoesNotExist()
+    robot.onNodeWithText(robot.strings.gameSnackBarInternalFailure).assertDoesNotExist()
+  }
+
+  @Test
+  fun given_illegalActionRecognizer_when_clicksListening_then_displayIllegalActionErrorMsg() {
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = IllegalActionSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithText(robot.strings.gameSnackBarIllegalAction).assertExists()
   }
 
   @Test
