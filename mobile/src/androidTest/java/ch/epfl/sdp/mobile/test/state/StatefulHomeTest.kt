@@ -10,11 +10,14 @@ import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
@@ -48,13 +51,14 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(api, social, chess, speech) { StatefulHome(user) }
+          ProvideFacades(api, social, chess, speech, tournament) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
     rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
@@ -69,12 +73,13 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(api, social, chess, speech) { StatefulHome(user) }
+          ProvideFacades(api, social, chess, speech, tournament) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
@@ -90,13 +95,14 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     api.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = api.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(api, social, chess, speech) { StatefulHome(user) }
+          ProvideFacades(api, social, chess, speech, tournament) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
@@ -112,12 +118,13 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) { StatefulHome(user) }
+          ProvideFacades(facade, social, chess, speech, tournament) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionPlay).performClick()
     rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
@@ -134,13 +141,16 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
 
     rule.onNodeWithText(strings.sectionContests).assertExists()
@@ -163,12 +173,13 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     facade.signInWithEmail("email@example.org", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech) { StatefulHome(user) }
+          ProvideFacades(facade, social, chess, speech, tournament) { StatefulHome(user) }
         }
     rule.onNodeWithText(strings.sectionSocial).performClick()
     rule.onNodeWithText("testName").assertExists()
@@ -185,6 +196,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("email@epfl.ch", "name", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -192,7 +204,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) {
             StatefulHome(
                 user = user,
                 // We must call controller.navigate() after the first composition (so the
@@ -218,6 +230,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -227,7 +240,9 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -249,6 +264,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -258,7 +274,9 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -281,6 +299,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -290,7 +309,9 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -304,8 +325,7 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
-      runTest {
+  fun given_statefulHome_when_creatingOnlineGame_then_showsGameWithOpponent() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
     val store = buildStore {
@@ -315,6 +335,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -324,7 +345,9 @@ class StatefulHomeTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -347,13 +370,16 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech) { StatefulHome(currentUser) }
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
         }
 
     rule.onNodeWithText(strings.sectionPlay).performClick()
@@ -382,6 +408,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -389,7 +416,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -423,6 +450,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -430,7 +458,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -465,6 +493,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -474,7 +503,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -510,6 +539,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -517,7 +547,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -544,12 +574,13 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
@@ -571,12 +602,13 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech) { Navigation() }
+          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) { Navigation() }
         }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
@@ -601,6 +633,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
 
@@ -609,7 +642,7 @@ class StatefulHomeTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade) {
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
             StatefulHome(
                 user = user,
                 controller = controller,
@@ -619,7 +652,103 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPuzzles).performClick()
     rule.onNodeWithText("00008", substring = true).performClick()
-    rule.onNodeWithText("Puzzle id: 00008").assertExists()
-    rule.onNodeWithText("Elo: 1852").assertExists()
+    rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
+    rule.onNodeWithText(strings.puzzleRating("1852")).assertExists()
+  }
+
+  @Test
+  fun given_home_when_routeUpdatedToTournamentDetails_then_displaysTournament() = runTest {
+    val env =
+        rule.setContentWithTestEnvironment {
+          val controller = rememberNavController()
+          StatefulHome(
+              user = user,
+              // We must call controller.navigate() after the first composition (so the
+              // NavController has all the routes set up), and a Modifier which has the property
+              // of being called after composition is onGloballyPositioned.
+              modifier = Modifier.onGloballyPositioned { controller.navigate("tournament/123") },
+              controller = controller,
+          )
+        }
+    env.infrastructure
+        .store
+        .collection(TournamentDocument.Collection)
+        .document("123")
+        .set(TournamentDocument(name = "Hello"))
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_home_when_creatingTournament_then_navigatesToTournament() = runTest {
+    val env = rule.setContentWithTestEnvironment { StatefulHome(user = user) }
+    rule.onNodeWithText(env.strings.sectionContests).performClick()
+    rule.onNodeWithText(env.strings.newContest).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateNameHint).performTextInput("Hello")
+    rule.onNodeWithText("1").performClick() // Best of 1
+    rule.onNodeWithText(env.strings.tournamentsCreateMaximumPlayerHint).performTextInput("2")
+    rule.onNodeWithText(env.strings.tournamentsCreateQualifierSize0).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateElimDepthFinal).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateActionCreate).assertIsEnabled().performClick()
+
+    // We can now join the tournament, since we've navigated to its details screen.
+    rule.onNodeWithText(env.strings.tournamentsBadgeJoin).assertIsDisplayed()
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_tournamentScreen_when_clickingCreate_createTournamentDialogIsOpened() = runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText(strings.newContest).performClick()
+
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertExists()
+  }
+
+  @Test
+  fun given_tournamentScreen_when_clickingCancel_createTournamentDialogIsClosed() = runTest {
+    val auth = emptyAuth()
+    val assets = emptyAssets()
+    val store = emptyStore()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val social = SocialFacade(auth, store)
+    val chess = ChessFacade(auth, store, assets)
+    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournament = TournamentFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(authFacade, social, chess, speech, tournament) {
+            StatefulHome(currentUser)
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText(strings.newContest).performClick()
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertExists()
+    rule.onNodeWithText(strings.tournamentsCreateActionCancel).performClick()
+    rule.onNodeWithText(strings.tournamentsCreateTitle).assertDoesNotExist()
   }
 }

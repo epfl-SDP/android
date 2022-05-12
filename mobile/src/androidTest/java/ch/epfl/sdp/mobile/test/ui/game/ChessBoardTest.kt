@@ -9,8 +9,8 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.White
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Position
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Rank.Pawn
-import ch.epfl.sdp.mobile.ui.game.ClassicChessBoard
 import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule

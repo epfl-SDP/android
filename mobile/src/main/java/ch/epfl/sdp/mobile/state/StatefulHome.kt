@@ -7,7 +7,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
+import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -54,6 +58,15 @@ private const val ArRoute = "ar"
 /** The route associated to the contests tab. */
 private const val ContestsRoute = "contests"
 
+/** The route associated with some tournament details. */
+private const val TournamentDetailsRoute = "tournament"
+
+/** The default identifier for a tournament. */
+private const val TournamentDefaultId = ""
+
+/** The route associated to new contest button in play screen */
+private const val CreateTournamentRoute = "create_tournament"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -99,7 +112,11 @@ fun StatefulHome(
         )
       }
       composable(ContestsRoute) {
-        StatefulTournamentScreen(modifier = Modifier.fillMaxSize(), contentPadding = paddingValues)
+        StatefulTournamentScreen(
+            onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
       }
       composable(SettingsRoute) {
         StatefulSettingsScreen(
@@ -121,6 +138,7 @@ fun StatefulHome(
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
             modifier = Modifier.fillMaxSize(),
+            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
             contentPadding = paddingValues)
       }
       composable(PlayRoute) {
@@ -132,9 +150,12 @@ fun StatefulHome(
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
-      dialog(PrepareGameRoute) {
+      dialog(
+          "$PrepareGameRoute?opponentId={opponentId}",
+          arguments = listOf(navArgument("opponentId") { nullable = true })) {
         StatefulPrepareGameScreen(
             user,
+            opponentId = it.arguments?.getString("opponentId"),
             navigateToGame = { match -> controller.navigate("$GameRoute/${match.id}") },
             cancelClick = { controller.popBackStack() },
         )
@@ -167,11 +188,40 @@ fun StatefulHome(
       }
       composable("$PuzzleGameRoute/{id}") { entry ->
         val id = requireNotNull(entry.arguments).getString("id", PuzzleGameDefaultId)
+        val actions =
+            StatefulGameScreenActions(
+                onBack = { controller.popBackStack() },
+                onShowAr = {}, // TODO: Refactor AR to show puzzle?...
+            )
         StatefulPuzzleGameScreen(
             user = user,
             puzzleId = id,
+            actions = actions,
             modifier = Modifier.fillMaxSize(),
             paddingValues = paddingValues,
+        )
+      }
+      composable("$TournamentDetailsRoute/{id}") { entry ->
+        val actions =
+            TournamentDetailsActions(
+                onBackClick = { controller.popBackStack() },
+            )
+        val id = requireNotNull(entry.arguments).getString("id", TournamentDefaultId)
+        StatefulTournamentDetailsScreen(
+            actions = actions,
+            user = user,
+            reference = TournamentReference(id),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
+      }
+      dialog(CreateTournamentRoute) {
+        StatefulCreateTournamentScreen(
+            user,
+            navigateToTournament = { tournament ->
+              controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
+            },
+            cancelClick = { controller.popBackStack() },
         )
       }
     }
@@ -198,6 +248,5 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Contests -> ContestsRoute
     }
 
-private fun hideBar(route: String?): Boolean {
-  return route?.startsWith(GameRoute) ?: false
-}
+private fun hideBar(route: String?): Boolean =
+    route?.let { it.startsWith(GameRoute) || it.startsWith(TournamentDetailsRoute) } ?: false

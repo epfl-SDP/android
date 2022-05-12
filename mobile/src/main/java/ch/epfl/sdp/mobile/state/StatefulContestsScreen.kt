@@ -2,6 +2,9 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
@@ -30,7 +33,9 @@ data class ContestInfoAdapter(
  * An implementation of the [ContestScreenState] that performs a given profile's [ContestInfo]
  * requests.
  */
-class TournamentScreenState : ContestScreenState<ContestInfoAdapter> {
+class TournamentScreenState(
+    private val onNewContestClickAction: State<() -> Unit>,
+) : ContestScreenState<ContestInfoAdapter> {
 
   // TODO : Fill this in with some actual data.
   override val contests =
@@ -40,7 +45,7 @@ class TournamentScreenState : ContestScreenState<ContestInfoAdapter> {
           createContest("3", "Never gonna chess", Status.Ongoing(3.hours), BadgeType.Join),
       )
 
-  override fun onNewContestClick() = Unit
+  override fun onNewContestClick() = onNewContestClickAction.value()
   override fun onContestClick(contest: ContestInfoAdapter) = Unit
   override fun onFilterClick() = Unit
 }
@@ -72,8 +77,20 @@ private fun createContest(
  */
 @Composable
 fun StatefulTournamentScreen(
+    onNewContestClickAction: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  ContestScreen(TournamentScreenState(), modifier, key = { it.uid }, contentPadding)
+  val action = rememberUpdatedState(onNewContestClickAction)
+
+  val state =
+      remember(
+          action,
+      ) {
+        TournamentScreenState(
+            onNewContestClickAction = action,
+        )
+      }
+
+  ContestScreen(state, modifier, key = { it.uid }, contentPadding)
 }
