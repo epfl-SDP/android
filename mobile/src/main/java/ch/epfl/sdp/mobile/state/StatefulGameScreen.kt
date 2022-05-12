@@ -4,6 +4,7 @@ package ch.epfl.sdp.mobile.state
 
 import android.Manifest.permission.RECORD_AUDIO
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -108,12 +109,11 @@ private fun StatefulSnackBar(
     state: SpeechRecognizerState,
     snackbarHostState: SnackbarHostState,
 ) {
-
-  // FIXME : Why this don't launch we we change the currentError ?
-  LaunchedEffect(state) {
+  LaunchedEffect(state.currentError) {
     if (state.currentError != SpeechRecognizerError.None) {
       // FIXME : Why we can't call toMessage() ?
-      snackbarHostState.showSnackbar(state.currentError.toString())
+      snackbarHostState.showSnackbar(
+          state.currentError.toString(), duration = SnackbarDuration.Long)
     }
   }
 }

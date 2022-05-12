@@ -6,7 +6,7 @@ import androidx.compose.runtime.Stable
 @Stable
 interface SpeechRecognizerState {
 
-  var currentError: SpeechRecognizerError
+  val currentError: SpeechRecognizerError
 
   /** Enum class that defined different error related to the speech recognizer */
   enum class SpeechRecognizerError {

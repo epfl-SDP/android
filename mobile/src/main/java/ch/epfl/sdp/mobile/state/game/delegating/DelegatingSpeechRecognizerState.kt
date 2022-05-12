@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState
+import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import kotlinx.coroutines.CoroutineScope
@@ -36,8 +37,7 @@ constructor(
     private val scope: CoroutineScope,
 ) : SpeechRecognizerState {
 
-  override var currentError: SpeechRecognizerState.SpeechRecognizerError =
-      SpeechRecognizerState.SpeechRecognizerError.None
+  override var currentError by mutableStateOf(SpeechRecognizerError.None)
 
   override var listening: Boolean by mutableStateOf(false)
     private set
@@ -61,7 +61,7 @@ constructor(
             when (val speech = facade.recognize()) {
               // TODO : Display an appropriate message, otherwise act on the board.
               SpeechFacade.RecognitionResult.Failure.Internal ->
-                  currentError = SpeechRecognizerState.SpeechRecognizerError.InternalError
+                  currentError = SpeechRecognizerError.InternalError
               is SpeechFacade.RecognitionResult.Success -> {
 
                 // Parsed the input
@@ -69,11 +69,10 @@ constructor(
                 if (parsedAction != null) {
                   // Try to perform the action
                   val isSuccessful = delegate.tryPerformAction(parsedAction)
-                  if (!isSuccessful)
-                      currentError = SpeechRecognizerState.SpeechRecognizerError.IllegalAction
+                  if (!isSuccessful) currentError = SpeechRecognizerError.IllegalAction
                   // If the action is illegal show in the snackbar
                 } else { // If cannot be parsed show error message
-                  currentError = SpeechRecognizerState.SpeechRecognizerError.UnknownCommand
+                  currentError = SpeechRecognizerError.UnknownCommand
                 }
               }
             }
