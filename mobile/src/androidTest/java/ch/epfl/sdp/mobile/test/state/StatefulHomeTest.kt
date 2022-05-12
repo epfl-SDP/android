@@ -10,12 +10,14 @@ import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
@@ -323,8 +325,7 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_statefulHome_when_creatingOnlineGameFromUI_then_gameScreenOpensWithCorrectOpponent() =
-      runTest {
+  fun given_statefulHome_when_creatingOnlineGame_then_showsGameWithOpponent() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
     val store = buildStore {
@@ -653,6 +654,45 @@ class StatefulHomeTest {
     rule.onNodeWithText("00008", substring = true).performClick()
     rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
     rule.onNodeWithText(strings.puzzleRating("1852")).assertExists()
+  }
+
+  @Test
+  fun given_home_when_routeUpdatedToTournamentDetails_then_displaysTournament() = runTest {
+    val env =
+        rule.setContentWithTestEnvironment {
+          val controller = rememberNavController()
+          StatefulHome(
+              user = user,
+              // We must call controller.navigate() after the first composition (so the
+              // NavController has all the routes set up), and a Modifier which has the property
+              // of being called after composition is onGloballyPositioned.
+              modifier = Modifier.onGloballyPositioned { controller.navigate("tournament/123") },
+              controller = controller,
+          )
+        }
+    env.infrastructure
+        .store
+        .collection(TournamentDocument.Collection)
+        .document("123")
+        .set(TournamentDocument(name = "Hello"))
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_home_when_creatingTournament_then_navigatesToTournament() = runTest {
+    val env = rule.setContentWithTestEnvironment { StatefulHome(user = user) }
+    rule.onNodeWithText(env.strings.sectionContests).performClick()
+    rule.onNodeWithText(env.strings.newContest).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateNameHint).performTextInput("Hello")
+    rule.onNodeWithText("1").performClick() // Best of 1
+    rule.onNodeWithText(env.strings.tournamentsCreateMaximumPlayerHint).performTextInput("2")
+    rule.onNodeWithText(env.strings.tournamentsCreateQualifierSize0).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateElimDepthFinal).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateActionCreate).assertIsEnabled().performClick()
+
+    // We can now join the tournament, since we've navigated to its details screen.
+    rule.onNodeWithText(env.strings.tournamentsBadgeJoin).assertIsDisplayed()
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
   }
 
   @Test
