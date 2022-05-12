@@ -58,6 +58,8 @@ fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
  * @param moves the list of moves played during the match in long algebraic notation
  * @param whiteId the UID of the white player
  * @param blackId The UID of the black player
+ * @param lastUpdatedAt when the last update of the document happened
+ * @param metadata additional information to a Chess document
  */
 data class ChessDocument(
     @DocumentId val uid: String? = null,
@@ -68,11 +70,24 @@ data class ChessDocument(
     val metadata: ChessMetadata? = null
 )
 
+/**
+ * Additional information to a ChessDocument. This can speed up some queries.
+ *
+ * @param status this is the status of the game, if its already won, undecided or stalemate
+ * @param blackName name of the black player
+ * @param whiteName name of the white player
+ */
 data class ChessMetadata(
-    val status: String? = null, // whiteWon, blackWon, draw
+    val status: String? = null,
     val blackName: String? = null,
     val whiteName: String? = null
-)
+) {
+  companion object {
+    const val WHITEWON = "whiteWon"
+    const val BLACKWON = "blackWon"
+    const val STALEMATE = "stalemate"
+  }
+}
 
 /**
  * A document which represents a tournament of chess between many users. All the tournament

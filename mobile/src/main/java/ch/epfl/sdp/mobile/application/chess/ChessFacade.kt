@@ -1,6 +1,9 @@
 package ch.epfl.sdp.mobile.application.chess
 
 import ch.epfl.sdp.mobile.application.ChessDocument
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.BLACKWON
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.STALEMATE
+import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.WHITEWON
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -21,6 +24,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
 import java.io.StringReader
 import kotlinx.coroutines.flow.*
+import java.time.LocalDateTime
 
 /**
  * An interface which represents all the endpoints and available features for online chess
@@ -83,20 +87,19 @@ class ChessFacade(
    * @return The [Flow] of [List] of [Match]s for the [Profile]
    */
   fun matches(profile: Profile): Flow<List<Match>> {
-    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", playerId = profile.uid, profile)
-    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", playerId = profile.uid, profile)
+    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", profile)
+    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", profile)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
   private fun getMatchesForPlayer(
       colorField: String,
-      playerId: String,
-      user: Profile? = null
+      user: Profile
   ): Flow<List<Match>> {
     return store
         .collection("games")
-        .whereEquals(colorField, playerId)
+        .whereEquals(colorField, user.uid)
         .asMatchListFlow(user)
         .onStart { emit(emptyList()) }
   }
@@ -212,23 +215,24 @@ private data class StoreMatch(
 
     store.collection("games").document(id).update {
       this[FieldPath(listOf("metadata", "status"))] =
-          when (game.nextStep) {
-            NextStep.Stalemate -> "stalemate"
+          when (val step = game.nextStep) {
+            NextStep.Stalemate -> STALEMATE
             is NextStep.MovePiece -> null
-            else ->
-                if ((game.nextStep as NextStep.Checkmate).winner == Color.Black) "blackWon"
-                else "whiteWon"
+            is NextStep.Checkmate ->
+                if (step.winner == Color.Black) BLACKWON
+                else WHITEWON
           }
 
-      if (chess?.blackId == user?.uid && chess?.metadata?.blackName != user?.name) {
+      if (chess?.blackId == user?.uid) {
         this[FieldPath(listOf("metadata", "blackName"))] = user?.name
       }
 
-      if (chess?.whiteId == user?.uid && chess?.metadata?.whiteName != user?.name) {
+      if (chess?.whiteId == user?.uid) {
         this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
       }
 
       this["moves"] = game.toAlgebraicNotation()
+      this["lastUpdatedAt"] = LocalDateTime.now()
     }
   }
 }
