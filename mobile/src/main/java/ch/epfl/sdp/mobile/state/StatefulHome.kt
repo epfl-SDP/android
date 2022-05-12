@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
@@ -143,6 +144,7 @@ fun StatefulHome(
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
             modifier = Modifier.fillMaxSize(),
+            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
             contentPadding = paddingValues)
       }
       composable(PlayRoute) {
@@ -154,9 +156,12 @@ fun StatefulHome(
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
-      dialog(PrepareGameRoute) {
+      dialog(
+          "$PrepareGameRoute?opponentId={opponentId}",
+          arguments = listOf(navArgument("opponentId") { nullable = true })) {
         StatefulPrepareGameScreen(
             user,
+            opponentId = it.arguments?.getString("opponentId"),
             navigateToGame = { match -> controller.navigate("$GameRoute/${match.id}") },
             cancelClick = { controller.popBackStack() },
         )
