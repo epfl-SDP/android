@@ -7,12 +7,17 @@ import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.Stalemate
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.WhiteWon
 
 interface PoolResults {
+  val players: List<String>
   fun against(player: String, opponent: String): Int
   fun score(playerId: String): Int
+  fun played(playerId: String): Int
 }
 
 fun List<ChessDocument>.toPoolResults(): PoolResults =
     object : PoolResults {
+
+      override val players: List<String> =
+          this@toPoolResults.flatMap { listOf(it.blackId, it.whiteId) }.distinct().filterNotNull()
 
       val scores =
           this@toPoolResults.flatMap {
@@ -25,6 +30,11 @@ fun List<ChessDocument>.toPoolResults(): PoolResults =
           }
               .groupingBy { (id, _) -> id }
               .fold(0) { acc, (_, score) -> acc + score }
+
+      val played =
+          this@toPoolResults.flatMap { listOf(it.whiteId to 1, it.blackId to 1) }
+              .groupingBy { (id, _) -> id }
+              .fold(0) { acc, (_, count) -> acc + count }
 
       override fun against(player: String, opponent: String): Int {
         return this@toPoolResults.fastSumBy {
@@ -41,4 +51,6 @@ fun List<ChessDocument>.toPoolResults(): PoolResults =
       }
 
       override fun score(playerId: String): Int = scores[playerId] ?: 0
+
+      override fun played(playerId: String): Int = played[playerId] ?: 0
     }

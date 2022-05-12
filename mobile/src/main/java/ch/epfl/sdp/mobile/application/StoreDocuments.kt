@@ -71,6 +71,7 @@ data class ChessDocument(
     // Tournament information.
     val tournamentId: String? = null,
     val poolId: String? = null,
+    val roundDepth: Int? = null,
 )
 
 /**

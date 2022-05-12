@@ -5,10 +5,10 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.*
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
+import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.ui.tournaments.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.*
-import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.EnoughPlayers
-import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.NotEnoughPlayers
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.PoolBanner.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -23,12 +23,15 @@ object EmptyTournament : Tournament {
   override val isParticipant = false
   override val status = Status.Unknown
   override suspend fun start(): Boolean = false
+  override suspend fun startDirectElimination() = Unit
 }
 
 /** An object representing a [PoolResults] which is still loading. */
 object EmptyPoolResults : PoolResults {
+  override val players: List<String> = emptyList()
   override fun against(player: String, opponent: String): Int = 0
   override fun score(playerId: String): Int = 0
+  override fun played(playerId: String): Int = 0
 }
 
 /**
@@ -159,16 +162,26 @@ class ActualTournamentDetailsState(
 
   override val finals: List<TournamentsFinalsRound<TournamentMatch>> = emptyList()
 
-  override val startTournamentBanner: StartTournamentBanner?
+  override val poolBanner: PoolBanner?
     get() {
       val status = tournament.status
-      return if (tournament.isAdmin && status is NotStarted) {
-        if (status.enoughParticipants) EnoughPlayers else NotEnoughPlayers
-      } else null
+      return when {
+        tournament.isAdmin && status is NotStarted -> {
+          if (status.enoughParticipants) EnoughPlayers else NotEnoughPlayers
+        }
+        tournament.isAdmin && status == Pools -> {
+          StartDirectElimination
+        }
+        else -> null
+      }
     }
 
-  override fun onStartTournament() {
-    scope.launch { tournament.start() }
+  override fun onPoolBannerClick() {
+    when (poolBanner) {
+      StartDirectElimination -> scope.launch { tournament.startDirectElimination() }
+      EnoughPlayers, NotEnoughPlayers -> scope.launch { tournament.start() }
+      null -> Unit
+    }
   }
 
   override fun onBadgeClick() {

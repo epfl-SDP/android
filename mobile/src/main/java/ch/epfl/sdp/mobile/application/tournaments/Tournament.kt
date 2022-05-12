@@ -32,6 +32,9 @@ interface Tournament {
      */
     data class NotStarted(val enoughParticipants: Boolean) : Status
 
+    /** Indicates that we are currently in the pools phase. */
+    object Pools : Status
+
     /** Indicates that the status is still loading and is not known yet. */
     object Unknown : Status
   }
@@ -43,6 +46,9 @@ interface Tournament {
    * @return a boolean value indicating if starting the tournament was a success.
    */
   suspend fun start(): Boolean
+
+  /** Starts the direct elimination phase of the [Tournament]. */
+  suspend fun startDirectElimination()
 }
 
 /**

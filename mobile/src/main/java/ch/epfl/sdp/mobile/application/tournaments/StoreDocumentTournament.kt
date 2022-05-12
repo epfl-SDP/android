@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
+import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
@@ -10,6 +11,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
+import kotlin.math.pow
 
 /**
  * An implementation of a [Tournament] which uses a [TournamentDocument] under-the-hood.
@@ -34,6 +36,7 @@ class StoreDocumentTournament(
       val enoughParticipants = document.playerIds?.size ?: 0 >= (document.maxPlayers ?: 0)
       return when (document.stage) {
         null -> Tournament.Status.NotStarted(enoughParticipants)
+        StagePools -> Tournament.Status.Pools
         else -> Tournament.Status.Unknown
       }
     }
@@ -50,7 +53,6 @@ class StoreDocumentTournament(
           val poolSize = current.poolSize ?: return@transaction false
           val players = current.playerIds ?: return@transaction false
           val bestOf = current.bestOf ?: return@transaction false
-
 
           // Are we the tournament admin ?
           if (adminId != user.uid) return@transaction false
@@ -89,4 +91,50 @@ class StoreDocumentTournament(
         }
       }
           .getOrElse { false }
+
+  override suspend fun startDirectElimination() {
+    runCatching {
+      val results =
+          store
+              .collection("games")
+              .whereEquals("tournamentId", reference.uid)
+              .whereNotEquals("poolId", null)
+              .get<ChessDocument>()
+              .toPoolResults()
+
+      val ranked =
+          results
+              .players
+              .map {
+                val score = results.score(it).toFloat()
+                val total = results.played(it).toFloat()
+                it to (if (total == 0f) 0f else score / total)
+              }
+              .sortedByDescending { (_, score) -> score }
+              .map { it.first }
+
+      store.transaction {
+        val ref = store.collection(Collection).document(reference.uid)
+        val currentDocument = get<TournamentDocument>(ref)
+
+        val depth = currentDocument?.eliminationRounds ?: return@transaction
+        val count = 2.0.pow(depth).toInt()
+        val matches = ranked.take(count).zipWithNext()
+
+        for (match in matches) {
+          val matchRef = store.collection("games").document()
+          val matchDocument =
+              ChessDocument(
+                  whiteId = match.first,
+                  blackId = match.second,
+                  lastUpdatedAt = System.currentTimeMillis(),
+                  poolId = null,
+                  roundDepth = depth,
+                  tournamentId = document.uid,
+              )
+          set(matchRef, matchDocument)
+        }
+      }
+    }
+  }
 }
