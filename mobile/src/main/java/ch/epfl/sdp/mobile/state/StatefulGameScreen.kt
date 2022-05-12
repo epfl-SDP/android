@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState.SpeechRecognizerError
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
@@ -49,7 +50,7 @@ fun StatefulGameScreen(
   val speechFacade = LocalSpeechFacade.current
 
   val scope = rememberCoroutineScope()
-  val match = remember(chessFacade, id) { chessFacade.match(id) }
+  val match = remember(chessFacade, id, user) { chessFacade.match(id, user) }
 
   val snackbarHostState = remember { SnackbarHostState() }
   val gameScreenState =
@@ -66,6 +67,8 @@ fun StatefulGameScreen(
       }
 
   StatefulPromoteDialog(gameScreenState)
+
+  StatefulSnackBar(gameScreenState, snackbarHostState)
 
   GameScreen(
       state = gameScreenState,
@@ -97,5 +100,32 @@ fun StatefulPromoteDialog(
         choices = state.choices,
         modifier = modifier,
     )
+  }
+}
+
+/**
+ * A composable which displays a snackbar to show the [SpeechRecognizerState.currentError] when it's
+ * modified
+ *
+ * @param state the [SpeechRecognizerState] which backs this dialog.
+ * @param snackbarHostState the [SnackbarHostState] used to display some results.
+ */
+@Composable
+private fun StatefulSnackBar(
+    state: SpeechRecognizerState,
+    snackbarHostState: SnackbarHostState,
+) {
+
+  val strings = LocalLocalizedStrings.current
+  LaunchedEffect(state.currentError) {
+    val msg =
+        when (state.currentError) {
+          SpeechRecognizerError.InternalError -> strings.gameSnackBarInternalFailure
+          SpeechRecognizerError.IllegalAction -> strings.gameSnackBarIllegalAction
+          SpeechRecognizerError.UnknownCommand -> strings.gameSnackBarUnknownCommand
+          SpeechRecognizerError.None -> return@LaunchedEffect // Nothing to show
+        }
+    snackbarHostState.showSnackbar(msg)
+    state.currentError = SpeechRecognizerError.None
   }
 }

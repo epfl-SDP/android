@@ -30,9 +30,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.*
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -84,6 +82,7 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
+    every { user1.name } returns "userName1"
 
     val strings =
         rule.setContentWithLocalizedStrings {
@@ -562,6 +561,7 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
+    every { user1.name } returns "userName1"
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
 
@@ -600,6 +600,7 @@ class StatefulGameScreenTest {
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
+    every { user1.name } returns "userName1"
 
     val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
 
@@ -675,6 +676,7 @@ class StatefulGameScreenTest {
 
   @Test
   fun playingUntilStalemate_displaysStalemate() {
+
     val robot = emptyGameAgainstOneselfRobot()
     robot.play(Stalemate)
     robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
@@ -714,28 +716,49 @@ class StatefulGameScreenTest {
   }
 
   @Test
-  fun given_successfulRecognizer_when_clicksListening_then_displaysRecognitionResults() {
-    // This will fail once we want to move the pieces instead.
+  fun given_successfulRecognizer_when_clicksListening_then_displaysUnknownCmdResults() {
     val robot =
         emptyGameAgainstOneselfRobot(
-            recognizer = SuccessfulSpeechRecognizerFactory,
+            recognizer = UnknownCommandSpeechRecognizerFactory,
             audioPermission = GrantedPermissionState,
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
-    // Print null because the input in not recognized
-    robot.onNodeWithText("null").assertExists()
+    robot.onNodeWithText(robot.strings.gameSnackBarUnknownCommand).assertExists()
   }
 
   @Test
   fun given_failingRecognizer_when_clicksListening_then_displaysFailedRecognitionResults() {
-    // This will fail once we want to move the pieces instead.
     val robot =
         emptyGameAgainstOneselfRobot(
             recognizer = FailingSpeechRecognizerFactory,
             audioPermission = GrantedPermissionState,
         )
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
-    robot.onNodeWithText("Internal failure").assertExists()
+    robot.onNodeWithText(robot.strings.gameSnackBarInternalFailure).assertExists()
+  }
+
+  @Test
+  fun given_legalActionRecognizer_when_clicksListening_then_noneMessagesDisplayed() {
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = LegalActionSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithText(robot.strings.gameSnackBarIllegalAction).assertDoesNotExist()
+    robot.onNodeWithText(robot.strings.gameSnackBarUnknownCommand).assertDoesNotExist()
+    robot.onNodeWithText(robot.strings.gameSnackBarInternalFailure).assertDoesNotExist()
+  }
+
+  @Test
+  fun given_illegalActionRecognizer_when_clicksListening_then_displayIllegalActionErrorMsg() {
+    val robot =
+        emptyGameAgainstOneselfRobot(
+            recognizer = IllegalActionSpeechRecognizerFactory,
+            audioPermission = GrantedPermissionState,
+        )
+    robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
+    robot.onNodeWithText(robot.strings.gameSnackBarIllegalAction).assertExists()
   }
 
   @Test
