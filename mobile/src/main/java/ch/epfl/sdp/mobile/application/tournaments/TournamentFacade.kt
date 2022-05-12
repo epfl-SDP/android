@@ -8,6 +8,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 
 /**
  * An interface which represents all the endpoints and available features for tournaments.
@@ -22,12 +23,13 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    *
    * @param user the current [AuthenticatedUser].
    */
+  // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
   fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     return store
         .collection("tournaments")
-        .orderBy("creationDate", Descending)
         .asFlow<TournamentDocument>()
         .map { it.mapNotNull { doc -> doc?.toTournament(user) } }
+        .onStart { emit(emptyList()) }
   }
 
   /**

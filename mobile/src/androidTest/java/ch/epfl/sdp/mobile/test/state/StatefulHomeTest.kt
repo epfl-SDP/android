@@ -10,6 +10,7 @@ import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
@@ -653,5 +654,46 @@ class StatefulHomeTest {
     rule.onNodeWithText("00008", substring = true).performClick()
     rule.onNodeWithText("Puzzle id: 00008").assertExists()
     rule.onNodeWithText("Elo: 1852").assertExists()
+  }
+
+  @Test
+  fun given_tournamentDetailsScreen_when_tournamentIsClicked_then_tournamentScreenIsDisplayed() =
+      runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "Player 1"))
+        document("2", ProfileDocument("2", name = "Player 2"))
+      }
+      collection("tournaments") {
+        document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
+        document("id2", TournamentDocument("tid2", "2", "Tournament 2"))
+      }
+    }
+    val assets = emptyAssets()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val player2 = socialFacade.profile(uid = "2", user = user).filterIsInstance<Profile>().first()
+    user.follow(player2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionContests).performClick()
   }
 }
