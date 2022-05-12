@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
  * illegal.
  */
 object IllegalActionSpeechRecognizerFactory : SpeechRecognizerFactory {
-  override fun createSpeechRecognizer() = LegalActionSpeechRecognizer()
+  override fun createSpeechRecognizer() = IllegalActionSpeechRecognizer()
 }
 
 class IllegalActionSpeechRecognizer : SpeechRecognizer {
