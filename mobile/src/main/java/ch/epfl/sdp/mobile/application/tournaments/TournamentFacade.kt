@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
+import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -126,6 +127,21 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
           .orderBy(PoolDocument.Name)
           .asFlow<PoolDocument>()
           .map { list -> list.mapNotNull { it?.toPool(user, store) } }
+
+  /**
+   * Returns the [Flow] of the [PoolResults] for a given [TournamentReference].
+   *
+   * @param reference the uniquely identifying [TournamentReference] for the tournament we're
+   * fetching.
+   * @return the [Flow] of [PoolResults].
+   */
+  fun poolResults(reference: TournamentReference): Flow<PoolResults> =
+      store
+          .collection("games")
+          .whereEquals("tournamentId", reference.uid)
+          .whereNotEquals("poolId", null)
+          .asFlow<ChessDocument>()
+          .map { it.filterNotNull().toPoolResults() }
 
   /**
    * Allows a user to advance the round number of a certain pool for a certain tournament, if the

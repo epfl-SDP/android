@@ -2,12 +2,9 @@ package ch.epfl.sdp.mobile.state.tournaments
 
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.tournaments.Pool
-import ch.epfl.sdp.mobile.application.tournaments.Tournament
+import ch.epfl.sdp.mobile.application.tournaments.*
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
-import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.tournaments.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.EnoughPlayers
@@ -28,6 +25,28 @@ object EmptyTournament : Tournament {
   override suspend fun start(): Boolean = false
 }
 
+/** An object representing a [PoolResults] which is still loading. */
+object EmptyPoolResults : PoolResults {
+  override fun against(player: String, opponent: String): Int = 0
+  override fun score(playerId: String): Int = 0
+}
+
+/**
+ * A class representing a [PoolMember] uniquely identified by an identifier.
+ *
+ * @param id the unique identifier of the pool member.
+ * @param name the name of the pool member.
+ * @param results a function to retrieve the pool results.
+ */
+class PlayerIdPoolMember(
+    val id: String,
+    override val name: String,
+    private val results: () -> PoolResults,
+) : PoolMember {
+  override val total: PoolScore
+    get() = results().score(id)
+}
+
 /**
  * An implementation of [TournamentDetailsState] which uses a [TournamentReference] to fetch a
  * [Tournament], and delegate some responsibility to it.
@@ -44,7 +63,7 @@ class ActualTournamentDetailsState(
     private val facade: TournamentFacade,
     private val reference: TournamentReference,
     private val scope: CoroutineScope,
-) : TournamentDetailsState<PoolMember, TournamentMatch> {
+) : TournamentDetailsState<PlayerIdPoolMember, TournamentMatch> {
 
   /** The current [TournamentDetailsActions]. */
   private val actions by actions
@@ -68,6 +87,12 @@ class ActualTournamentDetailsState(
     scope.launch { facade.pools(reference, user).onEach { poolsState = it }.collect() }
   }
 
+  private var poolResultsState by mutableStateOf<PoolResults>(EmptyPoolResults)
+
+  init {
+    scope.launch { facade.poolResults(reference).onEach { poolResultsState = it }.collect() }
+  }
+
   override val badge: BadgeType?
     get() =
         when {
@@ -81,28 +106,31 @@ class ActualTournamentDetailsState(
   override val title: String
     get() = tournament.name
 
-  override val pools: List<PoolInfo<PoolMember>>
+  override val pools: List<PoolInfo<PlayerIdPoolMember>>
     get() =
         poolsState.map { pool ->
-          object : PoolInfo<PoolMember> {
+          object : PoolInfo<PlayerIdPoolMember> {
             override val name: String = pool.name
             override val status: PoolInfo.Status =
                 PoolInfo.Status.Ongoing(
-                    currentRound = pool.totalRounds - pool.remainingRounds + 1,
+                    currentRound = pool.totalRounds - pool.remainingRounds,
                     totalRounds = pool.totalRounds,
                 )
             override val startNextRoundEnabled: Boolean = pool.isStartNextRoundEnabled
-            override fun onStartNextRound() = Unit
-            override val members: List<PoolMember>
+            override fun onStartNextRound() {
+              scope.launch { pool.startNextRound() }
+            }
+            override val members: List<PlayerIdPoolMember>
               get() =
                   pool.players.map { player ->
-                    object : PoolMember {
-                      override val name: String = player.name
-                      override val total: PoolScore? = 0
-                    }
+                    PlayerIdPoolMember(
+                        id = player.uid,
+                        name = player.name,
+                    ) { poolResultsState }
                   }
 
-            override fun PoolMember.scoreAgainst(other: PoolMember): PoolScore? = 0
+            override fun PlayerIdPoolMember.scoreAgainst(other: PlayerIdPoolMember): PoolScore =
+                poolResultsState.against(this.id, other.id)
           }
         }
 
