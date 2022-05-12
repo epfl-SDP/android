@@ -48,6 +48,47 @@ class PlayerIdPoolMember(
 }
 
 /**
+ * A class representing some [PoolInfo] which uses some [PlayerIdPoolMember]s.
+ *
+ * @param pool the underlying [Pool].
+ * @param scope the [CoroutineScope] used to move to the next round.
+ * @param results a function to retrieve the pool results.
+ */
+class PlayerIdPoolInfo(
+    private val pool: Pool,
+    private val scope: CoroutineScope,
+    private val results: () -> PoolResults,
+) : PoolInfo<PlayerIdPoolMember> {
+
+  override val name: String = pool.name
+
+  override val status: PoolInfo.Status =
+      PoolInfo.Status.Ongoing(
+          currentRound = pool.totalRounds - pool.remainingRounds,
+          totalRounds = pool.totalRounds,
+      )
+
+  override val startNextRoundEnabled: Boolean = pool.isStartNextRoundEnabled
+
+  override fun onStartNextRound() {
+    scope.launch { pool.startNextRound() }
+  }
+
+  override val members: List<PlayerIdPoolMember>
+    get() =
+        pool.players.map { player ->
+          PlayerIdPoolMember(
+              id = player.uid,
+              name = player.name,
+              results = results,
+          )
+        }
+
+  override fun PlayerIdPoolMember.scoreAgainst(other: PlayerIdPoolMember): PoolScore =
+      results().against(this.id, other.id)
+}
+
+/**
  * An implementation of [TournamentDetailsState] which uses a [TournamentReference] to fetch a
  * [Tournament], and delegate some responsibility to it.
  *
@@ -109,29 +150,11 @@ class ActualTournamentDetailsState(
   override val pools: List<PoolInfo<PlayerIdPoolMember>>
     get() =
         poolsState.map { pool ->
-          object : PoolInfo<PlayerIdPoolMember> {
-            override val name: String = pool.name
-            override val status: PoolInfo.Status =
-                PoolInfo.Status.Ongoing(
-                    currentRound = pool.totalRounds - pool.remainingRounds,
-                    totalRounds = pool.totalRounds,
-                )
-            override val startNextRoundEnabled: Boolean = pool.isStartNextRoundEnabled
-            override fun onStartNextRound() {
-              scope.launch { pool.startNextRound() }
-            }
-            override val members: List<PlayerIdPoolMember>
-              get() =
-                  pool.players.map { player ->
-                    PlayerIdPoolMember(
-                        id = player.uid,
-                        name = player.name,
-                    ) { poolResultsState }
-                  }
-
-            override fun PlayerIdPoolMember.scoreAgainst(other: PlayerIdPoolMember): PoolScore =
-                poolResultsState.against(this.id, other.id)
-          }
+          PlayerIdPoolInfo(
+              pool = pool,
+              scope = scope,
+              results = { poolResultsState },
+          )
         }
 
   override val finals: List<TournamentsFinalsRound<TournamentMatch>> = emptyList()

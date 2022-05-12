@@ -32,7 +32,9 @@ fun List<ChessDocument>.toPoolResults(): PoolResults =
           when {
             status == WhiteWon && it.whiteId == player && it.blackId == opponent -> 3
             status == BlackWon && it.blackId == player && it.whiteId == opponent -> 3
-            status == Stalemate && (it.blackId == player || it.whiteId == player) -> 1
+            status == Stalemate &&
+                ((it.blackId == player && it.whiteId == opponent) ||
+                    (it.whiteId == player && it.blackId == opponent)) -> 1
             else -> 0
           }
         }
