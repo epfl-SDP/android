@@ -15,7 +15,7 @@ class TournamentTest {
   @Test
   fun given_emptyTournamentDocument_when_transformedToTournament_then_returnsFilledTournament() {
     val document = TournamentDocument()
-    val store = buildStore {  }
+    val store = buildStore {}
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns ""
     val tournament = document.toTournament(user, store)
@@ -29,7 +29,7 @@ class TournamentTest {
   fun given_filledTournamentDocument_when_transformedToTournament_then_returnsFilledTournament() {
     val document =
         TournamentDocument(uid = "1", name = "Hello", adminId = "id", playerIds = listOf("id"))
-    val store = buildStore {  }
+    val store = buildStore {}
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id"
     val tournament = document.toTournament(user, store)

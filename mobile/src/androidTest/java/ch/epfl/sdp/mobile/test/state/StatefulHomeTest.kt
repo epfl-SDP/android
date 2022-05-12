@@ -757,7 +757,9 @@ class StatefulHomeTest {
       runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection(TournamentDocument.Collection) { document("id1", TournamentDocument("tid1", "1", "Tournament 1")) }
+      collection(TournamentDocument.Collection) {
+        document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
+      }
     }
     val assets = emptyAssets()
 

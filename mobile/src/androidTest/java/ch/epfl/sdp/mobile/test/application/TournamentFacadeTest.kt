@@ -109,7 +109,11 @@ class TournamentFacadeTest {
             eliminationRounds = 2,
         )
 
-    val fetched = store.collection(TournamentDocument.Collection).document(ref!!.uid).get<TournamentDocument>()
+    val fetched =
+        store
+            .collection(TournamentDocument.Collection)
+            .document(ref!!.uid)
+            .get<TournamentDocument>()
 
     assertThat(fetched?.adminId).isEqualTo(user.uid)
     assertThat(fetched?.name).isEqualTo("Test tournament")
