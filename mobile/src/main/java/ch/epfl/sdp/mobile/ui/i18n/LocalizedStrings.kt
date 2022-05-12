@@ -148,6 +148,7 @@ interface LocalizedStrings {
   val tournamentsDetailsStartNotEnoughPlayersTitle: String
   val tournamentsDetailsStartNotEnoughPlayersSubtitle: String
   val tournamentDetailsBackContentDescription: String
+  val tournamentDetailsPoolName: (Int) -> String
 
   val tournamentsContestsTitle: String
   val tournamentsFilter: String
