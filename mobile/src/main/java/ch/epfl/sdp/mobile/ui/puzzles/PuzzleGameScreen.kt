@@ -90,32 +90,27 @@ private fun PuzzleDirective(
 ) {
   val strings = LocalLocalizedStrings.current
   val colors = MaterialTheme.colors
-
-  @Composable
-  fun Directive() =
-      when (puzzleState) {
-        PuzzleState.Solving ->
-            Text(
-                strings.puzzleSolving(color.toString()),
-                color = colors.primary,
-                style = MaterialTheme.typography.subtitle1,
-            )
-        PuzzleState.Failed ->
-            Text(
-                strings.puzzleFailed,
-                color = colors.secondary,
-                style = MaterialTheme.typography.subtitle1,
-            )
-        PuzzleState.Solved ->
-            Text(
-                strings.puzzleSolved,
-                color = colors.primaryVariant,
-                style = MaterialTheme.typography.subtitle1,
-            )
-      }
-
   Row(modifier, Arrangement.spacedBy(8.dp), Alignment.CenterVertically) {
     Icon(ChessIcons.BlackKing, null, Modifier.size(32.dp))
-    Directive()
+    when (puzzleState) {
+      PuzzleState.Solving ->
+          Text(
+              strings.puzzleSolving(color.toString()),
+              color = colors.primary,
+              style = MaterialTheme.typography.subtitle1,
+          )
+      PuzzleState.Failed ->
+          Text(
+              strings.puzzleFailed,
+              color = colors.secondary,
+              style = MaterialTheme.typography.subtitle1,
+          )
+      PuzzleState.Solved ->
+          Text(
+              strings.puzzleSolved,
+              color = colors.primaryVariant,
+              style = MaterialTheme.typography.subtitle1,
+          )
+    }
   }
 }
