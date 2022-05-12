@@ -32,13 +32,7 @@ class PuzzleGameDelegate(
 ) : MutableGameDelegate, PuzzleInfoState by delegate {
 
   /** The underlying snapshot-aware [Game]. */
-  private var backing by mutableStateOf(puzzle.baseGame())
-
-  override var game: Game
-    get() = backing
-    set(value) {
-      backing = value // Local updates
-    }
+  override var game by mutableStateOf(puzzle.baseGame())
 
   override fun tryPerformAction(action: Action): Boolean {
     val step = game.nextStep as? NextStep.MovePiece ?: return false
