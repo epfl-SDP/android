@@ -42,14 +42,12 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
  * requests.
  *
  * @param actions the [TournamentActions] which are available on the screen.
- * @param onNewContestClickAction Callable lambda to navigate to the tournament creation pop up.
  * @param currentUser the current [AuthenticatedUser] of the application.
  * @param tournamentFacade the [TournamentFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class TournamentScreenState(
     actions: State<TournamentActions>,
-    private val onNewContestClickAction: State<() -> Unit>,
     private val currentUser: AuthenticatedUser,
     private val tournamentFacade: TournamentFacade,
     private val scope: CoroutineScope,
@@ -66,7 +64,7 @@ class TournamentScreenState(
     }
   }
 
-  override fun onNewContestClick() = onNewContestClickAction.value()
+  override fun onNewContestClick() = actions.onNewContestClick()
   override fun onContestClick(contest: TournamentAdapter) =
       actions.onTournamentClick(contest.tournament.reference)
   override fun onFilterClick() = Unit
@@ -89,21 +87,19 @@ fun StatefulTournamentScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(TournamentActions(onTournamentClick = onTournamentClick))
+  val actions =
+      rememberUpdatedState(
+          TournamentActions(
+              onTournamentClick = onTournamentClick, onNewContestClick = onNewContestClickAction))
   val tournamentFacade = LocalTournamentFacade.current
-  val currentOnNewTournamentClick = rememberUpdatedState(onNewContestClickAction)
   val scope = rememberCoroutineScope()
   val state =
       remember(
           actions,
-          currentOnNewTournamentClick,
           currentUser,
           tournamentFacade,
           scope,
-      ) {
-        TournamentScreenState(
-            actions, currentOnNewTournamentClick, currentUser, tournamentFacade, scope)
-      }
+      ) { TournamentScreenState(actions, currentUser, tournamentFacade, scope) }
 
   ContestScreen(state, modifier, key = { it.uid }, contentPadding)
 }
@@ -112,7 +108,9 @@ fun StatefulTournamentScreen(
  * A class representing the different actions available on the tournament screen.
  *
  * @param onTournamentClick callback called when a tournament item is clicked on.
+ * @param onNewContestClick callback called when the new contest button is clicked on.
  */
 data class TournamentActions(
     val onTournamentClick: (TournamentReference) -> Unit,
+    val onNewContestClick: () -> Unit,
 )

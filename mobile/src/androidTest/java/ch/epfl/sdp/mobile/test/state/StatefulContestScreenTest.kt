@@ -56,7 +56,6 @@ class StatefulContestScreenTest {
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
       rule.onNodeWithText("Tournament 2").assertIsDisplayed()
-      rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
     }
   }
 

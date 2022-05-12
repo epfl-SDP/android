@@ -755,38 +755,35 @@ class StatefulHomeTest {
   @Test
   fun given_contestScreen_when_tournamentIsClicked_then_itsTournamentDetailsScreenIsDisplayed() =
       runTest {
-        val auth = buildAuth { user("email@example.org", "password", "1") }
-        val store = buildStore {
-          collection("tournaments") {
-            document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("tournaments") { document("id1", TournamentDocument("tid1", "1", "Tournament 1")) }
+    }
+    val assets = emptyAssets()
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
           }
         }
-        val assets = emptyAssets()
 
-        val authFacade = AuthenticationFacade(auth, store)
-        val chessFacade = ChessFacade(auth, store, assets)
-        val socialFacade = SocialFacade(auth, store)
-        val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
-        val tournamentFacade = TournamentFacade(auth, store)
-
-        val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
-        val strings =
-            rule.setContentWithLocalizedStrings {
-              val controller = rememberNavController()
-              ProvideFacades(
-                  authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-                StatefulHome(
-                    user = user,
-                    controller = controller,
-                )
-              }
-            }
-
-        rule.onNodeWithText(strings.sectionContests).performClick()
-        rule.onNodeWithText("Tournament 1").assertExists()
-        rule.onNodeWithText("Tournament 1").performClick()
-        rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
-        rule.onNodeWithText("Tournament 1", ignoreCase = true).assertIsDisplayed()
-      }
+    rule.onNodeWithText(strings.sectionContests).performClick()
+    rule.onNodeWithText("Tournament 1").assertExists()
+    rule.onNodeWithText("Tournament 1").performClick()
+    rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
+    rule.onNodeWithText("Tournament 1", ignoreCase = true).assertIsDisplayed()
+  }
 }
