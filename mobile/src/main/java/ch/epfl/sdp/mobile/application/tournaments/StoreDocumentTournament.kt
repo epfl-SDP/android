@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.Collection
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.StagePools
+import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.stageDirectElimination
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
@@ -115,24 +116,34 @@ class StoreDocumentTournament(
 
       store.transaction {
         val ref = store.collection(Collection).document(reference.uid)
-        val currentDocument = get<TournamentDocument>(ref)
+        val currentDocument = get<TournamentDocument>(ref) ?: return@transaction
 
-        val depth = currentDocument?.eliminationRounds ?: return@transaction
+        val bestOf = currentDocument.bestOf ?: return@transaction
+        val depth = currentDocument.eliminationRounds ?: return@transaction
         val count = 2.0.pow(depth).toInt()
         val matches = ranked.take(count).zipWithNext()
 
+        set(
+            reference = ref,
+            value = currentDocument.copy(stage = stageDirectElimination(depth)),
+        )
+
         for (match in matches) {
-          val matchRef = store.collection("games").document()
-          val matchDocument =
-              ChessDocument(
-                  whiteId = match.first,
-                  blackId = match.second,
-                  lastUpdatedAt = System.currentTimeMillis(),
-                  poolId = null,
-                  roundDepth = depth,
-                  tournamentId = document.uid,
-              )
-          set(matchRef, matchDocument)
+          repeat(bestOf) { index ->
+            val (first, second) =
+                if (index % 2 == 0) match.first to match.second else match.second to match.first
+            val matchRef = store.collection("games").document()
+            val matchDocument =
+                ChessDocument(
+                    whiteId = first,
+                    blackId = second,
+                    lastUpdatedAt = System.currentTimeMillis(),
+                    poolId = null,
+                    roundDepth = depth,
+                    tournamentId = document.uid,
+                )
+            set(matchRef, matchDocument)
+          }
         }
       }
     }

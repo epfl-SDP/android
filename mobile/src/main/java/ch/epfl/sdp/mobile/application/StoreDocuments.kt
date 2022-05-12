@@ -131,7 +131,14 @@ data class TournamentDocument(
     /** Indicates that the [TournamentDocument.stage] is pools. */
     const val StagePools = "pools"
 
-    //       fun stageDirectionElimination()
+    /**
+     * Indicates the depth of the last created elimination round.
+     *
+     * @param depth the depth of the round.
+     */
+    fun stageDirectElimination(depth: Int): String {
+      return "$depth"
+    }
   }
 }
 
