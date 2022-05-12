@@ -652,8 +652,8 @@ class StatefulHomeTest {
 
     rule.onNodeWithText(strings.sectionPuzzles).performClick()
     rule.onNodeWithText("00008", substring = true).performClick()
-    rule.onNodeWithText("Puzzle id: 00008").assertExists()
-    rule.onNodeWithText("Elo: 1852").assertExists()
+    rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
+    rule.onNodeWithText(strings.puzzleRating("1852")).assertExists()
   }
 
   @Test
