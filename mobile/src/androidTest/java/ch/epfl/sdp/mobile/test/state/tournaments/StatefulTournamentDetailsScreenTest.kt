@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -54,5 +55,60 @@ class StatefulTournamentDetailsScreenTest {
       )
     }
     rule.onNodeWithText("Sample", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_notStartedTournament_when_enoughParticipants_then_showsStartBanner() = runTest {
+    val reference = TournamentReference("1")
+    val env =
+        rule.setContentWithTestEnvironment {
+          StatefulTournamentDetailsScreen(
+              user = user,
+              reference = reference,
+              actions = TournamentDetailsActions(onBackClick = {}),
+          )
+        }
+    env.infrastructure
+        .store
+        .collection(TournamentDocument.Collection)
+        .document(reference.uid)
+        .set(
+            TournamentDocument(
+                adminId = env.user.uid,
+                maxPlayers = 3,
+                playerIds = listOf("1", "2", "3"),
+            ),
+        )
+    rule.onNodeWithText(env.strings.tournamentsDetailsStartEnoughPlayersTitle).assertIsDisplayed()
+    rule.onNodeWithText(env.strings.tournamentsDetailsStartEnoughPlayersSubtitle)
+        .assertIsDisplayed()
+  }
+
+  @Test
+  fun given_notStartedTournament_when_notEnoughParticipants_then_showsStartBanner() = runTest {
+    val reference = TournamentReference("1")
+    val env =
+        rule.setContentWithTestEnvironment {
+          StatefulTournamentDetailsScreen(
+              user = user,
+              reference = reference,
+              actions = TournamentDetailsActions(onBackClick = {}),
+          )
+        }
+    env.infrastructure
+        .store
+        .collection(TournamentDocument.Collection)
+        .document(reference.uid)
+        .set(
+            TournamentDocument(
+                adminId = env.user.uid,
+                maxPlayers = 20,
+                playerIds = listOf("1", "2", "3"),
+            ),
+        )
+    rule.onNodeWithText(env.strings.tournamentsDetailsStartNotEnoughPlayersTitle)
+        .assertIsDisplayed()
+    rule.onNodeWithText(env.strings.tournamentsDetailsStartNotEnoughPlayersSubtitle)
+        .assertIsDisplayed()
   }
 }
