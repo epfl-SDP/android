@@ -83,9 +83,9 @@ data class ChessMetadata(
     val whiteName: String? = null
 ) {
   companion object {
-    const val WHITEWON = "whiteWon"
-    const val BLACKWON = "blackWon"
-    const val STALEMATE = "stalemate"
+    const val WhiteWon = "whiteWon"
+    const val BlackWon = "blackWon"
+    const val Stalemate = "stalemate"
   }
 }
 
