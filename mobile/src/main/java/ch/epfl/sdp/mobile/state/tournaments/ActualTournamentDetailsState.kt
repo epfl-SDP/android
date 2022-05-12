@@ -88,11 +88,13 @@ class ActualTournamentDetailsState(
             override val name: String = pool.name
             override val status: PoolInfo.Status =
                 PoolInfo.Status.Ongoing(
-                    currentRound = pool.totalRounds - pool.remainingRounds + 1,
+                    currentRound = pool.totalRounds - pool.remainingRounds,
                     totalRounds = pool.totalRounds,
                 )
             override val startNextRoundEnabled: Boolean = pool.isStartNextRoundEnabled
-            override fun onStartNextRound() = Unit
+            override fun onStartNextRound() {
+              scope.launch { pool.startNextRound() }
+            }
             override val members: List<PoolMember>
               get() =
                   pool.players.map { player ->

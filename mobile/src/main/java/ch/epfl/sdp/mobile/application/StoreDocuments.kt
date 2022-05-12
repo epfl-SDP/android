@@ -66,7 +66,11 @@ data class ChessDocument(
     val whiteId: String? = null,
     val blackId: String? = null,
     val lastUpdatedAt: Long? = null,
-    val metadata: ChessMetadata? = null
+    val metadata: ChessMetadata? = null,
+
+    // Tournament information.
+    val tournamentId: String? = null,
+    val poolId: String? = null,
 )
 
 /**
