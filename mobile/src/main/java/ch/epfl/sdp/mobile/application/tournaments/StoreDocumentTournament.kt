@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
+import android.util.Log
 import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
@@ -9,6 +10,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
 
 /**
  * An implementation of a [Tournament] which uses a [TournamentDocument] under-the-hood.
@@ -50,6 +52,7 @@ class StoreDocumentTournament(
           val players = current.playerIds ?: return@transaction false
           val bestOf = current.bestOf ?: return@transaction false
 
+
           // Are we the tournament admin ?
           if (adminId != user.uid) return@transaction false
           if (stage != null) return@transaction false
@@ -71,7 +74,7 @@ class StoreDocumentTournament(
               .asSequence()
               .mapIndexed { index, participants ->
                 PoolDocument(
-                    name = "Pool #${index + 1}",
+                    name = tournamentDetailsPoolName(index + 1),
                     tournamentId = reference.uid,
                     minOpponentsForAnyPool = minOpponentsPerPool,
                     remainingBestOfCount = bestOf,

@@ -37,13 +37,11 @@ class StoreDocumentsTest {
     val poolDocument1 =
         PoolDocument(
             tournamentId = tournamentId,
-            currentRound = 2,
             playerIds = listOf("1", "2", "3", "4"),
         )
     val poolDocument2 =
         PoolDocument(
             tournamentId = tournamentId,
-            currentRound = 1,
             playerIds = listOf("5", "6", "7", "8"),
         )
 
