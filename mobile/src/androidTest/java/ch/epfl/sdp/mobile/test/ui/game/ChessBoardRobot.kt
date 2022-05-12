@@ -86,10 +86,9 @@ fun ChessBoardRobotInputScope.click(x: Int, y: Int, pointerId: Int = 0) {
  * @param pointerId the identifier of the pointer.
  */
 fun ChessBoardRobotInputScope.click(x: Char, y: Int, pointerId: Int = 0) {
-  down(x = x - 'a', y = 8 - y, pointerId = pointerId)
-  // Required to send a move event. See TouchInjectionScope.click() for details.
-  moveBy(x = 0, y = 0, pointerId = pointerId)
-  up(pointerId = pointerId)
+  require(x in 'a'..'h') { "x out of valid range" }
+  require(y in 1..8) { "y out of valid range" }
+  click(x = x - 'a', y = 8 - y, pointerId = pointerId)
 }
 
 /**
