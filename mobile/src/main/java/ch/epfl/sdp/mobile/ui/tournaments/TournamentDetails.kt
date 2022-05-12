@@ -261,7 +261,13 @@ private fun DetailsTopBar(
             verticalAlignment = CenterVertically,
         ) {
           Row(Modifier.weight(1f, fill = true), spacedBy(16.dp), CenterVertically) {
-            IconButton(onClose) { Icon(PawniesIcons.TournamentDetailsClose, null) }
+            val strings = LocalLocalizedStrings.current
+            IconButton(onClose) {
+              Icon(
+                  imageVector = PawniesIcons.TournamentDetailsClose,
+                  contentDescription = strings.tournamentDetailsBackContentDescription,
+              )
+            }
             Text(
                 text = title.uppercase(),
                 maxLines = 1,
