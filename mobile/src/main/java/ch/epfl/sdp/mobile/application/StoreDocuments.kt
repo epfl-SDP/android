@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.application
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
-import ch.epfl.sdp.mobile.application.chess.engine.*
 import com.google.firebase.firestore.DocumentId
 
 /**
@@ -90,7 +89,16 @@ data class TournamentDocument(
     val poolSize: Int? = null,
     val eliminationRounds: Int? = null,
     val playerIds: List<String>? = null,
-)
+) {
+  companion object {
+
+    /** The name of the collection. */
+    const val Collection = "tournaments"
+
+    /** The field with the tournament participants. */
+    const val Participants = "playerIds"
+  }
+}
 
 /**
  * A document which represents a pool in a tournament of chess. All the pool documents are stored

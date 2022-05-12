@@ -5,6 +5,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -85,7 +86,13 @@ private fun BottomNavigation(
           selected = section == it,
           onClick = { onSectionChange(it) },
           icon = it.icon,
-          label = { Text(it.title(LocalLocalizedStrings.current)) },
+          label = {
+            Text(
+                text = it.title(LocalLocalizedStrings.current),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+          },
           alwaysShowLabel = false,
       )
     }

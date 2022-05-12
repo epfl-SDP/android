@@ -116,6 +116,12 @@ object English : LocalizedStrings {
   override val puzzlePlayingAs = { color: String -> "Playing as $color" }
   override val puzzleUnsolvedPuzzles = "Unsolved puzzles"
   override val puzzleListContentDescription = "Puzzles list"
+  override val puzzlesTitle = "Puzzles"
+  override val puzzleSolving = { color: String -> "Find the best move for $color" }
+  override val puzzleFailed = "You've failed! Try again!"
+  override val puzzleSolved = "You've solved the puzzle! Congrats!"
+  override val puzzleNumber = { id: String -> "Puzzle: #$id" }
+  override val puzzleRating = { rating: String -> "Rating: $rating" }
 
   override val tournamentsBadgeJoin = "Join"
   override val tournamentsBadgeParticipant = "Participant"
@@ -139,6 +145,13 @@ object English : LocalizedStrings {
       "Add a new match to all the players in this round."
   override val tournamentsDetailsNextRoundTitle = "Next round"
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
+  override val tournamentsDetailsStartEnoughPlayersTitle = "Start the tournament"
+  override val tournamentsDetailsStartEnoughPlayersSubtitle =
+      "Once started, the tournament will assign players and the first matches will be created."
+  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Start the tournament"
+  override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
+      "If you start the tournament now, there won't be enough players to play all the matches."
+  override val tournamentDetailsBackContentDescription = "Back"
 
   override val tournamentsContestsTitle = "Contests"
   override val tournamentsFilter = "Filter"
@@ -160,4 +173,9 @@ object English : LocalizedStrings {
   override val tournamentsCreateDirectElimination = "Direct elim. :"
   override val tournamentsCreateActionCancel = "Cancel".uppercase()
   override val tournamentsCreateActionCreate = "Create".uppercase()
+
+  override val tournamentsCreateQualifierSize0 = "No qualifiers"
+  override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
+  override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
+  override val tournamentsCreateElimDepthFinal = "Final"
 }
