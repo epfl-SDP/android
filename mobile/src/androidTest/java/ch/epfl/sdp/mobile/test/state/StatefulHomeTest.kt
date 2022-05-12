@@ -679,6 +679,23 @@ class StatefulHomeTest {
   }
 
   @Test
+  fun given_home_when_creatingTournament_then_navigatesToTournament() = runTest {
+    val env = rule.setContentWithTestEnvironment { StatefulHome(user = user) }
+    rule.onNodeWithText(env.strings.sectionContests).performClick()
+    rule.onNodeWithText(env.strings.newContest).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateNameHint).performTextInput("Hello")
+    rule.onNodeWithText("1").performClick() // Best of 1
+    rule.onNodeWithText(env.strings.tournamentsCreateMaximumPlayerHint).performTextInput("2")
+    rule.onNodeWithText(env.strings.tournamentsCreateQualifierSize0).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateElimDepthFinal).performClick()
+    rule.onNodeWithText(env.strings.tournamentsCreateActionCreate).assertIsEnabled().performClick()
+
+    // We can now join the tournament, since we've navigated to its details screen.
+    rule.onNodeWithText(env.strings.tournamentsBadgeJoin).assertIsDisplayed()
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
   fun given_tournamentScreen_when_clickingCreate_createTournamentDialogIsOpened() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
