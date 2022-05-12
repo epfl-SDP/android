@@ -93,6 +93,10 @@ fun StatefulHome(
     controller.navigate("$GameRoute/${match.uid}")
   }
 
+  val openTournament: (ref: TournamentReference) -> Unit = { tournament ->
+    controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -113,6 +117,8 @@ fun StatefulHome(
       }
       composable(ContestsRoute) {
         StatefulTournamentScreen(
+            currentUser = user,
+            onTournamentClick = openTournament,
             onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,

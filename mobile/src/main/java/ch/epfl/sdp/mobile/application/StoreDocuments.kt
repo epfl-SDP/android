@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.application
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationUser
-import ch.epfl.sdp.mobile.application.chess.engine.*
 import com.google.firebase.firestore.DocumentId
 
 /**

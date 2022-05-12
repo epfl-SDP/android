@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.application.tournaments
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
@@ -18,6 +19,19 @@ import kotlinx.coroutines.flow.map
  * @param store the [Store] which is used to manage documents.
  */
 class TournamentFacade(private val auth: Auth, private val store: Store) {
+
+  /**
+   * Returns all of the registered tournaments of the application.
+   *
+   * @param user the current [AuthenticatedUser].
+   */
+  // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
+  fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
+    return store.collection("tournaments").asFlow<TournamentDocument>().map {
+      it.mapNotNull { doc -> doc?.toTournament(user) }
+    }
+  }
+
   /**
    * Allows a user to join an ongoing tournament.
    *

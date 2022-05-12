@@ -1,96 +1,116 @@
 package ch.epfl.sdp.mobile.state
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.Tournament
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
- * An adapter that is of type [ContestInfo] and contains the uid.
+ * A class that turns a [Tournament] into a [ContestInfo].
  *
- * @param uid the unique identifier for this contest.
- * @param name the name of the contest.
- * @param badge the badge of the contest.
- * @param status the status of the contest.
+ * @param tournament the [Tournament] to transform into a [ContestInfo].
+ * @param currentUser the current [AuthenticatedUser].
  */
-data class ContestInfoAdapter(
-    val uid: String,
-    override val name: String,
-    override val badge: BadgeType?,
-    override val status: Status,
-) : ContestInfo
+data class TournamentAdapter(val tournament: Tournament, val currentUser: AuthenticatedUser) :
+    ContestInfo {
+  val uid = tournament.reference.uid
+  override val name: String = tournament.name
+  override val badge: BadgeType? =
+      if (tournament.isAdmin) {
+        BadgeType.Admin
+      } else if (tournament.isParticipant) {
+        BadgeType.Participant
+      } else {
+        null
+      }
+  // TODO: Change to tournament.status when added.
+  override val status: Status = Status.Done
+}
 
 /**
  * An implementation of the [ContestScreenState] that performs a given profile's [ContestInfo]
  * requests.
+ *
+ * @param actions the [TournamentActions] which are available on the screen.
+ * @param currentUser the current [AuthenticatedUser] of the application.
+ * @param tournamentFacade the [TournamentFacade] used to perform some requests.
+ * @param scope the [CoroutineScope] on which requests are performed.
  */
 class TournamentScreenState(
-    private val onNewContestClickAction: State<() -> Unit>,
-) : ContestScreenState<ContestInfoAdapter> {
+    actions: State<TournamentActions>,
+    private val currentUser: AuthenticatedUser,
+    private val tournamentFacade: TournamentFacade,
+    private val scope: CoroutineScope,
+) : ContestScreenState<TournamentAdapter> {
+  private val actions by actions
+  override var contests by mutableStateOf(emptyList<TournamentAdapter>())
+    private set
 
-  // TODO : Fill this in with some actual data.
-  override val contests =
-      listOf(
-          createContest("1", "EPFL Grand Prix", Status.Ongoing(1.days), BadgeType.Admin),
-          createContest("2", "Pawn Party", Status.Done, BadgeType.Participant),
-          createContest("3", "Never gonna chess", Status.Ongoing(3.hours), BadgeType.Join),
-      )
+  init {
+    scope.launch {
+      tournamentFacade.tournaments(currentUser).collect { list ->
+        contests = list.map { TournamentAdapter(it, currentUser) }
+      }
+    }
+  }
 
-  override fun onNewContestClick() = onNewContestClickAction.value()
-  override fun onContestClick(contest: ContestInfoAdapter) = Unit
+  override fun onNewContestClick() = actions.onNewContestClick()
+  override fun onContestClick(contest: TournamentAdapter) =
+      actions.onTournamentClick(contest.tournament.reference)
   override fun onFilterClick() = Unit
-}
-
-/**
- * TODO : Remove this.
- *
- * Creates a contest with some fake data.
- *
- * @param uid the id of the contest.
- * @param name the title of the contest.
- * @param status the [Status] for the contest.
- * @param personStatus the badge to display.
- */
-private fun createContest(
-    uid: String,
-    name: String,
-    status: Status,
-    personStatus: BadgeType?
-): ContestInfoAdapter {
-  return ContestInfoAdapter(uid, name, personStatus, status)
 }
 
 /**
  * A stateful composable to view the list of tournaments completed and ongoing.
  *
+ * @param currentUser the current [AuthenticatedUser] of the application.
+ * @param onTournamentClick callback called when a tournament item is clicked on.
+ * @param onNewContestClickAction callback called when the new contest button is clicked on.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
 @Composable
 fun StatefulTournamentScreen(
+    currentUser: AuthenticatedUser,
+    onTournamentClick: (TournamentReference) -> Unit,
     onNewContestClickAction: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val action = rememberUpdatedState(onNewContestClickAction)
-
+  val actions =
+      rememberUpdatedState(
+          TournamentActions(
+              onTournamentClick = onTournamentClick, onNewContestClick = onNewContestClickAction))
+  val tournamentFacade = LocalTournamentFacade.current
+  val scope = rememberCoroutineScope()
   val state =
       remember(
-          action,
-      ) {
-        TournamentScreenState(
-            onNewContestClickAction = action,
-        )
-      }
+          actions,
+          currentUser,
+          tournamentFacade,
+          scope,
+      ) { TournamentScreenState(actions, currentUser, tournamentFacade, scope) }
 
   ContestScreen(state, modifier, key = { it.uid }, contentPadding)
 }
+
+/**
+ * A class representing the different actions available on the tournament screen.
+ *
+ * @param onTournamentClick callback called when a tournament item is clicked on.
+ * @param onNewContestClick callback called when the new contest button is clicked on.
+ */
+data class TournamentActions(
+    val onTournamentClick: (TournamentReference) -> Unit,
+    val onNewContestClick: () -> Unit,
+)
