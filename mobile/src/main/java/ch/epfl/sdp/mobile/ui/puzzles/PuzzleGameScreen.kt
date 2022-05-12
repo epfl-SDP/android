@@ -64,8 +64,7 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
           Text(strings.puzzlesTitle.uppercase(), style = typo.h6)
           PuzzleDirective(color = state.puzzleInfo.playerColor, puzzleState = state.puzzleState)
           ProvideTextStyle(typo.subtitle1) { ClassicChessBoard(state) }
-          Spacer(Modifier)
-          Column {
+          Column(modifier = Modifier.padding(top = 16.dp)) {
             Text(strings.puzzleNumber(state.puzzleInfo.uid), style = typo.subtitle2)
             Text(strings.puzzleRating(state.puzzleInfo.elo.toString()), style = typo.subtitle2)
           }
