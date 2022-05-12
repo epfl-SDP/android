@@ -113,6 +113,12 @@ interface LocalizedStrings {
   val puzzlePlayingAs: (color: String) -> String
   val puzzleUnsolvedPuzzles: String
   val puzzleListContentDescription: String
+  val puzzlesTitle: String
+  val puzzleSolving: (color: String) -> String
+  val puzzleFailed: String
+  val puzzleSolved: String
+  val puzzleNumber: (id: String) -> String
+  val puzzleRating: (rating: String) -> String
 
   val tournamentsBadgeJoin: String
   val tournamentsBadgeParticipant: String
