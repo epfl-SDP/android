@@ -24,6 +24,7 @@ object EmptyTournament : Tournament {
   override val isAdmin = false
   override val isParticipant = false
   override val status = Status.Unknown
+  override suspend fun start(): Boolean = false
 }
 
 /**
@@ -85,7 +86,9 @@ class ActualTournamentDetailsState(
       } else null
     }
 
-  override fun onStartTournament() = Unit
+  override fun onStartTournament() {
+    scope.launch { tournament.start() }
+  }
 
   override fun onBadgeClick() {
     scope.launch { facade.join(user, reference) }

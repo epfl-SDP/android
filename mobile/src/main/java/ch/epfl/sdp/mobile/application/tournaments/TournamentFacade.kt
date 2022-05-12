@@ -27,8 +27,8 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
    */
   // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
   fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
-    return store.collection("tournaments").asFlow<TournamentDocument>().map {
-      it.mapNotNull { doc -> doc?.toTournament(user) }
+    return store.collection(TournamentDocument.Collection).asFlow<TournamentDocument>().map {
+      it.mapNotNull { doc -> doc?.toTournament(user, store) }
     }
   }
 
@@ -72,7 +72,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
         eliminationRounds = eliminationRounds,
         maximumPlayerCount = maxPlayers,
     )) {
-      val document = store.collection("tournaments").document()
+      val document = store.collection(TournamentDocument.Collection).document()
       document.set(
           TournamentDocument(
               adminId = user.uid,
@@ -105,7 +105,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
           .collection(TournamentDocument.Collection)
           .document(reference.uid)
           .asFlow<TournamentDocument>()
-          .map { it?.toTournament(user) }
+          .map { it?.toTournament(user, store) }
 
   /**
    * Allows a user to advance the round number of a certain pool for a certain tournament, if the

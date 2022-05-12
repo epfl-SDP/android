@@ -102,6 +102,7 @@ data class ChessMetadata(
  * @param eliminationRounds the number of direct elimination rounds. 1 for just a final, 2 for
  * semi-finals, 3 for quarter-finals, etc...
  * @param playerIds the [List] of unique identifier of users that have joined the tournament.
+ * @param stage the current stage of the tournament.
  */
 data class TournamentDocument(
     @DocumentId val uid: String? = null,
@@ -112,6 +113,7 @@ data class TournamentDocument(
     val poolSize: Int? = null,
     val eliminationRounds: Int? = null,
     val playerIds: List<String>? = null,
+    val stage: String? = null,
 ) {
   companion object {
 
@@ -120,6 +122,11 @@ data class TournamentDocument(
 
     /** The field with the tournament participants. */
     const val Participants = "playerIds"
+
+    /** Indicates that the [TournamentDocument.stage] is pools. */
+    const val StagePools = "pools"
+
+    //       fun stageDirectionElimination()
   }
 }
 
@@ -129,12 +136,22 @@ data class TournamentDocument(
  *
  * @param uid the unique identifier for this pool.
  * @param tournamentId the unique identifier of the tournament in which the pool takes place.
- * @param currentRound the current round number for the pool.
+ * @param minOpponentsForAnyPool the minimum number of opponents played by each player.
+ * @param remainingBestOfCount the number of remaining matches to play in the current round.
  * @param playerIds the [List] of unique identifier of users that have been placed in this pool.
+ * @param playerNames the [List] of player names.
  */
 data class PoolDocument(
     @DocumentId val uid: String? = null,
     val tournamentId: String? = null,
-    val currentRound: Int? = null,
+    val minOpponentsForAnyPool: Int? = null,
+    val remainingBestOfCount: Int? = null,
     val playerIds: List<String>? = null,
-)
+    val playerNames: List<String>? = null,
+) {
+  companion object {
+
+    /** The name of the collection. */
+    const val Collection = "pools"
+  }
+}
