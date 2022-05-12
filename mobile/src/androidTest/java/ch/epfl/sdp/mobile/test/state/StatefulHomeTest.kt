@@ -10,12 +10,14 @@ import androidx.test.rule.GrantPermissionRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
+import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
@@ -653,5 +655,27 @@ class StatefulHomeTest {
     rule.onNodeWithText("00008", substring = true).performClick()
     rule.onNodeWithText("Puzzle id: 00008").assertExists()
     rule.onNodeWithText("Elo: 1852").assertExists()
+  }
+
+  @Test
+  fun given_home_when_routeUpdatedToTournamentDetails_then_displaysTournament() = runTest {
+    val env =
+        rule.setContentWithTestEnvironment {
+          val controller = rememberNavController()
+          StatefulHome(
+              user = user,
+              // We must call controller.navigate() after the first composition (so the
+              // NavController has all the routes set up), and a Modifier which has the property
+              // of being called after composition is onGloballyPositioned.
+              modifier = Modifier.onGloballyPositioned { controller.navigate("tournament/123") },
+              controller = controller,
+          )
+        }
+    env.infrastructure
+        .store
+        .collection(TournamentDocument.Collection)
+        .document("123")
+        .set(TournamentDocument(name = "Hello"))
+    rule.onNodeWithText("Hello", ignoreCase = true).assertIsDisplayed()
   }
 }
