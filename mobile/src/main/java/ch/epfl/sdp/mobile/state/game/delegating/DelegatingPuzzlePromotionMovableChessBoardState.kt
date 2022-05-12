@@ -1,11 +1,11 @@
 package ch.epfl.sdp.mobile.state.game.delegating
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.state.game.AbstractMovableChessBoardState
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineColor
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEnginePosition
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toRank
@@ -36,12 +36,7 @@ class DelegatingPuzzlePromotionMovableChessBoardState(
             .filter { (it.from + it.delta)?.toPosition() == to }
             .toList()
     val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
-    val userCurrentlyPlaying =
-        step.turn ==
-            when (puzzleState.puzzleInfo.playerColor) {
-              ChessBoardState.Color.White -> Color.White
-              ChessBoardState.Color.Black -> Color.Black
-            }
+    val userCurrentlyPlaying = step.turn == puzzleState.puzzleInfo.playerColor.toEngineColor()
 
     if (userCurrentlyPlaying && puzzleState.currentMoveNumber < puzzleState.expectedMoves) {
       if (available.size == 1) {
