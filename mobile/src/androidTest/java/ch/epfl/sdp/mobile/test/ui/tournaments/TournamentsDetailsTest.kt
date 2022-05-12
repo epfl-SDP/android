@@ -6,6 +6,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.*
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.EnoughPlayers
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.NotEnoughPlayers
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
 import org.junit.Rule
@@ -42,6 +45,8 @@ class TournamentsDetailsTest {
     override val title = ""
     override val pools = listOf(EmptyPoolInfo)
     override val finals = listOf(TABTournamentsFinalRound(match, banner))
+    override val startTournamentBanner = EnoughPlayers
+    override fun onStartTournament() = Unit
     override fun onBadgeClick() = Unit
     override fun onWatchMatchClick(match: TournamentMatch) {
       clicked = true
@@ -57,6 +62,8 @@ class TournamentsDetailsTest {
           override val title = ""
           override val pools = listOf(EmptyPoolInfo)
           override val finals = emptyList<TournamentsFinalsRound<TournamentMatch>>()
+          override val startTournamentBanner = NotEnoughPlayers
+          override fun onStartTournament() = Unit
           override fun onBadgeClick() = Unit
           override fun onWatchMatchClick(match: TournamentMatch) = Unit
           override fun onCloseClick() = Unit
@@ -74,6 +81,8 @@ class TournamentsDetailsTest {
           override val title = ""
           override val pools = listOf(EmptyPoolInfo)
           override val finals = emptyList<TournamentsFinalsRound<TournamentMatch>>()
+          override val startTournamentBanner: StartTournamentBanner? = null
+          override fun onStartTournament() = Unit
           override fun onBadgeClick() {
             channel.trySend(Unit)
           }

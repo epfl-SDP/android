@@ -146,8 +146,9 @@ class ActualCreateTournamentScreenState(
               poolSize = poolSize?.value ?: 0,
               eliminationRounds = eliminationRound?.value ?: 1,
           )
-      // TODO: Uncomment this line once tournament details is implement
-      // actions.value.navigateToTournament(reference)
+      if (reference != null) {
+        actions.value.navigateToTournament(reference)
+      }
     }
   }
   override fun onCancel() = actions.value.cancelClick()

@@ -133,6 +133,11 @@ interface LocalizedStrings {
   val tournamentsDetailsNextBestOfSubtitle: String
   val tournamentsDetailsNextRoundTitle: String
   val tournamentsDetailsNextRoundSubtitle: String
+  val tournamentsDetailsStartEnoughPlayersTitle: String
+  val tournamentsDetailsStartEnoughPlayersSubtitle: String
+  val tournamentsDetailsStartNotEnoughPlayersTitle: String
+  val tournamentsDetailsStartNotEnoughPlayersSubtitle: String
+  val tournamentDetailsBackContentDescription: String
 
   val tournamentsContestsTitle: String
   val tournamentsFilter: String

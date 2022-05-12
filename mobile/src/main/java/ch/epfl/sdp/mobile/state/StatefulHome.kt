@@ -9,6 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
+import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -192,6 +195,20 @@ fun StatefulHome(
             paddingValues = paddingValues,
         )
       }
+      composable("$TournamentDetailsRoute/{id}") { entry ->
+        val actions =
+            TournamentDetailsActions(
+                onBackClick = { controller.popBackStack() },
+            )
+        val id = requireNotNull(entry.arguments).getString("id", TournamentDefaultId)
+        StatefulTournamentDetailsScreen(
+            actions = actions,
+            user = user,
+            reference = TournamentReference(id),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = paddingValues,
+        )
+      }
       dialog(CreateTournamentRoute) {
         StatefulCreateTournamentScreen(
             user,
@@ -225,6 +242,5 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Contests -> ContestsRoute
     }
 
-private fun hideBar(route: String?): Boolean {
-  return route?.startsWith(GameRoute) ?: false
-}
+private fun hideBar(route: String?): Boolean =
+    route?.let { it.startsWith(GameRoute) || it.startsWith(TournamentDetailsRoute) } ?: false
