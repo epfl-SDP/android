@@ -24,6 +24,7 @@ object EmptyTournament : Tournament {
   override val status = Status.Unknown
   override suspend fun start(): Boolean = false
   override suspend fun startDirectElimination() = Unit
+  override suspend fun startNextRound() = Unit
 }
 
 /** An object representing a [PoolResults] which is still loading. */
@@ -110,14 +111,28 @@ class EliminationMatchAdapter(match: EliminationMatch) : TournamentMatch {
       }
 }
 
+/**
+ * An implementation of [TournamentsFinalsRound] which uses a [Status.Round] and a list of all the
+ * matches.
+ *
+ * @param tournament the [Tournament] that is being used.
+ * @param scope the [CoroutineScope] used to launch the next rounds.
+ * @param round the [Status.Round].
+ * @param allMatches the [EliminationMatch]es to display.
+ */
 class EliminationMatchAdapterTournamentsFinalsRound(
+    private val tournament: Tournament,
+    private val scope: CoroutineScope,
     round: Status.Round,
     allMatches: List<EliminationMatchAdapter>,
 ) : TournamentsFinalsRound<EliminationMatchAdapter> {
   override val name = round.name
   override val matches = allMatches.filter { it.depth == round.depth }
-  override val banner: TournamentsFinalsRound.Banner? = null
-  override fun onBannerClick() = Unit
+  override val banner: TournamentsFinalsRound.Banner? =
+      if (round.moveToNextRoundEnabled) TournamentsFinalsRound.Banner.NextRound else null
+  override fun onBannerClick() {
+    scope.launch { tournament.startNextRound() }
+  }
 }
 
 /**
@@ -205,7 +220,12 @@ class ActualTournamentDetailsState(
         when (val status = tournament.status) {
           is Status.DirectElimination ->
               status.rounds.map {
-                EliminationMatchAdapterTournamentsFinalsRound(it, eliminationMatchesState)
+                EliminationMatchAdapterTournamentsFinalsRound(
+                    tournament = tournament,
+                    scope = scope,
+                    round = it,
+                    allMatches = eliminationMatchesState,
+                )
               }
           else -> emptyList()
         }

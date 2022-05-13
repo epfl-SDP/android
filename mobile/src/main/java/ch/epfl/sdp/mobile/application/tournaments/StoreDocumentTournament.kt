@@ -10,9 +10,7 @@ import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.stageDirectEl
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
 import kotlin.math.pow
 
@@ -42,13 +40,16 @@ class StoreDocumentTournament(
       return when {
         document.stage == null -> NotStarted(enoughParticipants)
         document.stage == StagePools -> Pools
-        stageAsRound != null ->
-            Tournament.Status.DirectElimination(
-                List(eliminationRounds - stageAsRound + 1) { index ->
-                  val round = eliminationRounds - index
-                  val pow = 2.0.pow(round - 1).toInt()
-                  Tournament.Status.Round("1 / $pow", round)
-                })
+        stageAsRound != null -> {
+          val moveIndex = if (stageAsRound == 1) null else stageAsRound
+          Tournament.Status.DirectElimination(
+              List(eliminationRounds - stageAsRound + 1) { index ->
+                val round = eliminationRounds - index
+                val pow = 2.0.pow(round - 1).toInt()
+                Tournament.Status.Round("1 / $pow", round, round == moveIndex)
+              },
+          )
+        }
         else -> Tournament.Status.Unknown
       }
     }
@@ -113,47 +114,66 @@ class StoreDocumentTournament(
               .whereNotEquals("poolId", null)
               .get<ChessDocument>()
               .toPoolResults()
+      createMatchesForRankedPlayers(results) { it.eliminationRounds }
+    }
+  }
 
-      val ranked =
-          results
-              .players
-              .map {
-                val score = results.score(it).toFloat()
-                val total = results.played(it).toFloat()
-                it to (if (total == 0f) 0f else score / total)
-              }
-              .sortedByDescending { (_, score) -> score }
-              .map { it.first }
+  override suspend fun startNextRound() {
+    runCatching {
+      val round = document.stage?.toIntOrNull() ?: 1
+      val results =
+          store
+              .collection("games")
+              .whereEquals("tournamentId", reference.uid)
+              .whereEquals("roundDepth", round)
+              .get<ChessDocument>()
+              .toPoolResults()
+      createMatchesForRankedPlayers(results) { (round - 1).takeIf { it >= 1 } }
+    }
+  }
 
-      store.transaction {
-        val ref = store.collection(Collection).document(reference.uid)
-        val currentDocument = get<TournamentDocument>(ref) ?: return@transaction
+  private suspend fun createMatchesForRankedPlayers(
+      results: PoolResults,
+      nextDepth: (TournamentDocument) -> Int?,
+  ) {
+    val ranked =
+        results
+            .players
+            .map {
+              val score = results.score(it).toFloat()
+              val total = results.played(it).toFloat()
+              it to (if (total == 0f) 0f else score / total)
+            }
+            .sortedByDescending { (_, score) -> score }
+            .map { it.first }
+    store.transaction {
+      val ref = store.collection(Collection).document(reference.uid)
+      val currentDocument = get<TournamentDocument>(ref) ?: return@transaction
 
-        val bestOf = currentDocument.bestOf ?: return@transaction
-        val depth = currentDocument.eliminationRounds ?: return@transaction
-        val count = 2.0.pow(depth).toInt()
-        val matches = ranked.take(count).chunked(2)
+      val bestOf = currentDocument.bestOf ?: return@transaction
+      val depth = nextDepth(currentDocument) ?: return@transaction
+      val count = 2.0.pow(depth).toInt()
+      val matches = ranked.take(count).chunked(2)
 
-        set(
-            reference = ref,
-            value = currentDocument.copy(stage = stageDirectElimination(depth)),
-        )
+      set(
+          reference = ref,
+          value = currentDocument.copy(stage = stageDirectElimination(depth)),
+      )
 
-        for (match in matches) {
-          repeat(bestOf) { index ->
-            val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
-            val matchRef = store.collection("games").document()
-            val matchDocument =
-                ChessDocument(
-                    whiteId = first,
-                    blackId = second,
-                    lastUpdatedAt = System.currentTimeMillis(),
-                    poolId = null,
-                    roundDepth = depth,
-                    tournamentId = document.uid,
-                )
-            set(matchRef, matchDocument)
-          }
+      for (match in matches) {
+        repeat(bestOf) { index ->
+          val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
+          val matchRef = store.collection("games").document()
+          val matchDocument =
+              ChessDocument(
+                  whiteId = first,
+                  blackId = second,
+                  lastUpdatedAt = System.currentTimeMillis(),
+                  poolId = null,
+                  roundDepth = depth,
+                  tournamentId = document.uid,
+              )
+          set(matchRef, matchDocument)
         }
       }
     }

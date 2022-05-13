@@ -47,8 +47,13 @@ interface Tournament {
      *
      * @param name the name of the elimination round.
      * @param depth the depth of the elimination round.
+     * @param moveToNextRoundEnabled true iff moving to the next round is possible on this round.
      */
-    data class Round(val name: String, val depth: Int)
+    data class Round(
+        val name: String,
+        val depth: Int,
+        val moveToNextRoundEnabled: Boolean,
+    )
 
     /** Indicates that the status is still loading and is not known yet. */
     object Unknown : Status
@@ -64,6 +69,9 @@ interface Tournament {
 
   /** Starts the direct elimination phase of the [Tournament]. */
   suspend fun startDirectElimination()
+
+  /** Starts the next direct elimination round of the [Tournament]. */
+  suspend fun startNextRound()
 }
 
 /**
