@@ -12,10 +12,10 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
-import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A class that turns a [Tournament] into a [ContestInfo].
@@ -37,8 +37,7 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
       }
   // TODO: Change to tournament.status when added.
   override val status: Status =
-      Status.Ongoing(
-          tournament.creationTime.minus(System.currentTimeMillis()).absoluteValue.seconds)
+      Status.Ongoing(System.currentTimeMillis().minus(tournament.creationTime).milliseconds)
 }
 
 /**
