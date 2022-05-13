@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.Logout
+import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
@@ -95,7 +97,10 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
-    SettingsButton(onClick = state::onEditProfileImageClick)
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+      SettingsButton(onClick = state::onEditProfileImageClick)
+      LogoutButton(onClick = state::onLogout)
+    }
   }
 }
 
@@ -147,5 +152,25 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Icon(Icons.Default.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileSettings)
+  }
+}
+
+/**
+ * Composes the logout button.
+ *
+ * @param onClick callback method for the logout button.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
+  Button(
+      onClick = onClick,
+      shape = CircleShape,
+      contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+      modifier = modifier) {
+    Icon(PawniesIcons.Logout, null)
+    Spacer(modifier = Modifier.width(8.dp))
+    Text(strings.settingLogout)
   }
 }

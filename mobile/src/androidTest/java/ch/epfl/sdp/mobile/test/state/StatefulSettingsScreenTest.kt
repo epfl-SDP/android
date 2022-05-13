@@ -21,8 +21,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import com.google.common.truth.Truth
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -70,36 +69,72 @@ class StatefulSettingsScreenTest {
   @Test
   fun given_SettingScreenLoaded_when_clickingOnEditProfileName_then_functionShouldBeCalled() =
       runTest {
-    val user = mockk<AuthenticatedUser>()
-    every { user.name } returns "test"
-    every { user.email } returns "test"
-    every { user.emoji } returns "test"
-    every { user.backgroundColor } returns Profile.Color.Orange
-    every { user.uid } returns "test"
-    every { user.followed } returns false
-    var functionCalled = false
+        val user = mockk<AuthenticatedUser>()
+        every { user.name } returns "test"
+        every { user.email } returns "test"
+        every { user.emoji } returns "test"
+        every { user.backgroundColor } returns Profile.Color.Orange
+        every { user.uid } returns "test"
+        every { user.followed } returns false
+        var functionCalled = false
 
-    val openProfileEditNameMock = { functionCalled = true }
+        val openProfileEditNameMock = { functionCalled = true }
 
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets = emptyAssets()
+        val auth = emptyAuth()
+        val store = emptyStore()
+        val assets = emptyAssets()
 
-    val authFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+        val authFacade = AuthenticationFacade(auth, store)
+        val socialFacade = SocialFacade(auth, store)
+        val chessFacade = ChessFacade(auth, store, assets)
+        val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+        val tournamentFacade = TournamentFacade(auth, store)
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
-          }
-        }
+        val strings =
+            rule.setContentWithLocalizedStrings {
+              ProvideFacades(
+                  authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+                StatefulSettingsScreen(user, {}, openProfileEditNameMock, {})
+              }
+            }
 
-    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+        rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
 
-    Truth.assertThat(functionCalled).isTrue()
-  }
+        Truth.assertThat(functionCalled).isTrue()
+      }
+
+  @Test
+  fun given_statefulSettingsScreen_when_logoutButtonClicked_then_redirectToAuthenticationScreen() =
+      runTest {
+        val auth = buildAuth { user("email@example.org", "password", "1") }
+        val store = emptyStore()
+        val assets = emptyAssets()
+        val authFacade = AuthenticationFacade(auth, store)
+        val socialFacade = SocialFacade(auth, store)
+        val chessFacade = ChessFacade(auth, store, assets)
+        val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+        val tournamentFacade = TournamentFacade(auth, store)
+
+        authFacade.signInWithEmail("email@example.org", "password")
+        val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+        val userMock = mockk<AuthenticatedUser>()
+        every { userMock.name } returns "test"
+        every { userMock.email } returns "test"
+        every { userMock.emoji } returns "test"
+        every { userMock.backgroundColor } returns Profile.Color.Orange
+        every { userMock.uid } returns user.uid
+        every { userMock.followed } returns false
+        coEvery { userMock.signOut() } coAnswers  { user.signOut() }
+
+        val strings =
+            rule.setContentWithLocalizedStrings {
+              ProvideFacades(
+                  authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+                StatefulSettingsScreen(userMock, {}, {}, {})
+              }
+            }
+        rule.onNodeWithText(strings.settingLogout).assertExists().performClick()
+        // Should display authentication screen
+        coVerify { userMock.signOut() }
+      }
 }

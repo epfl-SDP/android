@@ -178,4 +178,5 @@ object English : LocalizedStrings {
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
+  override val settingLogout: String = "Logout"
 }

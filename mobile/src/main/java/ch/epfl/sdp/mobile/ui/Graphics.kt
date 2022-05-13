@@ -82,6 +82,9 @@ val PawniesIcons.TournamentDetailsClose
 val PawniesIcons.TournamentsNextStep
   get() = Icons.Outlined.SkipNext
 
+val PawniesIcons.Logout
+  get() = Icons.Default.Logout
+
 /** Chess pieces */
 object ChessIcons
 

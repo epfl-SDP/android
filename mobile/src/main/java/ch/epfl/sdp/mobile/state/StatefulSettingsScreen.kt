@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
@@ -29,6 +30,7 @@ class AuthenticatedUserProfileScreenState(
     scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
+    onLogoutAction: State<() -> Unit>,
 ) :
     SettingScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
@@ -38,12 +40,16 @@ class AuthenticatedUserProfileScreenState(
   override val puzzlesCount = 0
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
+  private val onLogoutAction by onLogoutAction
 
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
   }
   override fun onEditProfileImageClick() {
     onEditProfileImageClickAction()
+  }
+  override fun onLogout() {
+    onLogoutAction()
   }
 }
 
@@ -71,6 +77,12 @@ fun StatefulSettingsScreen(
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
+
+  fun logoutAuthenticatedUser() {
+    scope.launch { user.signOut() }
+  }
+
+  val currentOnLogoutClick = rememberUpdatedState(::logoutAuthenticatedUser)
   val state =
       remember(
           actions,
@@ -85,7 +97,8 @@ fun StatefulSettingsScreen(
             chessFacade,
             scope,
             currentOnEditProfileNameClick,
-            currentOnEditProfileImageClick)
+            currentOnEditProfileImageClick,
+            currentOnLogoutClick)
       }
   SettingsScreen(state, modifier, contentPadding)
 }
