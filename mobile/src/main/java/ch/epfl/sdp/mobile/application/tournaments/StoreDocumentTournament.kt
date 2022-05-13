@@ -31,7 +31,6 @@ class StoreDocumentTournament(
   override val isAdmin = document.adminId == user.uid
   override val isParticipant = document.playerIds?.contains(user.uid) ?: false
 
-  // TODO : Refine the tournament rules.
   override val status: Tournament.Status
     get() {
       val enoughParticipants = document.playerIds?.size ?: 0 >= (document.maxPlayers ?: 0)
@@ -41,12 +40,12 @@ class StoreDocumentTournament(
         document.stage == null -> NotStarted(enoughParticipants)
         document.stage == StagePools -> Pools
         stageAsRound != null -> {
-          val moveIndex = if (stageAsRound == 1) null else stageAsRound
+          val moveToNextRoundBannerIndex = stageAsRound.takeIf { it != 1 }
           Tournament.Status.DirectElimination(
               List(eliminationRounds - stageAsRound + 1) { index ->
                 val round = eliminationRounds - index
                 val pow = 2.0.pow(round - 1).toInt()
-                Tournament.Status.Round("1 / $pow", round, round == moveIndex)
+                Tournament.Status.Round("1 / $pow", round, round == moveToNextRoundBannerIndex)
               },
           )
         }
