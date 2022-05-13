@@ -256,7 +256,7 @@ class ActualTournamentDetailsState(
     scope.launch { facade.join(user, reference) }
   }
 
-  override fun onWatchMatchClick(match: EliminationMatchAdapter) = Unit
+  override fun onWatchMatchClick(match: EliminationMatchAdapter) = actions.onMatchClick(match.id)
 
   override fun onCloseClick() = actions.onBackClick()
 }
