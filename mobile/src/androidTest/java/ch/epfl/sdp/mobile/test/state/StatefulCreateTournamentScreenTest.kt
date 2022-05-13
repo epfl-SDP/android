@@ -119,7 +119,7 @@ class StatefulCreateTournamentScreenTest {
 
     val doc =
         store
-            .collection("tournaments")
+            .collection(TournamentDocument.Collection)
             .whereEquals("name", "Test name")
             .asFlow<TournamentDocument>()
             .first()

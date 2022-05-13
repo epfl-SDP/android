@@ -211,6 +211,7 @@ fun StatefulHome(
         val actions =
             TournamentDetailsActions(
                 onBackClick = { controller.popBackStack() },
+                onMatchClick = { controller.navigate("$GameRoute/${it}") },
             )
         val id = requireNotNull(entry.arguments).getString("id", TournamentDefaultId)
         StatefulTournamentDetailsScreen(

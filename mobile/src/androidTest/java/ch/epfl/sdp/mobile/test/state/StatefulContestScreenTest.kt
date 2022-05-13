@@ -33,7 +33,7 @@ class StatefulContestScreenTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
-        collection("tournaments") {
+        collection(TournamentDocument.Collection) {
           document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
           document("id2", TournamentDocument("tid2", "2", "Tournament 2"))
         }
@@ -65,7 +65,7 @@ class StatefulContestScreenTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
-        collection("tournaments") {
+        collection(TournamentDocument.Collection) {
           document("id1", TournamentDocument("tid1", "2", "Tournament 1", playerIds = listOf("1")))
         }
       }

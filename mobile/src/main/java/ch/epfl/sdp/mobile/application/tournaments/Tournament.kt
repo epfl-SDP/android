@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.tournaments
 
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 
 /** An interface which represents information about a fetched tournament. */
 interface Tournament {
@@ -31,9 +32,46 @@ interface Tournament {
      */
     data class NotStarted(val enoughParticipants: Boolean) : Status
 
+    /** Indicates that we are currently in the pools phase. */
+    object Pools : Status
+
+    /**
+     * Indicates that we are in a direct elimination phase, with a [List] of current [Round].
+     *
+     * @param rounds the [List] of all the [Round].
+     */
+    data class DirectElimination(val rounds: List<Round>) : Status
+
+    /**
+     * An elimination round.
+     *
+     * @param name the name of the elimination round.
+     * @param depth the depth of the elimination round.
+     * @param moveToNextRoundEnabled true iff moving to the next round is possible on this round.
+     */
+    data class Round(
+        val name: String,
+        val depth: Int,
+        val moveToNextRoundEnabled: Boolean,
+    )
+
     /** Indicates that the status is still loading and is not known yet. */
     object Unknown : Status
   }
+
+  /**
+   * Starts this tournament. If the user isn't the admin or the tournament was already started, this
+   * will result in a no-op.
+   *
+   * @return a boolean value indicating if starting the tournament was a success.
+   */
+  suspend fun start(): Boolean
+
+  /** Starts the direct elimination phase of the [Tournament]. */
+  suspend fun startDirectElimination()
+
+  /** Starts the next direct elimination round of the [Tournament]. */
+  suspend fun startNextRound()
 }
 
 /**
@@ -41,19 +79,8 @@ interface Tournament {
  *
  * @receiver the [TournamentDocument] that we're transforming.
  * @param user the [AuthenticatedUser] that we see this [Tournament] as.
+ * @param store the [Store] used to perform changes.
  * @return the [Tournament] instance.
  */
-fun TournamentDocument.toTournament(user: AuthenticatedUser): Tournament =
-    object : Tournament {
-      override val reference = TournamentReference(this@toTournament.uid ?: "")
-      override val name = this@toTournament.name ?: ""
-      override val isAdmin = this@toTournament.adminId == user.uid
-      override val isParticipant = this@toTournament.playerIds?.contains(user.uid) ?: false
-
-      // TODO : Refine the tournament rules.
-      override val status: Tournament.Status =
-          Tournament.Status.NotStarted(
-              enoughParticipants = (this@toTournament.playerIds?.size
-                      ?: 0 >= (this@toTournament.maxPlayers ?: 0)),
-          )
-    }
+fun TournamentDocument.toTournament(user: AuthenticatedUser, store: Store): Tournament =
+    StoreDocumentTournament(this, user, store)
