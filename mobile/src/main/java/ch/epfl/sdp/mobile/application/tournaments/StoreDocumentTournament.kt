@@ -153,7 +153,7 @@ class StoreDocumentTournament(
       val bestOf = currentDocument.bestOf ?: return@transaction
       val depth = nextDepth(currentDocument) ?: return@transaction
       val count = 2.0.pow(depth).toInt()
-      val matches = ranked.take(count).chunked(2)
+      val matches = ranked.take(count).chunked(2).filter { it.size == 2 }
 
       set(
           reference = ref,
