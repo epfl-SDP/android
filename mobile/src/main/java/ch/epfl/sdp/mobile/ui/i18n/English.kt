@@ -151,7 +151,11 @@ object English : LocalizedStrings {
   override val tournamentsDetailsStartNotEnoughPlayersTitle = "Start the tournament"
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
       "If you start the tournament now, there won't be enough players to play all the matches."
+  override val tournamentsDetailsStartDirectEliminationTitle = "Start direct elimination"
+  override val tournamentsDetailsStartDirectEliminationSubtitle =
+      "Compute the pool results and start the direct elimination matches."
   override val tournamentDetailsBackContentDescription = "Back"
+  override val tournamentDetailsPoolName = { poolNr: Int -> "Pool #${poolNr}" }
 
   override val tournamentsContestsTitle = "Contests"
   override val tournamentsFilter = "Filter"

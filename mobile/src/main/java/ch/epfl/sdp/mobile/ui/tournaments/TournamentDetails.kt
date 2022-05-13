@@ -23,7 +23,7 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.TournamentDetailsClose
 import ch.epfl.sdp.mobile.ui.plus
 import ch.epfl.sdp.mobile.ui.profile.SettingTabItem
-import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.StartTournamentBanner.*
+import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.PoolBanner.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentMatch.Result
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentsFinalsRound.Banner
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -110,21 +110,24 @@ interface TournamentDetailsState<P : PoolMember, M : TournamentMatch> {
   /** The list of [TournamentsFinalsRound] to be displayed in supplementary tabs. */
   val finals: List<TournamentsFinalsRound<M>>
 
-  /** The banner to display to start the tournament. */
-  enum class StartTournamentBanner {
+  /** The banner to display at the top of the pools tab. */
+  enum class PoolBanner {
 
     /** The banner if there are enough not players to start the tournament. */
     NotEnoughPlayers,
 
     /** The banner if there is enough players to start. */
     EnoughPlayers,
+
+    /** The banner if direct eliminations should be started. */
+    StartDirectElimination,
   }
 
-  /** The action to start the tournament that should be displayed. */
-  val startTournamentBanner: StartTournamentBanner?
+  /** The action to that should be displayed on the pools tab. */
+  val poolBanner: PoolBanner?
 
-  /** A callback which is called the action to start the tournament is clicked. */
-  fun onStartTournament()
+  /** A callback which is called the pool action is clicked. */
+  fun onPoolBannerClick()
 
   /**
    * A callback which is called when the badge is clicked (typically, if the user wants to join the
@@ -197,8 +200,8 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
           if (index == 0) {
             DetailsPools(
                 pools = state.pools,
-                startTournamentBanner = state.startTournamentBanner,
-                onStartTournamentClick = state::onStartTournament,
+                startTournamentBanner = state.poolBanner,
+                onStartTournamentClick = state::onPoolBannerClick,
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = contentPadding + paddingValues,
             )
@@ -319,7 +322,7 @@ private fun DetailsTopBar(
 @Composable
 private fun <P : PoolMember> DetailsPools(
     pools: List<PoolInfo<P>>,
-    startTournamentBanner: TournamentDetailsState.StartTournamentBanner?,
+    startTournamentBanner: TournamentDetailsState.PoolBanner?,
     onStartTournamentClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -344,6 +347,14 @@ private fun <P : PoolMember> DetailsPools(
             GreenNextStepBanner(
                 title = strings.tournamentsDetailsStartEnoughPlayersTitle,
                 message = strings.tournamentsDetailsStartEnoughPlayersSubtitle,
+                onClick = onStartTournamentClick,
+            )
+          }
+      StartDirectElimination ->
+          item {
+            GreenNextStepBanner(
+                title = strings.tournamentsDetailsStartDirectEliminationTitle,
+                message = strings.tournamentsDetailsStartDirectEliminationSubtitle,
                 onClick = onStartTournamentClick,
             )
           }
