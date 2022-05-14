@@ -52,7 +52,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
   }
 
   Scaffold(
-      modifier = modifier.confetti(confettiState),
+      modifier = modifier,
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
@@ -60,7 +60,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             onArClick = state::onArClick,
             onListenClick = state::onListenClick,
             listening = state.listening,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().confetti(confettiState),
         )
       },
       content = { scaffoldPadding ->
