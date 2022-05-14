@@ -3,8 +3,6 @@ package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.query
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.FieldPath
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeDocumentSnapshot
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeQuerySnapshot
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 /**
  * A decorator which keeps documents which match a certain predicate.
@@ -13,12 +11,11 @@ import kotlinx.coroutines.flow.map
  * @param keep the predicate applied to choose which documents to keep.
  */
 class WhereFakeQueryDecorator(
-    private val query: FakeQuery,
+    query: FakeQuery,
     private val keep: (FakeDocumentSnapshot) -> Boolean,
-) : FakeQuery {
+) : AbstractFakeQuery(query) {
 
-  override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot> =
-      query.asQuerySnapshotFlow().map { it.copy(documents = it.documents.filter(keep)) }
+  override fun FakeQuerySnapshot.transform() = copy(documents = documents.filter(keep))
 
   /** A bunch of helper filters for the [WhereFakeQueryDecorator]. */
   companion object Filter {
