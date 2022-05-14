@@ -6,10 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,6 +22,9 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.MovesInfoState.*
 import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.Message
 import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
+import ch.epfl.sdp.mobile.ui.game.classic.confetti
+import ch.epfl.sdp.mobile.ui.game.classic.party
+import ch.epfl.sdp.mobile.ui.game.classic.rememberConfettiState
 import com.google.accompanist.flowlayout.FlowRow
 
 /**
@@ -74,6 +74,9 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
   )
 }
 
+/** The duration during which some confetti will be spawned when a player wins. */
+private const val ConfettiDurationMillis = 2000L
+
 /**
  * A composable which displays some basic information about a player. Each player may have a name,
  * and an associated message.
@@ -92,10 +95,19 @@ private fun Player(
 ) {
   val green = if (color == White) Green500 else Green800
   val icon = if (color == White) ChessIcons.WhiteKing else ChessIcons.BlackKing
+  val confettiState = rememberConfettiState()
+
+  // Display plenty of confetti if one of the player wins.
+  LaunchedEffect(message) {
+    if (message == Message.Checkmate) {
+      confettiState.party(ConfettiDurationMillis, angle = 0f, spread = 120f)
+    }
+  }
+
   Row(modifier, Arrangement.spacedBy(16.dp), CenterVertically) {
     ProvideTextStyle(MaterialTheme.typography.subtitle1) {
       CompositionLocalProvider(LocalContentColor provides green) {
-        Icon(icon, null, Modifier.size(24.dp))
+        Icon(icon, null, Modifier.size(24.dp).confetti(confettiState))
         Text(name ?: "")
       }
       Spacer(Modifier.weight(1f, fill = true))
