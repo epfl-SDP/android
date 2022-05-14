@@ -41,8 +41,18 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
     contentPadding: PaddingValues = PaddingValues(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
+
+  val confettiState = rememberConfettiState()
+
+  // Display plenty of confetti if one of the player wins.
+  LaunchedEffect(state.black, state.white) {
+    if (Message.Checkmate in listOf(state.black.message, state.white.message)) {
+      confettiState.party(ConfettiDurationMillis, angle = 270f, spread = 120f)
+    }
+  }
+
   Scaffold(
-      modifier = modifier,
+      modifier = modifier.confetti(confettiState),
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
@@ -74,9 +84,6 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
   )
 }
 
-/** The duration during which some confetti will be spawned when a player wins. */
-private const val ConfettiDurationMillis = 2000L
-
 /**
  * A composable which displays some basic information about a player. Each player may have a name,
  * and an associated message.
@@ -95,19 +102,11 @@ private fun Player(
 ) {
   val green = if (color == White) Green500 else Green800
   val icon = if (color == White) ChessIcons.WhiteKing else ChessIcons.BlackKing
-  val confettiState = rememberConfettiState()
-
-  // Display plenty of confetti if one of the player wins.
-  LaunchedEffect(message) {
-    if (message == Message.Checkmate) {
-      confettiState.party(ConfettiDurationMillis, angle = 0f, spread = 120f)
-    }
-  }
 
   Row(modifier, Arrangement.spacedBy(16.dp), CenterVertically) {
     ProvideTextStyle(MaterialTheme.typography.subtitle1) {
       CompositionLocalProvider(LocalContentColor provides green) {
-        Icon(icon, null, Modifier.size(24.dp).confetti(confettiState))
+        Icon(icon, null, Modifier.size(24.dp))
         Text(name ?: "")
       }
       Spacer(Modifier.weight(1f, fill = true))
@@ -169,3 +168,6 @@ fun Moves(
     }
   }
 }
+
+/** The duration during which some confetti will be spawned when a player wins. */
+private const val ConfettiDurationMillis = 2000L
