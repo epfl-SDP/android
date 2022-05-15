@@ -9,6 +9,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -115,30 +116,38 @@ class ConfettiState {
    */
   @Composable
   fun rememberUpdatedInstance(): ConfettiInstance {
-    return remember { ConfettiInstance { confetti.forEach { with(it) { render() } } } }
+    return remember {
+      ConfettiInstance { origin -> confetti.forEach { with(it) { render(origin) } } }
+    }
   }
 }
 
 /** A renderable instance of the [ConfettiState]. */
 fun interface ConfettiInstance {
 
-  /** Draws the confetti using the provided [ContentDrawScope]. */
-  fun ContentDrawScope.drawConfetti()
+  /**
+   * Draws the confetti using the provided [ContentDrawScope].
+   *
+   * @param origin the [Offset] indicating the origin of the confetti.
+   */
+  fun ContentDrawScope.drawConfetti(origin: Offset)
 }
 
 /**
- * A [Modifier] which draws a bunch of confetti on the screen, controlled by the provided
+ * A [Modifier] which draws a bunch of confetti on top of the content, controlled by the provided
  * [ConfettiState] instance.
  *
  * @param state the [ConfettiState] which will be drawn.
+ * @param origin the [Offset] at which the confetti should be drawn.
  */
 fun Modifier.confetti(
     state: ConfettiState,
+    origin: Size.() -> Offset = { center },
 ): Modifier = composed {
   val instance = state.rememberUpdatedInstance()
   drawWithContent {
-    with(instance) { drawConfetti() }
     drawContent()
+    with(instance) { drawConfetti(origin(size)) }
   }
 }
 
@@ -188,13 +197,15 @@ private class Confetti(
   /**
    * Renders the provided confetti on the [ContentDrawScope], using the different properties for
    * this specific particle.
+   *
+   * @param origin the [Offset] indicating where the emoji spawn.
    */
-  fun ContentDrawScope.render() {
+  fun ContentDrawScope.render(origin: Offset) {
     val color = color.copy(alpha = opacity.value)
     val rotation = opacity.value * Rotations * rotationFactor * 360f
     val offset = boost.value + slide.value
-    val offsetX = offset.x.toPx()
-    val offsetY = offset.y.toPx()
+    val offsetX = origin.x - center.x + offset.x.toPx()
+    val offsetY = origin.y - center.y + offset.y.toPx()
     val scaleY = cos(opacity.value * Rotations * scaleFactor)
 
     withTransform(

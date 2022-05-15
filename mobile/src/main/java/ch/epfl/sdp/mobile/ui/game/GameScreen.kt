@@ -9,6 +9,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
@@ -57,7 +59,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             onArClick = state::onArClick,
             onListenClick = state::onListenClick,
             listening = state.listening,
-            modifier = Modifier.fillMaxWidth().confetti(confettiState),
+            modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },
       content = { scaffoldPadding ->
