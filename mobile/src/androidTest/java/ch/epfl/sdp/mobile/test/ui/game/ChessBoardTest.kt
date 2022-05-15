@@ -53,7 +53,7 @@ class ChessBoardTest {
     }
 
     override fun onPositionClick(position: Position) = Unit
-    override val lastMove: Position? = null
+    override val lastMove: Set<Position> = emptySet()
   }
 
   @Test
