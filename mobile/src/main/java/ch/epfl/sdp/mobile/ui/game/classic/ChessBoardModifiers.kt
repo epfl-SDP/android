@@ -133,55 +133,22 @@ fun Modifier.check(
 }
 
 /**
- * A [Modifier] which draws the fill cell with dash border for the provided [position]. The border
- * and the background color are the same. The alpha value of the background color is smaller.
+ * A [Modifier] which draws the fill cell with dash border for the provided [position].
  *
  * @param position the position that should be drawn.
- * @param color the [Color] of the celle
+ * @param color the [Color] of the cell
  * @param cells the number of cells in the grid.
- * @param width the width of the border
  */
 fun Modifier.lastMove(
     position: Set<Position>,
     color: Color = Color.Unspecified,
     cells: Int = ChessBoardCells,
-    width: Dp = 4.dp,
 ): Modifier = composed {
   val fillColor = color.takeOrElse { LocalContentColor.current }.copy(alpha = ContentAlpha.disabled)
-  val lineColor = color.takeOrElse { LocalContentColor.current }
-
-  val transition = rememberInfiniteTransition()
-  val progress by
-      transition.animateFloat(
-          initialValue = 0f,
-          targetValue = 1f,
-          animationSpec =
-              infiniteRepeatable(
-                  tween(
-                      durationMillis = SelectionDurationMillis,
-                      easing = LinearEasing,
-                  ),
-              ),
-      )
   cells(
       positions = position,
       cells = cells,
-  ) {
-    onDrawBehind {
-      val phase = size.width / 3
-      val style =
-          Stroke(
-              width = width.toPx(),
-              pathEffect =
-                  dashPathEffect(
-                      phase = -2 * progress * phase,
-                      intervals = floatArrayOf(phase, phase),
-                  ),
-          )
-      drawRect(color = fillColor)
-      drawRect(color = lineColor, style = style)
-    }
-  }
+  ) { onDrawBehind { drawRect(color = fillColor) } }
 }
 
 /** The duration of a cycle of the selection dashed border animation. */
