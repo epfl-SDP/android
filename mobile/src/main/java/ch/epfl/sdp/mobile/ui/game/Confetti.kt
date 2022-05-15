@@ -45,6 +45,10 @@ class ConfettiState {
   /** The [Confetti] which should be rendered. */
   private val confetti = mutableStateListOf<Confetti>()
 
+  /** Returns true if the animation is currently running. */
+  val isRunning: Boolean
+    get() = confetti.isNotEmpty()
+
   /**
    * Spawns a single confetti, and runs it in a suspending fashion.
    *
@@ -53,9 +57,9 @@ class ConfettiState {
    * @param colors the possible colors for the confetti.
    */
   private suspend fun spawnOne(angle: Float, spread: Float, colors: List<Color>) {
-    check(angle >= 0f && angle < 360f) { "Angle must be a valid angle." }
-    check(spread > 0f && spread <= 360f) { "Spread must be a valid angle." }
-    check(colors.isNotEmpty()) { "Must provide at least one confetti color." }
+    require(angle >= 0f && angle < 360f) { "Angle must be a valid angle." }
+    require(spread > 0f && spread <= 360f) { "Spread must be a valid angle." }
+    require(colors.isNotEmpty()) { "Must provide at least one confetti color." }
 
     val firstAngle = angle.toDouble() - spread / 2f
     val secondAngle = angle.toDouble() + spread / 2f
@@ -101,7 +105,7 @@ class ConfettiState {
       count: Int = 40,
       colors: List<Color> = Colors,
   ): Unit = coroutineScope {
-    check(count >= 0) { "Must spawn a positive confetti count." }
+    require(count >= 0) { "Must spawn a positive confetti count." }
     repeat(count) { launch { spawnOne(angle, spread, colors) } }
   }
 
