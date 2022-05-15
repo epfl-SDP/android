@@ -9,7 +9,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
-import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
 
 private const val BoardScale = 0.2f
@@ -22,13 +21,13 @@ private const val BoardScale = 0.2f
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
-    state: ChessBoardState<Piece>,
+    state: ArGameScreenState<Piece>,
     modifier: Modifier = Modifier
 ) {
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
 
-  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
+  //  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
 
   // Keep the screen on only for this composable
   DisposableEffect(view) {
@@ -42,22 +41,24 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        chessScene =
-            ChessScene(context, view.lifecycleScope, state.pieces).apply {
-              // Scale the whole scene to the desired size
-              scale(BoardScale)
-            }
+        /*  chessScene =
+        ChessScene(context, view.lifecycleScope, state.pieces).apply {
+          // Scale the whole scene to the desired size
+          scale(BoardScale)
+        }*/
+
+        state.chessScene.context = context
+
+        state.onLoad(state.pieces, BoardScale)
 
         // Place the chess board on the taped position
-        arSceneView.onTouchAr =
-            { hitResult, _ ->
-              anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
-            }
+        arSceneView.onTouchAr = { hitResult, _ ->
+          anchorOrMoveBoard(arSceneView, state.chessScene, hitResult.createAnchor())
+        }
 
         arSceneView
       },
-      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
-      update = { chessScene?.update(state.pieces) })
+      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription })
 }
 
 /**
