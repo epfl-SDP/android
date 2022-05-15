@@ -142,7 +142,7 @@ fun Modifier.check(
  * @param width the width of the border
  */
 fun Modifier.lastMove(
-    position: Position?,
+    position: Set<Position>,
     color: Color = Color.Unspecified,
     cells: Int = ChessBoardCells,
     width: Dp = 4.dp,
@@ -164,7 +164,7 @@ fun Modifier.lastMove(
               ),
       )
   cells(
-      positions = position?.let(::setOf) ?: emptySet(),
+      positions = position,
       cells = cells,
   ) {
     onDrawBehind {

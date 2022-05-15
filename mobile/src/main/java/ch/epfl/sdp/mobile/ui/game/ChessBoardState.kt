@@ -56,5 +56,5 @@ interface ChessBoardState<out Piece : ChessBoardState.Piece> {
   val checkPosition: Position?
 
   /** Return the [Position] of the game's last action */
-  val lastMove: Position?
+  val lastMove: Set<Position>
 }

@@ -34,14 +34,17 @@ class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoard
           .toPosition()
     }
 
-  override val lastMove: ChessBoardState.Position?
+  override val lastMove: Set<ChessBoardState.Position>
     get() {
-      val previousStep = delegate.game.previous ?: return null
+      val previousStep = delegate.game.previous ?: return emptySet()
       val lastAction = previousStep.second
-      return lastAction.let {
-        val lastPosition = it.from.plus(it.delta) ?: return null
-        lastPosition.toPosition()
-      }
+
+      return setOf(
+          lastAction.from.toPosition(),
+          lastAction.let {
+            val lastPosition = it.from.plus(it.delta) ?: return emptySet()
+            lastPosition.toPosition()
+          })
     }
 
   /** Returns the available actions [from] a position [to] another. */
