@@ -22,9 +22,6 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color.*
 import ch.epfl.sdp.mobile.ui.game.MovesInfoState.*
 import ch.epfl.sdp.mobile.ui.game.PlayersInfoState.Message
 import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
-import ch.epfl.sdp.mobile.ui.game.classic.confetti
-import ch.epfl.sdp.mobile.ui.game.classic.party
-import ch.epfl.sdp.mobile.ui.game.classic.rememberConfettiState
 import com.google.accompanist.flowlayout.FlowRow
 
 /**

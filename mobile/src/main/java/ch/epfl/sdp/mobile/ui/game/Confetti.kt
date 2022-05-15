@@ -1,6 +1,6 @@
 // Adapted from https://gist.github.com/alexandrepiveteau/9c20c9f0cbbd8efefa4323c9a60b9007
 
-package ch.epfl.sdp.mobile.ui.game.classic
+package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.*
@@ -29,18 +29,59 @@ import kotlinx.coroutines.withContext
 /** Creates a [ConfettiState] and remembers it in the composition. */
 @Composable
 fun rememberConfettiState(): ConfettiState {
-  return remember { SnapshotConfettiState() }
+  return remember { ConfettiState() }
 }
 
 /**
- * An interface describing the state of the confetti which are currently displayed on the screen.
+ * A class describing the state of the confetti which are currently displayed on the screen.
  * Spawning confetti is done with some suspending animation functions.
  */
 @Stable
-interface ConfettiState {
+class ConfettiState {
 
-  /** Returns true if at least one confetti is currently being displayed. */
-  val isRunning: Boolean
+  /** Ensures mutually exclusive access to [confetti]. */
+  private val mutex = Mutex()
+
+  /** The [Confetti] which should be rendered. */
+  private val confetti = mutableStateListOf<Confetti>()
+
+  /**
+   * Spawns a single confetti, and runs it in a suspending fashion.
+   *
+   * @param angle the angle which the spawn cone targets.
+   * @param spread the width of the spawn cone.
+   * @param colors the possible colors for the confetti.
+   */
+  private suspend fun spawnOne(angle: Float, spread: Float, colors: List<Color>) {
+    check(angle >= 0f && angle < 360f) { "Angle must be a valid angle." }
+    check(spread > 0f && spread <= 360f) { "Spread must be a valid angle." }
+    check(colors.isNotEmpty()) { "Must provide at least one confetti color." }
+
+    val firstAngle = angle.toDouble() - spread / 2f
+    val secondAngle = angle.toDouble() + spread / 2f
+    val fromAngle = minOf(firstAngle, secondAngle)
+    val untilAngle = maxOf(firstAngle, secondAngle)
+
+    val confettiAngle = Random.nextDouble(fromAngle, untilAngle).toFloat()
+    val confettiDistance = Random.nextDouble(from = 12.0, until = 36.0)
+
+    val x = (cos(2 * PI * confettiAngle / 360f) * confettiDistance).dp
+    val y = (-sin(2 * PI * confettiAngle / 360f) * confettiDistance).dp
+
+    val state =
+        Confetti(
+            color = colors.random(),
+            initialSpeed = DpOffset(x * 30, y * 30),
+            targetSlide = DpOffset(0.dp, 180.dp),
+        )
+
+    try {
+      mutex.withLock { confetti.add(state) }
+      state.fire()
+    } finally {
+      withContext(NonCancellable) { mutex.withLock { confetti.remove(state) } }
+    }
+  }
 
   /**
    * Spawns a given count of confetti with a certain direction, a certain spread angle, and a given
@@ -59,13 +100,19 @@ interface ConfettiState {
       spread: Float = 90f,
       count: Int = 40,
       colors: List<Color> = Colors,
-  )
+  ): Unit = coroutineScope {
+    check(count >= 0) { "Must spawn a positive confetti count." }
+    repeat(count) { launch { spawnOne(angle, spread, colors) } }
+  }
 
   /**
    * Returns a [ConfettiInstance], which should be used to perform the rendering of the confetti on
    * the canvas.
    */
-  @Composable fun rememberUpdatedInstance(): ConfettiInstance
+  @Composable
+  fun rememberUpdatedInstance(): ConfettiInstance {
+    return remember { ConfettiInstance { confetti.forEach { with(it) { render() } } } }
+  }
 }
 
 /** A renderable instance of the [ConfettiState]. */
@@ -161,72 +208,6 @@ private class Confetti(
         drawRect(color = color, topLeft = topLeft, size = size)
       }
     }
-  }
-}
-
-/** An implementation of [ConfettiState] that makes use of snapshots to keep confetti state. */
-private class SnapshotConfettiState : ConfettiState {
-
-  /** Ensures mutually exclusive access to [confetti]. */
-  private val mutex = Mutex()
-
-  /** The [Confetti] which should be rendered. */
-  private val confetti = mutableStateListOf<Confetti>()
-
-  override val isRunning
-    get() = confetti.isNotEmpty()
-
-  /**
-   * Spawns a single confetti, and runs it in a suspending fashion.
-   *
-   * @param angle the angle which the spawn cone targets.
-   * @param spread the width of the spawn cone.
-   * @param colors the possible colors for the confetti.
-   */
-  private suspend fun spawnOne(angle: Float, spread: Float, colors: List<Color>) {
-    check(angle >= 0f && angle < 360f) { "Angle must be a valid angle." }
-    check(spread > 0f && spread <= 360f) { "Spread must be a valid angle." }
-    check(colors.isNotEmpty()) { "Must provide at least one confetti color." }
-
-    val firstAngle = angle.toDouble() - spread / 2f
-    val secondAngle = angle.toDouble() + spread / 2f
-    val fromAngle = minOf(firstAngle, secondAngle)
-    val untilAngle = maxOf(firstAngle, secondAngle)
-
-    val confettiAngle = Random.nextDouble(fromAngle, untilAngle).toFloat()
-    val confettiDistance = Random.nextDouble(from = 12.0, until = 36.0)
-
-    val x = (cos(2 * PI * confettiAngle / 360f) * confettiDistance).dp
-    val y = (-sin(2 * PI * confettiAngle / 360f) * confettiDistance).dp
-
-    val state =
-        Confetti(
-            color = colors.random(),
-            initialSpeed = DpOffset(x * 30, y * 30),
-            targetSlide = DpOffset(0.dp, 180.dp),
-        )
-
-    try {
-      mutex.withLock { confetti.add(state) }
-      state.fire()
-    } finally {
-      withContext(NonCancellable) { mutex.withLock { confetti.remove(state) } }
-    }
-  }
-
-  override suspend fun spawn(
-      angle: Float,
-      spread: Float,
-      count: Int,
-      colors: List<Color>,
-  ): Unit = coroutineScope {
-    check(count >= 0) { "Must spawn a positive confetti count." }
-    repeat(count) { launch { spawnOne(angle, spread, colors) } }
-  }
-
-  @Composable
-  override fun rememberUpdatedInstance(): ConfettiInstance {
-    return remember { ConfettiInstance { confetti.forEach { with(it) { render() } } } }
   }
 }
 
