@@ -133,7 +133,7 @@ fun Modifier.check(
 }
 
 /**
- * A [Modifier] which draws the fill cell with dash border for the provided [position].
+ * A [Modifier] which fills the cells for the provided [position]s.
  *
  * @param position the position that should be drawn.
  * @param color the [Color] of the cell
