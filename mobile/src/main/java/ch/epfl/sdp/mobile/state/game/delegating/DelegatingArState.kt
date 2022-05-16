@@ -22,7 +22,7 @@ class DelegatingArState(
     private val scope: CoroutineScope
 ) : ArGameScreenState<Piece>, GameDelegate {
 
-  var lastState: Game? = null
+  var lastSaveGame: Game? = null
 
   override var game: Game by mutableStateOf(Game.create())
 
@@ -39,13 +39,15 @@ class DelegatingArState(
   }
 
   override fun update() {
-    Log.d(TAG, "update $lastState")
+    Log.d(TAG, "update $lastSaveGame")
     var prev = game.previous
-    while (prev != null && prev != lastState) {
+    while (prev != null && prev != lastSaveGame) {
       Log.d(TAG, "update ${prev.second}")
       chessScene.update(prev.second)
       prev = prev.first.previous
     }
-    lastState = game
+    lastSaveGame = game
+
+    chessScene.removeOldPiece(pieces)
   }
 }

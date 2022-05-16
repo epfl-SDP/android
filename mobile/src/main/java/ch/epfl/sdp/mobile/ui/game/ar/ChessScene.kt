@@ -47,7 +47,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   //  private val currentPositionChannel =
   //      Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
 
-  private val currentPieces: MutableMap<Position, Pair<Rank, ModelNode>> = mutableMapOf()
+  private val currentPieces: MutableMap<Position, Pair<Piece, ModelNode>> = mutableMapOf()
 
   private var boundingBox: Box? = null
 
@@ -173,7 +173,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         }
         renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
         boardNode.addChild(this)
-        currentPieces[position] = Pair(piece.rank, this)
+        currentPieces[position] = Pair(piece, this)
       }
     }
   }
@@ -187,15 +187,29 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     currentPieces[to] = Pair(rank, model)
   }
 
+  fun removeOldPiece(pieces: Map<Position, Piece>) {
+
+    val removed = currentPieces.filter { !pieces.containsValue(it.value.first) }
+    Log.d(TAG, "removed $removed")
+
+    for ((key, value) in removed) {
+      boardNode.removeChild(value.second)
+      value.second.destroy()
+      currentPieces.remove(key)
+    }
+  }
+
   suspend fun replaceModel(from: Position, to: Position, rank: Rank) {
-    val (_, model) = currentPieces[from] ?: return
+    /*    val (piece, model) = currentPieces[from] ?: return
     currentPieces.remove(from)
 
     model.position = toArPosition(to, boundingBox!!)
 
     model.setModel(loadPieceRenderable(rank))
+    val newPiece = Piece()
+    newPiece.rank = rank
 
-    currentPieces[to] = Pair(rank, model)
+    currentPieces[to] = Pair(newPiece, model)*/
   }
 
   /** Scale the whole scene with the given [value] */
