@@ -39,22 +39,32 @@ val PawniesIcons.PasswordHide
   get() = Icons.Default.VisibilityOff
 
 /** An icon for the social section. */
-val PawniesIcons.SectionSocial
+val PawniesIcons.SectionSocialSelected
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_friends_filled)
+val PawniesIcons.SectionSocialUnselected
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_friends_hollow)
 
 /** An icon for the settings section. */
+val PawniesIcons.SectionSettingsSelected
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_filled)
 val PawniesIcons.SectionSettings
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)
 
 /** An icon for the chess board section. */
-val PawniesIcons.SectionPlay
+val PawniesIcons.SectionPlaySelected
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_play_filled)
+val PawniesIcons.SectionPlayUnselected
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_play_hollow)
 
-val PawniesIcons.SectionPuzzles
+val PawniesIcons.SectionPuzzlesSelected
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_puzzles_filled)
+val PawniesIcons.SectionPuzzlesUnselected
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_puzzles_hollow)
 
 /** An icon for the tournament section. */
-val PawniesIcons.SectionContests
+val PawniesIcons.SectionContestsSelected
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_tournaments_filled)
+val PawniesIcons.SectionContestsUnselected
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_tournaments_hollow)
 
 val PawniesIcons.Add
