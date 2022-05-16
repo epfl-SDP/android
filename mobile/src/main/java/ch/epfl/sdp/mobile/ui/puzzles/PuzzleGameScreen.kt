@@ -5,9 +5,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
@@ -39,6 +42,16 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
         ChessBoardState.Color.White -> ChessBoardState.Color.Black
         ChessBoardState.Color.Black -> ChessBoardState.Color.White
       }
+
+  val confettiState = rememberConfettiState()
+
+  // Display plenty of confetti if one of the player wins.
+  LaunchedEffect(state.puzzleState) {
+    if (state.puzzleState == PuzzleState.Solved) {
+      confettiState.party(ConfettiDurationMillis, angle = 270f, spread = 120f)
+    }
+  }
+
   Scaffold(
       modifier = modifier,
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
@@ -48,7 +61,7 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
             onArClick = {},
             onListenClick = state::onListenClick,
             listening = state.listening,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },
       content = { scaffoldPadding ->
@@ -113,3 +126,6 @@ private fun PuzzleDirective(
     }
   }
 }
+
+/** The duration during which some confetti will be spawned when a puzzle is solved. */
+private const val ConfettiDurationMillis = 2000L

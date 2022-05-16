@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.test
 
-import com.google.common.truth.Truth
-import org.junit.Assert
+import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.fail
 
 /**
  * Asserts that the given [block] throws an exception or an error of type [T].
@@ -15,11 +15,9 @@ inline fun <reified T : Throwable> assertThrows(block: () -> Unit) {
     block()
     error = true
   } catch (throwable: Throwable) {
-    if (throwable is T) {
-      Truth.assertThat(throwable).isInstanceOf(T::class.java)
-    }
+    assertThat(throwable).isInstanceOf(T::class.java)
   }
   if (error) {
-    Assert.fail("Expected an exception of type ${T::class.qualifiedName} but got nothing.")
+    fail("Expected an exception of type ${T::class.qualifiedName} but got nothing.")
   }
 }
