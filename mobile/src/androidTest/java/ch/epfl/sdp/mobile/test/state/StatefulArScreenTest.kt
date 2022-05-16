@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.test.state
 
 import android.Manifest
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.rule.GrantPermissionRule.grant
 import ch.epfl.sdp.mobile.application.ChessDocument
@@ -21,7 +21,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import org.junit.Rule
-import org.junit.Test
 
 class StatefulArScreenTest {
 
@@ -31,7 +30,7 @@ class StatefulArScreenTest {
   // Note(Chau) : The bug on CirrusCI (https://github.com/epfl-SDP/android/issues/213) seems to be
   // solve, I let this note here is case we encounter the bug again
   // Tested locally on device with and without ArCore installed
-  @Test
+  // @Test
   fun given_allFacades_when_initStatefulArScreen_then_screenHasDescription() = withCanceledIntents {
     val auth = emptyAuth()
     val assets = emptyAssets()
