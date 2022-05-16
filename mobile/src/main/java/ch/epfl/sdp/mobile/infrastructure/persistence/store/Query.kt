@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.infrastructure.persistence.store
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -127,6 +128,16 @@ interface Query {
    */
   fun asQuerySnapshotFlow(): Flow<QuerySnapshot>
 }
+
+/**
+ * Returns the result of the [Query].
+ *
+ * TODO : Use first-class support of get() in Firestore.
+ *
+ * @return T the type of the document.
+ * @return the [List] of all the documents in the query.
+ */
+suspend inline fun <reified T : Any> Query.get(): List<T> = asFlow<T>().first().filterNotNull()
 
 /**
  * Returns a [Flow] to all the values in the current query.
