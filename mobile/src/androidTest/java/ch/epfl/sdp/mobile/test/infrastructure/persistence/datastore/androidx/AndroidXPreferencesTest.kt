@@ -6,7 +6,9 @@ import androidx.datastore.preferences.core.Preferences.Key as ActualKey
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.Key
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXKeyFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXPreferences
+import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.extractActualPreferences
 import ch.epfl.sdp.mobile.test.assertThrows
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakePreferences
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -14,6 +16,12 @@ import io.mockk.verify
 import org.junit.Test
 
 class AndroidXPreferencesTest {
+
+  @Test
+  fun given_badPreferences_when_extracts_then_throws() {
+    val badPreferences = FakePreferences(emptyMap())
+    assertThrows<IllegalArgumentException> { badPreferences.extractActualPreferences() }
+  }
 
   @Test
   fun given_preferences_when_contains_then_callsGoodMethods() {
