@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.state.game.delegating
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -39,15 +38,6 @@ class DelegatingArState(
   }
 
   override fun update() {
-    Log.d(TAG, "update $lastSaveGame")
-    var prev = game.previous
-    while (prev != null && prev != lastSaveGame) {
-      Log.d(TAG, "update ${prev.second}")
-      chessScene.update(prev.second)
-      prev = prev.first.previous
-    }
-    lastSaveGame = game
-
-    chessScene.removeOldPiece(pieces)
+    chessScene.updateBoard(pieces)
   }
 }

@@ -2,8 +2,6 @@ package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
 import android.util.Log
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -36,7 +34,7 @@ val TAG: String = "ChessScene"
  * @param startingBoard The board that contains the displayed game state
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
-    scope: CoroutineScope,
+    private val scope: CoroutineScope,
 // startingBoard: Map<Position, Piece>,
 ) {
 
@@ -47,11 +45,14 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   //  private val currentPositionChannel =
   //      Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
 
-  private val currentPieces: MutableMap<Position, Pair<Piece, ModelNode>> = mutableMapOf()
+  // private val currentPieces: MutableMap<Position, Pair<Piece, ModelNode>> = mutableMapOf()
+  private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   private var boundingBox: Box? = null
 
   var context: Context? = null
+
+  var isLoaded = false
 
   init {
     scope.launch {
@@ -59,6 +60,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       // Load Board
       val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
       boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
+      isLoaded = true
       val pieceRenderable = loadPieceRenderable()
 
       //      currentPositionChannel
@@ -102,7 +104,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   }
 
   /** Update the board incrementally */
-  fun update(action: Action) {
+  /*fun update(action: Action) {
     Log.d(TAG, "update $action")
     when (action) {
       is Action.Move -> {
@@ -114,7 +116,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         Log.d(TAG, "Promotion")
       }
     }
-  }
+  }*/
 
   /**
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
@@ -173,12 +175,13 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         }
         renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
         boardNode.addChild(this)
-        currentPieces[position] = Pair(piece, this)
+        // currentPieces[position] = Pair(piece, this)
+        currentPieces[piece] = this
       }
     }
   }
 
-  fun movePiece(from: Position, to: Position) {
+  /*fun movePiece(from: Position, to: Position) {
     val (rank, model) = currentPieces[from] ?: return
     currentPieces.remove(from)
 
@@ -197,7 +200,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       value.second.destroy()
       currentPieces.remove(key)
     }
-  }
+  }*/
 
   suspend fun replaceModel(from: Position, to: Position, rank: Rank) {
     /*    val (piece, model) = currentPieces[from] ?: return
@@ -215,6 +218,41 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   /** Scale the whole scene with the given [value] */
   internal fun scale(value: Float) {
     boardNode.scale(value)
+  }
+
+  fun updateBoard(pieces: Map<Position, Piece>) {
+    if (isLoaded) {
+      val it = currentPieces.entries.iterator()
+
+      while (it.hasNext()) {
+        val next = it.next()
+        if (pieces.containsValue(next.key)) {
+          val p = pieces.keys.first { pieces[it] == next.key }
+          next.value.position = toArPosition(p, boundingBox!!)
+        } else {
+          boardNode.removeChild(next.value)
+          next.value.destroy()
+          it.remove()
+        }
+      }
+
+      pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
+        scope.launch {
+          val pieceRenderable = loadPieceRenderable()
+          with(ModelNode(position = toArPosition(position, boundingBox!!))) {
+            val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
+            // Rotate the black pieces to face the right direction.
+            if (piece.color == Black) {
+              modelRotation = Rotation(0f, 180f, 0f)
+            }
+            renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
+            boardNode.addChild(this)
+            // currentPieces[position] = Pair(piece, this)
+            currentPieces[piece] = this
+          }
+        }
+      }
+    }
   }
 
   companion object {
