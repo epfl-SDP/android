@@ -9,4 +9,4 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.datastore
  */
 suspend fun DataStore<Preferences>.edit(
     transform: suspend (MutablePreferences) -> Unit
-): Preferences = updateData { it.toMutablePreferences().apply { transform(this) } }
+): Preferences = updateData { it.toMutablePreferences().apply { transform(this) }.toPreferences() }

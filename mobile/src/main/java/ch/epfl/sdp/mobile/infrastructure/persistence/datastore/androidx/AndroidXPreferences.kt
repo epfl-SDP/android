@@ -18,6 +18,8 @@ class AndroidXPreferences(val actual: ActualPreferences) : Preferences {
 
   override fun toMutablePreferences(): MutablePreferences =
       AndroidXMutablePreferences(actual.toMutablePreferences())
+
+  override fun toPreferences(): Preferences = AndroidXPreferences(actual.toPreferences())
 }
 
 /**

@@ -27,4 +27,11 @@ interface Preferences {
    * @see MutablePreferences
    */
   fun toMutablePreferences(): MutablePreferences
+
+  /**
+   * Returns a copy of these [Preferences] which is immutable.
+   *
+   * @see Preferences
+   */
+  fun toPreferences(): Preferences
 }
