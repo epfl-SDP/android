@@ -42,7 +42,7 @@ fun <C : ChessMatch> ProfileScreen(
   val elevation by animateDpAsState(targetElevation)
 
   UserScreen(
-      header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp)) },
+      header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp).fillMaxWidth()) },
       profileTabBar = {
         ProfileTabBar(
             pastGamesCount = state.pastGamesCount,
@@ -76,7 +76,7 @@ fun <C : ChessMatch> ProfileHeader(
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(16.dp),
   ) {
-    BackButton(state::onBack, modifier.align(Alignment.Start))
+    BackButton(state::onBack, Modifier.align(Alignment.Start))
     ProfilePicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Text(state.name, style = MaterialTheme.typography.h5)
@@ -211,5 +211,8 @@ private fun Modifier.borderBottom(
  */
 @Composable
 private fun BackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-  IconButton(modifier = modifier, onClick = onClick) { Icon(PawniesIcons.Close, "cancel") }
+  val strings = LocalLocalizedStrings.current
+  IconButton(modifier = modifier, onClick = onClick) {
+    Icon(PawniesIcons.Close, strings.socialCloseVisitedProfile)
+  }
 }

@@ -591,7 +591,9 @@ class StatefulHomeTest {
         }
 
     rule.onNodeWithText("B").assertExists().performClick()
-    rule.onNodeWithContentDescription("cancel").assertExists().performClick()
+    rule.onNodeWithContentDescription(strings.socialCloseVisitedProfile)
+        .assertExists()
+        .performClick()
     rule.onNodeWithText(strings.socialFollowingTitle).assertExists()
   }
   @Test
