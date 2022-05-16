@@ -6,12 +6,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.center
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
@@ -41,6 +40,16 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
     contentPadding: PaddingValues = PaddingValues(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
+
+  val confettiState = rememberConfettiState()
+
+  // Display plenty of confetti if one of the player wins.
+  LaunchedEffect(state.black, state.white) {
+    if (Message.Checkmate in listOf(state.black.message, state.white.message)) {
+      confettiState.party(ConfettiDurationMillis, angle = 270f, spread = 120f)
+    }
+  }
+
   Scaffold(
       modifier = modifier,
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
@@ -50,7 +59,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             onArClick = state::onArClick,
             onListenClick = state::onListenClick,
             listening = state.listening,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },
       content = { scaffoldPadding ->
@@ -92,6 +101,7 @@ private fun Player(
 ) {
   val green = if (color == White) Green500 else Green800
   val icon = if (color == White) ChessIcons.WhiteKing else ChessIcons.BlackKing
+
   Row(modifier, Arrangement.spacedBy(16.dp), CenterVertically) {
     ProvideTextStyle(MaterialTheme.typography.subtitle1) {
       CompositionLocalProvider(LocalContentColor provides green) {
@@ -157,3 +167,6 @@ fun Moves(
     }
   }
 }
+
+/** The duration during which some confetti will be spawned when a player wins. */
+private const val ConfettiDurationMillis = 2000L
