@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.DpOffset.Companion.Zero
 import androidx.compose.ui.unit.dp
@@ -56,8 +57,16 @@ class ConfettiState {
    * @param angle the angle which the spawn cone targets.
    * @param spread the width of the spawn cone.
    * @param colors the possible colors for the confetti.
+   * @param speed the initial speed at which the confetti will travel per second.
+   * @param slide the target slide amount for the confetti.
    */
-  private suspend fun spawnOne(angle: Float, spread: Float, colors: List<Color>) {
+  private suspend fun spawnOne(
+      angle: Float,
+      spread: Float,
+      colors: List<Color>,
+      speed: Dp = Random.nextDouble(from = 12.0, until = 36.0).dp * 30,
+      slide: DpOffset = DpOffset(0.dp, 180.dp),
+  ) {
     require(angle >= 0f && angle < 360f) { "Angle must be a valid angle." }
     require(spread > 0f && spread <= 360f) { "Spread must be a valid angle." }
     require(colors.isNotEmpty()) { "Must provide at least one confetti color." }
@@ -68,16 +77,15 @@ class ConfettiState {
     val untilAngle = maxOf(firstAngle, secondAngle)
 
     val confettiAngle = Random.nextDouble(fromAngle, untilAngle).toFloat()
-    val confettiDistance = Random.nextDouble(from = 12.0, until = 36.0)
 
-    val x = (cos(2 * PI * confettiAngle / 360f) * confettiDistance).dp
-    val y = (-sin(2 * PI * confettiAngle / 360f) * confettiDistance).dp
+    val x = (speed * cos(2 * PI * confettiAngle / 360f).toFloat())
+    val y = (speed * -sin(2 * PI * confettiAngle / 360f).toFloat())
 
     val state =
         Confetti(
             color = colors.random(),
-            initialSpeed = DpOffset(x * 30, y * 30),
-            targetSlide = DpOffset(0.dp, 180.dp),
+            initialSpeed = DpOffset(x, y),
+            targetSlide = slide,
         )
 
     try {
