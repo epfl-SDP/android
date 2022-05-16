@@ -40,22 +40,22 @@ val PawniesIcons.PasswordHide
 
 /** An icon for the social section. */
 val PawniesIcons.SectionSocial
-  get() = Icons.Default.People
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_friends_hollow)
 
 /** An icon for the settings section. */
 val PawniesIcons.SectionSettings
-  get() = Icons.Default.Settings
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)
 
 /** An icon for the chess board section. */
 val PawniesIcons.SectionPlay
-  get() = Icons.Default.Games
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_play_hollow)
 
 val PawniesIcons.SectionPuzzles
-  @Composable get() = painterResource(id = R.drawable.puzzles)
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_puzzles_hollow)
 
 /** An icon for the tournament section. */
 val PawniesIcons.SectionContests
-  @Composable get() = painterResource(id = R.drawable.tournament_icon)
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_tournaments_hollow)
 
 val PawniesIcons.Add
   get() = Icons.Default.Add
@@ -67,20 +67,26 @@ val PawniesIcons.Check
   get() = Icons.Default.Check
 
 val PawniesIcons.LocalPlay
-  @Composable get() = painterResource(id = R.drawable.local_play)
+  @Composable get() = painterResource(id = R.drawable.ic_icons_local_play)
 
 val PawniesIcons.OnlinePlay
-  @Composable get() = painterResource(id = R.drawable.online_play)
+  @Composable get() = painterResource(id = R.drawable.ic_icons_online_play)
 
 /** An icon to filter results. */
 val PawniesIcons.Filter
-  @Composable get() = painterResource(id = R.drawable.filtervariant)
+  @Composable get() = painterResource(id = R.drawable.ic_icons_filter)
 
 val PawniesIcons.TournamentDetailsClose
   @Composable get() = Icons.Rounded.Close
 
 val PawniesIcons.TournamentsNextStep
   get() = Icons.Outlined.SkipNext
+
+val PawniesIcons.Settings
+  @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)
+
+val PawniesIcons.Edit
+  @Composable get() = painterResource(id = R.drawable.ic_icons_edit)
 
 /** Chess pieces */
 object ChessIcons

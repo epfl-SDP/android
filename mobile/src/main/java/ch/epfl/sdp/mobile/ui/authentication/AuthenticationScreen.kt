@@ -46,7 +46,7 @@ fun AuthenticationScreen(
           verticalArrangement = Arrangement.spacedBy(24.dp),
           horizontalAlignment = Alignment.CenterHorizontally,
       ) {
-        Image(painterResource(drawable.authentication_logo), null)
+        Image(painterResource(drawable.ic_logos_authentication), null)
         Text(strings.authenticateTitle, style = MaterialTheme.typography.h4)
         transition.AnimatedContent { target ->
           val subtitle =
