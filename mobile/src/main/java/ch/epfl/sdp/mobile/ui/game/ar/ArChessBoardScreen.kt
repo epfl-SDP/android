@@ -49,7 +49,7 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
 
         state.chessScene.context = context
 
-        state.onLoad(state.pieces, BoardScale)
+        state.onLoad(BoardScale)
 
         // Place the chess board on the taped position
         arSceneView.onTouchAr = { hitResult, _ ->
@@ -58,7 +58,8 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
 
         arSceneView
       },
-      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription })
+      modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
+      update = { state.update() })
 }
 
 /**

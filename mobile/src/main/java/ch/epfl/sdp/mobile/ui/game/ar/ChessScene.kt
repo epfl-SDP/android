@@ -1,6 +1,9 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
+import android.util.Log
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -22,6 +25,7 @@ import io.github.sceneview.utils.Color as ArColor
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 
+val TAG: String = "ChessScene"
 /**
  * This class represent the AR chess scene which contains :
  * - The board as the root node
@@ -97,13 +101,19 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     }
   }
 
-  /**
-   * Use by [ArChessBoardScreen] to update the pieces' position on the board
-   *
-   * @param pieces The new piece position
-   */
-  fun update(pieces: Map<Position, Piece>) {
-    // currentPositionChannel.trySend(pieces)
+  /** Update the board incrementally */
+  fun update(action: Action) {
+    Log.d(TAG, "update $action")
+    when (action) {
+      is Action.Move -> {
+        Log.d(TAG, "current piece : $currentPieces")
+
+        movePiece(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition())
+      }
+      is Action.Promote -> {
+        Log.d(TAG, "Promotion")
+      }
+    }
   }
 
   /**
@@ -146,6 +156,8 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   ): Renderable = requireNotNull(GLBLoader.loadModel(context!!, rank.arModelPath))
 
   suspend fun loadStartingBoard(startingBoard: Map<Position, Piece>) {
+    Log.d(TAG, "Loading pieces $startingBoard")
+
     // Load Board
     val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
     val boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
@@ -161,6 +173,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         }
         renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
         boardNode.addChild(this)
+        currentPieces[position] = this
       }
     }
   }
