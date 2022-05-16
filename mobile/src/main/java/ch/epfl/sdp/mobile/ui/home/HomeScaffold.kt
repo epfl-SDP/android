@@ -13,27 +13,57 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 /**
  * The various [HomeSection] which can be displayed within the application.
  *
- * @param icon the [ImageVector] which acts as the section icon.
+ * @param icon the [ImageVector] which acts as the section icon depending on the boolean parameter
  * @param title the title of the section.
  */
 enum class HomeSection(
-    val icon: @Composable () -> Unit,
+    val icon: @Composable (selected: Boolean) -> Unit,
     val title: LocalizedStrings.() -> String,
 ) {
   /** The section to play a chess game */
-  Play({ Icon(PawniesIcons.SectionPlay, null) }, { sectionPlay }),
+  Play(
+      icon = {
+        if (it) Icon(PawniesIcons.SectionPlaySelected, null)
+        else Icon(PawniesIcons.SectionPlayUnselected, null)
+      },
+      title = { sectionPlay },
+  ),
 
   /** The section which displays all the people we follow. */
-  Social({ Icon(PawniesIcons.SectionSocial, null) }, { sectionSocial }),
+  Social(
+      icon = {
+        if (it) Icon(PawniesIcons.SectionSocialSelected, null)
+        else Icon(PawniesIcons.SectionSocialUnselected, null)
+      },
+      title = { sectionSocial },
+  ),
 
   /** The section which displays all the past and current contests. */
-  Contests({ Icon(PawniesIcons.SectionContests, null) }, { sectionContests }),
+  Contests(
+      icon = {
+        if (it) Icon(PawniesIcons.SectionContestsSelected, null)
+        else Icon(PawniesIcons.SectionContestsUnselected, null)
+      },
+      title = { sectionContests },
+  ),
 
   /** The section to play a chess puzzle game */
-  Puzzles({ Icon(PawniesIcons.SectionPuzzles, null) }, { sectionPuzzles }),
+  Puzzles(
+      icon = {
+        if (it) Icon(PawniesIcons.SectionPuzzlesSelected, null)
+        else Icon(PawniesIcons.SectionPuzzlesUnselected, null)
+      },
+      title = { sectionPuzzles },
+  ),
 
   /** The section to manage our preferences. */
-  Settings({ Icon(PawniesIcons.SectionSettings, null) }, { sectionSettings }),
+  Settings(
+      icon = {
+        if (it) Icon(PawniesIcons.SectionSettingsSelected, null)
+        else Icon(PawniesIcons.SectionSettings, null)
+      },
+      title = { sectionSettings },
+  ),
 }
 
 /**
@@ -85,7 +115,7 @@ private fun BottomNavigation(
       BottomNavigationItem(
           selected = section == it,
           onClick = { onSectionChange(it) },
-          icon = it.icon,
+          icon = { it.icon(section == it) },
           label = {
             Text(
                 text = it.title(LocalLocalizedStrings.current),
