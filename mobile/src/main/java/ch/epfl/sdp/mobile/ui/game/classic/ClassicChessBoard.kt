@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -74,6 +75,10 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
           .selection(
               position = state.selectedPosition,
               color = MaterialTheme.colors.secondary.copy(alpha = ContentAlpha.medium),
+          )
+          .lastMove(
+              position = state.lastMove,
+              color = PawniesColors.Orange250,
           )
           .letters(color = MaterialTheme.colors.onPrimary)
           .semantics { this.contentDescription = strings.boardContentDescription },

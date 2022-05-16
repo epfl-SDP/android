@@ -8,11 +8,11 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.voice.VoiceInput
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState
+import ch.epfl.sdp.mobile.ui.game.SpeechRecognizerState.*
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +37,8 @@ constructor(
     private val scope: CoroutineScope,
 ) : SpeechRecognizerState {
 
+  override var currentError by mutableStateOf(SpeechRecognizerError.None)
+
   override var listening: Boolean by mutableStateOf(false)
     private set
 
@@ -59,17 +61,20 @@ constructor(
             when (val speech = facade.recognize()) {
               // TODO : Display an appropriate message, otherwise act on the board.
               SpeechFacade.RecognitionResult.Failure.Internal ->
-                  snackbarHostState.showSnackbar("Internal failure")
+                  currentError = SpeechRecognizerError.InternalError
               is SpeechFacade.RecognitionResult.Success -> {
 
-                val parsedValue = VoiceInput.parseInput(speech.results)
-                snackbarHostState.showSnackbar(parsedValue.toString())
+                // Parsed the input
+                val parsedAction = VoiceInput.parseInput(speech.results)
+                if (parsedAction != null) {
+                  // Try to perform the action
+                  val isSuccessful = delegate.tryPerformAction(parsedAction)
 
-                // TODO(Chau) : Do something more interesting
-                Position.all()
-                    .flatMap { delegate.game.actions(it) }
-                    .onEach { delegate.tryPerformAction(it) }
-                    .firstOrNull()
+                  // If the action is illegal
+                  if (!isSuccessful) currentError = SpeechRecognizerError.IllegalAction
+                } else { // If cannot be parsed
+                  currentError = SpeechRecognizerError.UnknownCommand
+                }
               }
             }
           }

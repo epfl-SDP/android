@@ -2,13 +2,13 @@ package ch.epfl.sdp.mobile.ui.setting
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -18,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.Edit
+import ch.epfl.sdp.mobile.ui.PawniesIcons
+import ch.epfl.sdp.mobile.ui.Settings
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
 import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
@@ -87,8 +90,8 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
           verticalAlignment = Alignment.CenterVertically) {
         Text(state.name, style = MaterialTheme.typography.h5)
         IconButton(onClick = state::onEditProfileNameClick) {
-          Icon(
-              Icons.Default.Edit,
+          Image(
+              PawniesIcons.Edit,
               contentDescription = strings.profileEditNameIcon,
               modifier = Modifier.size(24.dp))
         }
@@ -125,7 +128,7 @@ fun <C : ChessMatch> SettingPicture(
                 .background(MaterialTheme.colors.surface, CircleShape)
                 .border(2.dp, MaterialTheme.colors.primary, CircleShape)
                 .size(40.dp),
-    ) { Icon(Icons.Default.Edit, strings.profileEditImageIcon) }
+    ) { Image(PawniesIcons.Edit, strings.profileEditImageIcon) }
   }
 }
 
@@ -144,7 +147,7 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       shape = CircleShape,
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
       modifier = modifier) {
-    Icon(Icons.Default.Settings, null)
+    Icon(PawniesIcons.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileSettings)
   }

@@ -17,7 +17,7 @@ class StoreDocumentsTest {
   fun given_tournamentDocuments_when_settingAndGettingThem_then_theyAreTheSame() = runTest {
     val tournamentId = "tournamentId"
     val store = emptyStore()
-    val tournaments = store.collection("tournaments")
+    val tournaments = store.collection(TournamentDocument.Collection)
     val pools = store.collection("tournaments/$tournamentId")
 
     val tournament = tournaments.document(tournamentId)
@@ -37,13 +37,11 @@ class StoreDocumentsTest {
     val poolDocument1 =
         PoolDocument(
             tournamentId = tournamentId,
-            currentRound = 2,
             playerIds = listOf("1", "2", "3", "4"),
         )
     val poolDocument2 =
         PoolDocument(
             tournamentId = tournamentId,
-            currentRound = 1,
             playerIds = listOf("5", "6", "7", "8"),
         )
 
@@ -71,7 +69,7 @@ class StoreDocumentsTest {
   fun given_emptyTournamentDocuments_when_settingAndGettingThem_then_theyAreTheSame() = runTest {
     val tournamentId = "tournamentId"
     val store = emptyStore()
-    val tournaments = store.collection("tournaments")
+    val tournaments = store.collection(TournamentDocument.Collection)
     val pools = store.collection("tournaments/$tournamentId")
 
     val tournament = tournaments.document(tournamentId)

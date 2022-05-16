@@ -77,6 +77,10 @@ interface LocalizedStrings {
   val gamePromoteTitle: String
   val gamePromoteConfirm: String
 
+  val gameSnackBarIllegalAction: String
+  val gameSnackBarInternalFailure: String
+  val gameSnackBarUnknownCommand: String
+
   val socialFollowingTitle: String
   val socialPerformPlay: String
   val socialPerformFollow: String
@@ -144,7 +148,10 @@ interface LocalizedStrings {
   val tournamentsDetailsStartEnoughPlayersSubtitle: String
   val tournamentsDetailsStartNotEnoughPlayersTitle: String
   val tournamentsDetailsStartNotEnoughPlayersSubtitle: String
+  val tournamentsDetailsStartDirectEliminationTitle: String
+  val tournamentsDetailsStartDirectEliminationSubtitle: String
   val tournamentDetailsBackContentDescription: String
+  val tournamentDetailsPoolName: (Int) -> String
 
   val tournamentsContestsTitle: String
   val tournamentsFilter: String

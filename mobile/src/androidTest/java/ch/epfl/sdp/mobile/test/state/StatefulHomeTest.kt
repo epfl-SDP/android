@@ -29,7 +29,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -449,7 +449,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -492,7 +492,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -666,7 +666,7 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
@@ -791,14 +791,16 @@ class StatefulHomeTest {
       runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("tournaments") { document("id1", TournamentDocument("tid1", "1", "Tournament 1")) }
+      collection(TournamentDocument.Collection) {
+        document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
+      }
     }
     val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(SuccessfulSpeechRecognizerFactory)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, store)
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
