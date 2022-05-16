@@ -54,4 +54,7 @@ interface ChessBoardState<out Piece : ChessBoardState.Piece> {
 
   /** Returns the position of the [Rank.King] currently in check, if there's any. */
   val checkPosition: Position?
+
+  /** Return the [Position] of the game's last action */
+  val lastMove: Set<Position>
 }

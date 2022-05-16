@@ -29,6 +29,7 @@ class ChessSceneTest {
     override val pieces: Map<ChessBoardState.Position, ChessBoardState.Piece>
       get() = mapOf(position to piece)
     override val checkPosition: ChessBoardState.Position? = null
+    override val lastMove: Set<ChessBoardState.Position> = emptySet()
   }
 
   @Test
