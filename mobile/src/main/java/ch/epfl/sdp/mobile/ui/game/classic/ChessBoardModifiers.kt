@@ -2,8 +2,7 @@ package ch.epfl.sdp.mobile.ui.game.classic
 
 import androidx.compose.animation.core.*
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
@@ -13,13 +12,11 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.PathEffect.Companion.dashPathEffect
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalFontLoader
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.Paragraph
@@ -133,6 +130,25 @@ fun Modifier.check(
       positions = position?.let(::setOf) ?: emptySet(),
       cells = cells,
   ) { onDrawBehind { drawRect(fillColor) } }
+}
+
+/**
+ * A [Modifier] which fills the cells for the provided [position]s.
+ *
+ * @param position the position that should be drawn.
+ * @param color the [Color] of the cell
+ * @param cells the number of cells in the grid.
+ */
+fun Modifier.lastMove(
+    position: Set<Position>,
+    color: Color = Color.Unspecified,
+    cells: Int = ChessBoardCells,
+): Modifier = composed {
+  val fillColor = color.takeOrElse { LocalContentColor.current }.copy(alpha = ContentAlpha.disabled)
+  cells(
+      positions = position,
+      cells = cells,
+  ) { onDrawBehind { drawRect(color = fillColor) } }
 }
 
 /** The duration of a cycle of the selection dashed border animation. */
