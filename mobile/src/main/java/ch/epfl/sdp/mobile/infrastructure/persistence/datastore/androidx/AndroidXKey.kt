@@ -9,7 +9,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.Key
  * @param T the type of the value in the [Key].
  * @param actual the actual backing key.
  */
-class AndroidXKey<T>(val actual: ActualKey<T>) : Key<T>
+data class AndroidXKey<T>(val actual: ActualKey<T>) : Key<T>
 
 /**
  * Returns the [ActualKey] from this [Key]. If the key is not compatible and was not created for an
