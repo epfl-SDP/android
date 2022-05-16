@@ -67,14 +67,14 @@ val PawniesIcons.Check
   get() = Icons.Default.Check
 
 val PawniesIcons.LocalPlay
-  @Composable get() = painterResource(id = R.drawable.ic_icons_local_play)
+  @Composable get() = painterResource(id = R.drawable.ic_local_play)
 
 val PawniesIcons.OnlinePlay
-  @Composable get() = painterResource(id = R.drawable.ic_icons_online_play)
+  @Composable get() = painterResource(id = R.drawable.ic_online_play)
 
 /** An icon to filter results. */
 val PawniesIcons.Filter
-  @Composable get() = painterResource(id = R.drawable.ic_icons_filter)
+  @Composable get() = painterResource(id = R.drawable.ic_filter)
 
 val PawniesIcons.TournamentDetailsClose
   @Composable get() = Icons.Rounded.Close
@@ -86,7 +86,7 @@ val PawniesIcons.Settings
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)
 
 val PawniesIcons.Edit
-  @Composable get() = painterResource(id = R.drawable.ic_icons_edit)
+  @Composable get() = painterResource(id = R.drawable.ic_edit)
 
 /** Chess pieces */
 object ChessIcons
