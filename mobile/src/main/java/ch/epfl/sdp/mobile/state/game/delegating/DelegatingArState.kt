@@ -13,15 +13,18 @@ import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-val TAG = "DelegatingArState"
-
+/**
+ * An implementation of [ArGameScreenState]
+ *
+ * @param match The match that we spectate
+ * @param chessScene the scene that will be displayed
+ * @param scope the [CoroutineScope] on which pieces loading are performed.
+ */
 class DelegatingArState(
     private val match: Match,
     override val chessScene: ChessScene<Piece>,
     private val scope: CoroutineScope
 ) : ArGameScreenState<Piece>, GameDelegate {
-
-  var lastSaveGame: Game? = null
 
   override var game: Game by mutableStateOf(Game.create())
 
