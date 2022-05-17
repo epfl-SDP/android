@@ -33,7 +33,7 @@ class DelegatingArState(
   }
 
   override fun onLoad(boardScale: Float) {
-    scope.launch { chessScene.loadStartingBoard(pieces) }.invokeOnCompletion { update() }
+    scope.launch { chessScene.loadBoard(pieces) }.invokeOnCompletion { update() }
     chessScene.scale(boardScale)
   }
 

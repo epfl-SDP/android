@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
-import android.util.Log
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -34,7 +33,6 @@ val TAG: String = "ChessScene"
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
     private val scope: CoroutineScope,
-// startingBoard: Map<Position, Piece>,
 ) {
 
   /** The [ArModelNode] which acts as the root of the [ArModelNode] hierarchy. */
@@ -42,21 +40,12 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
   private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
+  // Board Bounding box
   private var boundingBox: Box? = null
 
   var context: Context? = null
 
   var isLoaded = false
-
-  init {
-    scope.launch {
-
-      // Load Board
-      val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
-      boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
-      isLoaded = true
-    }
-  }
 
   /**
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
@@ -97,17 +86,26 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       rank: Rank,
   ): Renderable = requireNotNull(GLBLoader.loadModel(context!!, rank.arModelPath))
 
-  suspend fun loadStartingBoard(startingBoard: Map<Position, Piece>) {
-    Log.d(TAG, "Loading pieces $startingBoard")
-
+  /**
+   * Load the board and the given pieces
+   *
+   * @param pieces Map of piece and their position
+   */
+  suspend fun loadBoard(pieces: Map<Position, Piece>) {
     // Load Board
     val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
-    val boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
+    boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
+
+    val boundingBox = boundingBox ?: return
+
     val pieceRenderable = loadPieceRenderable()
 
-    for ((position, piece) in startingBoard) {
+    // Load pieces
+    for ((position, piece) in pieces) {
       addPieces(position, boundingBox, pieceRenderable, piece)
     }
+
+    isLoaded = true
   }
 
   /**
@@ -144,13 +142,15 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
   fun updateBoard(pieces: Map<Position, Piece>) {
     if (isLoaded) {
+      val boundingBox = boundingBox ?: return
+
       val it = currentPieces.entries.iterator()
 
       while (it.hasNext()) {
         val next = it.next()
         if (pieces.containsValue(next.key)) {
           val p = pieces.keys.first { pieces[it] == next.key }
-          next.value.position = toArPosition(p, boundingBox!!)
+          next.value.position = toArPosition(p, boundingBox)
         } else {
           boardNode.removeChild(next.value)
           next.value.destroy()
@@ -161,7 +161,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         scope.launch {
           val pieceRenderable = loadPieceRenderable()
 
-          addPieces(position, boundingBox!!, pieceRenderable, piece)
+          addPieces(position, boundingBox, pieceRenderable, piece)
         }
       }
     }
