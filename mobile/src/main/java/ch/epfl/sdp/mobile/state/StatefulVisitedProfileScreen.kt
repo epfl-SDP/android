@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
  * An implementation of the [VisitedProfileScreenState] that performs a given profile's [ChessMatch]
  * requests.
  *
+ * @param currentUser current logged in user
  * @param user the given [Profile].
  * @param actions the [ProfileActions] which are available on the screen.
  * @param onChallengeClickAction callback if challenge button clicked
