@@ -43,7 +43,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   // Board Bounding box
   private var boundingBox: Box? = null
 
-  var context: Context? = null
+  private var context: Context? = null
 
   var isLoaded = false
 
@@ -54,12 +54,14 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param node the [ArModelNode] to be prepared.
    * @return the [RenderableInstance] which can be used to manipulate the loaded model.
    */
-  private suspend fun prepareBoardRenderableInstance(node: ArModelNode): RenderableInstance? =
-      node.loadModel(
-          context = context!!,
-          glbFileLocation = ChessModels.Board,
-          autoScale = true,
-      )
+  private suspend fun prepareBoardRenderableInstance(node: ArModelNode): RenderableInstance? {
+    val context = context ?: return null
+    return node.loadModel(
+        context = context,
+        glbFileLocation = ChessModels.Board,
+        autoScale = true,
+    )
+  }
 
   /**
    * Loads all the [Renderable] for any [Rank] and makes them available as a higher-order function.
@@ -67,10 +69,11 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    *
    * @return a higher-order function which maps ranks to the right [Renderable].
    */
-  private suspend fun loadPieceRenderable(): (Rank) -> Renderable = coroutineScope {
+  private suspend fun loadPieceRenderable(context: Context): (Rank) -> Renderable = coroutineScope {
     val loaded = mutableMapOf<Rank, Renderable>()
+
     for (rank in Rank.values()) {
-      launch { loaded[rank] = loadPieceRenderable(rank) }
+      launch { loaded[rank] = loadPieceRenderable(rank, context) }
     }
     { rank -> requireNotNull(loaded[rank]) }
   }
@@ -82,9 +85,8 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param rank the [Rank] of the piece to fetch.
    * @return the [Renderable] to be displayed.
    */
-  private suspend fun loadPieceRenderable(
-      rank: Rank,
-  ): Renderable = requireNotNull(GLBLoader.loadModel(context!!, rank.arModelPath))
+  private suspend fun loadPieceRenderable(rank: Rank, context: Context): Renderable =
+      requireNotNull(GLBLoader.loadModel(context, rank.arModelPath))
 
   /**
    * Load the board and the given pieces
@@ -97,8 +99,9 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
 
     val boundingBox = boundingBox ?: return
+    val context = context ?: return
 
-    val pieceRenderable = loadPieceRenderable()
+    val pieceRenderable = loadPieceRenderable(context)
 
     // Load pieces
     for ((position, piece) in pieces) {
@@ -143,6 +146,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   fun updateBoard(pieces: Map<Position, Piece>) {
     if (isLoaded) {
       val boundingBox = boundingBox ?: return
+      val context = context ?: return
 
       val it = currentPieces.entries.iterator()
 
@@ -159,7 +163,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       }
       pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
         scope.launch {
-          val pieceRenderable = loadPieceRenderable()
+          val pieceRenderable = loadPieceRenderable(context)
 
           addPieces(position, boundingBox, pieceRenderable, piece)
         }
