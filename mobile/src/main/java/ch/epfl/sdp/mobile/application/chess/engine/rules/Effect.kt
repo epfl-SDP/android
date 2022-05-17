@@ -9,7 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Position
  *
  * @param Piece the type of the pieces of the board.
  */
-fun interface Effect<Piece : Any> {
+sealed interface Effect<Piece : Any> {
 
   /**
    * Performs a [Effect] and updates a [Board] according to the semantics of this [Effect].
@@ -18,6 +18,41 @@ fun interface Effect<Piece : Any> {
    * @return the updated [Board].
    */
   fun perform(current: Board<Piece>): Board<Piece>
+
+  /**
+   * A primitive [Effect] which sets the piece at a certain position.
+   *
+   * @param Piece the type of the pieces of the board.
+   * @param position the target [Position].
+   * @param piece the piece which is set.
+   */
+  data class Set<Piece : Any>(val position: Position, val piece: Piece?) : Effect<Piece> {
+    override fun perform(current: Board<Piece>) = current.set(position, piece)
+  }
+
+  /**
+   * A primitive [Effect] which moves a piece from a start position to an end position.
+   *
+   * @param Piece the type of the pieces of the board.
+   * @param from the original [Position] of the board.
+   * @param to the end [Position] of the board.
+   */
+  data class Move<Piece : Any>(val from: Position, val to: Position) : Effect<Piece> {
+    override fun perform(current: Board<Piece>): Board<Piece> =
+        current.set(from, null).set(to, current[from])
+  }
+
+  /**
+   * A primitive [Effect] which performs a [List] of [Effect] in order
+   *
+   * @param Piece the type of the pieces of the board.
+   * @param effects the [List] of effects to be performed.
+   */
+  data class Combine<Piece : Any>(val effects: List<Effect<Piece>>) : Effect<Piece> {
+    override fun perform(
+        current: Board<Piece>,
+    ) = effects.fold(current) { board, effect -> effect.perform(board) }
+  }
 
   /** A factory providing access to some functions to build effects on a board. */
   companion object Factory {
@@ -30,7 +65,7 @@ fun interface Effect<Piece : Any> {
      * @param position the [Position] at which the piece is removed.
      * @return the valid resulting [Effect].
      */
-    fun <P : Any> remove(position: Position): Effect<P> = Effect { it.set(position, null) }
+    fun <P : Any> remove(position: Position): Effect<P> = Set(position, null)
 
     /**
      * Updates the given [Position] by replacing the piece at the given [Position] with the given
@@ -41,9 +76,7 @@ fun interface Effect<Piece : Any> {
      * @param piece the [Piece] which gets placed.
      * @return the valid resulting [Effect].
      */
-    fun <P : Any> replace(position: Position, piece: P): Effect<P> = Effect {
-      it.set(position, piece)
-    }
+    fun <P : Any> replace(position: Position, piece: P): Effect<P> = Set(position, piece)
 
     /**
      * Applies a sequence of [Effect] in order, from left to right. This may be useful if you want
@@ -52,9 +85,7 @@ fun interface Effect<Piece : Any> {
      * @param P the type of the pieces.
      * @param effects the sequence of effects that should be applied.
      */
-    fun <P : Any> combine(vararg effects: Effect<P>): Effect<P> = Effect {
-      effects.fold(it) { board, effect -> effect.perform(board) }
-    }
+    fun <P : Any> combine(vararg effects: Effect<P>): Effect<P> = Combine(effects.toList())
 
     /**
      * Moves the piece at the given [Position] to the given target. If no piece was present at the
@@ -66,11 +97,7 @@ fun interface Effect<Piece : Any> {
      * @param target the final position of the piece.
      * @return the valid resulting [Effect].
      */
-    fun <P : Any> move(from: Position, target: Position): Effect<P> = Effect {
-      val original = it[from] ?: return@Effect it
-      if (!target.inBounds) return@Effect it
-      replace(target, original).perform(remove<P>(from).perform(it))
-    }
+    fun <P : Any> move(from: Position, target: Position): Effect<P> = Move(from, target)
 
     /**
      * Moves the piece at the given [Position] to the given target, and replaces it with the

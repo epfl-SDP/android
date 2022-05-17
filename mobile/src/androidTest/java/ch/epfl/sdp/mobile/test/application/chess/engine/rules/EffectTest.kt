@@ -64,21 +64,21 @@ class EffectTest {
   }
 
   @Test
-  fun move_fromEmptyPosition_isNoOp() {
+  fun move_fromEmptyPosition_makesTargetEmpty() {
     val from = Position(0, 1)
     val to = Position(0, 0)
     val board = buildBoard<UnitPiece> { set(to, bishop) }
     val effect = move<UnitPiece>(from, to)
-    assertThat(effect.perform(board)[to]).isEqualTo(bishop)
+    assertThat(effect.perform(board)[to]).isEqualTo(null)
   }
 
   @Test
-  fun move_outOfBounds_isNoOp() {
+  fun move_outOfBounds_makesOriginEmpty() {
     val from = Position(0, 0)
     val to = Position(-1, -1)
     val board = buildBoard<UnitPiece> { set(from, pawn) }
     val effect = move<UnitPiece>(from, to)
-    assertThat(effect.perform(board)[from]).isEqualTo(pawn)
+    assertThat(effect.perform(board)[from]).isEqualTo(null)
   }
 
   @Test

@@ -1,7 +1,5 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.DenormalizedBoardDecorator
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.NormalizedBoardDecorator
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
@@ -68,10 +66,29 @@ enum class Color(
         is Promote -> Promote(normalize(action.from), normalize(action.delta), action.rank)
       }
 
-  // TODO : Is there another way to do this ?
-  fun denormalize(effect: Effect<Piece<Role>>): Effect<Piece<Color>> = Effect { board ->
-    DenormalizedBoardDecorator(this, effect.perform(NormalizedBoardDecorator(this, board)))
-  }
+  /**
+   * Denormalizes the given [Effect].
+   *
+   * @param effect the [Effect] to denormalize.
+   * @return the denormalized [Effect].
+   */
+  fun denormalize(effect: Effect<Piece<Role>>): Effect<Piece<Color>> =
+      when (effect) {
+        is Effect.Combine -> Effect.Combine(effect.effects.map { denormalize(it) })
+        is Effect.Move -> Effect.Move(normalize(effect.from), normalize(effect.to))
+        is Effect.Set ->
+            Effect.Set(
+                normalize(effect.position),
+                effect.piece?.let { it ->
+                  val color =
+                      when (it.color) {
+                        Role.Allied -> this
+                        Role.Adversary -> other()
+                      }
+                  Piece(color, it.rank, it.id)
+                },
+            )
+      }
 
   /** Returns the [Color] of the adversary. */
   fun other(): Color = opposite()
