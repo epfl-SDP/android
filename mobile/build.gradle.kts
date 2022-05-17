@@ -92,6 +92,9 @@ dependencies {
 
   // OpenCSV
   implementation(libs.opencsv)
+
+  // Jetpack DataStore
+  implementation(libs.datastore.preferences)
 }
 
 jacoco { toolVersion = libs.versions.jacoco.get() }
