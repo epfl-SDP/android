@@ -2,8 +2,6 @@ package ch.epfl.sdp.mobile.state
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.state.game.ActualArScreenState
 import ch.epfl.sdp.mobile.ui.game.ar.ArChessBoardScreen
 
@@ -23,12 +21,7 @@ fun StatefulArScreen(
   val scope = rememberCoroutineScope()
   val match = remember(chessFacade, id) { chessFacade.match(id) }
 
-  val state =
-    remember(match, scope){
-      ActualArScreenState(scope,match)
-
-    }
+  val state = remember(match, scope) { ActualArScreenState(scope, match) }
 
   ArChessBoardScreen(state, modifier)
-
 }
