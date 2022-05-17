@@ -45,4 +45,7 @@ data class Delta(val x: Int, val y: Int) {
 
   /** Multiplies this [Delta] the given amount of times. */
   operator fun times(count: Int): Delta = Delta(x = x * count, y = y * count)
+
+  /** Inverses this [Delta] along both axes. */
+  operator fun unaryMinus(): Delta = Delta(x = -x, y = -y)
 }
