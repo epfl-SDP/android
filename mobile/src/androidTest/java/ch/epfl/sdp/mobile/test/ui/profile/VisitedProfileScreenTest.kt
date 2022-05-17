@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.VisitedProfileScreenState
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Loss
 import ch.epfl.sdp.mobile.ui.social.MatchResult.Reason.CHECKMATE
@@ -23,9 +24,12 @@ class VisitedProfileScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestProfileScreenState(override val matches: List<ChessMatch>) :
-      VisitedProfileScreenState<ChessMatch> {
+  open class TestProfileScreenState(
+      override val matches: List<ChessMatch>,
+      override val solvedPuzzles: List<PuzzleInfo>,
+  ) : VisitedProfileScreenState<ChessMatch, PuzzleInfo> {
     override val pastGamesCount = 10
+    override val solvedPuzzlesCount = 0
     override fun onChallengeClick() = Unit
     override fun onUnfollowClick() = Unit
     override val backgroundColor = Color.Default.toColor()
@@ -33,11 +37,13 @@ class VisitedProfileScreenTest {
     override val emoji = "🎁"
     override val followed = false
     override fun onMatchClick(match: ChessMatch) = Unit
+    override fun onPuzzleClick(puzzle: PuzzleInfo) = Unit
   }
 
   object FakeProfileScreenState :
       TestProfileScreenState(
           List(20) { ChessMatchAdapter("1", "Konor($it)", Win(CHECKMATE), 27) },
+          emptyList(),
       )
 
   @Test
@@ -69,7 +75,7 @@ class VisitedProfileScreenTest {
       match: ChessMatch,
       expected: LocalizedStrings.() -> String,
   ) {
-    val state = TestProfileScreenState(List(20) { match })
+    val state = TestProfileScreenState(List(20) { match }, emptyList())
     val strings = rule.setContentWithLocalizedStrings { ProfileScreen(state) }
 
     rule.onRoot().performTouchInput { swipeUp() }
