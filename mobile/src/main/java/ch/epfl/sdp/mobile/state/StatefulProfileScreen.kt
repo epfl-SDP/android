@@ -37,8 +37,7 @@ class StatefulProfileScreen(
     }
 
     scope.launch {
-      puzzles =
-          chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
+      puzzles = chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
     }
   }
 

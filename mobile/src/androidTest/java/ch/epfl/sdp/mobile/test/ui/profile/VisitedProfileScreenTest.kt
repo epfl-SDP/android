@@ -25,8 +25,8 @@ class VisitedProfileScreenTest {
   @get:Rule val rule = createComposeRule()
 
   open class TestProfileScreenState(
-    override val matches: List<ChessMatch>,
-    override val puzzles: List<PuzzleInfo>,
+      override val matches: List<ChessMatch>,
+      override val puzzles: List<PuzzleInfo>,
   ) : VisitedProfileScreenState<ChessMatch, PuzzleInfo> {
     override val pastGamesCount = 10
     override val solvedPuzzlesCount = 0
