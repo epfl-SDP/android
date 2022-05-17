@@ -15,6 +15,7 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
@@ -49,31 +50,17 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
  * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
  */
 private fun roundedDuration(startTime: Long): Duration {
-  val duration = System.currentTimeMillis().minus(startTime)
+  val duration = System.currentTimeMillis().minus(startTime).milliseconds
 
-  val secondToMilliseconds = 1000
-  val minuteToSeconds = 60
-  val hourToMinutes = 60
-  val dayToHours = 24
-  val monthToDays = 31
-  val yearsToMonths = 365
-  var higherUnit = secondToMilliseconds * minuteToSeconds
-
-  if (duration >= higherUnit) {
-    return duration.minutes
-  }
-  higherUnit *= hourToMinutes
-
-  if (duration >= higherUnit) {
-    return duration.hours
-  }
-  higherUnit *= dayToHours
-
-  if (duration >= higherUnit) {
-    return duration.days
+  if (duration >= 1.days) {
+    return duration.inWholeDays.days
+  } else if (duration >= 1.hours) {
+    return duration.inWholeHours.hours
+  } else if (duration >= 1.minutes) {
+    return duration.inWholeMinutes.minutes
   }
 
-  return duration.seconds
+  return duration.inWholeSeconds.seconds
 }
 
 /**
