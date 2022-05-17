@@ -59,11 +59,15 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
             elevation = elevation,
         )
       },
+      tabBarState = tabBarState,
       matches = state.matches,
+      onMatchClick = state::onMatchClick,
+      puzzles = state.solvedPuzzles,
+      onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       modifier = modifier.fillMaxSize(),
       contentPadding = contentPadding,
-      onMatchClick = state::onMatchClick)
+  )
 }
 
 /**
@@ -76,7 +80,10 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(state: SettingScreenState<C, P>, modifier: Modifier = Modifier) {
+fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
+    state: SettingScreenState<C, P>,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
 
   Column(

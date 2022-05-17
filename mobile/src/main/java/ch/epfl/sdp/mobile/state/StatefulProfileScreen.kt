@@ -34,8 +34,11 @@ class StatefulProfileScreen(
       fetchForUser(user, chessFacade).collect { list ->
         matches = list.map { createChessMatch(it, user) }
       }
+    }
 
-      solvedPuzzles = chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }
+    scope.launch {
+      solvedPuzzles =
+          chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
     }
   }
 
@@ -45,14 +48,13 @@ class StatefulProfileScreen(
   override val pastGamesCount
     get() = matches.size
 
-
   override fun onMatchClick(match: ChessMatchAdapter) = actions.onMatchClick(match)
 
   override var solvedPuzzles by mutableStateOf(emptyList<PuzzleInfoAdapter>())
     private set
 
   override val solvedPuzzlesCount
-  get() = solvedPuzzles.size
+    get() = solvedPuzzles.size
 
   override fun onPuzzleClick(puzzle: PuzzleInfoAdapter) = actions.onPuzzleClick(puzzle)
 }

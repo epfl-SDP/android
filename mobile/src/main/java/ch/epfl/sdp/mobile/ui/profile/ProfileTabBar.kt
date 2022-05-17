@@ -132,10 +132,10 @@ fun rememberProfileTabBarState(
  */
 @Composable
 fun ProfileTabBar(
-  state: ProfileTabBarState,
-  modifier: Modifier = Modifier,
-  backgroundColor: Color = MaterialTheme.colors.background,
-  elevation: Dp = 0.dp,
+    state: ProfileTabBarState,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colors.background,
+    elevation: Dp = 0.dp,
 ) {
   val strings = LocalLocalizedStrings.current
   Surface(

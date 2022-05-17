@@ -6,7 +6,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,17 +42,20 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
 
   UserScreen(
       header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp)) },
-    profileTabBar = {
-      ProfileTabBar(
-        state = tabBarState,
-        modifier = Modifier.fillMaxWidth(),
-        elevation = elevation,
-      )
-    },
+      profileTabBar = {
+        ProfileTabBar(
+            state = tabBarState,
+            modifier = Modifier.fillMaxWidth(),
+            elevation = elevation,
+        )
+      },
+      tabBarState = tabBarState,
       matches = state.matches,
-      contentPadding = contentPadding,
       onMatchClick = state::onMatchClick,
+      puzzles = state.solvedPuzzles,
+      onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
+      contentPadding = contentPadding,
       modifier = modifier)
 }
 

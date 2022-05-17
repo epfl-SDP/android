@@ -95,7 +95,8 @@ fun StatefulHome(
   }
 
   val onPuzzleItemClick: (puzzle: PuzzleInfo) -> Unit = { puzzle ->
-    controller.navigate("$PuzzleGameRoute/${puzzle.uid}") }
+    controller.navigate("$PuzzleGameRoute/${puzzle.uid}")
+  }
 
   val openTournament: (ref: TournamentReference) -> Unit = { tournament ->
     controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
