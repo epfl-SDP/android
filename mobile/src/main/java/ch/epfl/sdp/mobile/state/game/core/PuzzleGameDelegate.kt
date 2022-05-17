@@ -88,8 +88,7 @@ class PuzzleGameDelegate(
       delegate.currentMoveNumber++
     } else {
       delegate.puzzleState = PuzzleInfoState.PuzzleState.Solved
-      // TODO: Only mark puzzles as solved once the "Solved Puzzles" screen is implemented
-      // scope.launch { user.value.solvePuzzle(puzzle) }
+      scope.launch { user.value.solvePuzzle(puzzle) }
     }
   }
 }
