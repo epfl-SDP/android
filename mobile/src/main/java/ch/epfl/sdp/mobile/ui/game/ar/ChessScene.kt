@@ -45,8 +45,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
   var context: Context? = null
 
-  var isLoaded = false
-
   /**
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
    * appropriate model.
@@ -107,8 +105,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     for ((position, piece) in pieces) {
       addPieces(position, boundingBox, pieceRenderable, piece)
     }
-
-    isLoaded = true
   }
 
   /**
@@ -149,34 +145,32 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param pieces the new pieces on the board
    */
   fun updateBoard(pieces: Map<Position, Piece>) {
-    if (isLoaded) {
-      val boundingBox = boundingBox ?: return
-      val context = context ?: return
+    val boundingBox = boundingBox ?: return
+    val context = context ?: return
 
-      val it = currentPieces.entries.iterator()
+    val it = currentPieces.entries.iterator()
 
-      // iterate on the current pieces
-      while (it.hasNext()) {
-        val next = it.next()
-        // If the piece is in the given list update his position
-        if (pieces.containsValue(next.key)) {
-          val p = pieces.keys.first { pieces[it] == next.key }
-          next.value.position = toArPosition(p, boundingBox)
-        } else {
-          // The piece didn't exist anymore, delete it
-          boardNode.removeChild(next.value)
-          next.value.destroy()
-          it.remove()
-        }
+    // iterate on the current pieces
+    while (it.hasNext()) {
+      val next = it.next()
+      // If the piece is in the given list update his position
+      if (pieces.containsValue(next.key)) {
+        val p = pieces.keys.first { pieces[it] == next.key }
+        next.value.position = toArPosition(p, boundingBox)
+      } else {
+        // The piece didn't exist anymore, delete it
+        boardNode.removeChild(next.value)
+        next.value.destroy()
+        it.remove()
       }
+    }
 
-      // Search pieces that aren't on the AR board and load them
-      pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
-        scope.launch {
-          val pieceRenderable = loadPieceRenderable(context)
+    // Search pieces that aren't on the AR board and load them
+    pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
+      scope.launch {
+        val pieceRenderable = loadPieceRenderable(context)
 
-          addPieces(position, boundingBox, pieceRenderable, piece)
-        }
+        addPieces(position, boundingBox, pieceRenderable, piece)
       }
     }
   }
