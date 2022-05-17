@@ -143,6 +143,11 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     boardNode.scale(value)
   }
 
+  /**
+   * Update the board with the given pieces
+   *
+   * @param pieces the new pieces on the board
+   */
   fun updateBoard(pieces: Map<Position, Piece>) {
     if (isLoaded) {
       val boundingBox = boundingBox ?: return
@@ -150,17 +155,22 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
       val it = currentPieces.entries.iterator()
 
+      // iterate on the current pieces
       while (it.hasNext()) {
         val next = it.next()
+        // If the piece is in the given list update his position
         if (pieces.containsValue(next.key)) {
           val p = pieces.keys.first { pieces[it] == next.key }
           next.value.position = toArPosition(p, boundingBox)
         } else {
+          // The piece didn't exist anymore, delete it
           boardNode.removeChild(next.value)
           next.value.destroy()
           it.remove()
         }
       }
+
+      // Search pieces that aren't on the AR board and load them
       pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
         scope.launch {
           val pieceRenderable = loadPieceRenderable(context)
