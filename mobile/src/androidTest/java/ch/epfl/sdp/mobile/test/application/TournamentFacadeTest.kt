@@ -26,7 +26,7 @@ class TournamentFacadeTest {
     runTest {
       val auth = buildAuth { user("a@hotmail.com", "password", "1") }
       val store = buildStore {
-        collection("tournaments") {
+        collection(TournamentDocument.Collection) {
           document("id1", TournamentDocument("id1", "1", "Tournament 1"))
         }
       }
@@ -104,12 +104,17 @@ class TournamentFacadeTest {
             user = user,
             name = "Test tournament",
             maxPlayers = 10,
+            creationTime = 1000,
             bestOf = 3,
             poolSize = 4,
             eliminationRounds = 2,
         )
 
-    val fetched = store.collection("tournaments").document(ref!!.uid).get<TournamentDocument>()
+    val fetched =
+        store
+            .collection(TournamentDocument.Collection)
+            .document(ref!!.uid)
+            .get<TournamentDocument>()
 
     assertThat(fetched?.adminId).isEqualTo(user.uid)
     assertThat(fetched?.name).isEqualTo("Test tournament")
@@ -136,6 +141,7 @@ class TournamentFacadeTest {
             user = user,
             name = "Test tournament",
             maxPlayers = 2,
+            creationTime = 1000,
             bestOf = 3,
             poolSize = 246,
             eliminationRounds = 1928,

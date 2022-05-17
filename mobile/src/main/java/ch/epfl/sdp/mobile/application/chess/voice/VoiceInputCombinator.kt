@@ -95,7 +95,7 @@ object VoiceInputCombinator {
             actionSeparator.flatMap {
               position.flatMap { to ->
                 // remove word that cannot be converted
-                rank.filterNotNull().map { rank -> Promote(from, to, rank!!) }
+                rank.filterNotNull().map { rank -> Promote(from, to, rank) }
               }
             }
           }
