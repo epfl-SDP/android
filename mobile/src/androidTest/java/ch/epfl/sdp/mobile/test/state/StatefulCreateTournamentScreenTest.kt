@@ -3,21 +3,9 @@ package ch.epfl.sdp.mobile.test.state
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.TournamentDocument
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade
-import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
-import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulCreateTournamentScreen
-import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -28,22 +16,9 @@ class StatefulCreateTournamentScreenTest {
 
   @Test
   fun given_statefulCreateTournamentScreen_when_displayingIt_then_itIsDisplayed() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets = emptyAssets()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
-
-    facade.signUpWithEmail("email@epfl.ch", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
-          }
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment {
+          StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
         }
 
     rule.onNodeWithText(strings.tournamentsCreateTitle).assertExists()
@@ -59,22 +34,9 @@ class StatefulCreateTournamentScreenTest {
 
   @Test
   fun given_statefulCreateTournamentScreen_when_inputParameters_then_canClickCreate() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets = emptyAssets()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
-
-    facade.signUpWithEmail("email@epfl.ch", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
-          }
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment {
+          StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
         }
 
     rule.onNodeWithText(strings.tournamentsCreateActionCreate).assertIsNotEnabled()
@@ -91,22 +53,13 @@ class StatefulCreateTournamentScreenTest {
   @Test
   fun given_statefulCreateTournamentScreen_when_inputParameters_then_correspondingTournamentCreated() =
       runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets = emptyAssets()
-    val facade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
-
-    facade.signUpWithEmail("email@epfl.ch", "name", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, social, chess, speech, tournament) {
-            StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
-          }
+    val (_, infra, strings, user) =
+        rule.setContentWithTestEnvironment {
+          StatefulCreateTournamentScreen(
+              user = user,
+              navigateToTournament = {},
+              cancelClick = {},
+          )
         }
 
     rule.onNodeWithText(strings.tournamentsCreateNameHint).performTextInput("Test name")
@@ -118,7 +71,8 @@ class StatefulCreateTournamentScreenTest {
     rule.onNodeWithText(strings.tournamentsCreateActionCreate).performClick()
 
     val doc =
-        store
+        infra
+            .store
             .collection(TournamentDocument.Collection)
             .whereEquals("name", "Test name")
             .asFlow<TournamentDocument>()
