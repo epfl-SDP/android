@@ -187,7 +187,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
  * @param position the [Position] which should be mapped to an [ArPosition].
  * @param boundingBox the [Box] of the board in which the cells are to be placed.
  */
-fun toArPosition(
+private fun toArPosition(
     position: Position,
     boundingBox: Box,
 ): ArPosition {
