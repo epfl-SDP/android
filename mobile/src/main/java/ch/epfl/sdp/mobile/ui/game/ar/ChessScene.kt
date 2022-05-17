@@ -41,11 +41,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   /** The [ArModelNode] which acts as the root of the [ArModelNode] hierarchy. */
   val boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
-  /** A conflated [Channel] which associates the position of the pieces to their values. */
-  //  private val currentPositionChannel =
-  //      Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
-
-  // private val currentPieces: MutableMap<Position, Pair<Piece, ModelNode>> = mutableMapOf()
   private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   private var boundingBox: Box? = null
@@ -61,62 +56,8 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
       boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
       isLoaded = true
-      val pieceRenderable = loadPieceRenderable()
-
-      //      currentPositionChannel
-      //          .consumeAsFlow()
-      //          .onEach { positions ->
-      //
-      //            // FIXME : Removing all nodes will increase the computational resources a lot.
-      //            //    We shouldn't destroy a node to re-set it after. Each time that a board
-      // change, for
-      //            //    each piece, we will create all the loader needed to create asserts.
-      // Furthermore,
-      //            //    this implementation don't allow use to add animation on models
-      //            //    Solution, we save the map of id and rank for each piece.
-      //            //    - If the id is missing delete the corresponding node.
-      //            //    - If the receive rank didn't match, set the model to the new corresponding
-      // rank
-      //            //    (Note: Maybe we can check the model path to check if the rank is correct)
-      //            // Remove all current children.
-      //            boardNode.children.forEach {
-      //              val child = boardNode.removeChild(it)
-      //              child.destroy()
-      //            }
-      //
-      //            // Add all the pieces at the appropriate position.
-      //            for ((position, piece) in positions) {
-      //              val arPosition = toArPosition(position, boundingBox)
-      //              with(ModelNode(position = arPosition)) {
-      //                val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
-      //                // Rotate the black pieces to face the right direction.
-      //                if (piece.color == Black) {
-      //                  modelRotation = Rotation(0f, 180f, 0f)
-      //                }
-      //
-      // renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
-      //                boardNode.addChild(this)
-      //              }
-      //            }
-      //          }
-      //          .collect()
     }
   }
-
-  /** Update the board incrementally */
-  /*fun update(action: Action) {
-    Log.d(TAG, "update $action")
-    when (action) {
-      is Action.Move -> {
-        Log.d(TAG, "current piece : $currentPieces")
-
-        movePiece(action.from.toPosition(), action.from.plus(action.delta)!!.toPosition())
-      }
-      is Action.Promote -> {
-        Log.d(TAG, "Promotion")
-      }
-    }
-  }*/
 
   /**
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
@@ -179,40 +120,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
         currentPieces[piece] = this
       }
     }
-  }
-
-  /*fun movePiece(from: Position, to: Position) {
-    val (rank, model) = currentPieces[from] ?: return
-    currentPieces.remove(from)
-
-    model.position = toArPosition(to, boundingBox!!)
-
-    currentPieces[to] = Pair(rank, model)
-  }
-
-  fun removeOldPiece(pieces: Map<Position, Piece>) {
-
-    val removed = currentPieces.filter { !pieces.containsValue(it.value.first) }
-    Log.d(TAG, "removed $removed")
-
-    for ((key, value) in removed) {
-      boardNode.removeChild(value.second)
-      value.second.destroy()
-      currentPieces.remove(key)
-    }
-  }*/
-
-  suspend fun replaceModel(from: Position, to: Position, rank: Rank) {
-    /*    val (piece, model) = currentPieces[from] ?: return
-    currentPieces.remove(from)
-
-    model.position = toArPosition(to, boundingBox!!)
-
-    model.setModel(loadPieceRenderable(rank))
-    val newPiece = Piece()
-    newPiece.rank = rank
-
-    currentPieces[to] = Pair(newPiece, model)*/
   }
 
   /** Scale the whole scene with the given [value] */

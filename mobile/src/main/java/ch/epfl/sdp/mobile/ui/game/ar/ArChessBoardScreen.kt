@@ -27,8 +27,6 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
 
-  //  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
-
   // Keep the screen on only for this composable
   DisposableEffect(view) {
     view.keepScreenOn = true
@@ -40,12 +38,6 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
 
         // Create the view
         val arSceneView = ArSceneView(context)
-
-        /*  chessScene =
-        ChessScene(context, view.lifecycleScope, state.pieces).apply {
-          // Scale the whole scene to the desired size
-          scale(BoardScale)
-        }*/
 
         state.chessScene.context = context
 
