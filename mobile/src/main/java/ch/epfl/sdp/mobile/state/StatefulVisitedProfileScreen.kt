@@ -7,16 +7,13 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.PuzzleId
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.profile.VisitedProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /**
@@ -30,12 +27,12 @@ import kotlinx.coroutines.launch
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
-  private val currentUser: AuthenticatedUser,
-  private val user: Profile,
-  actions: State<ProfileActions>,
-  onChallengeClickAction: State<(String) -> Unit>,
-  chessFacade: ChessFacade,
-  private val scope: CoroutineScope,
+    private val currentUser: AuthenticatedUser,
+    private val user: Profile,
+    actions: State<ProfileActions>,
+    onChallengeClickAction: State<(String) -> Unit>,
+    chessFacade: ChessFacade,
+    private val scope: CoroutineScope,
 ) :
     VisitedProfileScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
@@ -48,17 +45,14 @@ class FetchedUserProfileScreenState(
   init {
     scope.launch {
       currentUser.following
-        .map { list -> list.map { ProfileAdapter(it) }.any { el -> el.uid == user.uid } }
-        .onEach { follows = it }
-        .collect()
+          .map { list -> list.map { ProfileAdapter(it) }.any { el -> el.uid == user.uid } }
+          .collect { follows = it }
     }
   }
 
   override fun onChallengeClick() {
     onChallengeClickAction(user.uid)
   }
-
-
 
   override fun onFollowClick() {
     scope.launch {

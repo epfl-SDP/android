@@ -51,10 +51,13 @@ class StatefulProfileScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, store)
 
+      authFacade.signUpWithEmail("user1@email", "user1", "password")
+      val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulVisitedProfileScreen("1", {}, {})
+              StatefulVisitedProfileScreen(authUser1, "1", {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -96,5 +99,44 @@ class StatefulProfileScreenTest {
     rule.onNodeWithText("user2").performClick()
     rule.onNodeWithText(strings.profileChallenge.uppercase()).performClick()
     rule.onNode(hasText("user2") and hasClickAction()).assertIsSelected()
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_clickedOnUnfollowFriend_then_theButtonShouldChangeToFollow() =
+      runTest {
+    val assets = emptyAssets()
+
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
+
+    authFacade.signUpWithEmail("user1@email", "user1", "password")
+    val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val user2 =
+        socialFacade.profile(uid = "userId2", user = authUser1).filterIsInstance<Profile>().first()
+    authUser1.follow(user2)
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          PawniesTheme {
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+              Navigation()
+            }
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("user2").performClick()
+    rule.onNodeWithText(strings.profileUnfollow).performClick()
+    rule.onNodeWithText(strings.profileFollow).assertExists()
+    rule.onNodeWithText(strings.profileFollow).performClick()
+    rule.onNodeWithText(strings.profileUnfollow).assertExists()
   }
 }
