@@ -141,6 +141,7 @@ fun StatefulHome(
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
+            user = user,
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
             modifier = Modifier.fillMaxSize(),

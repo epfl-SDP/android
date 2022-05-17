@@ -5,13 +5,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.PuzzleId
+import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreen
 import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.profile.VisitedProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 /**
  * An implementation of the [VisitedProfileScreenState] that performs a given profile's [ChessMatch]
@@ -19,24 +25,49 @@ import kotlinx.coroutines.flow.map
  *
  * @param user the given [Profile].
  * @param actions the [ProfileActions] which are available on the screen.
- * @param onGameItemClickAction callback if challenge button clicked
+ * @param onChallengeClickAction callback if challenge button clicked
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
-    private val user: Profile,
-    actions: State<ProfileActions>,
-    onGameItemClickAction: State<(String) -> Unit>,
-    chessFacade: ChessFacade,
-    scope: CoroutineScope,
+  private val currentUser: AuthenticatedUser,
+  private val user: Profile,
+  actions: State<ProfileActions>,
+  onChallengeClickAction: State<(String) -> Unit>,
+  chessFacade: ChessFacade,
+  private val scope: CoroutineScope,
 ) :
     VisitedProfileScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
-  val onGameItemClickAction by onGameItemClickAction
-  override fun onUnfollowClick() {}
+
+  val onChallengeClickAction by onChallengeClickAction
+
+  override var follows by mutableStateOf(false)
+
+  init {
+    scope.launch {
+      currentUser.following
+        .map { list -> list.map { ProfileAdapter(it) }.any { el -> el.uid == user.uid } }
+        .onEach { follows = it }
+        .collect()
+    }
+  }
+
   override fun onChallengeClick() {
-    onGameItemClickAction(user.uid)
+    onChallengeClickAction(user.uid)
+  }
+
+
+
+  override fun onFollowClick() {
+    scope.launch {
+      if (!follows) {
+        currentUser.follow(user)
+      } else {
+        currentUser.unfollow(user)
+      }
+    }
   }
 }
 
@@ -51,6 +82,7 @@ class FetchedUserProfileScreenState(
  */
 @Composable
 fun StatefulVisitedProfileScreen(
+    user: AuthenticatedUser,
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
     onChallengeClick: (String) -> Unit,
@@ -60,15 +92,15 @@ fun StatefulVisitedProfileScreen(
   val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
-  val onGameItemClickAction = rememberUpdatedState(onChallengeClick)
+  val onChallengeClick = rememberUpdatedState(onChallengeClick)
 
   val profile by
       remember(socialFacade, uid) { socialFacade.profile(uid).map { it ?: EmptyProfile } }
           .collectAsState(EmptyProfile)
   val scope = rememberCoroutineScope()
   val state =
-      remember(actions, profile, chessFacade, scope) {
-        FetchedUserProfileScreenState(profile, actions, onGameItemClickAction, chessFacade, scope)
+      remember(actions, profile, chessFacade, scope, socialFacade) {
+        FetchedUserProfileScreenState(user, profile, actions, onChallengeClick, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }
