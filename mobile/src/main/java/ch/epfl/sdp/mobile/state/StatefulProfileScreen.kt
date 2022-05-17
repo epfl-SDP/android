@@ -29,18 +29,6 @@ class StatefulProfileScreen(
 ) : ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter>, Person by ProfileAdapter(user) {
   private val actions by actions
 
-  init {
-    scope.launch {
-      fetchForUser(user, chessFacade).collect { list ->
-        matches = list.map { createChessMatch(it, user) }
-      }
-    }
-
-    scope.launch {
-      puzzles = chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
-    }
-  }
-
   override var matches by mutableStateOf(emptyList<ChessMatchAdapter>())
     private set
 
@@ -56,6 +44,18 @@ class StatefulProfileScreen(
     get() = puzzles.size
 
   override fun onPuzzleClick(puzzle: PuzzleInfoAdapter) = actions.onPuzzleClick(puzzle)
+
+  init {
+    scope.launch {
+      fetchForUser(user, chessFacade).collect { list ->
+        matches = list.map { createChessMatch(it, user) }
+      }
+    }
+
+    scope.launch {
+      puzzles = chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
+    }
+  }
 }
 
 /**
