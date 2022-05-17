@@ -592,4 +592,82 @@ class StatefulHomeTest {
     rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
     rule.onNodeWithText("Tournament 1", ignoreCase = true).assertIsDisplayed()
   }
+
+  @Test
+  fun given_settingsScreen_when_clickingOnPuzzle_then_ItIsOpened() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument(solvedPuzzles = listOf("00008"))) }
+    }
+    val assets =
+        FakeAssetManager(
+            "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
+                "00008,r6k/pp2r2p/4Rp1Q/3p4/8/1N1P2R1/PqP2bPP/7K b - - 0 24,f2g3 e6e7 b2b1 b3c1 b1c1 h6c1,1852,74,97,1444,crushing hangingPiece long middlegame,https://lichess.org/787zsVup/black#48\n")
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithText(strings.profilePuzzle).performClick()
+    rule.onNodeWithText("00008", substring = true).performClick()
+    rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
+  }
+
+  @Test
+  fun given_profileScreen_when_clickingOnPuzzle_then_ItIsOpened() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document(
+            "1",
+            ProfileDocument(
+                name = "Username1", followers = listOf("1"), solvedPuzzles = listOf("00008")))
+      }
+    }
+    val assets =
+        FakeAssetManager(
+            "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
+                "00008,r6k/pp2r2p/4Rp1Q/3p4/8/1N1P2R1/PqP2bPP/7K b - - 0 24,f2g3 e6e7 b2b1 b3c1 b1c1 h6c1,1852,74,97,1444,crushing hangingPiece long middlegame,https://lichess.org/787zsVup/black#48\n")
+
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, store)
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("Username1").performClick()
+    rule.onNodeWithText(strings.profilePuzzle).performClick()
+    rule.onNodeWithText("00008", substring = true).performClick()
+    rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
+  }
 }
