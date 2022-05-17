@@ -72,7 +72,6 @@ private fun roundedDuration(startTime: Long): Duration {
   if (duration >= higherUnit) {
     return duration.days
   }
-  higherUnit *= monthToDays
 
   return duration.seconds
 }
