@@ -44,6 +44,11 @@ class FakeCollectionReference : CollectionReference, DocumentBuilder, FakeQuery 
     }
   }
 
+  override suspend fun getQuerySnapshot(): FakeQuerySnapshot {
+    val snapshots = state.value.documents.values.map { doc -> doc.atomicGet() }
+    return FakeQuerySnapshot(snapshots)
+  }
+
   override fun <T : Any> document(
       value: T,
       valueClass: KClass<T>,
