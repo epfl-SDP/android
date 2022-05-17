@@ -115,7 +115,7 @@ fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
           Rank.Pawn -> Icon(ChessIcons.WhitePawn, contentDescription = desc(color, rank))
         }
       }
-      else -> Icon(PawniesIcons.SectionPuzzles, contentDescription = null)
+      else -> Icon(PawniesIcons.SectionPuzzlesUnselected, contentDescription = null)
     }
   }
 

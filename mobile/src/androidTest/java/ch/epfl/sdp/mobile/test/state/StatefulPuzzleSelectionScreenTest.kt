@@ -2,20 +2,8 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade
-import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPuzzleSelectionScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -26,8 +14,6 @@ class StatefulPuzzleSelectionScreenTest {
   @Test
   fun given_statefulPuzzleSelectionScreen_when_itIsDisplayed_then_ExpectedPuzzlesAreDisplayed() =
       runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
     val assets =
         FakeAssetManager(
             csvString =
@@ -46,23 +32,12 @@ class StatefulPuzzleSelectionScreenTest {
                     "00C7m,8/5k2/1P4R1/6PK/1r6/8/8/8 w - - 1 58,h5h6 b4h4,1347,339,100,10,endgame mate mateIn1 oneMove rookEndgame,https://lichess.org/ZbuTrTYp#115\n",
         )
 
-    val authFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
-
-    authFacade.signUpWithEmail("email@example.org", "user", "password")
-
-    val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulPuzzleSelectionScreen(
-                user = userAuthenticated,
-                onPuzzleItemClick = {},
-            )
-          }
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment(assets = assets) {
+          StatefulPuzzleSelectionScreen(
+              user = user,
+              onPuzzleItemClick = {},
+          )
         }
 
     fun scrollAndAssert(uid: String) {
