@@ -208,6 +208,7 @@ fun BoardSequence<Piece<Role>>.leftCastling() =
         rookStart = Position(x = 0, y = 7),
         rookEnd = Position(x = 3, y = 7),
         empty = setOf(Position(x = 1, y = 7), Position(x = 2, y = 7), Position(x = 3, y = 7)),
+        noCheck = setOf(Position(x = 4, y = 7), Position(x = 3, y = 7), Position(x = 2, y = 7)),
     )
 
 /** Moves representing a castling to the right. */
@@ -218,6 +219,7 @@ fun BoardSequence<Piece<Role>>.rightCastling() =
         rookStart = Position(x = 7, y = 7),
         rookEnd = Position(x = 5, y = 7),
         empty = setOf(Position(x = 5, y = 7), Position(x = 6, y = 7)),
+        noCheck = setOf(Position(x = 4, y = 7), Position(x = 5, y = 7), Position(x = 6, y = 7)),
     )
 
 private fun BoardSequence<Piece<Role>>.castling(
@@ -226,6 +228,7 @@ private fun BoardSequence<Piece<Role>>.castling(
     rookStart: Position,
     rookEnd: Position,
     empty: Set<Position>,
+    noCheck: Set<Position>,
 ): Moves<Piece<Role>> = sequence {
   val board = first()
   val king = board[kingStart]?.takeIf { (role, rank) -> role == Allied && rank == King }
@@ -236,8 +239,17 @@ private fun BoardSequence<Piece<Role>>.castling(
   rook ?: return@sequence
 
   // If any of the cells is not empty, we can't castle.
-  // TODO : Check if these cells are in check.
   if (empty.any { board[it] != null }) return@sequence
+
+  // Check if performing the king move would result in a check.
+  for (pos in noCheck) {
+    val updatedBoard = board.set(kingStart, null).set(kingEnd, king)
+    val updatedSequence = sequence {
+      yield(updatedBoard)
+      yieldAll(this@castling)
+    }
+    if (updatedSequence.inCheck(Allied)) return@sequence
+  }
 
   // Check that the king and rook have never moved.
   if (any { it[kingStart] != king || it[rookStart] != rook }) return@sequence
