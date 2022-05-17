@@ -43,7 +43,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   // Board Bounding box
   private var boundingBox: Box? = null
 
-  private var context: Context? = null
+  var context: Context? = null
 
   var isLoaded = false
 
