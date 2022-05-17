@@ -23,8 +23,8 @@ interface ProfileScreenState<C : ChessMatch, P : PuzzleInfo> : Person {
   /** Number of solved puzzles */
   val solvedPuzzlesCount: Int
 
-  /** List of chess matches */
-  val solvedPuzzles: List<P>
+  /** List of solved puzzles */
+  val puzzles: List<P>
 
   /**
    * Callback function to open a match.

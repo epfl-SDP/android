@@ -25,7 +25,7 @@ class SettingScreenTest {
 
   open class TestSettingScreenState(
       override val matches: List<ChessMatch>,
-      override val solvedPuzzles: List<PuzzleInfo>
+      override val puzzles: List<PuzzleInfo>
   ) : SettingScreenState<ChessMatch, PuzzleInfo> {
     override val email = "example@epfl.ch"
 

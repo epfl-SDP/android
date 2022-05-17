@@ -52,7 +52,7 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
       tabBarState = tabBarState,
       matches = state.matches,
       onMatchClick = state::onMatchClick,
-      puzzles = state.solvedPuzzles,
+      puzzles = state.puzzles,
       onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       contentPadding = contentPadding,

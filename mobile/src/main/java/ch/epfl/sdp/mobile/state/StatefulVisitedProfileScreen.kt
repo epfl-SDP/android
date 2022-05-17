@@ -45,6 +45,7 @@ class FetchedUserProfileScreenState(
  *
  * @param uid of the player.
  * @param onMatchClick callback function called when a match is clicked on.
+ * @param onPuzzleClick callback function called when a puzzle is clicked on.
  * @param onChallengeClick callback if challenge button clicked
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.

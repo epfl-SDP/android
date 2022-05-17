@@ -62,7 +62,7 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
       tabBarState = tabBarState,
       matches = state.matches,
       onMatchClick = state::onMatchClick,
-      puzzles = state.solvedPuzzles,
+      puzzles = state.puzzles,
       onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       modifier = modifier.fillMaxSize(),
