@@ -77,6 +77,8 @@ class StatefulSettingsScreenTest {
     every { user.backgroundColor } returns Profile.Color.Orange
     every { user.uid } returns "test"
     every { user.followed } returns false
+    every { user.solvedPuzzles } returns emptyList()
+
     var functionCalled = false
 
     val openProfileEditNameMock = { functionCalled = true }

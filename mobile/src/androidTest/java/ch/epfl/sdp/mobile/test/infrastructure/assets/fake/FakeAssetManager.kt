@@ -17,4 +17,6 @@ class FakeAssetManager(
 }
 
 /** Builds and returns a [AssetManager] with no data. */
-fun emptyAssets(): AssetManager = FakeAssetManager(csvString = "")
+fun emptyAssets(): AssetManager =
+    FakeAssetManager(
+        csvString = "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n")
