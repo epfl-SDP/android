@@ -38,8 +38,7 @@ sealed interface Effect<Piece : Any> {
    * @param to the end [Position] of the board.
    */
   data class Move<Piece : Any>(val from: Position, val to: Position) : Effect<Piece> {
-    override fun perform(current: Board<Piece>): Board<Piece> =
-        current.set(from, null).set(to, current[from])
+    override fun perform(current: Board<Piece>) = current.set(from, null).set(to, current[from])
   }
 
   /**
