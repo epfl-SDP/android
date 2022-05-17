@@ -44,7 +44,7 @@ private fun Modifier.borderBottom(
  * @param selected indicates if the tab is currently selected
  */
 @Composable
-fun SettingTabItem(
+fun ProfileTabItem(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
@@ -83,7 +83,7 @@ fun SettingTabItem(
  * @property pastGamesCount past games count
  * @property puzzlesCount puzzles count
  */
-interface SettingTabBarState {
+interface ProfileTabBarState {
 
   enum class Tab {
     PastGames,
@@ -95,17 +95,17 @@ interface SettingTabBarState {
 }
 
 /**
- * Implementation of the SettingTabBarState
+ * Implementation of the ProfileTabBarState
  * @param pastGamesCount count of games.
  * @param puzzlesCount count of puzzles done.
  */
-private class SettingTabBarStateImpl(
+private class ProfileTabBarStateImpl(
     pastGamesCount: State<Int>,
     puzzlesCount: State<Int>,
-) : SettingTabBarState {
+) : ProfileTabBarState {
   override val pastGamesCount by pastGamesCount
   override val puzzlesCount by puzzlesCount
-  override var currentTab by mutableStateOf(SettingTabBarState.Tab.PastGames)
+  override var currentTab by mutableStateOf(ProfileTabBarState.Tab.PastGames)
 }
 
 /**
@@ -114,28 +114,28 @@ private class SettingTabBarStateImpl(
  * @param puzzlesCount count of puzzles done.
  */
 @Composable
-fun rememberSettingTabBarState(
+fun rememberProfileTabBarState(
     pastGamesCount: Int,
     puzzlesCount: Int,
-): SettingTabBarState {
+): ProfileTabBarState {
   val pastGamesCountState = rememberUpdatedState(pastGamesCount)
   val puzzlesCountState = rememberUpdatedState(puzzlesCount)
-  return remember { SettingTabBarStateImpl(pastGamesCountState, puzzlesCountState) }
+  return remember { ProfileTabBarStateImpl(pastGamesCountState, puzzlesCountState) }
 }
 
 /**
- * Composes a SettingTabBar from puzzles and past games tab items
+ * Composes a ProfileTabBar from puzzles and past games tab items
  * @param state state of the profile tab
  * @param modifier the [Modifier] for this composable.
  * @param backgroundColor of the tab bar
  * @param elevation elevation dp of the tab bar
  */
 @Composable
-fun SettingTabBar(
-    state: SettingTabBarState,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colors.background,
-    elevation: Dp = 0.dp,
+fun ProfileTabBar(
+  state: ProfileTabBarState,
+  modifier: Modifier = Modifier,
+  backgroundColor: Color = MaterialTheme.colors.background,
+  elevation: Dp = 0.dp,
 ) {
   val strings = LocalLocalizedStrings.current
   Surface(
@@ -148,17 +148,17 @@ fun SettingTabBar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier,
     ) {
-      SettingTabItem(
+      ProfileTabItem(
           title = strings.profilePastGames,
           subtitle = state.pastGamesCount.toString(),
-          onClick = { state.currentTab = SettingTabBarState.Tab.PastGames },
-          selected = state.currentTab == SettingTabBarState.Tab.PastGames,
+          onClick = { state.currentTab = ProfileTabBarState.Tab.PastGames },
+          selected = state.currentTab == ProfileTabBarState.Tab.PastGames,
       )
-      SettingTabItem(
+      ProfileTabItem(
           title = strings.profilePuzzle,
           subtitle = state.puzzlesCount.toString(),
-          onClick = { state.currentTab = SettingTabBarState.Tab.Puzzles },
-          selected = state.currentTab == SettingTabBarState.Tab.Puzzles,
+          onClick = { state.currentTab = ProfileTabBarState.Tab.Puzzles },
+          selected = state.currentTab == ProfileTabBarState.Tab.Puzzles,
       )
     }
   }

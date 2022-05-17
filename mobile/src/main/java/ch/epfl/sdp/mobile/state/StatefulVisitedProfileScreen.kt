@@ -30,8 +30,8 @@ class FetchedUserProfileScreenState(
     chessFacade: ChessFacade,
     scope: CoroutineScope,
 ) :
-    VisitedProfileScreenState<ChessMatchAdapter>,
-    ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
+    VisitedProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
+    ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
   val onGameItemClickAction by onGameItemClickAction
   override fun onUnfollowClick() {}
@@ -53,11 +53,17 @@ class FetchedUserProfileScreenState(
 fun StatefulVisitedProfileScreen(
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
+    onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
+  val actions =
+      rememberUpdatedState(
+          ProfileActions(
+              onMatchClick = onMatchClick,
+              onPuzzleClick = onPuzzleClick,
+          ))
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
   val onGameItemClickAction = rememberUpdatedState(onChallengeClick)
