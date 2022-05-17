@@ -21,7 +21,6 @@ import io.github.sceneview.model.GLBLoader
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.utils.Color as ArColor
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 
 val TAG: String = "ChessScene"
 /**
@@ -107,18 +106,34 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     val pieceRenderable = loadPieceRenderable()
 
     for ((position, piece) in startingBoard) {
-      val arPosition = toArPosition(position, boundingBox)
-      with(ModelNode(position = arPosition)) {
-        val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
-        // Rotate the black pieces to face the right direction.
-        if (piece.color == Black) {
-          modelRotation = Rotation(0f, 180f, 0f)
-        }
-        renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
-        boardNode.addChild(this)
-        // currentPieces[position] = Pair(piece, this)
-        currentPieces[piece] = this
+      addPieces(position, boundingBox, pieceRenderable, piece)
+    }
+  }
+
+  /**
+   * Create the renderable of the given [piece] and added in to [boardNode] as a child
+   *
+   * @param position The position of the piece on the board
+   * @param boundingBox The bounding box of [boardNode]
+   * @param pieceRenderable The function that load a renderable given a [Rank]
+   * @param piece The piece that need to be place on the board
+   */
+  private fun addPieces(
+      position: Position,
+      boundingBox: Box,
+      pieceRenderable: (Rank) -> Renderable,
+      piece: Piece
+  ) {
+    val arPosition = toArPosition(position, boundingBox)
+    with(ModelNode(position = arPosition)) {
+      val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
+      // Rotate the black pieces to face the right direction.
+      if (piece.color == Black) {
+        modelRotation = Rotation(0f, 180f, 0f)
       }
+      renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
+      boardNode.addChild(this)
+      currentPieces[piece] = this
     }
   }
 
@@ -142,21 +157,11 @@ class ChessScene<Piece : ChessBoardState.Piece>(
           it.remove()
         }
       }
-
       pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
         scope.launch {
           val pieceRenderable = loadPieceRenderable()
-          with(ModelNode(position = toArPosition(position, boundingBox!!))) {
-            val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
-            // Rotate the black pieces to face the right direction.
-            if (piece.color == Black) {
-              modelRotation = Rotation(0f, 180f, 0f)
-            }
-            renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
-            boardNode.addChild(this)
-            // currentPieces[position] = Pair(piece, this)
-            currentPieces[piece] = this
-          }
+
+          addPieces(position, boundingBox!!, pieceRenderable, piece)
         }
       }
     }
