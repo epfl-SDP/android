@@ -15,6 +15,7 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
@@ -55,6 +56,8 @@ private fun roundedDuration(startTime: Long): Duration {
   val minuteToSeconds = 60
   val hourToMinutes = 60
   val dayToHours = 24
+  val monthToDays = 31
+  val yearsToMonths = 365
   var higherUnit = secondToMilliseconds * minuteToSeconds
 
   if (duration >= higherUnit) {
@@ -70,6 +73,8 @@ private fun roundedDuration(startTime: Long): Duration {
   if (duration >= higherUnit) {
     return duration.days
   }
+  higherUnit *= monthToDays
+
   return duration.seconds
 }
 

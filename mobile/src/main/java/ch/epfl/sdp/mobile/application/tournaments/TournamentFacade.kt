@@ -5,7 +5,6 @@ import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
