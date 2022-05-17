@@ -21,17 +21,44 @@ class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoard
   override val pieces: Map<ChessBoardState.Position, Piece>
     get() = delegate.game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
 
+  /**
+   * Returns the position of the king of the given color, if it exists.
+   *
+   * @param color the color of the king we're looking for.
+   * @return the [ChessBoardState.Position] of the king.
+   */
+  private fun kingPosition(color: ChessBoardState.Color): ChessBoardState.Position? =
+      delegate
+          .game
+          .board
+          .firstNotNullOfOrNull { (position, piece) ->
+            position.takeIf {
+              piece.color == color.toEngineColor() && piece.rank == EngineRank.King
+            }
+          }
+          ?.toPosition()
+
   override val checkPosition: ChessBoardState.Position?
     get() {
       val nextStep = delegate.game.nextStep
-      if (nextStep !is NextStep.MovePiece || !nextStep.inCheck) return null
-      return delegate
-          .game
-          .board
-          .firstNotNullOf { (position, piece) ->
-            position.takeIf { piece.color == nextStep.turn && piece.rank == EngineRank.King }
-          }
-          .toPosition()
+      return when {
+        nextStep is NextStep.Checkmate -> kingPosition(nextStep.winner.other().toColor())
+        nextStep is NextStep.MovePiece && nextStep.inCheck -> kingPosition(nextStep.turn.toColor())
+        else -> null
+      }
+    }
+
+  override val lastMove: Set<ChessBoardState.Position>
+    get() {
+      val previousStep = delegate.game.previous ?: return emptySet()
+      val lastAction = previousStep.second
+
+      return setOf(
+          lastAction.from.toPosition(),
+          lastAction.let {
+            val lastPosition = it.from.plus(it.delta) ?: return emptySet()
+            lastPosition.toPosition()
+          })
     }
 
   /** Returns the available actions [from] a position [to] another. */

@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 /**
  * An implementation of a [Query] which uses a Firestore query under-the-hood.
@@ -65,4 +66,7 @@ class FirestoreQuery(
             awaitClose { registration.remove() }
           }
           .buffer(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+
+  override suspend fun getQuerySnapshot(): QuerySnapshot =
+      FirestoreQuerySnapshot(reference.get().await())
 }
