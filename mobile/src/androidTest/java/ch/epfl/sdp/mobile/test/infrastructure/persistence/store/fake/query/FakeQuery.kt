@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
  * @see Query
  */
 interface FakeQuery : Query {
+
   override fun limit(count: Long): FakeQuery = LimitFakeQueryDecorator(this, count)
 
   override fun orderBy(path: FieldPath, direction: Query.Direction): FakeQuery =
@@ -51,4 +52,6 @@ interface FakeQuery : Query {
       WhereFakeQueryDecorator(this, whereArray(path) { it.contains(value) })
 
   override fun asQuerySnapshotFlow(): Flow<FakeQuerySnapshot>
+
+  override suspend fun getQuerySnapshot(): FakeQuerySnapshot
 }
