@@ -113,7 +113,7 @@ class StoreDocumentTournament(
               .whereNotEquals("poolId", null)
               .get<ChessDocument>()
               .toPoolResults()
-      createMatchesForRankedPlayers(results) { it.eliminationRounds }
+      createMatchesForPoolResults(results) { it.eliminationRounds }
     }
   }
 
@@ -127,24 +127,14 @@ class StoreDocumentTournament(
               .whereEquals("roundDepth", round)
               .get<ChessDocument>()
               .toPoolResults()
-      createMatchesForRankedPlayers(results) { (round - 1).takeIf { it >= 1 } }
+      createMatchesForPoolResults(results) { (round - 1).takeIf { it >= 1 } }
     }
   }
 
-  private suspend fun createMatchesForRankedPlayers(
-      results: PoolResults,
+  private suspend fun createMatchesForPlayers(
+      players: List<String>,
       nextDepth: (TournamentDocument) -> Int?,
   ) {
-    val ranked =
-        results
-            .players
-            .map {
-              val score = results.score(it).toFloat()
-              val total = results.played(it).toFloat()
-              it to (if (total == 0f) 0f else score / total)
-            }
-            .sortedByDescending { (_, score) -> score }
-            .map { it.first }
     store.transaction {
       val ref = store.collection(Collection).document(reference.uid)
       val currentDocument = get<TournamentDocument>(ref) ?: return@transaction
@@ -152,7 +142,7 @@ class StoreDocumentTournament(
       val bestOf = currentDocument.bestOf ?: return@transaction
       val depth = nextDepth(currentDocument) ?: return@transaction
       val count = 2.0.pow(depth).toInt()
-      val matches = ranked.take(count).chunked(2).filter { it.size == 2 }
+      val matches = players.take(count).chunked(2).filter { it.size == 2 }
 
       set(
           reference = ref,
@@ -176,5 +166,23 @@ class StoreDocumentTournament(
         }
       }
     }
+  }
+
+  private suspend fun createMatchesForPoolResults(
+      results: PoolResults,
+      nextDepth: (TournamentDocument) -> Int?,
+  ) {
+    val ranked =
+        results
+            .players
+            .map {
+              val score = results.score(it).toFloat()
+              val total = results.played(it).toFloat()
+              it to (if (total == 0f) 0f else score / total)
+            }
+            .sortedByDescending { (_, score) -> score }
+            .map { it.first }
+
+    createMatchesForPlayers(ranked, nextDepth)
   }
 }

@@ -8,6 +8,8 @@ import ch.epfl.sdp.mobile.application.tournaments.Tournament
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
+import ch.epfl.sdp.mobile.ui.tournaments.BadgeType.Admin
+import ch.epfl.sdp.mobile.ui.tournaments.BadgeType.Participant
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
@@ -26,12 +28,10 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
   val uid = tournament.reference.uid
   override val name: String = tournament.name
   override val badge: BadgeType? =
-      if (tournament.isAdmin) {
-        BadgeType.Admin
-      } else if (tournament.isParticipant) {
-        BadgeType.Participant
-      } else {
-        null
+      when {
+        tournament.isAdmin -> Admin
+        tournament.isParticipant -> Participant
+        else -> null
       }
   // TODO: Change to tournament.status when added.
   override val status: Status = Status.Done
@@ -94,12 +94,9 @@ fun StatefulTournamentScreen(
   val tournamentFacade = LocalTournamentFacade.current
   val scope = rememberCoroutineScope()
   val state =
-      remember(
-          actions,
-          currentUser,
-          tournamentFacade,
-          scope,
-      ) { TournamentScreenState(actions, currentUser, tournamentFacade, scope) }
+      remember(actions, currentUser, tournamentFacade, scope) {
+        TournamentScreenState(actions, currentUser, tournamentFacade, scope)
+      }
 
   ContestScreen(state, modifier, key = { it.uid }, contentPadding)
 }
