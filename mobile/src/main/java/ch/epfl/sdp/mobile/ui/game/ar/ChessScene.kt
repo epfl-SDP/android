@@ -28,9 +28,7 @@ val TAG: String = "ChessScene"
  * - The board as the root node
  * - A number of chess pieces depending on the game state
  *
- * @param context The context used to load the 3d models
  * @param scope A scope that is used to launch the model loading
- * @param startingBoard The board that contains the displayed game state
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
     private val scope: CoroutineScope,
