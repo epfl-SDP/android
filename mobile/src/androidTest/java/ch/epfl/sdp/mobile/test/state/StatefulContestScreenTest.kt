@@ -3,6 +3,7 @@ package ch.epfl.sdp.mobile.test.state
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.text.SpanStyle
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -18,6 +19,8 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -84,6 +87,39 @@ class StatefulContestScreenTest {
               StatefulTournamentScreen(currentUser, {}, {})
             }
           }
+      rule.onNodeWithText("Tournament 1").assertIsDisplayed()
+      rule.onNodeWithText(strings.tournamentsBadgeParticipant).assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun given_statefulContestScreen_when_tournamentCreated_then_correctTimeDisplayed() {
+    runTest {
+      val auth = buildAuth { user("email@example.org", "password", "1") }
+      val store = buildStore {
+        collection("users") { document("1", ProfileDocument("1", name = "A")) }
+        collection(TournamentDocument.Collection) {
+          document(
+              "id1",
+              TournamentDocument(
+                  "tid1",
+                  "2",
+                  "Tournament 1",
+                  playerIds = listOf("1"),
+                  creationTime = System.currentTimeMillis()))
+        }
+      }
+
+      val (_, _, strings, user) =
+          rule.setContentWithTestEnvironment(store = store) {
+            StatefulTournamentScreen(user, {}, {})
+          }
+
+      val duration = 2.seconds
+      Thread.sleep(duration.toLong(DurationUnit.SECONDS))
+
+      rule.onNodeWithText(strings.tournamentsStartingTime(duration, SpanStyle()).text)
+          .assertIsDisplayed()
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeParticipant).assertIsDisplayed()
     }
