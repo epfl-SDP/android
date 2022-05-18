@@ -19,6 +19,7 @@ import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.GLBLoader
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.utils.Color as ArColor
+import java.lang.IllegalStateException
 import kotlinx.coroutines.*
 
 val TAG: String = "ChessScene"
@@ -43,7 +44,13 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   // Board Bounding box
   private var boundingBox: Box? = null
 
-  var context: Context? = null
+  private var _context: Context? = null
+
+  var context: Context
+    get() = _context ?: throw IllegalStateException()
+    set(value: Context) {
+      _context = value
+    }
 
   /**
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
@@ -53,7 +60,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @return the [RenderableInstance] which can be used to manipulate the loaded model.
    */
   private suspend fun prepareBoardRenderableInstance(node: ArModelNode): RenderableInstance? {
-    val context = context ?: return null
     return node.loadModel(
         context = context,
         glbFileLocation = ChessModels.Board,
@@ -97,7 +103,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
 
     val boundingBox = boundingBox ?: return
-    val context = context ?: return
 
     val pieceRenderable = loadPieceRenderable(context)
 
@@ -146,7 +151,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    */
   fun updateBoard(pieces: Map<Position, Piece>) {
     val boundingBox = boundingBox ?: return
-    val context = context ?: return
 
     val it = currentPieces.entries.iterator()
 
