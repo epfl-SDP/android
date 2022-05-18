@@ -5,11 +5,10 @@ import ch.epfl.sdp.mobile.state.HomeActivity
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState
 import ch.epfl.sdp.mobile.test.assertThrows
 import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
+import com.google.common.truth.Truth.assertThat
 import dev.romainguy.kotlin.math.Float3
 import java.lang.IllegalStateException
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -22,7 +21,7 @@ class ChessSceneTest {
     val chessScene = ChessScene<DelegatingChessBoardState.Piece>(this)
     chessScene.context = rule.activity.applicationContext
 
-    assertNotEquals(null, chessScene.boardNode)
+    assertThat(chessScene.boardNode).isNotNull()
   }
 
   @Test
@@ -31,7 +30,7 @@ class ChessSceneTest {
     chessScene.context = rule.activity.applicationContext
 
     chessScene.scale(4f)
-    assertEquals(Float3(4f), chessScene.boardNode.scale)
+    assertThat(chessScene.boardNode.scale).isEqualTo(Float3(4f))
   }
 
   @Test
