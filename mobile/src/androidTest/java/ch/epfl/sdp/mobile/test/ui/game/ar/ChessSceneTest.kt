@@ -7,7 +7,6 @@ import ch.epfl.sdp.mobile.test.assertThrows
 import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
 import dev.romainguy.kotlin.math.Float3
 import java.lang.IllegalStateException
-import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -19,16 +18,16 @@ class ChessSceneTest {
   @get:Rule val rule = createAndroidComposeRule<HomeActivity>()
 
   @Test
-  fun given_emptyState_when_initChessScene_then_rootIsNotNull() {
-    val chessScene = ChessScene<DelegatingChessBoardState.Piece>(TestScope())
+  fun given_emptyState_when_initChessScene_then_rootIsNotNull() = runTest {
+    val chessScene = ChessScene<DelegatingChessBoardState.Piece>(this)
     chessScene.context = rule.activity.applicationContext
 
     assertNotEquals(null, chessScene.boardNode)
   }
 
   @Test
-  fun given_chessScene_when_scaled_then_rootHasCorrectScaleVector() {
-    val chessScene = ChessScene<DelegatingChessBoardState.Piece>(TestScope())
+  fun given_chessScene_when_scaled_then_rootHasCorrectScaleVector() = runTest {
+    val chessScene = ChessScene<DelegatingChessBoardState.Piece>(this)
     chessScene.context = rule.activity.applicationContext
 
     chessScene.scale(4f)
