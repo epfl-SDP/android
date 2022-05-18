@@ -73,11 +73,11 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    *
    * @return a higher-order function which maps ranks to the right [Renderable].
    */
-  private suspend fun loadPieceRenderable(context: Context): (Rank) -> Renderable = coroutineScope {
+  private suspend fun loadPieceRenderable(): (Rank) -> Renderable = coroutineScope {
     val loaded = mutableMapOf<Rank, Renderable>()
 
     for (rank in Rank.values()) {
-      launch { loaded[rank] = loadPieceRenderable(rank, context) }
+      launch { loaded[rank] = loadPieceRenderable(rank) }
     }
     { rank -> requireNotNull(loaded[rank]) }
   }
@@ -89,7 +89,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param rank the [Rank] of the piece to fetch.
    * @return the [Renderable] to be displayed.
    */
-  private suspend fun loadPieceRenderable(rank: Rank, context: Context): Renderable =
+  private suspend fun loadPieceRenderable(rank: Rank): Renderable =
       requireNotNull(GLBLoader.loadModel(context, rank.arModelPath))
 
   /**
@@ -104,7 +104,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
     val boundingBox = boundingBox ?: return
 
-    val pieceRenderable = loadPieceRenderable(context)
+    val pieceRenderable = loadPieceRenderable()
 
     // Load pieces
     for ((position, piece) in pieces) {
@@ -172,7 +172,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     // Search pieces that aren't on the AR board and load them
     pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
       scope.launch {
-        val pieceRenderable = loadPieceRenderable(context)
+        val pieceRenderable = loadPieceRenderable()
 
         addPieces(position, boundingBox, pieceRenderable, piece)
       }
