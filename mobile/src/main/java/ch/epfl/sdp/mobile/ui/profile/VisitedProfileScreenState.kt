@@ -10,8 +10,12 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  */
 @Stable
 interface VisitedProfileScreenState<C : ChessMatch> : ProfileScreenState<C> {
-  /** On unfollow button clicked */
-  fun onUnfollowClick()
+
+  /** If current user follows the profile */
+  val follows: Boolean
+
+  /** A callback invoked when the user follows or unfollows another user. */
+  fun onFollowClick()
 
   /** On challenge button clicked */
   fun onChallengeClick()

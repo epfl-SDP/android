@@ -82,7 +82,7 @@ fun <C : ChessMatch> ProfileHeader(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center) {
-      UnfollowButton(onClick = state::onUnfollowClick)
+      UnfollowButton(state, onClick = state::onFollowClick)
       Spacer(Modifier.size(16.dp))
       ChallengeButton(onClick = state::onChallengeClick)
     }
@@ -114,7 +114,11 @@ fun <C : ChessMatch> ProfilePicture(
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun UnfollowButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun <C : ChessMatch> UnfollowButton(
+    state: VisitedProfileScreenState<C>,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
 
   OutlinedButton(
@@ -123,7 +127,11 @@ fun UnfollowButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
       modifier = modifier) {
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.profileUnfollow)
+    if (state.follows) {
+      Text(strings.profileUnfollow)
+    } else {
+      Text(strings.profileFollow)
+    }
   }
 }
 

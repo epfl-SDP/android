@@ -3,6 +3,7 @@
 accompanist = "0.23.1"
 compose = "1.1.1"
 coroutines = "1.6.0"
+datastore = "1.0.0"
 jacoco = "0.8.8-SNAPSHOT" # Custom JaCoCo release with Jetpack Compose support.
 mockk = "1.12.3"
 
@@ -41,6 +42,8 @@ coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-androi
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 firebase-bom = "com.google.firebase:firebase-bom:29.1.0"
 
