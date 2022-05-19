@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,9 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.ui.Logout
-import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Edit
+import ch.epfl.sdp.mobile.ui.Logout
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Settings
 import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
