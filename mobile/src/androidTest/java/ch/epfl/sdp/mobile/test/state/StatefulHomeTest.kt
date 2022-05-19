@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
