@@ -27,12 +27,13 @@ class VisitedProfileScreenTest {
       VisitedProfileScreenState<ChessMatch> {
     override val pastGamesCount = 10
     override fun onChallengeClick() = Unit
-    override fun onUnfollowClick() = Unit
+    override val follows: Boolean = false
     override val backgroundColor = Color.Default.toColor()
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = false
     override fun onMatchClick(match: ChessMatch) = Unit
+    override fun onFollowClick() = Unit
   }
 
   object FakeProfileScreenState :
