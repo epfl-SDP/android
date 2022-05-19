@@ -132,7 +132,6 @@ class StatefulSettingsScreenTest {
           }
         }
     rule.onNodeWithText(strings.settingLogout).assertExists().performClick()
-    // Should display authentication screen
     coVerify { userMock.signOut() }
   }
 }
