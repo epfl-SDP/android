@@ -9,7 +9,10 @@ import kotlinx.collections.immutable.PersistentList
  * A persistent implementation of a [Game], which contains some information about the current board
  * positions, the past moves that were performed and the possible next steps.
  *
+ * @param previous the pair of the [PersistentGame]'s previous state and the next [Action] to be
+ * executed on it.
  * @param nextPlayer the [Color] of the next player to play.
+ * @param boards a [PersistentList] of the past [Board]s.
  */
 data class PersistentGame(
     override val previous: Pair<PersistentGame, Action>?,

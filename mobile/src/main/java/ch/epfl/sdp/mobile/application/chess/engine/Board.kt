@@ -23,6 +23,8 @@ interface Board<Piece : Any> : Iterable<Pair<Position, Piece>> {
    *
    * @param position the [Position] of the board at which the [Piece] is set.
    * @param piece the [Piece] which is set at the given position.
+   *
+   * @return the updated [Board] with the new [Piece] position.
    */
   fun set(position: Position, piece: Piece?): Board<Piece>
 
