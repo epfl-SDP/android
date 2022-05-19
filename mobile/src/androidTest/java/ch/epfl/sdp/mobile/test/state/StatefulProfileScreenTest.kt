@@ -57,7 +57,7 @@ class StatefulProfileScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulVisitedProfileScreen(authUser1, "1", {}, {})
+              StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -112,7 +112,11 @@ class StatefulProfileScreenTest {
     val (_, _, strings) =
         rule.setContentWithTestEnvironment(store = store, auth = auth) {
           StatefulVisitedProfileScreen(
-              user = user, uid = "userId2", onMatchClick = {}, onChallengeClick = {})
+              user = user,
+              uid = "userId2",
+              onMatchClick = {},
+              onChallengeClick = {},
+              onBackToSocialClick = {})
         }
 
     rule.onNodeWithText("user2").performClick()
