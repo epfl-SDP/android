@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.test.state
 
-import androidx.compose.runtime.remember
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.Profile
@@ -14,18 +13,17 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
-import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import com.google.common.truth.Truth.*
+import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -77,30 +75,17 @@ class StatefulFollowingScreenTest {
   fun searchList_onFollowClickUserIsFollowed() {
     runTest {
       val name = "Fred"
-      val auth = emptyAuth()
-      val assets = emptyAssets()
-      val store = buildStore {
-        collection("users") { document("other", ProfileDocument(name = name)) }
-      }
-      val authenticationFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
 
-      authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
-      val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-      val strings =
-          rule.setContentWithLocalizedStrings {
-            ProvideFacades(
-                authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulFollowingScreen(user, {})
-            }
-          }
+      val (_, infra, strings, user) =
+          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
+
+      infra.store.collection("users").document("other").set(ProfileDocument(name = name))
+
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
       val profile =
-          store
+          infra
+              .store
               .collection("users")
               .document("other")
               .asFlow<ProfileDocument>()
@@ -114,26 +99,11 @@ class StatefulFollowingScreenTest {
   fun searchList_onFollowClickFollowedAppears() {
     runTest {
       val name = "Fred"
-      val auth = emptyAuth()
-      val assets = emptyAssets()
-      val store = buildStore {
-        collection("users") { document("other", ProfileDocument(name = name)) }
-      }
-      val authenticationFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
+      val (_, infra, strings) =
+          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
 
-      authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
-      val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-      val strings =
-          rule.setContentWithLocalizedStrings {
-            ProvideFacades(
-                authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulFollowingScreen(user, {})
-            }
-          }
+      infra.store.collection("users").document().set(ProfileDocument(name = name))
+
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
       rule.onNodeWithText(strings.socialPerformUnfollow).assertExists()
@@ -144,24 +114,9 @@ class StatefulFollowingScreenTest {
 
   @Test
   fun focusedSearchField_isInSearchMode() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets = emptyAssets()
-    val user =
-        with(AuthenticationFacade(auth, store)) {
-          signUpWithEmail("email@epfl.ch", "name", "password")
-          currentUser.filterIsInstance<AuthenticatedUser>().first()
-        }
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(
-              authentication = remember { AuthenticationFacade(auth, store) },
-              social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store, assets) },
-              speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
-              tournament = remember { TournamentFacade(auth, store) },
-          ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment {
+          StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performClick()
@@ -171,24 +126,9 @@ class StatefulFollowingScreenTest {
 
   @Test
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets = emptyAssets()
-    val user =
-        with(AuthenticationFacade(auth, store)) {
-          signUpWithEmail("email@epfl.ch", "name", "password")
-          currentUser.filterIsInstance<AuthenticatedUser>().first()
-        }
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(
-              authentication = remember { AuthenticationFacade(auth, store) },
-              social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store, assets) },
-              speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
-              tournament = remember { TournamentFacade(auth, store) },
-          ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment {
+          StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Body")
@@ -203,27 +143,12 @@ class StatefulFollowingScreenTest {
 
   @Test
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
-    val auth = emptyAuth()
-    val assets = emptyAssets()
-    val store = buildStore {
-      collection("users") { document("a", ProfileDocument(name = "Alexandre")) }
-    }
-    val user =
-        with(AuthenticationFacade(auth, store)) {
-          signUpWithEmail("email@epfl.ch", "name", "password")
-          currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val (_, infra, strings) =
+        rule.setContentWithTestEnvironment {
+          StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(
-              authentication = remember { AuthenticationFacade(auth, store) },
-              social = remember { SocialFacade(auth, store) },
-              chess = remember { ChessFacade(auth, store, assets) },
-              speech = remember { SpeechFacade(FailingSpeechRecognizerFactory) },
-              tournament = remember { TournamentFacade(auth, store) },
-          ) { StatefulFollowingScreen(user, onShowProfileClick = {}) }
-        }
+    infra.store.collection("users").document().set(ProfileDocument(name = "Alexandre"))
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
     rule.onNodeWithText("Alexandre").assertIsDisplayed()

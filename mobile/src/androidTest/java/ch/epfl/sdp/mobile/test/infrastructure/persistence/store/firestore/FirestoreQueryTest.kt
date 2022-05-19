@@ -4,7 +4,9 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.Ascen
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Query.Direction.Descending
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreQuery
-import com.google.common.truth.Truth
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
+import com.google.android.gms.tasks.Tasks
+import com.google.common.truth.Truth.assertThat
 import com.google.firebase.firestore.*
 import io.mockk.every
 import io.mockk.mockk
@@ -153,7 +155,7 @@ class FirestoreQueryTest {
         }
     every { registration.remove() } returns Unit
 
-    Truth.assertThat(reference.asFlow<List<String>>().first()).isEqualTo(listOf("Success"))
+    assertThat(reference.asFlow<List<String>>().first()).isEqualTo(listOf("Success"))
   }
 
   @Test
@@ -180,6 +182,34 @@ class FirestoreQueryTest {
           ex
         }
 
-    Truth.assertThat(caught).isEqualTo(exception)
+    assertThat(caught).isEqualTo(exception)
+  }
+
+  @Test
+  fun given_query_when_callsGetQuerySnapshot_then_callsApi() = runTest {
+    val actualQuery = mockk<Query>()
+    val actualQuerySnapshot = mockk<QuerySnapshot>()
+    val query = FirestoreQuery(actualQuery)
+
+    every { actualQuery.get() } returns Tasks.forResult(actualQuerySnapshot)
+
+    query.getQuerySnapshot()
+
+    verify { actualQuery.get() }
+  }
+
+  @Test
+  fun given_query_when_callsGet_then_callsApi() = runTest {
+    val actualQuery = mockk<Query>()
+    val actualQuerySnapshot = mockk<QuerySnapshot>()
+    val query = FirestoreQuery(actualQuery)
+
+    every { actualQuery.get() } returns Tasks.forResult(actualQuerySnapshot)
+    every { actualQuerySnapshot.toObjects<Unit>(any()) } returns emptyList()
+
+    assertThat(query.get<Unit>()).isEmpty()
+
+    verify { actualQuery.get() }
+    verify { actualQuerySnapshot.toObjects<Unit>(any()) }
   }
 }
