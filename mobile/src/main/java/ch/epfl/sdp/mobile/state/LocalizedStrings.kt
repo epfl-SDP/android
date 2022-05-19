@@ -7,7 +7,11 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.os.ConfigurationCompat
 import ch.epfl.sdp.mobile.ui.i18n.English
+import ch.epfl.sdp.mobile.ui.i18n.French
+import ch.epfl.sdp.mobile.ui.i18n.German
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
+import java.util.Locale.FRENCH
+import java.util.Locale.GERMAN
 
 /**
  * An [androidx.compose.runtime.ProvidableCompositionLocal] which provides access to the
@@ -29,6 +33,8 @@ fun ProvideLocalizedStrings(
 ) {
   val strings =
       when (ConfigurationCompat.getLocales(configuration)[0].language) {
+        FRENCH.language -> French
+        GERMAN.language -> German
         else -> English
       }
   CompositionLocalProvider(LocalLocalizedStrings provides strings) { content() }
