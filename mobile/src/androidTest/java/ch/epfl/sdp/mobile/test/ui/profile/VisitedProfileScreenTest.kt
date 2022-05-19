@@ -112,7 +112,8 @@ class VisitedProfileScreenTest {
 
   @Test
   fun given_socialScreen_when_userProfileVisited_then_backButtonExists() {
-    rule.setContent { ProfileScreen(state = FakeProfileScreenState) }
-    rule.onNodeWithContentDescription("cancel").assertExists()
+    val strings =
+        rule.setContentWithLocalizedStrings { ProfileScreen(state = FakeProfileScreenState) }
+    rule.onNodeWithContentDescription(strings.socialCloseVisitedProfile).assertExists()
   }
 }
