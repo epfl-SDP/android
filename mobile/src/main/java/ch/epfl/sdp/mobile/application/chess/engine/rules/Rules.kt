@@ -50,8 +50,8 @@ interface Rules {
  * @param actionScope the [ActionScope] to which the moves are delegated.
  */
 private class AttackScopeAdapter(
-  private val from: Position,
-  private val actionScope: ActionScope,
+    private val from: Position,
+    private val actionScope: ActionScope,
 ) : AttackScope, BoardScope by actionScope {
 
   override fun attack(

@@ -1,11 +1,11 @@
 package ch.epfl.sdp.mobile.state.game.delegating
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
 import ch.epfl.sdp.mobile.application.chess.engine.Rank as EngineRank
-import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.state.game.core.GameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState

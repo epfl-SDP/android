@@ -19,9 +19,9 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
   }
 
   /**
-   * Returns the [MutableBoardPiece] at the given [Position] of the board. If you're iterating over the whole
-   * chessboard, it's recommended to use [forEachPiece] and [forEachPosition] instead, which are
-   * optimized for these use-cases.
+   * Returns the [MutableBoardPiece] at the given [Position] of the board. If you're iterating over
+   * the whole chessboard, it's recommended to use [forEachPiece] and [forEachPosition] instead,
+   * which are optimized for these use-cases.
    *
    * @param position the [Position] to check for.
    * @return the associated [MutableBoardPiece]. May be [MutableBoardPiece.None].
