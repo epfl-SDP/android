@@ -26,8 +26,7 @@ object King : AttackRank(Directions.Lines + Directions.Diagonals) {
     for (i in 1..2) {
       val kingTarget = kingPosition + (direction * i)
       val rookTarget = rookPosition + (-direction * i)
-      if (!get(kingTarget).isNone) return // There's a piece in the way.
-      if (!get(rookTarget).isNone) return
+      if (!get(kingTarget).isNone || !get(rookTarget).isNone) return // There's a piece in the way.
       if (isAttacked(kingTarget)) return // One of the king destinations is in check.
     }
 
