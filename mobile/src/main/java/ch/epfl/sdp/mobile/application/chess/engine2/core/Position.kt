@@ -49,6 +49,14 @@ value class Position private constructor(private val backing: Int) {
   operator fun plus(delta: Delta): Position = Position(delta.x + x, delta.y + y)
 
   /**
+   * Removes a [Delta] to this [Position].
+   *
+   * @param delta the [Delta] which is removed.
+   * @return the [Position] without the [Delta].
+   */
+  operator fun minus(delta: Delta): Position = Position(x - delta.x, y - delta.y)
+
+  /**
    * Returns the difference between two [Position].
    *
    * @param other the other [Position].

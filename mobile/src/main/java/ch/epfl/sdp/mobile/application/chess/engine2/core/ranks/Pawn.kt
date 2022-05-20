@@ -94,10 +94,27 @@ object Pawn : Rank {
     }
   }
 
+  /** Takes the adversary pawns en-passant. */
+  private fun ActionScope.enPassant(color: Color, position: Position) {
+    for (sideDelta in listOf(CardinalPoints.E, CardinalPoints.W)) {
+      val target = position + direction(color) + sideDelta
+      val adversaryPosition = position + sideDelta
+      val adversary = get(adversaryPosition)
+      if (adversary.isNone || adversary.color == color || adversary.rank != Pawn) continue
+      val adversaryStart = target + direction(color)
+      if (!adversaryStart.inBounds) continue
+      if (getHistorical(adversaryStart).drop(2).any { it != adversary }) continue
+      move(target) {
+        move(position, target)
+        remove(adversaryPosition)
+      }
+    }
+  }
+
   override fun ActionScope.actions(color: Color, position: Position) {
     singleUp(color, position)
     doubleUp(color, position)
     sideTakes(color, position)
-    // TODO : En-passant
+    enPassant(color, position)
   }
 }
