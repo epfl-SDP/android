@@ -35,6 +35,13 @@ object Pawn : Rank {
     attack(position + direction + CardinalPoints.W)
   }
 
+  /**
+   * Attempts to move or promote the pawn, depending on which position it's targeting.
+   *
+   * @param color the [Color] of the player.
+   * @param at the target [Position].
+   * @param effect the [Effect] to be applied.
+   */
   private fun ActionScope.moveOrPromote(color: Color, at: Position, effect: Effect) {
     if (endRow(color) == at.y) {
       val choices =
