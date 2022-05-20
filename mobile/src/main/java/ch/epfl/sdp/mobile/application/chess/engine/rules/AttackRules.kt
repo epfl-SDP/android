@@ -3,7 +3,6 @@ package ch.epfl.sdp.mobile.application.chess.engine.rules
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 /**
  * An implementation of [Rank] which attacks and moves with a set of possible [Delta].
