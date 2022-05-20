@@ -16,10 +16,18 @@ data class ActualGame(
 
   override val board: Board<Piece<Color>> = mutableBoard.toBoard()
 
+  private val history = sequence {
+    var current: ActualGame? = this@ActualGame
+    while (current != null) {
+      yield(current.board)
+      current = current.previous?.first
+    }
+  }
+
   override val nextStep: NextStep
 
   init {
-    val hasActions = mutableBoard.hasAnyMoveAvailable(nextPlayer)
+    val hasActions = mutableBoard.hasAnyMoveAvailable(nextPlayer, history)
     val inCheck = mutableBoard.inCheck(nextPlayer)
     val (nextStep, time) =
         measureTimedValue {
@@ -32,7 +40,8 @@ data class ActualGame(
           } else {
             NextStep.MovePiece(nextPlayer, inCheck) { action ->
               val (_, effect) =
-                  mutableBoard.computeActions(action.from, nextPlayer).firstOrNull { (it, _) ->
+                  mutableBoard.computeActions(action.from, nextPlayer, history).firstOrNull {
+                      (it, _) ->
                     action == it
                   }
                       ?: return@MovePiece this
@@ -53,7 +62,8 @@ data class ActualGame(
 
   @OptIn(ExperimentalTime::class)
   override fun actions(position: Position): Sequence<Action> {
-    val (actions, time) = measureTimedValue { mutableBoard.computeActions(position, nextPlayer) }
+    val (actions, time) =
+        measureTimedValue { mutableBoard.computeActions(position, nextPlayer, history) }
     println("Took $time to compute the available actions.")
     return actions.map { it.first }
   }

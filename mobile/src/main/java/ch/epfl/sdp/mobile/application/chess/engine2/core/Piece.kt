@@ -2,10 +2,12 @@ package ch.epfl.sdp.mobile.application.chess.engine2.core
 
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
 
+// Masks and flags for the piece colors.
 private const val PieceColorMask = 0b1
 private const val PieceColorBlackFlag = 0b0
 private const val PieceColorWhiteFlag = 0b1
 
+// Masks and flags for the piece ranks.
 private const val PieceRankMask = 0b1110
 private const val PieceRankBishopFlag = 0b0010
 private const val PieceRankKingFlag = 0b0100
@@ -14,10 +16,10 @@ private const val PieceRankPawnFlag = 0b1000
 private const val PieceRankQueenFlag = 0b1010
 private const val PieceRankRookFlag = 0b1110
 
-private const val PieceColorRankFlag = 0b00001111
-private const val PieceIdFlag = 0b11110000
+// Masks for the piece color and rank.
+private const val PieceColorRankFlag = PieceRankMask or PieceColorMask
 
-// TODO : Document the flags and this function.
+// TODO : Document this function.
 // TODO : Use some dedicated maps.
 private fun pack(id: Int, rank: Rank, color: Color): Int {
   val colorByte =

@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.application.chess.engine2
 
+import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
+import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action as EngineAction
@@ -33,20 +35,16 @@ fun MutableBoard.inCheck(player: EngineColor): Boolean {
   return computedAttacks(king)
 }
 
-fun MutableBoard.hasAnyMoveAvailable(player: EngineColor): Boolean {
+fun MutableBoard.hasAnyMoveAvailable(
+    player: EngineColor,
+    history: Sequence<Board<EnginePiece<EngineColor>>>,
+): Boolean {
   forEachPiece { (x, y), piece ->
     if (piece.color == player.toColor()) {
-      val actions = computeActions(EnginePosition(x, y), player)
-      val count = actions.count()
-      if (!actions.none()) {
-        println("FOUND AT LEAST ONE ACTION")
-        return true
-      } else {
-        println("FOUND $count ACTIONS")
-      }
+      val actions = computeActions(EnginePosition(x, y), player, history)
+      if (!actions.none()) return true
     }
   }
-  println("FOUND NOTHING")
   return false
 }
 
@@ -58,6 +56,7 @@ fun MutableBoard.hasAnyMoveAvailable(player: EngineColor): Boolean {
 fun MutableBoard.computeActions(
     position: EnginePosition,
     player: EngineColor,
+    history: Sequence<Board<EnginePiece<EngineColor>>>,
 ): Sequence<Pair<EngineAction, Effect>> = sequence {
   val from = position
   val piece = get(position.toPosition())
@@ -80,6 +79,8 @@ fun MutableBoard.computeActions(
             }
           }
           override fun get(position: Position): Piece = this@computeActions[position]
+          override fun getHistorical(position: Position) =
+              history.map { it[EnginePosition(position.x, position.y)].toCorePiece() }
         }
     with(rank) { scope.actions(player.toColor(), position.toPosition()) }
 
@@ -95,6 +96,11 @@ fun MutableBoard.computeActions(
 
     yieldAll(actions)
   }
+}
+
+private fun EnginePiece<EngineColor>?.toCorePiece(): Piece {
+  this ?: return Piece.None
+  return Piece(id.value, rank.toRank(), color.toColor())
 }
 
 /**

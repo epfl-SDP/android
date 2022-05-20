@@ -9,6 +9,13 @@ interface BoardScope {
   operator fun get(position: Position): Piece
 }
 
+/** A scope which provides access to the history of the pieces present on board. */
+interface HistoricalBoardScope : BoardScope {
+
+  /** Returns the [Sequence] of [Piece] that were present at the given position. */
+  fun getHistorical(position: Position): Sequence<Piece>
+}
+
 /** A scope which provides access to the attacked positions from the opponent. */
 fun interface Attacked {
 
@@ -48,7 +55,7 @@ fun AttackScope.attackTowards(direction: Delta, color: Color, position: Position
  * A scope which is used to declare that an action can be performed if the given [Position] is
  * clicked. Multiple actions may be performed on the same final [Position].
  */
-interface ActionScope : BoardScope, Attacked {
+interface ActionScope : HistoricalBoardScope, Attacked {
 
   /**
    * Declares that an action is available for the given [Position].

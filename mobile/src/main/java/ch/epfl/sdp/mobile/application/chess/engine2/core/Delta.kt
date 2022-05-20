@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.W
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.packShorts
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort1
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort2
+import kotlin.math.sign
 
 /**
  * A class representing the difference between two [Position].
@@ -36,6 +37,13 @@ value class Delta private constructor(private val backing: Int) {
   /** The delta on the second axis. */
   val y: Int
     get() = unpackShort2(backing).toInt()
+
+  /** Returns a [Delta] which only keeps track of the signs along the x and y axis. */
+  val sign: Delta
+    get() = Delta(x.sign, y.sign)
+
+  /** Reverses this [Delta]. */
+  operator fun unaryMinus(): Delta = Delta(-x, -y)
 
   /** Multiplies this [Delta] with a factor along the [x] and [y] axis. */
   operator fun times(scalar: Int): Delta = Delta(x * scalar, y * scalar)
