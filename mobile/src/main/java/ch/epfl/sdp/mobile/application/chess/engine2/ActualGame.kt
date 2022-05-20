@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.perform
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
+@ExperimentalTime
 data class ActualGame(
     override val previous: Pair<ActualGame, Action>?,
     private val mutableBoard: MutableBoard,
@@ -20,30 +21,34 @@ data class ActualGame(
   init {
     val hasActions = mutableBoard.hasAnyMoveAvailable(nextPlayer)
     val inCheck = mutableBoard.inCheck(nextPlayer)
-    nextStep =
-        if (!hasActions) {
-          if (inCheck) {
-            NextStep.Checkmate(nextPlayer.other())
+    val (nextStep, time) =
+        measureTimedValue {
+          if (!hasActions) {
+            if (inCheck) {
+              NextStep.Checkmate(nextPlayer.other())
+            } else {
+              NextStep.Stalemate
+            }
           } else {
-            NextStep.Stalemate
-          }
-        } else {
-          NextStep.MovePiece(nextPlayer, inCheck) { action ->
-            val (_, effect) =
-                mutableBoard.computeActions(action.from, nextPlayer).firstOrNull { (it, _) ->
-                  action == it
-                }
-                    ?: return@MovePiece this
+            NextStep.MovePiece(nextPlayer, inCheck) { action ->
+              val (_, effect) =
+                  mutableBoard.computeActions(action.from, nextPlayer).firstOrNull { (it, _) ->
+                    action == it
+                  }
+                      ?: return@MovePiece this
 
-            val nextBoard = mutableBoard.copyOf().apply { perform(effect) }
+              val nextBoard = mutableBoard.copyOf().apply { perform(effect) }
 
-            copy(
-                previous = this to action,
-                nextPlayer = nextPlayer.other(),
-                mutableBoard = nextBoard,
-            )
+              copy(
+                  previous = this to action,
+                  nextPlayer = nextPlayer.other(),
+                  mutableBoard = nextBoard,
+              )
+            }
           }
         }
+    this.nextStep = nextStep
+    println("Took $time to compute the nextStep")
   }
 
   @OptIn(ExperimentalTime::class)

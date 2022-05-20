@@ -72,26 +72,28 @@ interface ActionScope : BoardScope, Attacked {
 typealias Effect = EffectScope.() -> Unit
 
 /**
+ * An implementation of [EffectScope] which uses a [MutableBoard].
+ *
+ * @param board the underlying [MutableBoard].
+ */
+private class EffectScopeImpl(private val board: MutableBoard) : EffectScope {
+  override fun insert(position: Position, piece: Piece) {
+    board[position] = piece
+  }
+  override fun remove(from: Position): Piece {
+    val existing = board[from]
+    board.remove(from)
+    return existing
+  }
+}
+
+/**
  * Performs an [Effect] on a [MutableBoard].
  *
  * @receiver the [MutableBoard] on which the effect is applied.
  * @param effect the applied [Effect].
  */
-fun MutableBoard.perform(effect: Effect) {
-  // TODO : Extract this to an object.
-  val scope =
-      object : EffectScope {
-        override fun insert(position: Position, piece: Piece) {
-          this@perform[position] = piece
-        }
-        override fun remove(from: Position): Piece {
-          val existing = this@perform[from]
-          this@perform.remove(from)
-          return existing
-        }
-      }
-  effect(scope)
-}
+fun MutableBoard.perform(effect: Effect) = effect(EffectScopeImpl(this))
 
 /** A scope which is used to declare an effect to be performed. */
 interface EffectScope {
