@@ -1,8 +1,6 @@
-package ch.epfl.sdp.mobile.application.chess.engine2
+package ch.epfl.sdp.mobile.application.chess.engine.implementation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard as CoreMutableBoard
 
 /**

@@ -1,8 +1,7 @@
-package ch.epfl.sdp.mobile.application.chess.engine2
+package ch.epfl.sdp.mobile.application.chess.engine.implementation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Action
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.perform
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue

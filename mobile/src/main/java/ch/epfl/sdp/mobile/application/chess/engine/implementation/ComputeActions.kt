@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.engine2
+package ch.epfl.sdp.mobile.application.chess.engine.implementation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Action as EngineAction
 import ch.epfl.sdp.mobile.application.chess.engine.Board
@@ -6,13 +6,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
 import ch.epfl.sdp.mobile.application.chess.engine.rules.ActionScope
 import ch.epfl.sdp.mobile.application.chess.engine.rules.AttackScope
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Attacked
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect
-import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 /** Computes all the possible attacks from the player with the given [EngineColor]. */
 private fun MutableBoard.computeAttacks(player: Color): (Position) -> Boolean {

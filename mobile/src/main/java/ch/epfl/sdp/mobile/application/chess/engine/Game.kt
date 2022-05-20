@@ -5,8 +5,8 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.BoardBuilder
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.engine2.ActualGame
-import ch.epfl.sdp.mobile.application.chess.engine2.toMutableBoard
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.ActualGame
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.toMutableBoard
 
 /**
  * An interface representing the current [Game], which contains a [Board] of pieces and on which

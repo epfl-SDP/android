@@ -1,8 +1,6 @@
-package ch.epfl.sdp.mobile.application.chess.engine2
+package ch.epfl.sdp.mobile.application.chess.engine.implementation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
 import ch.epfl.sdp.mobile.application.chess.engine.rules.BoardScope
 import ch.epfl.sdp.mobile.application.chess.engine.rules.EffectScope
 
