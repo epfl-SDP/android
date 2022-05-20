@@ -4,10 +4,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.BoardBuilder
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import kotlinx.collections.immutable.persistentListOf
+import ch.epfl.sdp.mobile.application.chess.engine2.ActualGame
+import ch.epfl.sdp.mobile.application.chess.engine2.toMutableBoard
 
 /**
  * An interface representing the current [Game], which contains a [Board] of pieces and on which
@@ -41,18 +41,17 @@ interface Game {
     /** Creates a new [Game], with the standard starting positions for both players. */
     fun create(): Game =
         buildGame(White) {
-          var id = PieceIdentifier(0)
 
           /** Populates a [row] with all the pieces of a given [color]. */
           fun populateSide(row: Int, color: Color) {
-            set(Position(0, row), Piece(color, Rook, id++))
-            set(Position(1, row), Piece(color, Knight, id++))
-            set(Position(2, row), Piece(color, Bishop, id++))
-            set(Position(3, row), Piece(color, Queen, id++))
-            set(Position(4, row), Piece(color, King, id++))
-            set(Position(5, row), Piece(color, Bishop, id++))
-            set(Position(6, row), Piece(color, Knight, id++))
-            set(Position(7, row), Piece(color, Rook, id++))
+            set(Position(0, row), Piece(color, Rook, PieceIdentifier(0)))
+            set(Position(1, row), Piece(color, Knight, PieceIdentifier(0)))
+            set(Position(2, row), Piece(color, Bishop, PieceIdentifier(0)))
+            set(Position(3, row), Piece(color, Queen, PieceIdentifier(0)))
+            set(Position(4, row), Piece(color, King, PieceIdentifier(0)))
+            set(Position(5, row), Piece(color, Bishop, PieceIdentifier(1)))
+            set(Position(6, row), Piece(color, Knight, PieceIdentifier(1)))
+            set(Position(7, row), Piece(color, Rook, PieceIdentifier(1)))
           }
 
           // Populate the pieces.
@@ -60,9 +59,11 @@ interface Game {
           populateSide(7, White)
 
           // Populate the pawns.
+          var id = PieceIdentifier(0)
           repeat(Board.Size) { column ->
-            set(Position(column, 1), Piece(Black, Pawn, id++))
-            set(Position(column, 6), Piece(White, Pawn, id++))
+            set(Position(column, 1), Piece(Black, Pawn, id))
+            set(Position(column, 6), Piece(White, Pawn, id))
+            id++
           }
         }
   }
@@ -77,9 +78,17 @@ interface Game {
 fun buildGame(
     nextPlayer: Color,
     block: BoardBuilder<Piece<Color>>.() -> Unit,
-): Game =
-    PersistentGame(
+): Game = buildGame(nextPlayer, buildBoard(block))
+
+/**
+ * Builds a new [Game] using the provided [Board].
+ *
+ * @param nextPlayer the color of the first player to play.
+ * @param board the [Board] acting as the start of the game.
+ */
+fun buildGame(nextPlayer: Color, board: Board<Piece<Color>>): Game =
+    ActualGame(
         previous = null,
+        mutableBoard = board.toMutableBoard(),
         nextPlayer = nextPlayer,
-        boards = persistentListOf(buildBoard(block)),
     )

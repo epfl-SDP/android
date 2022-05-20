@@ -37,6 +37,9 @@ value class Position private constructor(private val backing: Int) {
   val y: Int
     get() = unpackShort2(backing).toInt()
 
+  operator fun component1(): Int = x
+  operator fun component2(): Int = y
+
   /**
    * Adds a [Delta] to this [Position].
    *

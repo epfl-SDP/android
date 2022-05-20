@@ -8,7 +8,7 @@ interface BoardScope {
 }
 
 /** A scope which provides access to the attacked positions from the opponent. */
-interface Attacked {
+fun interface Attacked {
 
   /** Returns true if the given [Position] is attacked by the opponent. */
   fun isAttacked(position: Position): Boolean
@@ -35,9 +35,9 @@ fun AttackScope.attackTowards(direction: Delta, color: Color, position: Position
     val next = position + step
     if (!next.inBounds) return
     val existing = get(next)
-    if (!existing.isUndefined && existing.color == color) return
+    if (!existing.isNone && existing.color == color) return
     attack(next)
-    if (!existing.isUndefined) return
+    if (!existing.isNone) return
     step += direction
   }
 }
@@ -77,6 +77,6 @@ interface EffectScope {
  */
 fun EffectScope.move(from: Position, to: Position) {
   val removed = remove(from)
-  if (removed.isUndefined) return
+  if (removed.isNone) return
   insert(to, removed)
 }

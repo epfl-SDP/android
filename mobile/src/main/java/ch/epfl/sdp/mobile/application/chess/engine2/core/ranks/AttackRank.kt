@@ -14,7 +14,7 @@ abstract class AttackRank(private val directions: List<Delta>) : Rank {
       val next = position + direction
       if (next.inBounds) {
         val existing = get(next)
-        if (existing.isUndefined || existing.color != color) {
+        if (existing.isNone || existing.color != color) {
           attack(next)
         }
       }

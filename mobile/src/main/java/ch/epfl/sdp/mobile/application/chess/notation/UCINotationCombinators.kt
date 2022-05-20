@@ -9,7 +9,6 @@ import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.s
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.map
-import ch.epfl.sdp.mobile.application.chess.parser.Combinators.or
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.orElse
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeat
 import ch.epfl.sdp.mobile.application.chess.parser.Parser

@@ -5,12 +5,12 @@ package ch.epfl.sdp.mobile.application.chess.engine
  * between board positions, since pieces with the same stable ids can have their positions
  * interpolated.
  */
-data class PieceIdentifier(private val id: Int) : Comparable<PieceIdentifier> {
+data class PieceIdentifier(val value: Int) : Comparable<PieceIdentifier> {
 
-  override operator fun compareTo(other: PieceIdentifier): Int = id.compareTo(other.id)
+  override operator fun compareTo(other: PieceIdentifier): Int = value.compareTo(other.value)
 
   /** Returns an incremented [PieceIdentifier]. */
   operator fun inc(): PieceIdentifier {
-    return PieceIdentifier(id + 1)
+    return PieceIdentifier(value + 1)
   }
 }
