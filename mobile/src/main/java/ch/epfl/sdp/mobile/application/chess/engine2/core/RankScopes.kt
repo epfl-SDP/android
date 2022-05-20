@@ -54,9 +54,34 @@ interface ActionScope : BoardScope, Attacked {
    * @param at the [Position] or the action.
    * @param effect the effects to be performed when the action is chosen.
    */
-  fun action(at: Position, effect: EffectScope.() -> Unit)
+  fun action(at: Position, effect: Effect)
 
   // TODO : Add a variant of action which supports promotion and a rank.
+}
+
+/** A typealias representing an [Effect] which will be applied to the board. */
+typealias Effect = EffectScope.() -> Unit
+
+/**
+ * Performs an [Effect] on a [MutableBoard].
+ *
+ * @receiver the [MutableBoard] on which the effect is applied.
+ * @param effect the applied [Effect].
+ */
+fun MutableBoard.perform(effect: Effect) {
+  // TODO : Extract this to an object.
+  val scope =
+      object : EffectScope {
+        override fun insert(position: Position, piece: Piece) {
+          this@perform[position] = piece
+        }
+        override fun remove(from: Position): Piece {
+          val existing = this@perform[from]
+          this@perform.remove(from)
+          return existing
+        }
+      }
+  effect(scope)
 }
 
 /** A scope which is used to declare an effect to be performed. */

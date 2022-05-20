@@ -13,12 +13,20 @@ object Pawn : Rank {
         Color.White -> CardinalPoints.N
       }
 
-  override fun AttackScope.attacks(color: Color, position: Position) = Unit
+  override fun AttackScope.attacks(color: Color, position: Position) {
+    val direction = direction(color)
+
+    attack(position + direction + CardinalPoints.E)
+    attack(position + direction + CardinalPoints.W)
+  }
 
   override fun ActionScope.actions(color: Color, position: Position) {
     val moveUpTarget = position + direction(color)
     if (get(moveUpTarget).isNone) {
       action(at = moveUpTarget) { move(from = position, to = position + direction(color)) }
     }
+    // TODO : En-passant
+    // TODO : Double-up
+    // TODO : Promotion.
   }
 }
