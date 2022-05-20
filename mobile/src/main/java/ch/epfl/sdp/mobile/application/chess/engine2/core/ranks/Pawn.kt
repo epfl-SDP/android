@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core.ranks
 
+import ch.epfl.sdp.mobile.application.chess.engine.Rank as RankType
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints
 
@@ -20,6 +21,13 @@ object Pawn : Rank {
         Color.White -> 6
       }
 
+  /** Returns the end row of a [Pawn] given their [Color]. */
+  private fun endRow(color: Color): Int =
+      when (color) {
+        Color.Black -> 7
+        Color.White -> 0
+      }
+
   override fun AttackScope.attacks(color: Color, position: Position) {
     val direction = direction(color)
 
@@ -27,11 +35,35 @@ object Pawn : Rank {
     attack(position + direction + CardinalPoints.W)
   }
 
+  private fun ActionScope.moveOrPromote(color: Color, at: Position, effect: Effect) {
+    if (endRow(color) == at.y) {
+      val choices =
+          listOf(
+              Bishop to RankType.Bishop,
+              Knight to RankType.Knight,
+              Queen to RankType.Queen,
+              Rook to RankType.Rook,
+          )
+      for ((rank, rankType) in choices) {
+        // For each possible rank, move the pawn, then remove it and finally replace it with an
+        // other piece with the same id.
+        promote(at, rankType) {
+          effect()
+          val pawn = remove(at)
+          insert(at, Piece(pawn.id, rank, color))
+        }
+      }
+    } else {
+      // Move without promotion.
+      move(at, effect)
+    }
+  }
+
   /** Moves the pawn up, assuming there is a free square above it. */
   private fun ActionScope.singleUp(color: Color, position: Position) {
     val target = position + direction(color)
     if (get(target).isNone) {
-      action(at = target) { move(from = position, to = target) }
+      moveOrPromote(color = color, at = target) { move(from = position, to = target) }
     }
   }
 
@@ -40,15 +72,25 @@ object Pawn : Rank {
     if (startRow(color) != position.y) return
     val target = position + (direction(color) * 2)
     if (get(position + direction(color)).isNone && get(target).isNone) {
-      action(at = target) { move(from = position, to = target) }
+      move(at = target) { move(from = position, to = target) }
+    }
+  }
+
+  /** Takes the pieces to the right and to the left above the pawn. */
+  private fun ActionScope.sideTakes(color: Color, position: Position) {
+    for (sideDelta in listOf(CardinalPoints.E, CardinalPoints.W)) {
+      val target = position + direction(color) + sideDelta
+      val piece = get(target)
+      if (!piece.isNone && piece.color != color) {
+        moveOrPromote(color = color, at = target) { move(from = position, to = target) }
+      }
     }
   }
 
   override fun ActionScope.actions(color: Color, position: Position) {
     singleUp(color, position)
     doubleUp(color, position)
-    // TODO : Side-takes.
+    sideTakes(color, position)
     // TODO : En-passant
-    // TODO : Promotion.
   }
 }

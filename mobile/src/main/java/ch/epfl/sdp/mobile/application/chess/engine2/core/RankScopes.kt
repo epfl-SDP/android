@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
+
 /** A scope which provides access to an underlying board. */
 interface BoardScope {
 
@@ -54,9 +56,16 @@ interface ActionScope : BoardScope, Attacked {
    * @param at the [Position] or the action.
    * @param effect the effects to be performed when the action is chosen.
    */
-  fun action(at: Position, effect: Effect)
+  fun move(at: Position, effect: Effect)
 
-  // TODO : Add a variant of action which supports promotion and a rank.
+  /**
+   * Declares that a promotion action is available for the given [Position].
+   *
+   * @param at the [Position] of the action.
+   * @param rank the [Rank] allowed for promotion.
+   * @param effect the effects to be performed when the action is chosen.
+   */
+  fun promote(at: Position, rank: Rank, effect: Effect)
 }
 
 /** A typealias representing an [Effect] which will be applied to the board. */

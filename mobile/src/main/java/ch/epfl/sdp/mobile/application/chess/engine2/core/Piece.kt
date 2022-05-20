@@ -1,27 +1,25 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
-import kotlin.experimental.and
-import kotlin.experimental.or
 
-private const val PieceColorMask = 0b1.toByte()
-private const val PieceColorBlackFlag = 0b0.toByte()
-private const val PieceColorWhiteFlag = 0b1.toByte()
+private const val PieceColorMask = 0b1
+private const val PieceColorBlackFlag = 0b0
+private const val PieceColorWhiteFlag = 0b1
 
-private const val PieceRankMask = 0b1110.toByte()
-private const val PieceRankBishopFlag = 0b0010.toByte()
-private const val PieceRankKingFlag = 0b0100.toByte()
-private const val PieceRankKnightFlag = 0b0110.toByte()
-private const val PieceRankPawnFlag = 0b1000.toByte()
-private const val PieceRankQueenFlag = 0b1010.toByte()
-private const val PieceRankRookFlag = 0b1110.toByte()
+private const val PieceRankMask = 0b1110
+private const val PieceRankBishopFlag = 0b0010
+private const val PieceRankKingFlag = 0b0100
+private const val PieceRankKnightFlag = 0b0110
+private const val PieceRankPawnFlag = 0b1000
+private const val PieceRankQueenFlag = 0b1010
+private const val PieceRankRookFlag = 0b1110
 
-private const val PieceColorRankFlag = 0b00001111.toByte()
-private const val PieceIdFlag = 0b11110000.toByte()
+private const val PieceColorRankFlag = 0b00001111
+private const val PieceIdFlag = 0b11110000
 
 // TODO : Document the flags and this function.
 // TODO : Use some dedicated maps.
-private fun pack(id: Int, rank: Rank, color: Color): Byte {
+private fun pack(id: Int, rank: Rank, color: Color): Int {
   val colorByte =
       when (color) {
         Color.Black -> PieceColorBlackFlag
@@ -37,27 +35,21 @@ private fun pack(id: Int, rank: Rank, color: Color): Byte {
         is Knight -> PieceRankKnightFlag
         else -> 0
       }
-  val idByte = id.shl(4).toByte()
+  val idByte = id.shl(4)
   return colorByte or rankByte or idByte
 }
 
 /**
  * A [Piece] which will be present on a [MutableBoard].
  *
- * Internally, a [Piece] is represented in a single [Byte]. The 8 bits is organized as follows :
- *
- * "iiii-rrr-c"
- *
- * where i stands for a bit dedicated to storing the identifier, r stands for a bit dedicated to
- * storing the rank, and c stands for a bit storing the color. If both the rank and color are
- * zeroes, the piece will be considered as equal to none.
+ * Internally, a [Piece] is represented in a single [Int].
  */
 @JvmInline
-value class Piece private constructor(private val packed: Byte) {
+value class Piece private constructor(private val packed: Int) {
 
   constructor(id: Int, rank: Rank, color: Color) : this(pack(id, rank, color))
 
-  private fun hasFlag(mask: Byte, flag: Byte): Boolean = (packed and mask) == flag
+  private fun hasFlag(mask: Int, flag: Int): Boolean = (packed and mask) == flag
 
   /** Returns true iff this [Piece] represents an absent piece. */
   val isNone: Boolean
@@ -68,7 +60,7 @@ value class Piece private constructor(private val packed: Byte) {
    * [Color] on the board.
    */
   val id: Int
-    get() = (packed.toInt() shr 4) and 0xF
+    get() = (packed ushr 4)
 
   /** Returns the [Color] associated to this [Piece], if it's not [None]. */
   val color: Color?
@@ -94,13 +86,13 @@ value class Piece private constructor(private val packed: Byte) {
 
   companion object {
 
-    /** Unpacks the provided [Byte] and returns the associated [Piece]. */
-    fun fromPacked(byte: Byte): Piece {
+    /** Unpacks the provided [Int] and returns the associated [Piece]. */
+    fun fromPacked(byte: Int): Piece {
       return Piece(byte)
     }
 
-    /** Returns the [Byte] representation of the provided [piece]. */
-    fun toByte(piece: Piece): Byte {
+    /** Returns the [Int] representation of the provided [piece]. */
+    fun toInt(piece: Piece): Int {
       return piece.packed
     }
 

@@ -41,17 +41,18 @@ interface Game {
     /** Creates a new [Game], with the standard starting positions for both players. */
     fun create(): Game =
         buildGame(White) {
+          var id = PieceIdentifier(0)
 
           /** Populates a [row] with all the pieces of a given [color]. */
           fun populateSide(row: Int, color: Color) {
-            set(Position(0, row), Piece(color, Rook, PieceIdentifier(0)))
-            set(Position(1, row), Piece(color, Knight, PieceIdentifier(0)))
-            set(Position(2, row), Piece(color, Bishop, PieceIdentifier(0)))
-            set(Position(3, row), Piece(color, Queen, PieceIdentifier(0)))
-            set(Position(4, row), Piece(color, King, PieceIdentifier(0)))
-            set(Position(5, row), Piece(color, Bishop, PieceIdentifier(1)))
-            set(Position(6, row), Piece(color, Knight, PieceIdentifier(1)))
-            set(Position(7, row), Piece(color, Rook, PieceIdentifier(1)))
+            set(Position(0, row), Piece(color, Rook, id++))
+            set(Position(1, row), Piece(color, Knight, id++))
+            set(Position(2, row), Piece(color, Bishop, id++))
+            set(Position(3, row), Piece(color, Queen, id++))
+            set(Position(4, row), Piece(color, King, id++))
+            set(Position(5, row), Piece(color, Bishop, id++))
+            set(Position(6, row), Piece(color, Knight, id++))
+            set(Position(7, row), Piece(color, Rook, id++))
           }
 
           // Populate the pieces.
@@ -59,11 +60,9 @@ interface Game {
           populateSide(7, White)
 
           // Populate the pawns.
-          var id = PieceIdentifier(0)
           repeat(Board.Size) { column ->
-            set(Position(column, 1), Piece(Black, Pawn, id))
-            set(Position(column, 6), Piece(White, Pawn, id))
-            id++
+            set(Position(column, 1), Piece(Black, Pawn, id++))
+            set(Position(column, 6), Piece(White, Pawn, id++))
           }
         }
   }

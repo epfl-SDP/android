@@ -52,5 +52,5 @@ private class AttackScopeAdapter(
 
   override fun attack(
       position: Position,
-  ) = with(actionScope) { action(position) { move(from = from, to = position) } }
+  ) = with(actionScope) { move(position) { move(from = from, to = position) } }
 }

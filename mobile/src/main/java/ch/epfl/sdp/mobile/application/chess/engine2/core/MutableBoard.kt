@@ -3,13 +3,13 @@ package ch.epfl.sdp.mobile.application.chess.engine2.core
 /**
  * An class representing a board of pieces.
  *
- * @param cells the backing [ByteArray] with each individual piece.
+ * @param cells the backing [IntArray] with each individual piece.
  */
 @JvmInline
-value class MutableBoard private constructor(@PublishedApi internal val cells: ByteArray) {
+value class MutableBoard private constructor(@PublishedApi internal val cells: IntArray) {
 
   /** Creates a new [MutableBoard]. */
-  constructor() : this(ByteArray(Size * Size))
+  constructor() : this(IntArray(Size * Size))
 
   /** Returns true iff the [Position] has a piece. */
   operator fun contains(position: Position): Boolean {
@@ -37,7 +37,7 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: B
    */
   operator fun set(position: Position, piece: Piece) {
     if (!position.inBounds) return
-    cells[position.x * Size + position.y] = Piece.toByte(piece)
+    cells[position.x * Size + position.y] = Piece.toInt(piece)
   }
 
   /**

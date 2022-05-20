@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.chess.engine2
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action as EngineAction
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.King
@@ -68,9 +69,14 @@ fun MutableBoard.computeActions(
     val rank = requireNotNull(piece.rank)
     val scope =
         object : ActionScope, Attacked by attacked {
-          override fun action(at: Position, effect: Effect) {
+          override fun move(at: Position, effect: Effect) {
             if (at.inBounds) {
               actions.add(EngineAction.Move(from, EnginePosition(at.x, at.y)) to effect)
+            }
+          }
+          override fun promote(at: Position, rank: Rank, effect: Effect) {
+            if (at.inBounds) {
+              actions.add(EngineAction.Promote(from, EnginePosition(at.x, at.y), rank) to effect)
             }
           }
           override fun get(position: Position): Piece = this@computeActions[position]
