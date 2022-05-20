@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotationCombinators.action
 
 /**

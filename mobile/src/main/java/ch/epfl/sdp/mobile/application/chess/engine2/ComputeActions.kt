@@ -5,7 +5,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action as EngineAction
+import ch.epfl.sdp.mobile.application.chess.engine.Action as EngineAction
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.King
 

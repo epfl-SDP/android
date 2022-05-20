@@ -1,11 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Companion.Move
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Companion.Promote
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
+import ch.epfl.sdp.mobile.application.chess.engine.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Companion.Move
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Companion.Promote
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators.position
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.flatMap

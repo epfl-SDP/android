@@ -5,7 +5,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
 import ch.epfl.sdp.mobile.application.chess.engine.buildGame
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
 

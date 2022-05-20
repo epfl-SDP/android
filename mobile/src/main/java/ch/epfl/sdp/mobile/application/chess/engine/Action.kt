@@ -1,10 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.engine.rules
-
-import ch.epfl.sdp.mobile.application.chess.engine.Delta
-import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
+package ch.epfl.sdp.mobile.application.chess.engine
 
 /**
  * An [Action] represents a semantic interaction of one player with the game. Actions have a start

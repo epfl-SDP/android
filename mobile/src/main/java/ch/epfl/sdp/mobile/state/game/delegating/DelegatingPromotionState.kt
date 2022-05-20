@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineRank
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState

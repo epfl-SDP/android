@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

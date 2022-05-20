@@ -5,7 +5,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.BoardBuilder
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.engine2.ActualGame
 import ch.epfl.sdp.mobile.application.chess.engine2.toMutableBoard
 
