@@ -102,7 +102,7 @@ fun MutableBoard.computeActions(
 
 private fun EnginePiece<Color>?.toCorePiece(): MutableBoardPiece {
   this ?: return MutableBoardPiece.None
-  return MutableBoardPiece(id.value, rank, color)
+  return MutableBoardPiece(id, rank, color)
 }
 
 /**

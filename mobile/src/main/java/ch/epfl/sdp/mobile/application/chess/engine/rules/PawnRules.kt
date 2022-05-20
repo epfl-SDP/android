@@ -1,10 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine.rules
 
-import ch.epfl.sdp.mobile.application.chess.engine.Color
-import ch.epfl.sdp.mobile.application.chess.engine.Delta
+import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints
-import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
 
@@ -55,7 +52,7 @@ object PawnRules : Rules {
         promote(at, rank) {
           effect()
           val pawn = remove(at)
-          insert(at, MutableBoardPiece(pawn.id, rank, color))
+          insert(at, MutableBoardPiece(PieceIdentifier(pawn.id), rank, color))
         }
       }
     } else {
