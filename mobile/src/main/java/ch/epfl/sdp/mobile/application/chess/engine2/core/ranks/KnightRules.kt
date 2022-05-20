@@ -19,4 +19,4 @@ private val KnightDirections =
     )
 
 /** A rank implementation for knights. */
-object Knight : AttackRank(KnightDirections)
+object KnightRules : AttackRules(KnightDirections)

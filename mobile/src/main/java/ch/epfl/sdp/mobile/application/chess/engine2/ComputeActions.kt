@@ -1,13 +1,12 @@
 package ch.epfl.sdp.mobile.application.chess.engine2
 
+import ch.epfl.sdp.mobile.application.chess.engine.Action as EngineAction
 import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.Action as EngineAction
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
-import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.King
 
 /** Computes all the possible attacks from the player with the given [EngineColor]. */
 private fun MutableBoard.computeAttacks(player: Color): (Position) -> Boolean {
@@ -100,7 +99,7 @@ fun MutableBoard.computeActions(
 
 private fun EnginePiece<Color>?.toCorePiece(): Piece {
   this ?: return Piece.None
-  return Piece(id.value, rank.toRank(), color)
+  return Piece(id.value, rank, color)
 }
 
 /**
@@ -112,7 +111,7 @@ private fun EnginePiece<Color>?.toCorePiece(): Piece {
  */
 private fun MutableBoard.findKing(player: Color): Position {
   forEachPiece { position, piece ->
-    if (piece.rank == King && piece.color == player) return position
+    if (piece.rank == Rank.King && piece.color == player) return position
   }
   error("A MutableBoard should always have a king.")
 }

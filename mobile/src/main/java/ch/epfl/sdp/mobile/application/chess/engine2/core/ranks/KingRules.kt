@@ -7,7 +7,7 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.ActionScope
 import ch.epfl.sdp.mobile.application.chess.engine2.core.move
 
 /** A rank implementation for kings. */
-object King : AttackRank(Directions.Lines + Directions.Diagonals) {
+object KingRules : AttackRules(Directions.Lines + Directions.Diagonals) {
 
   /** Castles the king towards the right or the left. */
   private fun ActionScope.castling(kingPosition: Position, rookPosition: Position) {

@@ -17,7 +17,7 @@ fun Board<Piece<Color>>.toMutableBoard(): CoreMutableBoard {
     board[pos] =
         CorePiece(
             id = piece.id.value,
-            rank = piece.rank.toRank(),
+            rank = piece.rank,
             color = piece.color,
         )
   }
@@ -29,28 +29,9 @@ fun CoreMutableBoard.toBoard(): Board<Piece<Color>> = buildBoard {
   forEachPiece { (x, y), piece -> piece.toPiece()?.let { set(Position(x, y), it) } }
 }
 
-fun Rank.toRank() =
-    when (this) {
-      Rank.King -> King
-      Rank.Queen -> Queen
-      Rank.Rook -> Rook
-      Rank.Bishop -> Bishop
-      Rank.Knight -> Knight
-      Rank.Pawn -> Pawn
-    }
-
 /** Maps this [CorePiece] to the corresponding [Piece] of [Color]. */
 private fun CorePiece.toPiece(): Piece<Color>? {
   val color = color ?: return null
-  val rank =
-      when (rank) {
-        is Bishop -> Rank.Bishop
-        is King -> Rank.King
-        is Queen -> Rank.Queen
-        is Rook -> Rank.Rook
-        is Pawn -> Rank.Pawn
-        is Knight -> Rank.Knight
-        else -> return null
-      }
+  val rank = rank ?: return null
   return Piece(color, rank, PieceIdentifier(id))
 }

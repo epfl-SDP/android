@@ -3,11 +3,8 @@ package ch.epfl.sdp.mobile.application.chess.engine2.core
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 
-/**
- * An interface representing a [Rank]. A [Rank] defines the behavior of pieces, including their
- * attacks as well as their actions.
- */
-interface Rank {
+/** An interface representing the [Rules] which apply at a given position. */
+interface Rules {
 
   /**
    * Returns all the attacks that a piece with the given [Rank] may perform, considering that it

@@ -1,7 +1,8 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color
-import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
+import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 
 // Masks and flags for the piece colors.
 private const val PieceColorMask = 0b1
@@ -30,13 +31,12 @@ private fun pack(id: Int, rank: Rank, color: Color): Int {
       }
   val rankByte =
       when (rank) {
-        is Bishop -> PieceRankBishopFlag
-        is King -> PieceRankKingFlag
-        is Queen -> PieceRankQueenFlag
-        is Rook -> PieceRankRookFlag
-        is Pawn -> PieceRankPawnFlag
-        is Knight -> PieceRankKnightFlag
-        else -> 0
+        Bishop -> PieceRankBishopFlag
+        King -> PieceRankKingFlag
+        Queen -> PieceRankQueenFlag
+        Rook -> PieceRankRookFlag
+        Pawn -> PieceRankPawnFlag
+        Knight -> PieceRankKnightFlag
       }
   val idByte = id.shl(4)
   return colorByte or rankByte or idByte

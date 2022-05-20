@@ -4,27 +4,28 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine.Rank as RankType
+import ch.epfl.sdp.mobile.application.chess.engine.Rank
+import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 /** An implementation of [Rank] which indicates the actions supported a pawn. */
-object Pawn : Rank {
+object PawnRules : Rules {
 
-  /** Returns the direction towards which a [Pawn] with the given [Color] may move. */
+  /** Returns the direction towards which a [PawnRules] with the given [Color] may move. */
   private fun direction(color: Color): Delta =
       when (color) {
         Color.Black -> CardinalPoints.S
         Color.White -> CardinalPoints.N
       }
 
-  /** Returns the start row of a [Pawn] given their [Color]. */
+  /** Returns the start row of a [PawnRules] given their [Color]. */
   private fun startRow(color: Color): Int =
       when (color) {
         Color.Black -> 1
         Color.White -> 6
       }
 
-  /** Returns the end row of a [Pawn] given their [Color]. */
+  /** Returns the end row of a [PawnRules] given their [Color]. */
   private fun endRow(color: Color): Int =
       when (color) {
         Color.Black -> 7
@@ -47,17 +48,11 @@ object Pawn : Rank {
    */
   private fun ActionScope.moveOrPromote(color: Color, at: Position, effect: Effect) {
     if (endRow(color) == at.y) {
-      val choices =
-          listOf(
-              Bishop to RankType.Bishop,
-              Knight to RankType.Knight,
-              Queen to RankType.Queen,
-              Rook to RankType.Rook,
-          )
-      for ((rank, rankType) in choices) {
+      val choices = listOf(Bishop, Knight, Queen, Rook)
+      for (rank in choices) {
         // For each possible rank, move the pawn, then remove it and finally replace it with an
         // other piece with the same id.
-        promote(at, rankType) {
+        promote(at, rank) {
           effect()
           val pawn = remove(at)
           insert(at, Piece(pawn.id, rank, color))
