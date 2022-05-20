@@ -7,7 +7,7 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.perform
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-@ExperimentalTime
+@OptIn(ExperimentalTime::class)
 data class ActualGame(
     override val previous: Pair<ActualGame, Action>?,
     private val mutableBoard: MutableBoard,
