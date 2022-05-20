@@ -1,14 +1,13 @@
-package ch.epfl.sdp.mobile.application.chess.engine2.core
+package ch.epfl.sdp.mobile.application.chess.engine
 
-import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.E
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.N
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.NE
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.NW
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.S
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.SE
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.SW
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.CardinalPoints.W
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.E
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.N
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.NE
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.NW
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.S
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.SE
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.SW
+import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.W
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.packShorts
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort1
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort2

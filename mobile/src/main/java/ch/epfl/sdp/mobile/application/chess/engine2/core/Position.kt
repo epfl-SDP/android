@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.packShorts
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort1
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort2

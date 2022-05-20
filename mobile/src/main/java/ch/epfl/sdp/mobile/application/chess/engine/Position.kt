@@ -34,15 +34,3 @@ data class Position(val x: Int, val y: Int) {
     }
   }
 }
-
-/**
- * A class representing the difference between two [Position].
- *
- * @param x the delta on the first axis.
- * @param y the delta on the second axis.
- */
-data class Delta(val x: Int, val y: Int) {
-
-  /** Multiplies this [Delta] the given amount of times. */
-  operator fun times(count: Int): Delta = Delta(x = x * count, y = y * count)
-}
