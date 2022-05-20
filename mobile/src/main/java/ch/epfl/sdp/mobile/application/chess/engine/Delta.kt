@@ -8,9 +8,9 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.S
 import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.SE
 import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.SW
 import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints.W
-import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.packShorts
-import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort1
-import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort2
+import ch.epfl.sdp.mobile.application.chess.engine.utils.packShorts
+import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort1
+import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort2
 import kotlin.math.sign
 
 /**

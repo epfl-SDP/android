@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.engine2.core
+package ch.epfl.sdp.mobile.application.chess.engine.implementation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
@@ -43,29 +43,29 @@ private fun pack(id: Int, rank: Rank, color: Color): Int {
 }
 
 /**
- * A [Piece] which will be present on a [MutableBoard].
+ * A [MutableBoardPiece] which will be present on a [MutableBoard].
  *
- * Internally, a [Piece] is represented in a single [Int].
+ * Internally, a [MutableBoardPiece] is represented in a single [Int].
  */
 @JvmInline
-value class Piece private constructor(private val packed: Int) {
+value class MutableBoardPiece private constructor(private val packed: Int) {
 
   constructor(id: Int, rank: Rank, color: Color) : this(pack(id, rank, color))
 
   private fun hasFlag(mask: Int, flag: Int): Boolean = (packed and mask) == flag
 
-  /** Returns true iff this [Piece] represents an absent piece. */
+  /** Returns true iff this [MutableBoardPiece] represents an absent piece. */
   val isNone: Boolean
     get() = (packed and PieceColorRankFlag) == None.packed
 
   /**
-   * Returns the unique identifier for this piece amongst all the [Piece] of same [Rank] and same
-   * [Color] on the board.
+   * Returns the unique identifier for this piece amongst all the [MutableBoardPiece] of same [Rank]
+   * and same [Color] on the board.
    */
   val id: Int
     get() = (packed ushr 4)
 
-  /** Returns the [Color] associated to this [Piece], if it's not [None]. */
+  /** Returns the [Color] associated to this [MutableBoardPiece], if it's not [None]. */
   val color: Color?
     get() =
         when {
@@ -74,7 +74,7 @@ value class Piece private constructor(private val packed: Int) {
           else -> Color.White
         }
 
-  /** Returns the [Rank] associated to this [Piece], if it's not [None]. */
+  /** Returns the [Rank] associated to this [MutableBoardPiece], if it's not [None]. */
   val rank: Rank?
     get() =
         when {
@@ -89,17 +89,17 @@ value class Piece private constructor(private val packed: Int) {
 
   companion object {
 
-    /** Unpacks the provided [Int] and returns the associated [Piece]. */
-    fun fromPacked(byte: Int): Piece {
-      return Piece(byte)
+    /** Unpacks the provided [Int] and returns the associated [MutableBoardPiece]. */
+    fun fromPacked(byte: Int): MutableBoardPiece {
+      return MutableBoardPiece(byte)
     }
 
     /** Returns the [Int] representation of the provided [piece]. */
-    fun toInt(piece: Piece): Int {
+    fun toInt(piece: MutableBoardPiece): Int {
       return piece.packed
     }
 
-    /** Returns a [Piece] which represents an empty cell. */
-    val None = Piece(0b0) // no rank
+    /** Returns a [MutableBoardPiece] which represents an empty cell. */
+    val None = MutableBoardPiece(0b0) // no rank
   }
 }

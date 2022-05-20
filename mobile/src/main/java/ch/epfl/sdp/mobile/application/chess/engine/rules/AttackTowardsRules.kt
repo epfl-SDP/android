@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.engine2.core.ranks
+package ch.epfl.sdp.mobile.application.chess.engine.rules
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Delta

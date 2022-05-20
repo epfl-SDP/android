@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.engine2.core
+package ch.epfl.sdp.mobile.application.chess.engine.implementation
 
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 
@@ -19,27 +19,27 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
   }
 
   /**
-   * Returns the [Piece] at the given [Position] of the board. If you're iterating over the whole
+   * Returns the [MutableBoardPiece] at the given [Position] of the board. If you're iterating over the whole
    * chessboard, it's recommended to use [forEachPiece] and [forEachPosition] instead, which are
    * optimized for these use-cases.
    *
    * @param position the [Position] to check for.
-   * @return the associated [Piece]. May be [Piece.None].
+   * @return the associated [MutableBoardPiece]. May be [MutableBoardPiece.None].
    */
-  operator fun get(position: Position): Piece {
-    if (!position.inBounds) return Piece.None
-    return Piece.fromPacked(cells[position.x * Size + position.y])
+  operator fun get(position: Position): MutableBoardPiece {
+    if (!position.inBounds) return MutableBoardPiece.None
+    return MutableBoardPiece.fromPacked(cells[position.x * Size + position.y])
   }
 
   /**
-   * Sets the [Piece] at the given [Position] of the board.
+   * Sets the [MutableBoardPiece] at the given [Position] of the board.
    *
    * @param position the [Position] at which the piece is set.
-   * @param piece the [Piece] which is placed.
+   * @param piece the [MutableBoardPiece] which is placed.
    */
-  operator fun set(position: Position, piece: Piece) {
+  operator fun set(position: Position, piece: MutableBoardPiece) {
     if (!position.inBounds) return
-    cells[position.x * Size + position.y] = Piece.toInt(piece)
+    cells[position.x * Size + position.y] = MutableBoardPiece.toInt(piece)
   }
 
   /**
@@ -48,15 +48,15 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
    * @param position the [Position] at which the piece is removed.
    */
   fun remove(position: Position) {
-    set(position, Piece.None)
+    set(position, MutableBoardPiece.None)
   }
 
   /**
-   * Invokes the [block] for each valid [Piece] from the [MutableBoard].
+   * Invokes the [block] for each valid [MutableBoardPiece] from the [MutableBoard].
    *
-   * @param block the block invoked, with the [Position] and the [Piece].
+   * @param block the block invoked, with the [Position] and the [MutableBoardPiece].
    */
-  inline fun forEachPiece(block: (Position, Piece) -> Unit) {
+  inline fun forEachPiece(block: (Position, MutableBoardPiece) -> Unit) {
     forEachPosition { position, piece ->
       if (!piece.isNone) {
         block(position, piece)
@@ -67,9 +67,9 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
   /**
    * Invokes the [block] for each valid [Position] from the [MutableBoard].
    *
-   * @param block the block invoked, with the [Position] and the [Piece].
+   * @param block the block invoked, with the [Position] and the [MutableBoardPiece].
    */
-  inline fun forEachPosition(block: (Position, Piece) -> Unit) {
+  inline fun forEachPosition(block: (Position, MutableBoardPiece) -> Unit) {
     for (x in AxisBounds) {
       for (y in AxisBounds) {
         val position = Position(x, y)

@@ -6,6 +6,12 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
+import ch.epfl.sdp.mobile.application.chess.engine.rules.ActionScope
+import ch.epfl.sdp.mobile.application.chess.engine.rules.AttackScope
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Attacked
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 /** Computes all the possible attacks from the player with the given [EngineColor]. */
@@ -16,7 +22,7 @@ private fun MutableBoard.computeAttacks(player: Color): (Position) -> Boolean {
         override fun attack(position: Position) {
           if (position.inBounds) cells[position.x][position.y] = true
         }
-        override fun get(position: Position): Piece = this@computeAttacks[position]
+        override fun get(position: Position) = this@computeAttacks[position]
       }
   forEachPiece { position, piece ->
     val rank = requireNotNull(piece.rank)
@@ -77,7 +83,7 @@ fun MutableBoard.computeActions(
               actions.add(EngineAction.Promote(from, at - from, rank) to effect)
             }
           }
-          override fun get(position: Position): Piece = this@computeActions[position]
+          override fun get(position: Position) = this@computeActions[position]
           override fun getHistorical(position: Position) =
               history.map { it[position].toCorePiece() }
         }
@@ -97,9 +103,9 @@ fun MutableBoard.computeActions(
   }
 }
 
-private fun EnginePiece<Color>?.toCorePiece(): Piece {
-  this ?: return Piece.None
-  return Piece(id.value, rank, color)
+private fun EnginePiece<Color>?.toCorePiece(): MutableBoardPiece {
+  this ?: return MutableBoardPiece.None
+  return MutableBoardPiece(id.value, rank, color)
 }
 
 /**

@@ -1,7 +1,10 @@
 package ch.epfl.sdp.mobile.application.chess.engine2
 
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine2.core.*
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
+import ch.epfl.sdp.mobile.application.chess.engine.rules.BoardScope
+import ch.epfl.sdp.mobile.application.chess.engine.rules.EffectScope
 
 class MutableBoardScope(initial: MutableBoard) : BoardScope, EffectScope {
 
@@ -11,17 +14,17 @@ class MutableBoardScope(initial: MutableBoard) : BoardScope, EffectScope {
   val current: MutableBoard
     get() = boards.last()
 
-  override fun get(position: Position): Piece = current[position]
+  override fun get(position: Position): MutableBoardPiece = current[position]
 
   fun save() {
     boards += current.copyOf()
   }
 
-  override fun insert(position: Position, piece: Piece) {
+  override fun insert(position: Position, piece: MutableBoardPiece) {
     current[position] = piece
   }
 
-  override fun remove(from: Position): Piece {
+  override fun remove(from: Position): MutableBoardPiece {
     val piece = current[from]
     current.remove(from)
     return piece

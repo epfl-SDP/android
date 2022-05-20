@@ -1,10 +1,9 @@
 package ch.epfl.sdp.mobile.application.chess.engine2
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.engine2.core.MutableBoard as CoreMutableBoard
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Piece as CorePiece
-import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard as CoreMutableBoard
 
 /**
  * Transforms this [Board] to a [CoreMutableBoard].
@@ -15,7 +14,7 @@ fun Board<Piece<Color>>.toMutableBoard(): CoreMutableBoard {
   val board = CoreMutableBoard()
   for ((pos, piece) in this) {
     board[pos] =
-        CorePiece(
+        MutableBoardPiece(
             id = piece.id.value,
             rank = piece.rank,
             color = piece.color,
@@ -30,7 +29,7 @@ fun CoreMutableBoard.toBoard(): Board<Piece<Color>> = buildBoard {
 }
 
 /** Maps this [CorePiece] to the corresponding [Piece] of [Color]. */
-private fun CorePiece.toPiece(): Piece<Color>? {
+private fun MutableBoardPiece.toPiece(): Piece<Color>? {
   val color = color ?: return null
   val rank = rank ?: return null
   return Piece(color, rank, PieceIdentifier(id))

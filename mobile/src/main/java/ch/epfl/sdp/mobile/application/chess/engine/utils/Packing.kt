@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package ch.epfl.sdp.mobile.application.chess.engine2.core.utils
+package ch.epfl.sdp.mobile.application.chess.engine.utils
 
 /**
  * Unpacks the 4 most significant bytes from [value] and transforms them into a [Short].

@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
-import ch.epfl.sdp.mobile.application.chess.engine2.core.MutableBoard
-import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.packShorts
-import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort1
-import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort2
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
+import ch.epfl.sdp.mobile.application.chess.engine.utils.packShorts
+import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort1
+import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort2
 
 /**
  * A class representing some valid coordinates on a board. Coordinates start at the top-left corner

@@ -1,10 +1,8 @@
-package ch.epfl.sdp.mobile.application.chess.engine2.core.ranks
+package ch.epfl.sdp.mobile.application.chess.engine.rules
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Delta.Directions
 import ch.epfl.sdp.mobile.application.chess.engine.Position
-import ch.epfl.sdp.mobile.application.chess.engine2.core.ActionScope
-import ch.epfl.sdp.mobile.application.chess.engine2.core.move
 
 /** A rank implementation for kings. */
 object KingRules : AttackRules(Directions.Lines + Directions.Diagonals) {

@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.application.chess.engine2.core.ranks
+package ch.epfl.sdp.mobile.application.chess.engine.rules
 
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
@@ -6,7 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta.CardinalPoints
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
-import ch.epfl.sdp.mobile.application.chess.engine2.core.*
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardPiece
 
 /** An implementation of [Rank] which indicates the actions supported a pawn. */
 object PawnRules : Rules {
@@ -55,7 +55,7 @@ object PawnRules : Rules {
         promote(at, rank) {
           effect()
           val pawn = remove(at)
-          insert(at, Piece(pawn.id, rank, color))
+          insert(at, MutableBoardPiece(pawn.id, rank, color))
         }
       }
     } else {
