@@ -4,7 +4,7 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 class MutableBoardScope(initial: MutableBoard) : BoardScope, EffectScope {
 
-  // TODO : Optimize this by keeping an edit log.
+  // TODO : Optimize this by keeping an edit log instead of copying the board.
   private val boards = mutableListOf(initial)
 
   val current: MutableBoard

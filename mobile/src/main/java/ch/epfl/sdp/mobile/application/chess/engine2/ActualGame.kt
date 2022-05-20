@@ -18,7 +18,6 @@ data class ActualGame(
   override val nextStep: NextStep
 
   init {
-    // TODO : Compute inCheck and hasAnyMoveAvailable.
     val hasActions = mutableBoard.hasAnyMoveAvailable(nextPlayer)
     val inCheck = mutableBoard.inCheck(nextPlayer)
     nextStep =

@@ -61,8 +61,7 @@ fun MutableBoard.computeActions(
   val from = position
   val piece = get(position.toPosition())
   if (!piece.isNone && piece.color == player.toColor()) {
-    // TODO : Some super smart logic to perform the effects and see whether they're good or not.
-    // TODO : Some object-oriented approach rather than all these wonderful anonymous classes.
+    // TODO : Clean this up.
     val computedAttacks = computeAttacks(player.other().toColor())
     val attacked = Attacked { position -> computedAttacks(position) }
     val actions = mutableListOf<Pair<EngineAction, Effect>>()
@@ -70,7 +69,9 @@ fun MutableBoard.computeActions(
     val scope =
         object : ActionScope, Attacked by attacked {
           override fun action(at: Position, effect: Effect) {
-            actions.add(EngineAction.Move(from, EnginePosition(at.x, at.y)) to effect)
+            if (at.inBounds) {
+              actions.add(EngineAction.Move(from, EnginePosition(at.x, at.y)) to effect)
+            }
           }
           override fun get(position: Position): Piece = this@computeActions[position]
         }
