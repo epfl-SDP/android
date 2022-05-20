@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 
 /** A scope which provides access to an underlying board. */

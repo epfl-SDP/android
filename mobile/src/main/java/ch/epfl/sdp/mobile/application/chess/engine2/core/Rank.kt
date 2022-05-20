@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Color
+
 /**
  * An interface representing a [Rank]. A [Rank] defines the behavior of pieces, including their
  * attacks as well as their actions.

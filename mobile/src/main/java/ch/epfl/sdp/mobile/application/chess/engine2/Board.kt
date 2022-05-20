@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.application.chess.engine2
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Color as CoreColor
 import ch.epfl.sdp.mobile.application.chess.engine2.core.MutableBoard as CoreMutableBoard
 import ch.epfl.sdp.mobile.application.chess.engine2.core.Piece as CorePiece
 import ch.epfl.sdp.mobile.application.chess.engine2.core.Position as CorePosition
@@ -20,7 +19,7 @@ fun Board<Piece<Color>>.toMutableBoard(): CoreMutableBoard {
         CorePiece(
             id = piece.id.value,
             rank = piece.rank.toRank(),
-            color = piece.color.toColor(),
+            color = piece.color,
         )
   }
   return board
@@ -32,12 +31,6 @@ fun CoreMutableBoard.toBoard(): Board<Piece<Color>> = buildBoard {
 }
 
 fun Position.toPosition() = CorePosition(x, y)
-
-fun Color.toColor() =
-    when (this) {
-      Color.Black -> CoreColor.Black
-      Color.White -> CoreColor.White
-    }
 
 fun Rank.toRank() =
     when (this) {
@@ -51,12 +44,7 @@ fun Rank.toRank() =
 
 /** Maps this [CorePiece] to the corresponding [Piece] of [Color]. */
 private fun CorePiece.toPiece(): Piece<Color>? {
-  val color =
-      when (color) {
-        CoreColor.Black -> Color.Black
-        CoreColor.White -> Color.White
-        else -> return null
-      }
+  val color = color ?: return null
   val rank =
       when (rank) {
         is Bishop -> Rank.Bishop

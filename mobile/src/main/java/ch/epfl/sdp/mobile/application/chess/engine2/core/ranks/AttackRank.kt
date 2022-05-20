@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core.ranks
 
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 /**

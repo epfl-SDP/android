@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine2
 
 import ch.epfl.sdp.mobile.application.chess.engine.Board
-import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
@@ -29,18 +29,18 @@ private fun MutableBoard.computeAttacks(player: Color): (Position) -> Boolean {
   return { pos -> if (pos.inBounds) cells[pos.x][pos.y] else false }
 }
 
-fun MutableBoard.inCheck(player: EngineColor): Boolean {
-  val computedAttacks = computeAttacks(player.other().toColor())
-  val king = findKing(player.toColor())
+fun MutableBoard.inCheck(player: Color): Boolean {
+  val computedAttacks = computeAttacks(player.other())
+  val king = findKing(player)
   return computedAttacks(king)
 }
 
 fun MutableBoard.hasAnyMoveAvailable(
-    player: EngineColor,
-    history: Sequence<Board<EnginePiece<EngineColor>>>,
+    player: Color,
+    history: Sequence<Board<EnginePiece<Color>>>,
 ): Boolean {
   forEachPiece { (x, y), piece ->
-    if (piece.color == player.toColor()) {
+    if (piece.color == player) {
       val actions = computeActions(EnginePosition(x, y), player, history)
       if (!actions.none()) return true
     }
@@ -55,14 +55,14 @@ fun MutableBoard.hasAnyMoveAvailable(
  */
 fun MutableBoard.computeActions(
     position: EnginePosition,
-    player: EngineColor,
-    history: Sequence<Board<EnginePiece<EngineColor>>>,
+    player: Color,
+    history: Sequence<Board<EnginePiece<Color>>>,
 ): Sequence<Pair<EngineAction, Effect>> = sequence {
   val from = position
   val piece = get(position.toPosition())
-  if (!piece.isNone && piece.color == player.toColor()) {
+  if (!piece.isNone && piece.color == player) {
     // TODO : Clean this up.
-    val computedAttacks = computeAttacks(player.other().toColor())
+    val computedAttacks = computeAttacks(player.other())
     val attacked = Attacked { position -> computedAttacks(position) }
     val actions = mutableListOf<Pair<EngineAction, Effect>>()
     val rank = requireNotNull(piece.rank)
@@ -82,15 +82,15 @@ fun MutableBoard.computeActions(
           override fun getHistorical(position: Position) =
               history.map { it[EnginePosition(position.x, position.y)].toCorePiece() }
         }
-    with(rank) { scope.actions(player.toColor(), position.toPosition()) }
+    with(rank) { scope.actions(player, position.toPosition()) }
 
     val boardScope = MutableBoardScope(this@computeActions)
 
     actions.removeAll { (_, effect) ->
       boardScope.withSave { board ->
         effect()
-        val adversaryAttacks = board.computeAttacks(player.other().toColor())
-        adversaryAttacks(board.findKing(player.toColor()))
+        val adversaryAttacks = board.computeAttacks(player.other())
+        adversaryAttacks(board.findKing(player))
       }
     }
 
@@ -98,9 +98,9 @@ fun MutableBoard.computeActions(
   }
 }
 
-private fun EnginePiece<EngineColor>?.toCorePiece(): Piece {
+private fun EnginePiece<Color>?.toCorePiece(): Piece {
   this ?: return Piece.None
-  return Piece(id.value, rank.toRank(), color.toColor())
+  return Piece(id.value, rank.toRank(), color)
 }
 
 /**

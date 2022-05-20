@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
 
 // Masks and flags for the piece colors.

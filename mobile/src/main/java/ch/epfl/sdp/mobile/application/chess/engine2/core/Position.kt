@@ -4,9 +4,6 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.packShorts
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort1
 import ch.epfl.sdp.mobile.application.chess.engine2.core.utils.unpackShort2
 
-/** The range of possible values for an axis. */
-private val AxisRange = 0 until MutableBoard.Size
-
 /**
  * A class representing some valid coordinates on a board. Coordinates start at the top-left corner
  * of the board, and the x axis increases towards the right while the y axis increases towards the
@@ -27,7 +24,7 @@ value class Position private constructor(private val backing: Int) {
 
   /** Returns true iff the [x] and [y] coordinates are in bounds. */
   val inBounds: Boolean
-    get() = x in AxisRange && y in AxisRange
+    get() = x in MutableBoard.AxisBounds && y in MutableBoard.AxisBounds
 
   /** Returns the [x] coordinate of the [Position]. */
   val x: Int
@@ -63,4 +60,14 @@ value class Position private constructor(private val backing: Int) {
    * @return the [Delta] to apply to this [Position] to obtain the [other] position.
    */
   operator fun minus(other: Position): Delta = Delta(x - other.x, y - other.y)
+
+  companion object {
+
+    /** Returns a [Sequence] with all the valid [Position] within a board. */
+    fun all(): Sequence<Position> = sequence {
+      MutableBoard.AxisBounds.forEach { i ->
+        MutableBoard.AxisBounds.forEach { j -> yield(Position(i, j)) }
+      }
+    }
+  }
 }

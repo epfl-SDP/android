@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core.ranks
 
+import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ActionScope
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Color
 import ch.epfl.sdp.mobile.application.chess.engine2.core.Delta.Directions
 import ch.epfl.sdp.mobile.application.chess.engine2.core.Position
 import ch.epfl.sdp.mobile.application.chess.engine2.core.move
