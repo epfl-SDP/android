@@ -54,15 +54,4 @@ constructor(
 ) : Board<Piece>, Iterable<Pair<Position, Piece>> by cells.map({ (a, b) -> Pair(a, b) }) {
 
   override fun get(position: Position): Piece? = cells[position]
-
-  override fun set(position: Position, piece: Piece?): PersistentBoard<Piece> {
-    if (!position.inBounds) return this
-    val updated =
-        if (piece != null) {
-          cells.put(position, piece)
-        } else {
-          cells.remove(position)
-        }
-    return copy(cells = updated)
-  }
 }
