@@ -51,10 +51,12 @@ interface ActionScope : BoardScope, Attacked {
   /**
    * Declares that an action is available for the given [Position].
    *
-   * @param position the [Position] or the action.
+   * @param at the [Position] or the action.
    * @param effect the effects to be performed when the action is chosen.
    */
-  fun action(position: Position, effect: EffectScope.() -> Unit)
+  fun action(at: Position, effect: EffectScope.() -> Unit)
+
+  // TODO : Add a variant of action which supports promotion and a rank.
 }
 
 /** A scope which is used to declare an effect to be performed. */

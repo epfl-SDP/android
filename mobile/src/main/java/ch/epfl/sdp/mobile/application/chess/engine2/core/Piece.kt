@@ -19,6 +19,7 @@ private const val PieceRankRookFlag = 0b1110.toByte()
 private const val PieceColorRankFlag = 0b00001111.toByte()
 private const val PieceIdFlag = 0b11110000.toByte()
 
+// TODO : Document the flags and this function.
 // TODO : Use some dedicated maps.
 private fun pack(id: Int, rank: Rank, color: Color): Byte {
   val colorByte =

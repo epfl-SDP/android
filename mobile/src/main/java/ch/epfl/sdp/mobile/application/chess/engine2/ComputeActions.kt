@@ -45,8 +45,8 @@ fun MutableBoard.computeActions(
     val rank = requireNotNull(piece.rank)
     val scope =
         object : ActionScope, Attacked by attacked {
-          override fun action(position: Position, effect: EffectScope.() -> Unit) {
-            actions.add(EngineAction.Move(from, EnginePosition(position.x, position.y)))
+          override fun action(at: Position, effect: EffectScope.() -> Unit) {
+            actions.add(EngineAction.Move(from, EnginePosition(at.x, at.y)))
           }
           override fun get(position: Position): Piece = this@computeActions[position]
         }

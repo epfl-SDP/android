@@ -17,6 +17,7 @@ class ActualGame(
   override val nextStep: NextStep = NextStep.MovePiece(nextPlayer, false) { action -> this }
 
   override fun actions(position: Position): Sequence<Action> {
+    // TODO : Filter actions which would make the current player dead.
     return mutableBoard.computeActions(position, nextPlayer)
   }
 }

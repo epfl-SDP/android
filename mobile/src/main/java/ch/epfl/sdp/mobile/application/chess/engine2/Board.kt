@@ -16,13 +16,12 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
 fun Board<Piece<Color>>.toMutableBoard(): CoreMutableBoard {
   val board = CoreMutableBoard()
   for ((pos, piece) in this) {
-    val corePiece =
+    board[pos.toPosition()] =
         CorePiece(
             id = piece.id.value,
             rank = piece.rank.toRank(),
             color = piece.color.toColor(),
         )
-    board[pos.toPosition()] = corePiece
   }
   return board
 }
