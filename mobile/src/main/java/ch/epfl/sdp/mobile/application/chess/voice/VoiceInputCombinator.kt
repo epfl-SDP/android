@@ -82,7 +82,7 @@ object VoiceInputCombinator {
               failure()
             } else {
               position.flatMap { from ->
-                actionSeparator.flatMap { position.map { to -> Move(from, to) } }
+                actionSeparator.flatMap { position.map { to -> Move(from, to - from) } }
               }
             }
             .checkFinished()
@@ -95,7 +95,7 @@ object VoiceInputCombinator {
             actionSeparator.flatMap {
               position.flatMap { to ->
                 // remove word that cannot be converted
-                rank.filterNotNull().map { rank -> Promote(from, to, rank) }
+                rank.filterNotNull().map { rank -> Promote(from, to - from, rank) }
               }
             }
           }

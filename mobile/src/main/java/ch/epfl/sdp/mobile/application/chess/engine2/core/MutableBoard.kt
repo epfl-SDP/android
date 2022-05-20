@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine2.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Position
+
 /**
  * An class representing a board of pieces.
  *

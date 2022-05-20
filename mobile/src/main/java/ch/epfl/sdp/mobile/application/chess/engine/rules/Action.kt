@@ -3,6 +3,8 @@ package ch.epfl.sdp.mobile.application.chess.engine.rules
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 
 /**
  * An [Action] represents a semantic interaction of one player with the game. Actions have a start
@@ -25,13 +27,7 @@ sealed interface Action {
   operator fun component1(): Position = from
   operator fun component2(): Delta = delta
 
-  /**
-   * An [Action] which represents the act of moving a piece on the board.
-   *
-   * @param from the start position.
-   * @param delta the applied delta.
-   */
-  data class Move(override val from: Position, override val delta: Delta) : Action {
+  companion object {
 
     /**
      * A convenience constructor for the [Move] action.
@@ -39,8 +35,33 @@ sealed interface Action {
      * @param from the start position.
      * @param to the end position.
      */
-    constructor(from: Position, to: Position) : this(from, to - from)
+    // This must be a function because the inline classes signatures would otherwise clash.
+    @JvmStatic
+    fun Move(from: Position, to: Position): Move {
+      return Move(from, to - from)
+    }
+
+    /**
+     * A convenience constructor for the [Promote] action.
+     *
+     * @param from the start position.
+     * @param to the end position.
+     * @param rank the chosen [Rank]
+     */
+    // This must be a function because the inline classes signatures would otherwise clash.
+    @JvmStatic
+    fun Promote(from: Position, to: Position, rank: Rank): Promote {
+      return Promote(from, to - from, rank)
+    }
   }
+
+  /**
+   * An [Action] which represents the act of moving a piece on the board.
+   *
+   * @param from the start position.
+   * @param delta the applied delta.
+   */
+  data class Move(override val from: Position, override val delta: Delta) : Action
 
   /**
    * An [Action] which represents the act of promoting a pawn to a piece with a certain rank.
@@ -53,15 +74,5 @@ sealed interface Action {
       override val from: Position,
       override val delta: Delta,
       val rank: Rank,
-  ) : Action {
-
-    /**
-     * A convenience constructor for the [Promote] action.
-     *
-     * @param from the start position.
-     * @param to the end position.
-     * @param rank the chosen [Rank]
-     */
-    constructor(from: Position, to: Position, rank: Rank) : this(from, to - from, rank)
-  }
+  ) : Action
 }

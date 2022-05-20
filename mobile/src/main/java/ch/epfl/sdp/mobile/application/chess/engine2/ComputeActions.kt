@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.application.chess.engine2
 import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
-import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
+import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.rules.Action as EngineAction
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
@@ -39,9 +39,9 @@ fun MutableBoard.hasAnyMoveAvailable(
     player: Color,
     history: Sequence<Board<EnginePiece<Color>>>,
 ): Boolean {
-  forEachPiece { (x, y), piece ->
+  forEachPiece { position, piece ->
     if (piece.color == player) {
-      val actions = computeActions(EnginePosition(x, y), player, history)
+      val actions = computeActions(position, player, history)
       if (!actions.none()) return true
     }
   }
@@ -54,12 +54,12 @@ fun MutableBoard.hasAnyMoveAvailable(
  * @param position the [EnginePosition] for which the actions are computed.
  */
 fun MutableBoard.computeActions(
-    position: EnginePosition,
+    position: Position,
     player: Color,
     history: Sequence<Board<EnginePiece<Color>>>,
 ): Sequence<Pair<EngineAction, Effect>> = sequence {
   val from = position
-  val piece = get(position.toPosition())
+  val piece = get(position)
   if (!piece.isNone && piece.color == player) {
     // TODO : Clean this up.
     val computedAttacks = computeAttacks(player.other())
@@ -70,19 +70,19 @@ fun MutableBoard.computeActions(
         object : ActionScope, Attacked by attacked {
           override fun move(at: Position, effect: Effect) {
             if (at.inBounds) {
-              actions.add(EngineAction.Move(from, EnginePosition(at.x, at.y)) to effect)
+              actions.add(EngineAction.Move(from, at - from) to effect)
             }
           }
           override fun promote(at: Position, rank: Rank, effect: Effect) {
             if (at.inBounds) {
-              actions.add(EngineAction.Promote(from, EnginePosition(at.x, at.y), rank) to effect)
+              actions.add(EngineAction.Promote(from, at - from, rank) to effect)
             }
           }
           override fun get(position: Position): Piece = this@computeActions[position]
           override fun getHistorical(position: Position) =
-              history.map { it[EnginePosition(position.x, position.y)].toCorePiece() }
+              history.map { it[position].toCorePiece() }
         }
-    with(rank) { scope.actions(player, position.toPosition()) }
+    with(rank) { scope.actions(player, position) }
 
     val boardScope = MutableBoardScope(this@computeActions)
 

@@ -33,7 +33,7 @@ class DelegatingPromotionMovableChessBoardState(
         delegate
             .game
             .actions(from.toEnginePosition())
-            .filter { (it.from + it.delta)?.toPosition() == to }
+            .filter { (it.from + it.delta).toPosition() == to }
             .toList()
     val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
     val currentPlayingId =

@@ -56,7 +56,7 @@ class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoard
       return setOf(
           lastAction.from.toPosition(),
           lastAction.let {
-            val lastPosition = it.from.plus(it.delta) ?: return emptySet()
+            val lastPosition = it.from.plus(it.delta)
             lastPosition.toPosition()
           })
     }

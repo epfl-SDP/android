@@ -4,7 +4,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine2.core.MutableBoard as CoreMutableBoard
 import ch.epfl.sdp.mobile.application.chess.engine2.core.Piece as CorePiece
-import ch.epfl.sdp.mobile.application.chess.engine2.core.Position as CorePosition
 import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
 
 /**
@@ -15,7 +14,7 @@ import ch.epfl.sdp.mobile.application.chess.engine2.core.ranks.*
 fun Board<Piece<Color>>.toMutableBoard(): CoreMutableBoard {
   val board = CoreMutableBoard()
   for ((pos, piece) in this) {
-    board[pos.toPosition()] =
+    board[pos] =
         CorePiece(
             id = piece.id.value,
             rank = piece.rank.toRank(),
@@ -29,8 +28,6 @@ fun Board<Piece<Color>>.toMutableBoard(): CoreMutableBoard {
 fun CoreMutableBoard.toBoard(): Board<Piece<Color>> = buildBoard {
   forEachPiece { (x, y), piece -> piece.toPiece()?.let { set(Position(x, y), it) } }
 }
-
-fun Position.toPosition() = CorePosition(x, y)
 
 fun Rank.toRank() =
     when (this) {

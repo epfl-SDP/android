@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.engine2
 
+import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine2.core.*
 
 class MutableBoardScope(initial: MutableBoard) : BoardScope, EffectScope {
