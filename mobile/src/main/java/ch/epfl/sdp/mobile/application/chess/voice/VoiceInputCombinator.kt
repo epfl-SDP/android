@@ -1,6 +1,8 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
 import ch.epfl.sdp.mobile.application.chess.engine.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Companion.Move
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Companion.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.Action.Move
 import ch.epfl.sdp.mobile.application.chess.engine.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.Board
@@ -82,7 +84,7 @@ object VoiceInputCombinator {
               failure()
             } else {
               position.flatMap { from ->
-                actionSeparator.flatMap { position.map { to -> Move(from, to - from) } }
+                actionSeparator.flatMap { position.map { to -> Move(from, to) } }
               }
             }
             .checkFinished()
@@ -95,7 +97,7 @@ object VoiceInputCombinator {
             actionSeparator.flatMap {
               position.flatMap { to ->
                 // remove word that cannot be converted
-                rank.filterNotNull().map { rank -> Promote(from, to - from, rank) }
+                rank.filterNotNull().map { rank -> Promote(from, to, rank) }
               }
             }
           }
