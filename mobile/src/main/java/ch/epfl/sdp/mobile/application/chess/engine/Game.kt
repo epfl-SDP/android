@@ -3,8 +3,8 @@ package ch.epfl.sdp.mobile.application.chess.engine
 import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardGame
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.BoardBuilder
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardGame
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.toMutableBoard
 
