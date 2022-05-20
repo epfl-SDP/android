@@ -32,7 +32,7 @@ private class ChessBoardRobotGameScope(private val robot: ChessBoardRobot) : Gam
 
   override fun tryMove(from: Position, delta: Delta) {
     robot.performInput {
-      val to = from + delta ?: return@performInput // Ignore out of bounds moves.
+      val to = from + delta
 
       val actualFrom = ChessBoardState.Position(from.x, from.y)
       val actualTo = ChessBoardState.Position(to.x, to.y)
