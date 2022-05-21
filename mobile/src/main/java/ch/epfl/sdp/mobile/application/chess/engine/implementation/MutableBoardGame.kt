@@ -45,8 +45,7 @@ data class MutableBoardGame(
         } else {
           NextStep.MovePiece(nextPlayer, inCheck) { action ->
             val (_, effect) =
-                mutableBoard.actions(action.from, nextPlayer, history).firstOrNull { (it, _)
-                  ->
+                mutableBoard.actions(action.from, nextPlayer, history).firstOrNull { (it, _) ->
                   action == it
                 }
                     ?: return@MovePiece this
