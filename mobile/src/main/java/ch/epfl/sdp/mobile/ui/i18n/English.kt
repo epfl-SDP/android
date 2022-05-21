@@ -163,7 +163,7 @@ object English : LocalizedStrings {
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
       append("Started ")
-      withStyle(style) { append(duration.absoluteValue.toString()) }
+      withStyle(style) { append(duration.absoluteValue.toDurationString()) }
       append(" ago")
     }
   }
@@ -185,8 +185,7 @@ object English : LocalizedStrings {
   override val tournamentsCreateElimDepthFinal = "Final"
 }
 
-@Override
-fun Duration.toString(): String {
+fun Duration.toDurationString(): String {
   if (this.toString().contains("d")) {
     return "${this.toLong(DurationUnit.DAYS)} days"
   } else if (this.toString().contains("h")) {
