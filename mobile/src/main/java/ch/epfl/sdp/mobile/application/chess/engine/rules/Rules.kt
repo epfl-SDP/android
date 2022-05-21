@@ -64,28 +64,47 @@ private class AttackScopeAdapter(
 /** A scope which provides access to an underlying board. */
 interface BoardScope {
 
-  /** Returns the [Piece] at the given [Position]. */
+  /**
+   * Returns the [MutableBoardPiece] at the given [Position].
+   *
+   * @param position the [Position] for which the current piece is queried.
+   * @return the [MutableBoardPiece] at this [position].
+   */
   operator fun get(position: Position): MutableBoardPiece
 }
 
 /** A scope which provides access to the history of the pieces present on board. */
 interface HistoricalBoardScope : BoardScope {
 
-  /** Returns the [Sequence] of [Piece] that were present at the given position. */
+  /**
+   * Returns the [Sequence] of [MutableBoardPiece] that were present at the given position.
+   *
+   * @param position the [Position] for which the history is queried.
+   * @return the [Sequence] of [MutableBoardPiece] which form the history of this [position].
+   */
   fun getHistorical(position: Position): Sequence<MutableBoardPiece>
 }
 
 /** A scope which provides access to the attacked positions from the opponent. */
 fun interface Attacked {
 
-  /** Returns true if the given [Position] is attacked by the opponent. */
+  /**
+   * Returns true if the given [Position] is attacked by the opponent.
+   *
+   * @param position the position which is checked.
+   * @return true iff [position] is threatened.
+   */
   fun isAttacked(position: Position): Boolean
 }
 
 /** A scope which is used to declare that a [Position] is attacked. */
 interface AttackScope : BoardScope {
 
-  /** Declares that the given [Position] is attacked. */
+  /**
+   * Declares that the given [Position] is attacked.
+   *
+   * @param position the attacked [Position].
+   */
   fun attack(position: Position)
 }
 
