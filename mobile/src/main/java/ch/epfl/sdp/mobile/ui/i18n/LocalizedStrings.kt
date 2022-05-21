@@ -41,6 +41,7 @@ interface LocalizedStrings {
   val profilePastGames: String
   val profilePuzzle: String
   val profileSettings: String
+  val profileFollow: String
   val profileUnfollow: String
   val profileChallenge: String
   val profileAgainst: String
