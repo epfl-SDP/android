@@ -72,6 +72,7 @@ data class TestEnvironment(
 /**
  * Sets the content with to the [ComposeContentTestRule], and logs a default user in.
  *
+ * @param userId the user identifier for the test environment user.
  * @param store the [Store] to use by default.
  * @param auth the [Auth] to use by default.
  * @param assets the [AssetManager] to use by default.
