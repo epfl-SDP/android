@@ -83,8 +83,7 @@ fun MutableBoard.actions(
  * @return the position of the king.
  */
 private fun MutableBoard.findKing(player: Color): Position {
-  forEachPiece { position, piece ->
-    if (piece.rank == Rank.King && piece.color == player) return position
-  }
-  error("A MutableBoard should always have a king.")
+  val (_, position) =
+      firstPieceOrNone { _, piece -> piece.rank == Rank.King && piece.color == player }
+  return position
 }

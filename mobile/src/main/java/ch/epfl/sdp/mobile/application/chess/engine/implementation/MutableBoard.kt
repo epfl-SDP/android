@@ -57,9 +57,31 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
    * @param predicate the predicate to match.
    * @return true if at least one piece matched the predicate.
    */
-  inline fun anyPiece(predicate: (Position, MutableBoardPiece) -> Boolean): Boolean {
-    forEachPiece { position, piece -> if (predicate(position, piece)) return true }
-    return false
+  /* inline */ fun anyPiece(predicate: (Position, MutableBoardPiece) -> Boolean): Boolean {
+    val (piece, _) = firstPieceOrNone(predicate)
+    return !piece.isNone
+  }
+
+  /**
+   * Returns the first [MutableBoardPiece] which matches the predicate, or [MutableBoardPiece.None]
+   * otherwise.
+   *
+   * @param predicate the predicate to match.
+   * @return the first matching piece and its position
+   */
+  /* inline */ fun firstPieceOrNone(
+      predicate: (Position, MutableBoardPiece) -> Boolean,
+  ): Pair<MutableBoardPiece, Position> {
+    for (x in AxisBounds) {
+      for (y in AxisBounds) {
+        val position = Position(x, y)
+        val piece = get(position)
+        if (!piece.isNone && predicate(position, piece)) {
+          return piece to position
+        }
+      }
+    }
+    return MutableBoardPiece.None to Position(0, 0)
   }
 
   /**
@@ -67,7 +89,7 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
    *
    * @param block the block invoked, with the [Position] and the [MutableBoardPiece].
    */
-  inline fun forEachPiece(block: (Position, MutableBoardPiece) -> Unit) {
+  /* inline */ fun forEachPiece(block: (Position, MutableBoardPiece) -> Unit) {
     forEachPosition { position, piece ->
       if (!piece.isNone) {
         block(position, piece)
@@ -80,7 +102,7 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
    *
    * @param block the block invoked, with the [Position] and the [MutableBoardPiece].
    */
-  inline fun forEachPosition(block: (Position, MutableBoardPiece) -> Unit) {
+  /* inline */ private fun forEachPosition(block: (Position, MutableBoardPiece) -> Unit) {
     for (x in AxisBounds) {
       for (y in AxisBounds) {
         val position = Position(x, y)
