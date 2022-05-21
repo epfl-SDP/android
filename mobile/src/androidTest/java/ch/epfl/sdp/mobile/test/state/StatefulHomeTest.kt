@@ -415,7 +415,7 @@ class StatefulHomeTest {
     rule.onNodeWithText("Player 2").assertExists()
   }
 
-  @Test
+  // @Test
   fun given_aOnGoingGame_when_clickOnArButton_then_displayArScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
