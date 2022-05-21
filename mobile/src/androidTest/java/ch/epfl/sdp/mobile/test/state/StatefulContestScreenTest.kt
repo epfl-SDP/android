@@ -19,6 +19,8 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 import kotlinx.coroutines.flow.filterIsInstance
@@ -47,9 +49,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, store)
-
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
@@ -61,7 +61,6 @@ class StatefulContestScreenTest {
       rule.onNodeWithText("Tournament 2").assertIsDisplayed()
     }
   }
-
   @Test
   fun given_statefulContestScreen_when_userJoinedTournament_then_participantBadgeIsDisplayed() {
     runTest {
@@ -78,9 +77,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, store)
-
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
@@ -106,8 +103,7 @@ class StatefulContestScreenTest {
         }
       }
 
-      val (_, _, strings, user) =
-          rule.setContentWithTestEnvironment(store = store) { StatefulHome(user) }
+      val (_, _, strings) = rule.setContentWithTestEnvironment(store = store) { StatefulHome(user) }
 
       rule.onNodeWithText(strings.sectionSocial).performClick()
       val duration = 1.minutes
@@ -122,7 +118,7 @@ class StatefulContestScreenTest {
   @Test
   fun given_statefulContestScreen_when_tournamentCreated_then_correctTimeDisplayed() {
     runTest {
-      val (_, _, strings, user) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+      val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
 
       rule.onNodeWithText(strings.sectionContests).performClick()
       rule.onNodeWithText(strings.newContest).performClick()
@@ -145,6 +141,58 @@ class StatefulContestScreenTest {
           .assertIsDisplayed()
       rule.onNodeWithText("Tournament").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun given_statefulContestScreen_when_tournamentCreatedHourAgo_then_correctTimeDisplayed() {
+    runTest {
+      val msHour = 1.hours.toLong(DurationUnit.MILLISECONDS)
+      val store = buildStore {
+        collection("users") { document("1", ProfileDocument("1", name = "A")) }
+        collection(TournamentDocument.Collection) {
+          document(
+              "id1",
+              TournamentDocument(
+                  "tid1",
+                  "2",
+                  "Tournament 1",
+                  playerIds = listOf("1"),
+                  creationTime = System.currentTimeMillis() - msHour))
+        }
+      }
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(store = store) {
+            StatefulTournamentScreen(user, {}, {})
+          }
+      rule.onNodeWithText(strings.tournamentsStartingTime(1.hours, SpanStyle()).text)
+          .assertIsDisplayed()
+    }
+  }
+
+  @Test
+  fun given_statefulContestScreen_when_tournamentCreatedDayAgo_then_correctTimeDisplayed() {
+    runTest {
+      val msDay = 1.days.toLong(DurationUnit.MILLISECONDS)
+      val store = buildStore {
+        collection("users") { document("1", ProfileDocument("1", name = "A")) }
+        collection(TournamentDocument.Collection) {
+          document(
+              "id1",
+              TournamentDocument(
+                  "tid1",
+                  "2",
+                  "Tournament 1",
+                  playerIds = listOf("1"),
+                  creationTime = System.currentTimeMillis() - msDay))
+        }
+      }
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(store = store) {
+            StatefulTournamentScreen(user, {}, {})
+          }
+      rule.onNodeWithText(strings.tournamentsStartingTime(1.days, SpanStyle()).text)
+          .assertIsDisplayed()
     }
   }
 }
