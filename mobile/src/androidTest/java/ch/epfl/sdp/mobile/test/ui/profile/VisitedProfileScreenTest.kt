@@ -31,7 +31,8 @@ class VisitedProfileScreenTest {
     override val pastGamesCount = 10
     override val solvedPuzzlesCount = 0
     override fun onChallengeClick() = Unit
-    override fun onUnfollowClick() = Unit
+    override fun onFollowClick() = Unit
+    override val follows: Boolean = false
     override val backgroundColor = Color.Default.toColor()
     override val name = "Example"
     override val emoji = "🎁"
