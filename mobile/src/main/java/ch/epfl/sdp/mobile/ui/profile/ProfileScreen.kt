@@ -116,12 +116,14 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfilePicture(
 /**
  * Composes the unfollow button.
  *
+ * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param onClick callback function for the unfollow button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> UnfollowButton(
-    state: VisitedProfileScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> UnfollowButton(
+    state: VisitedProfileScreenState<C, P>,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
