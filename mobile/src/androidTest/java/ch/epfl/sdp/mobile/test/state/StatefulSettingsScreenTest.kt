@@ -13,8 +13,8 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
-import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
@@ -109,35 +109,27 @@ class StatefulSettingsScreenTest {
   @Test
   fun given_statefulSettingsScreen_when_profileHasSolvedPuzzles_then_theyAreDisplayedOnScreen() =
       runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val id = "1"
+    val (assets, puzzleIds) = twoPuzzleAssets()
     val store = buildStore {
       collection("users") {
-        document("1", ProfileDocument("1", name = "Biggus", solvedPuzzles = listOf("0000D")))
+        document(id, ProfileDocument(id, solvedPuzzles = listOf(puzzleIds[1])))
       }
     }
-    val assets =
-        FakeAssetManager(
-            "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
-                "00008,r6k/pp2r2p/4Rp1Q/3p4/8/1N1P2R1/PqP2bPP/7K b - - 0 24,f2g3 e6e7 b2b1 b3c1 b1c1 h6c1,1852,74,97,1444,crushing hangingPiece long middlegame,https://lichess.org/787zsVup/black#48\n" +
-                "0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1580,73,97,11995,advantage endgame short,https://lichess.org/F8M8OS71#53\n")
-    val authFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
 
-    authFacade.signInWithEmail("email@example.org", "password")
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulSettingsScreen(user, {}, {}, {}, {})
-          }
+    val env =
+        rule.setContentWithTestEnvironment(userId = id, store = store, assets = assets) {
+          StatefulSettingsScreen(
+              user = user,
+              onMatchClick = {},
+              onPuzzleClick = {},
+              onEditProfileImageClick = {},
+              onEditProfileNameClick = {},
+          )
         }
 
-    rule.onNodeWithText(strings.profilePuzzle).performClick()
-    rule.onNodeWithText("0000D", substring = true).assertExists()
-    rule.onNodeWithText("00008", substring = true).assertDoesNotExist()
+    rule.onNodeWithText(env.strings.profilePuzzle).performClick()
+    rule.onNodeWithText(puzzleIds[1], substring = true).assertExists()
+    rule.onNodeWithText(puzzleIds[0], substring = true).assertDoesNotExist()
   }
 }
