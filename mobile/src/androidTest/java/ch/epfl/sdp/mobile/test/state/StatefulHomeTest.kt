@@ -630,7 +630,7 @@ class StatefulHomeTest {
   }
 
   @Test
-  fun given_profileScreen_when_clickingOnPuzzle_then_ItIsOpened() = runTest {
+  fun given_profileScreen_when_clickingOnPuzzle_then_itIsOpened() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
       collection("users") {
