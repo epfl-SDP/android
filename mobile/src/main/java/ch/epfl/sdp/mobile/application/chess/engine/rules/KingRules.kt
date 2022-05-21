@@ -28,13 +28,13 @@ object KingRules : AttackRules(Directions.Lines + Directions.Diagonals) {
     // free for both left and right castling, and we only check for attacks on the king positions.
     for (i in 1..2) {
       val kingTarget = kingPosition + (direction * i)
-      val rookTarget = rookPosition + (-direction * i)
+      val rookTarget = rookPosition - (direction * i)
       if (!get(kingTarget).isNone || !get(rookTarget).isNone) return // There's a piece in the way.
       if (isAttacked(kingTarget)) return // One of the king destinations is in check.
     }
 
     val kingTarget = kingPosition + (direction * 2)
-    val rookTarget = kingTarget + (-direction)
+    val rookTarget = kingTarget - direction
     move(kingTarget) {
       move(kingPosition, kingTarget)
       move(rookPosition, rookTarget)
