@@ -12,6 +12,9 @@ object KingRules : AttackRules(Directions.Lines + Directions.Diagonals) {
     val king = get(kingPosition)
     val rook = get(rookPosition)
 
+    // We can't castle if the king is attacked.
+    if (isAttacked(kingPosition)) return
+
     // We can safely assume that if the pieces have always been at these positions, we'll find the
     // right king and the right rook, and their colors will match.
     if (getHistorical(kingPosition).any { it != king }) return
