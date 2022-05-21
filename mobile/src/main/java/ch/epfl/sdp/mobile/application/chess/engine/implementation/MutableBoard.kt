@@ -52,6 +52,17 @@ value class MutableBoard private constructor(@PublishedApi internal val cells: I
   }
 
   /**
+   * Returns true if any piece matches the [predicate].
+   *
+   * @param predicate the predicate to match.
+   * @return true if at least one piece matched the predicate.
+   */
+  inline fun anyPiece(predicate: (Position, MutableBoardPiece) -> Boolean): Boolean {
+    forEachPiece { position, piece -> if (predicate(position, piece)) return true }
+    return false
+  }
+
+  /**
    * Invokes the [block] for each valid [MutableBoardPiece] from the [MutableBoard].
    *
    * @param block the block invoked, with the [Position] and the [MutableBoardPiece].

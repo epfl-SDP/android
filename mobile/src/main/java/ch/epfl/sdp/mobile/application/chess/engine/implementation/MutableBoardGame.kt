@@ -45,7 +45,7 @@ data class MutableBoardGame(
         } else {
           NextStep.MovePiece(nextPlayer, inCheck) { action ->
             val (_, effect) =
-                mutableBoard.computeActions(action.from, nextPlayer, history).firstOrNull { (it, _)
+                mutableBoard.actions(action.from, nextPlayer, history).firstOrNull { (it, _)
                   ->
                   action == it
                 }
@@ -63,5 +63,5 @@ data class MutableBoardGame(
   }
 
   override fun actions(position: Position) =
-      mutableBoard.computeActions(position, nextPlayer, history).map { it.first }
+      mutableBoard.actions(position, nextPlayer, history).map { it.first }
 }
