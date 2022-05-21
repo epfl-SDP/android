@@ -50,7 +50,7 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
  * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
  */
 private fun roundedDuration(startTime: Long): Duration {
-  val duration = System.currentTimeMillis().minus(startTime).milliseconds
+  val duration = (System.currentTimeMillis() - startTime).milliseconds
 
   if (duration >= 1.days) {
     return duration.inWholeDays.days

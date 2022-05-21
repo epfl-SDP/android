@@ -4,6 +4,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
@@ -182,4 +183,17 @@ object English : LocalizedStrings {
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
+}
+
+@Override
+fun Duration.toString(): String {
+  if (this.toString().contains("d")) {
+    return "${this.toLong(DurationUnit.DAYS)} days"
+  } else if (this.toString().contains("h")) {
+    return "${this.toLong(DurationUnit.HOURS)} hours"
+  } else if (this.toString().contains("m")) {
+    return "${this.toLong(DurationUnit.MINUTES)} minutes"
+  } else {
+    return "${this.toLong(DurationUnit.SECONDS)} seconds"
+  }
 }
