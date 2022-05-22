@@ -28,6 +28,17 @@ class DelegatingPromotionMovableChessBoardState(
     private val promotion: DelegatingPromotionState,
 ) : AbstractMovableChessBoardState(delegate) {
 
+  /** Returns the color of the user, if they're participating to the game. */
+  override val rotatedBoard: Boolean
+    get() =
+        when (user.uid) {
+          // The order matters, since we want the board NOT to be rotated if the user is playing a
+          // local game against themselves !
+          playersInfo.whiteProfile?.uid -> false
+          playersInfo.blackProfile?.uid -> true
+          else -> false
+        }
+
   override fun move(from: ChessBoardState.Position, to: ChessBoardState.Position) {
     val available =
         delegate

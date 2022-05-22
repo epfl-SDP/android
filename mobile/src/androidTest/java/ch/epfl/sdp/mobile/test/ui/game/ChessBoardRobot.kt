@@ -128,11 +128,14 @@ class ChessBoardRobot(
   /**
    * Performs the inputs specified in the [ChessBoardRobotInputScope] on the chessboard.
    *
+   * @param rotated true iff the board should be considered as rotated by 180 degress.
    * @param scope the [ChessBoardRobotInputScope] in which the inputs are performed.
    */
-  fun performInput(scope: ChessBoardRobotInputScope.() -> Unit) {
+  fun performInput(rotated: Boolean = false, scope: ChessBoardRobotInputScope.() -> Unit) {
     val sizeInfo = BoardSizeInfo(onChessBoard())
-    onChessBoard().performTouchInput { SizeInfoChessBoardInputScope(sizeInfo, this).apply(scope) }
+    onChessBoard().performTouchInput {
+      SizeInfoChessBoardInputScope(sizeInfo, this, rotated).apply(scope)
+    }
   }
 
   /**
@@ -211,32 +214,51 @@ private class BoardSizeInfo(interaction: SemanticsNodeInteraction) {
  *
  * @param sizeInfo the [BoardSizeInfo] to access basic information from the board.
  * @param scope the [TouchInjectionScope] in which the interactions are performed.
+ * @param rotated true iff the board is rotated by 180 degrees.
  */
 private class SizeInfoChessBoardInputScope(
     private val sizeInfo: BoardSizeInfo,
     private val scope: TouchInjectionScope,
+    private val rotated: Boolean,
 ) : ChessBoardRobotInputScope {
 
   override fun advanceEventTime(durationMillis: Long) =
       scope.advanceEventTime(durationMillis = durationMillis)
 
+  /**
+   * Returns the [Offset], taking into account for rotation.
+   *
+   * @param x the first coordinate on the board.
+   * @param y the second coordinate on the board.
+   *
+   * @return the computed [Offset].
+   */
+  private fun offset(x: Int, y: Int): Offset {
+    val actualX = if (rotated) 8 - x - 1 else x
+    val actualY = if (rotated) 8 - y - 1 else y
+    return Offset(actualX * sizeInfo.squareSize, actualY * sizeInfo.squareSize) +
+        sizeInfo.halfSquare
+  }
+
   override fun down(x: Int, y: Int, pointerId: Int) =
       scope.down(
           pointerId = pointerId,
-          position = Offset(x * sizeInfo.squareSize, y * sizeInfo.squareSize) + sizeInfo.halfSquare,
+          position = offset(x, y),
       )
 
   override fun moveTo(x: Int, y: Int, pointerId: Int) =
       scope.moveTo(
           pointerId = pointerId,
-          position = Offset(x * sizeInfo.squareSize, y * sizeInfo.squareSize) + sizeInfo.halfSquare,
+          position = offset(x, y),
       )
 
-  override fun moveBy(x: Int, y: Int, pointerId: Int) =
-      scope.moveBy(
-          pointerId = pointerId,
-          delta = Offset(x * sizeInfo.squareSize, y * sizeInfo.squareSize),
-      )
+  override fun moveBy(x: Int, y: Int, pointerId: Int) {
+    val factor = if (rotated) -1f else 1f
+    return scope.moveBy(
+        pointerId = pointerId,
+        delta = Offset(x * sizeInfo.squareSize, y * sizeInfo.squareSize) * factor,
+    )
+  }
 
   override fun up(pointerId: Int) = scope.up(pointerId = pointerId)
 }
