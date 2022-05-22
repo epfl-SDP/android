@@ -54,6 +54,7 @@ interface LocalizedStrings {
   val settingEditCancel: String
   val settingProfileNameLabel: String
   val settingProfileImageLabel: String
+  val settingLogout: String
 
   val boardColorBlack: String
   val boardColorWhite: String

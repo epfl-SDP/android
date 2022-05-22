@@ -92,6 +92,9 @@ val PawniesIcons.TournamentDetailsClose
 val PawniesIcons.TournamentsNextStep
   get() = Icons.Outlined.SkipNext
 
+val PawniesIcons.Logout
+  get() = Icons.Default.Logout
+
 val PawniesIcons.Settings
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)
 

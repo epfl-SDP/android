@@ -33,6 +33,7 @@ class SettingScreenTest {
     override val backgroundColor = Color.Default.toColor()
     override fun onEditProfileNameClick() = Unit
     override fun onEditProfileImageClick() = Unit
+    override fun onLogout() = Unit
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true

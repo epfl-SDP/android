@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
@@ -21,8 +22,8 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import com.google.common.truth.Truth
-import io.mockk.every
-import io.mockk.mockk
+import com.google.common.truth.Truth.assertThat
+import io.mockk.*
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -101,5 +102,12 @@ class StatefulSettingsScreenTest {
     rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
 
     Truth.assertThat(functionCalled).isTrue()
+  }
+
+  @Test
+  fun given_statefulSettingsScreen_when_logoutButtonClicked_then_disconnectsUser() = runTest {
+    val env = rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}) }
+    rule.onNodeWithText(env.strings.settingLogout).assertExists().performClick()
+    assertThat(env.facades.auth.currentUser.first()).isEqualTo(NotAuthenticatedUser)
   }
 }
