@@ -162,7 +162,7 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
   val strings = LocalLocalizedStrings.current
   Button(
       onClick = onClick,

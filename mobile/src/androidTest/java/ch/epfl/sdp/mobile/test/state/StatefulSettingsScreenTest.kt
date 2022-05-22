@@ -107,15 +107,11 @@ class StatefulSettingsScreenTest {
       runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = emptyStore()
-    val assets = emptyAssets()
     val authFacade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
-
     authFacade.signInWithEmail("email@example.org", "password")
+
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
     val userMock = mockk<AuthenticatedUser>()
     every { userMock.name } returns "test"
     every { userMock.email } returns "test"
@@ -125,13 +121,11 @@ class StatefulSettingsScreenTest {
     every { userMock.followed } returns false
     coEvery { userMock.signOut() } coAnswers { user.signOut() }
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulSettingsScreen(userMock, {}, {}, {})
-          }
+    val testEnv =
+        rule.setContentWithTestEnvironment(auth = auth) {
+          StatefulSettingsScreen(userMock, {}, {}, {})
         }
-    rule.onNodeWithText(strings.settingLogout).assertExists().performClick()
+    rule.onNodeWithText(testEnv.strings.settingLogout).assertExists().performClick()
     coVerify { userMock.signOut() }
   }
 }

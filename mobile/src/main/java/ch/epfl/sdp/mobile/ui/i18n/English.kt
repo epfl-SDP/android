@@ -70,6 +70,7 @@ object English : LocalizedStrings {
   override val settingEditCancel = "Cancel".uppercase()
   override val settingProfileNameLabel = "Profile Name"
   override val settingProfileImageLabel = "Profile Image"
+  override val settingLogout: String = "Logout"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
@@ -183,5 +184,4 @@ object English : LocalizedStrings {
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
-  override val settingLogout: String = "Logout"
 }

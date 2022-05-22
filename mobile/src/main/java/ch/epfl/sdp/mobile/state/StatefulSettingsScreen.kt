@@ -25,22 +25,19 @@ import kotlinx.coroutines.launch
  */
 class AuthenticatedUserProfileScreenState(
     actions: State<ProfileActions>,
-    user: AuthenticatedUser,
+    private val user: AuthenticatedUser,
     chessFacade: ChessFacade,
-    scope: CoroutineScope,
+    private val scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
-    onLogoutAction: State<() -> Unit>,
 ) :
     SettingScreenState<ChessMatchAdapter>,
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
-
   override val email = user.email
   override val puzzlesCount = 0
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
-  private val onLogoutAction by onLogoutAction
 
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
@@ -49,7 +46,7 @@ class AuthenticatedUserProfileScreenState(
     onEditProfileImageClickAction()
   }
   override fun onLogout() {
-    onLogoutAction()
+    scope.launch { user.signOut() }
   }
 }
 
@@ -78,11 +75,6 @@ fun StatefulSettingsScreen(
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
 
-  fun logoutAuthenticatedUser() {
-    scope.launch { user.signOut() }
-  }
-
-  val currentOnLogoutClick = rememberUpdatedState(::logoutAuthenticatedUser)
   val state =
       remember(
           actions,
@@ -98,7 +90,7 @@ fun StatefulSettingsScreen(
             scope,
             currentOnEditProfileNameClick,
             currentOnEditProfileImageClick,
-            currentOnLogoutClick)
+        )
       }
   SettingsScreen(state, modifier, contentPadding)
 }
