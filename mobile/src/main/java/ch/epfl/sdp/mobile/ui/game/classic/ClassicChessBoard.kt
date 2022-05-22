@@ -47,17 +47,19 @@ const val ChessBoardCells = 8
  * @param state the [MovableChessBoardState] that is used by this composable.
  * @param modifier the [Modifier] for this composable.
  * @param enabled true iff the [MovableChessBoardState] should allow for user interactions.
- * @param rotated true iff the board should have the black pieces at the bottom.
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
     state: MovableChessBoardState<Piece>,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    rotated: Boolean = false,
 ) {
   val strings = LocalLocalizedStrings.current
-  val angle by animateFloatAsState(if (rotated) 180f else 0f, spring(stiffness = StiffnessVeryLow))
+  val angle by
+      animateFloatAsState(
+          targetValue = if (state.rotatedBoard) 180f else 0f,
+          animationSpec = spring(stiffness = StiffnessVeryLow),
+      )
 
   BoxWithConstraints(
       modifier
