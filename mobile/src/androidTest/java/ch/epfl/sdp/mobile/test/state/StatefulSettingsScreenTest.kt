@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
@@ -21,6 +22,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import io.mockk.*
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -103,29 +105,9 @@ class StatefulSettingsScreenTest {
   }
 
   @Test
-  fun given_statefulSettingsScreen_when_logoutButtonClicked_then_redirectToAuthenticationScreen() =
-      runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val store = emptyStore()
-    val authFacade = AuthenticationFacade(auth, store)
-    authFacade.signInWithEmail("email@example.org", "password")
-
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
-    val userMock = mockk<AuthenticatedUser>()
-    every { userMock.name } returns "test"
-    every { userMock.email } returns "test"
-    every { userMock.emoji } returns "test"
-    every { userMock.backgroundColor } returns Profile.Color.Orange
-    every { userMock.uid } returns user.uid
-    every { userMock.followed } returns false
-    coEvery { userMock.signOut() } coAnswers { user.signOut() }
-
-    val testEnv =
-        rule.setContentWithTestEnvironment(auth = auth) {
-          StatefulSettingsScreen(userMock, {}, {}, {})
-        }
-    rule.onNodeWithText(testEnv.strings.settingLogout).assertExists().performClick()
-    coVerify { userMock.signOut() }
+  fun given_statefulSettingsScreen_when_logoutButtonClicked_then_disconnectsUser() = runTest {
+    val env = rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}) }
+    rule.onNodeWithText(env.strings.settingLogout).assertExists().performClick()
+    assertThat(env.facades.auth.currentUser.first()).isEqualTo(NotAuthenticatedUser)
   }
 }
