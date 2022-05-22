@@ -22,4 +22,7 @@ interface SettingScreenState<C : ChessMatch, P : PuzzleInfo> : ProfileScreenStat
 
   /** On edit profile name button clicked */
   fun onEditProfileNameClick()
+
+  /** On logout button clicked */
+  fun onLogout()
 }

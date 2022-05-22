@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
@@ -24,16 +25,15 @@ import kotlinx.coroutines.CoroutineScope
  */
 class AuthenticatedUserProfileScreenState(
     actions: State<ProfileActions>,
-    user: AuthenticatedUser,
+    private val user: AuthenticatedUser,
     chessFacade: ChessFacade,
-    scope: CoroutineScope,
+    private val scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
 ) :
     SettingScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
     ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
-
   override val email = user.email
 
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
@@ -44,6 +44,9 @@ class AuthenticatedUserProfileScreenState(
   }
   override fun onEditProfileImageClick() {
     onEditProfileImageClickAction()
+  }
+  override fun onLogout() {
+    scope.launch { user.signOut() }
   }
 }
 
@@ -77,6 +80,7 @@ fun StatefulSettingsScreen(
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
+
   val state =
       remember(
           actions,
@@ -91,7 +95,8 @@ fun StatefulSettingsScreen(
             chessFacade,
             scope,
             currentOnEditProfileNameClick,
-            currentOnEditProfileImageClick)
+            currentOnEditProfileImageClick,
+        )
       }
   SettingsScreen(state, modifier, contentPadding)
 }
