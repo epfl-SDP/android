@@ -22,7 +22,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.TournamentDetailsClose
 import ch.epfl.sdp.mobile.ui.plus
-import ch.epfl.sdp.mobile.ui.profile.SettingTabItem
+import ch.epfl.sdp.mobile.ui.profile.ProfileTabItem
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.PoolBanner.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentMatch.Result
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentsFinalsRound.Banner
@@ -295,7 +295,7 @@ private fun DetailsTopBar(
             edgePadding = 0.dp, // No start padding.
         ) {
           for (index in 0 until count) {
-            SettingTabItem(
+            ProfileTabItem(
                 title = sectionTitle(index),
                 subtitle = sectionSubtitle(index),
                 onClick = { onSectionClick(index) },
