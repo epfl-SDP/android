@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
@@ -11,6 +12,7 @@ import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
+import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentsDialogScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
@@ -68,6 +70,9 @@ private const val TournamentDefaultId = ""
 /** The route associated to new contest button in play screen */
 private const val CreateTournamentRoute = "create_tournament"
 
+/** The route associated with the tournaments filters screen. */
+private const val TournamentFiltersRoute = "tournament_filters"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -76,7 +81,7 @@ private const val CreateTournamentRoute = "create_tournament"
  * @param modifier the [Modifier] for this composable.
  * @param controller the [NavHostController] used to control the current destination.
  */
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun StatefulHome(
     user: AuthenticatedUser,
@@ -125,8 +130,18 @@ fun StatefulHome(
             currentUser = user,
             onTournamentClick = openTournament,
             onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
+            onFilterClick = { controller.navigate(TournamentFiltersRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
+        )
+      }
+      dialog(
+          route = TournamentFiltersRoute,
+          dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+      ) {
+        StatefulTournamentsDialogScreen(
+            navigateBack = { controller.popBackStack() },
+            modifier = Modifier.fillMaxSize(),
         )
       }
       composable(SettingsRoute) {

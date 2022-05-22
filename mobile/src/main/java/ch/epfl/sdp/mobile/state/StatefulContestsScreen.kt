@@ -67,7 +67,7 @@ class TournamentScreenState(
   override fun onNewContestClick() = actions.onNewContestClick()
   override fun onContestClick(contest: TournamentAdapter) =
       actions.onTournamentClick(contest.tournament.reference)
-  override fun onFilterClick() = Unit
+  override fun onFilterClick() = actions.onFilterClick()
 }
 
 /**
@@ -84,13 +84,18 @@ fun StatefulTournamentScreen(
     currentUser: AuthenticatedUser,
     onTournamentClick: (TournamentReference) -> Unit,
     onNewContestClickAction: () -> Unit,
+    onFilterClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val actions =
       rememberUpdatedState(
           TournamentActions(
-              onTournamentClick = onTournamentClick, onNewContestClick = onNewContestClickAction))
+              onTournamentClick = onTournamentClick,
+              onNewContestClick = onNewContestClickAction,
+              onFilterClick = onFilterClick,
+          ),
+      )
   val tournamentFacade = LocalTournamentFacade.current
   val scope = rememberCoroutineScope()
   val state =
@@ -109,8 +114,10 @@ fun StatefulTournamentScreen(
  *
  * @param onTournamentClick callback called when a tournament item is clicked on.
  * @param onNewContestClick callback called when the new contest button is clicked on.
+ * @param onFilterClick callback called when the filter action is pressed.
  */
 data class TournamentActions(
     val onTournamentClick: (TournamentReference) -> Unit,
     val onNewContestClick: () -> Unit,
+    val onFilterClick: () -> Unit,
 )

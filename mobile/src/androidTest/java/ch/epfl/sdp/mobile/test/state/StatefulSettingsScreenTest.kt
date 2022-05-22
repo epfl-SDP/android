@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -38,6 +39,7 @@ class StatefulSettingsScreenTest {
   fun given_statefulSettingsScreen_when_profileHasPastGames_then_theyAreDisplayedOnScreen() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") {
           document("1", ProfileDocument("1", name = "A"))
@@ -54,7 +56,7 @@ class StatefulSettingsScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -86,6 +88,7 @@ class StatefulSettingsScreenTest {
     val openProfileEditNameMock = { functionCalled = true }
 
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
     val assets = emptyAssets()
 
@@ -93,7 +96,7 @@ class StatefulSettingsScreenTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
 
     val strings =
         rule.setContentWithLocalizedStrings {

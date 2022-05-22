@@ -173,4 +173,9 @@ interface LocalizedStrings {
   val tournamentsCreateQualifierSizeN: (size: Int) -> String
   val tournamentsCreateElimDemomN: (denominator: Int) -> String
   val tournamentsCreateElimDepthFinal: String
+
+  val tournamentsFilterTitle: String
+  val tournamentsFilterOnlyDone: String
+  val tournamentsFilterOnlyParticipating: String
+  val tournamentsFilterOnlyAdministrating: String
 }

@@ -15,6 +15,7 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
@@ -31,6 +32,7 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_tournamentsExist_then_theyAreDisplayedOnTheScreen() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -43,14 +45,14 @@ class StatefulContestScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
 
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulTournamentScreen(currentUser, {}, {})
+              StatefulTournamentScreen(currentUser, {}, {}, {})
             }
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
@@ -63,6 +65,7 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_userJoinedTournament_then_participantBadgeIsDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -74,14 +77,14 @@ class StatefulContestScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
 
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulTournamentScreen(currentUser, {}, {})
+              StatefulTournamentScreen(currentUser, {}, {}, {})
             }
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
