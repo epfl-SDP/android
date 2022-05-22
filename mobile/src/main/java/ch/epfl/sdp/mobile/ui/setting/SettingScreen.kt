@@ -20,28 +20,30 @@ import ch.epfl.sdp.mobile.ui.Edit
 import ch.epfl.sdp.mobile.ui.Logout
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Settings
-import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
+import ch.epfl.sdp.mobile.ui.profile.ProfileTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
-import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
+import ch.epfl.sdp.mobile.ui.profile.rememberProfileTabBarState
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <C : ChessMatch> SettingsScreen(
-    state: SettingScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
+    state: SettingScreenState<C, P>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
-  val tabBarState = rememberSettingTabBarState(state.pastGamesCount, state.puzzlesCount)
+  val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
   UserScreen(
@@ -52,17 +54,21 @@ fun <C : ChessMatch> SettingsScreen(
         )
       },
       profileTabBar = {
-        SettingTabBar(
+        ProfileTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
             elevation = elevation,
         )
       },
+      tabBarState = tabBarState,
       matches = state.matches,
+      onMatchClick = state::onMatchClick,
+      puzzles = state.puzzles,
+      onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       modifier = modifier.fillMaxSize(),
       contentPadding = contentPadding,
-      onMatchClick = state::onMatchClick)
+  )
 }
 
 /**
@@ -70,11 +76,15 @@ fun <C : ChessMatch> SettingsScreen(
  * ProfilePicture, SettingsButton, name and email of the user's profile.
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifier = Modifier) {
+fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
+    state: SettingScreenState<C, P>,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
 
   Column(
@@ -108,12 +118,13 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
  * Composes the settings picture given its [state].
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the setting screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> SettingPicture(
-    state: SettingScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> SettingPicture(
+    state: SettingScreenState<C, P>,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current

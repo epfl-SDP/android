@@ -11,10 +11,9 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.state.Navigation
-import ch.epfl.sdp.mobile.state.ProvideFacades
-import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
+import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -57,7 +56,7 @@ class StatefulProfileScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulVisitedProfileScreen(authUser1, "1", {}, {})
+              StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -112,7 +111,11 @@ class StatefulProfileScreenTest {
     val (_, _, strings) =
         rule.setContentWithTestEnvironment(store = store, auth = auth) {
           StatefulVisitedProfileScreen(
-              user = user, uid = "userId2", onMatchClick = {}, onChallengeClick = {})
+              user = user,
+              uid = "userId2",
+              onMatchClick = {},
+              onChallengeClick = {},
+              onPuzzleClick = {})
         }
 
     rule.onNodeWithText("user2").performClick()
@@ -120,5 +123,27 @@ class StatefulProfileScreenTest {
     rule.onNodeWithText(strings.profileUnfollow).assertExists()
     rule.onNodeWithText(strings.profileUnfollow).performClick()
     rule.onNodeWithText(strings.profileFollow).assertExists()
+  }
+
+  @Test
+  fun given_statefulProfileScreen_when_profileHasSolvedPuzzles_then_theyAreDisplayedOnScreen() =
+      runTest {
+    val id = "1"
+    val (assets, puzzleIds) = twoPuzzleAssets()
+    val store = buildStore {
+      collection("users") {
+        document(id, ProfileDocument(id, solvedPuzzles = listOf(puzzleIds[1])))
+      }
+    }
+
+    val env =
+        rule.setContentWithTestEnvironment(userId = id, store = store, assets = assets) {
+          StatefulVisitedProfileScreen(
+              user = user, uid = id, onMatchClick = {}, onChallengeClick = {}, onPuzzleClick = {})
+        }
+
+    rule.onNodeWithText(env.strings.profilePuzzle).performClick()
+    rule.onNodeWithText(puzzleIds[1], substring = true).assertExists()
+    rule.onNodeWithText(puzzleIds[0], substring = true).assertDoesNotExist()
   }
 }

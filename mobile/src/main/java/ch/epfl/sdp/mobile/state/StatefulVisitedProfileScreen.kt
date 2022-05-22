@@ -35,8 +35,8 @@ class FetchedUserProfileScreenState(
     chessFacade: ChessFacade,
     private val scope: CoroutineScope,
 ) :
-    VisitedProfileScreenState<ChessMatchAdapter>,
-    ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
+    VisitedProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
+    ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
 
   val onChallengeClickAction by onChallengeClickAction
@@ -71,6 +71,7 @@ class FetchedUserProfileScreenState(
  *
  * @param uid of the player.
  * @param onMatchClick callback function called when a match is clicked on.
+ * @param onPuzzleClick callback function called when a puzzle is clicked on.
  * @param onChallengeClick callback if challenge button clicked
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
@@ -80,11 +81,17 @@ fun StatefulVisitedProfileScreen(
     user: AuthenticatedUser,
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
+    onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
+  val actions =
+      rememberUpdatedState(
+          ProfileActions(
+              onMatchClick = onMatchClick,
+              onPuzzleClick = onPuzzleClick,
+          ))
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
   val onChallengeClick = rememberUpdatedState(onChallengeClick)
