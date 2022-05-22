@@ -28,6 +28,9 @@ class DelegatingPuzzlePromotionMovableChessBoardState(
     private val promotion: DelegatingPromotionState,
 ) : AbstractMovableChessBoardState(delegate) {
 
+  override val rotatedBoard: Boolean
+    get() = puzzleState.puzzleInfo.playerColor == ChessBoardState.Color.Black
+
   override fun move(from: ChessBoardState.Position, to: ChessBoardState.Position) {
     val available =
         delegate

@@ -34,6 +34,8 @@ class ChessBoardTest {
           },
   ) : MovableChessBoardState<Piece> {
 
+    override val rotatedBoard: Boolean = false
+
     var position: Position by mutableStateOf(Position(0, 0))
 
     override val selectedPosition: Position? = null
