@@ -84,7 +84,7 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
               position = state.lastMove,
               color = PawniesColors.Orange250,
           )
-          .letters(color = MaterialTheme.colors.onPrimary) { -angle }
+          .letters(color = MaterialTheme.colors.onPrimary, angle = { -angle })
           .semantics { this.contentDescription = strings.boardContentDescription },
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }

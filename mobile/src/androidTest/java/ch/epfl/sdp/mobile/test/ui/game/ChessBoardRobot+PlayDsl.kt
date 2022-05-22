@@ -2,12 +2,10 @@ package ch.epfl.sdp.mobile.test.ui.game
 
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
-import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.test.application.chess.engine.GameScope
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
 /**
  * Performs all the steps from the [block], updating the robot internally. If a step fails, it will
@@ -25,17 +23,6 @@ fun ChessBoardRobot.play(rotated: Boolean = false, block: GameScope.() -> Unit) 
     ChessBoardRobotGameScope(this, rotated).run(block)
 
 /**
- * Returns the [ChessBoardState.Position] from an original [Position].
- *
- * @receiver the original [Position].
- * @param rotated true iff the coordinates should be rotated.
- * @return the [ChessBoardState.Position].
- */
-private fun Position.toChessBoardPosition(rotated: Boolean): ChessBoardState.Position =
-    if (rotated) ChessBoardState.Position(Board.Size - x - 1, Board.Size - y - 1)
-    else ChessBoardState.Position(x, y)
-
-/**
  * An implementation of a [GameScope] which delegates moves to a [ChessBoardRobot].
  *
  * @param robot the underlying [ChessBoardRobot].
@@ -47,14 +34,11 @@ private class ChessBoardRobotGameScope(
 ) : GameScope {
 
   override fun tryMove(from: Position, delta: Delta) {
-    robot.performInput {
+    robot.performInput(rotated = rotated) {
       val to = from + delta ?: return@performInput // Ignore out of bounds moves.
 
-      val actualFrom = from.toChessBoardPosition(rotated)
-      val actualTo = to.toChessBoardPosition(rotated)
-
-      click(actualFrom.x, actualFrom.y)
-      click(actualTo.x, actualTo.y)
+      click(from.x, from.y)
+      click(to.x, to.y)
     }
   }
 
