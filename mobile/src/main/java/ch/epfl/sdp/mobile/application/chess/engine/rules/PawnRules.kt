@@ -98,6 +98,7 @@ object PawnRules : Rules {
       if (adversary.isNone || adversary.color == color || adversary.rank != Pawn) continue
       val adversaryStart = target + direction(color)
       if (!adversaryStart.inBounds) continue
+      // Drop the current board, as well as the previous state after the adversary move.
       if (getHistorical(adversaryStart).drop(2).any { it != adversary }) continue
       move(target) {
         move(position, target)
