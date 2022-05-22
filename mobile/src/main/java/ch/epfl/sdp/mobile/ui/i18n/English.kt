@@ -90,7 +90,7 @@ object English : LocalizedStrings {
   override val socialSearchEmptySubtitle =
       "Find any player using their name, follow them, or invite them to play or see their match history"
   override val socialSearchClearContentDescription = "Clear search field"
-  override val socialCloseVisitedProfile = "close"
+  override val socialCloseVisitedProfile = "Close"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
