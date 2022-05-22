@@ -19,4 +19,7 @@ interface VisitedProfileScreenState<C : ChessMatch> : ProfileScreenState<C> {
 
   /** On challenge button clicked */
   fun onChallengeClick()
+
+  /** Call back function to get back to previous screen */
+  fun onBack()
 }

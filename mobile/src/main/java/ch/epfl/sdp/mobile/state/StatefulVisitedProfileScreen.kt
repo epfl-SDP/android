@@ -30,8 +30,7 @@ import kotlinx.coroutines.launch
 class FetchedUserProfileScreenState(
     private val currentUser: AuthenticatedUser,
     private val user: Profile,
-    actions: State<ProfileActions>,
-    onChallengeClickAction: State<(String) -> Unit>,
+    actions: State<VisitedProfileActions>,
     chessFacade: ChessFacade,
     private val scope: CoroutineScope,
 ) :
@@ -39,8 +38,7 @@ class FetchedUserProfileScreenState(
     ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
 
-  val onChallengeClickAction by onChallengeClickAction
-
+  private val actions by actions
   override var follows by mutableStateOf(false)
 
   init {
@@ -52,7 +50,7 @@ class FetchedUserProfileScreenState(
   }
 
   override fun onChallengeClick() {
-    onChallengeClickAction(user.uid)
+    actions.onChallengeClickAction(user.uid)
   }
 
   override fun onFollowClick() {
@@ -63,6 +61,9 @@ class FetchedUserProfileScreenState(
         currentUser.unfollow(user)
       }
     }
+  }
+  override fun onBack() {
+    actions.onBack()
   }
 }
 
@@ -87,10 +88,13 @@ fun StatefulVisitedProfileScreen(
 ) {
   val actions =
       rememberUpdatedState(
-          ProfileActions(onMatchClick = onMatchClick, onBack = onBackToSocialClick))
+          VisitedProfileActions(
+              onMatchClick = onMatchClick,
+              onBack = onBackToSocialClick,
+              onChallengeClickAction = onChallengeClick))
+
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
-  val onChallengeClick = rememberUpdatedState(onChallengeClick)
 
   val profile by
       remember(socialFacade, uid) { socialFacade.profile(uid).map { it ?: EmptyProfile } }
@@ -98,7 +102,7 @@ fun StatefulVisitedProfileScreen(
   val scope = rememberCoroutineScope()
   val state =
       remember(actions, profile, chessFacade, scope, socialFacade) {
-        FetchedUserProfileScreenState(user, profile, actions, onChallengeClick, chessFacade, scope)
+        FetchedUserProfileScreenState(user, profile, actions, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }
@@ -111,3 +115,9 @@ private object EmptyProfile : Profile {
   override val followed: Boolean = false
   override val solvedPuzzles = emptyList<PuzzleId>()
 }
+
+data class VisitedProfileActions(
+    override val onMatchClick: (ChessMatchAdapter) -> Unit,
+    val onChallengeClickAction: (String) -> Unit,
+    val onBack: () -> Unit,
+) : ProfileActions

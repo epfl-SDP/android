@@ -24,7 +24,4 @@ interface ProfileScreenState<C : ChessMatch> : Person {
    * @param match the [ChessMatch] to open.
    */
   fun onMatchClick(match: C)
-
-  /** Call back function to get back to previous screen */
-  fun onBack()
 }

@@ -37,7 +37,6 @@ class SettingScreenTest {
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = true
-    override fun onBack() = Unit
   }
 
   object FakeSettingScreenState :
