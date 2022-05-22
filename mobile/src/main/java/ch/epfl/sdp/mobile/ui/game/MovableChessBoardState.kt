@@ -11,6 +11,12 @@ import androidx.compose.runtime.Stable
 @Stable
 interface MovableChessBoardState<Piece : ChessBoardState.Piece> : ChessBoardState<Piece> {
 
+  /**
+   * A boolean which indicates if the chessboard should be rotated and the black player displayed at
+   * the bottom of the screen.
+   */
+  val rotatedBoard: Boolean
+
   /** Returns the position currently selected by the user, if there's any. */
   val selectedPosition: ChessBoardState.Position?
 

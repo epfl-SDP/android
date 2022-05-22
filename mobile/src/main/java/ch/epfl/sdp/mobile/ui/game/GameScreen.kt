@@ -76,7 +76,9 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             Player(White, state.white.name, state.white.message)
             Player(Black, state.black.name, state.black.message)
           }
-          ProvideTextStyle(MaterialTheme.typography.subtitle1) { ClassicChessBoard(state) }
+          ProvideTextStyle(MaterialTheme.typography.subtitle1) {
+            ClassicChessBoard(state = state, rotated = state.rotatedBoard)
+          }
           Moves(state.moves, Modifier.fillMaxWidth())
         }
       },

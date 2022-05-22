@@ -204,8 +204,8 @@ class StatefulPuzzleGameScreenTest {
 
     rule.onNodeWithText(strings.puzzleSolving("White"))
     robot.performInput {
-      click('f', 7)
-      click('f', 3)
+      click(2, 6)
+      click(2, 2)
     }
 
     rule.onNodeWithText(strings.puzzleSolved).assertExists()

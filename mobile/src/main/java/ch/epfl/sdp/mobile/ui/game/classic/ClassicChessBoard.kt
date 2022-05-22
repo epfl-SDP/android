@@ -1,9 +1,8 @@
 package ch.epfl.sdp.mobile.ui.game.classic
 
-import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.*
 import androidx.compose.animation.core.Spring.StiffnessLow
-import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.Spring.StiffnessVeryLow
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -15,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -47,18 +47,22 @@ const val ChessBoardCells = 8
  * @param state the [MovableChessBoardState] that is used by this composable.
  * @param modifier the [Modifier] for this composable.
  * @param enabled true iff the [MovableChessBoardState] should allow for user interactions.
+ * @param rotated true iff the board should have the black pieces at the bottom.
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
     state: MovableChessBoardState<Piece>,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    rotated: Boolean = false,
 ) {
   val strings = LocalLocalizedStrings.current
+  val angle by animateFloatAsState(if (rotated) 180f else 0f, spring(stiffness = StiffnessVeryLow))
 
   BoxWithConstraints(
       modifier
           .aspectRatio(1f)
+          .graphicsLayer { rotationZ = angle }
           .checkerboard(
               cells = ChessBoardCells,
               color = MaterialTheme.colors.onPrimary.copy(alpha = ContentAlpha.disabled),
@@ -80,7 +84,7 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
               position = state.lastMove,
               color = PawniesColors.Orange250,
           )
-          .letters(color = MaterialTheme.colors.onPrimary)
+          .letters(color = MaterialTheme.colors.onPrimary) { -angle }
           .semantics { this.contentDescription = strings.boardContentDescription },
   ) {
     val minDimension = with(LocalDensity.current) { min(maxHeight, maxWidth).toPx() }
@@ -153,6 +157,7 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
                             )
                         else Modifier,
                     )
+                    .graphicsLayer { rotationZ = -angle }
                     .size(cellDp),
         )
       }

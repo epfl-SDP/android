@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.ui.game
 
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
@@ -17,25 +18,40 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
  * some well-known games on a real board.
  *
  * @receiver the [ChessBoardRobot] to which steps will be applied.
+ * @param rotated true if the black player is at the bottom of the screen.
  * @param block the block of steps to perform.
  */
-fun ChessBoardRobot.play(block: GameScope.() -> Unit) {
-  ChessBoardRobotGameScope(this).apply(block)
-}
+fun ChessBoardRobot.play(rotated: Boolean = false, block: GameScope.() -> Unit) =
+    ChessBoardRobotGameScope(this, rotated).run(block)
+
+/**
+ * Returns the [ChessBoardState.Position] from an original [Position].
+ *
+ * @receiver the original [Position].
+ * @param rotated true iff the coordinates should be rotated.
+ * @return the [ChessBoardState.Position].
+ */
+private fun Position.toChessBoardPosition(rotated: Boolean): ChessBoardState.Position =
+    if (rotated) ChessBoardState.Position(Board.Size - x - 1, Board.Size - y - 1)
+    else ChessBoardState.Position(x, y)
 
 /**
  * An implementation of a [GameScope] which delegates moves to a [ChessBoardRobot].
  *
  * @param robot the underlying [ChessBoardRobot].
+ * @param rotated true if the black player is at the bottom of the screen.
  */
-private class ChessBoardRobotGameScope(private val robot: ChessBoardRobot) : GameScope {
+private class ChessBoardRobotGameScope(
+    private val robot: ChessBoardRobot,
+    private val rotated: Boolean,
+) : GameScope {
 
   override fun tryMove(from: Position, delta: Delta) {
     robot.performInput {
       val to = from + delta ?: return@performInput // Ignore out of bounds moves.
 
-      val actualFrom = ChessBoardState.Position(from.x, from.y)
-      val actualTo = ChessBoardState.Position(to.x, to.y)
+      val actualFrom = from.toChessBoardPosition(rotated)
+      val actualTo = to.toChessBoardPosition(rotated)
 
       click(actualFrom.x, actualFrom.y)
       click(actualTo.x, actualTo.y)
