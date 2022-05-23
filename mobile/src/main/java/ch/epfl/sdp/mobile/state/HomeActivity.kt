@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -34,10 +35,11 @@ class HomeActivity : ComponentActivity() {
     val chessFacade = ChessFacade(auth, store, assetManager)
     val speechFacade = SpeechFacade(AndroidSpeechRecognizerFactory(this))
     val tournamentFacade = TournamentFacade(auth, store)
+    val settingsFacade = SettingsFacade(this)
 
     setContent {
       PawniesTheme {
-        ProvideLocalizedStrings {
+        ProvideLocalizedStrings(settingsFacade = settingsFacade) {
           ProvideFacades(
               authentication = authenticationFacade,
               social = socialFacade,

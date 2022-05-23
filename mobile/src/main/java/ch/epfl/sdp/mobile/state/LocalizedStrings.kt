@@ -1,15 +1,16 @@
 package ch.epfl.sdp.mobile.state
 
 import android.content.res.Configuration
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.os.ConfigurationCompat
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.French
 import ch.epfl.sdp.mobile.ui.i18n.German
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import java.util.Locale.FRENCH
 import java.util.Locale.GERMAN
 
@@ -29,10 +30,26 @@ val LocalLocalizedStrings = compositionLocalOf<LocalizedStrings> { English }
 @Composable
 fun ProvideLocalizedStrings(
     configuration: Configuration = LocalConfiguration.current,
+    settingsFacade: SettingsFacade,
     content: @Composable () -> Unit,
 ) {
+  var language by
+      remember(settingsFacade) {
+        mutableStateOf<String>(ConfigurationCompat.getLocales(configuration)[0].language)
+      }
+  val scope = rememberCoroutineScope()
+
+  LaunchedEffect(settingsFacade){
+    scope.launch {
+      val localLanguage = settingsFacade.getLanguage()
+      if(localLanguage != null){
+        language = localLanguage
+      }
+    }
+  }
+
   val strings =
-      when (ConfigurationCompat.getLocales(configuration)[0].language) {
+      when (language) {
         FRENCH.language -> French
         GERMAN.language -> German
         else -> English
