@@ -99,7 +99,7 @@ class StatefulContestScreenTest {
           document(
               "id1",
               TournamentDocument(
-                  "tid1", "2", "Tournament 1", playerIds = listOf("1"), creationTime = startTime))
+                  "tid1", "2", "Tournament 1", playerIds = listOf("1"), creationTimeEpochMillis = startTime))
         }
       }
 
@@ -158,7 +158,7 @@ class StatefulContestScreenTest {
                   "2",
                   "Tournament 1",
                   playerIds = listOf("1"),
-                  creationTime = System.currentTimeMillis() - msHour))
+                  creationTimeEpochMillis = System.currentTimeMillis() - msHour))
         }
       }
       val (_, _, strings) =
@@ -184,7 +184,7 @@ class StatefulContestScreenTest {
                   "2",
                   "Tournament 1",
                   playerIds = listOf("1"),
-                  creationTime = System.currentTimeMillis() - msDay))
+                  creationTimeEpochMillis = System.currentTimeMillis() - msDay))
         }
       }
       val (_, _, strings) =

@@ -30,7 +30,7 @@ class StoreDocumentTournament(
   override val name = document.name ?: ""
   override val isAdmin = document.adminId == user.uid
   override val isParticipant = document.playerIds?.contains(user.uid) ?: false
-  override val creationTime = document.creationTime ?: System.currentTimeMillis()
+  override val creationTime = document.creationTimeEpochMillis ?: System.currentTimeMillis()
 
   override val status: Tournament.Status
     get() {

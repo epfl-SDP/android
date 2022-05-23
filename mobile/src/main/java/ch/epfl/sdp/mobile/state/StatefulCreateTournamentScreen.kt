@@ -142,7 +142,6 @@ class ActualCreateTournamentScreenState(
               user = user,
               name = name,
               maxPlayers = maximumPlayerCount.toInt(),
-              creationTime = System.currentTimeMillis(),
               bestOf = bestOf ?: 1,
               poolSize = poolSize?.value ?: 0,
               eliminationRounds = eliminationRound?.value ?: 1,
