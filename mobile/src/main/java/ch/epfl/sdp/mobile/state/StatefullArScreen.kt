@@ -3,9 +3,7 @@ package ch.epfl.sdp.mobile.state
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingArState
-import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ar.ArChessBoardScreen
-import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
 
 /**
  * A composable that make [ArChessBoardScreen] stateful
@@ -23,9 +21,7 @@ fun StatefulArScreen(
   val scope = rememberCoroutineScope()
   val match = remember(chessFacade, id) { chessFacade.match(id) }
 
-  val scene = ChessScene<DelegatingChessBoardState.Piece>(scope)
-
-  val state = remember(match, scope) { DelegatingArState(match, scene, scope) }
+  val state = remember(match, scope) { DelegatingArState(match, scope) }
 
   ArChessBoardScreen(state, modifier)
 }

@@ -17,13 +17,4 @@ interface ArGameScreenState<Piece : ChessBoardState.Piece> {
   // A map of pieces and their position that represent the current state of the game
   val pieces: Map<ChessBoardState.Position, Piece>
 
-  /**
-   * Ask the [chessScene] to load the scene
-   *
-   * @param boardScale scale factor of the whole scene
-   */
-  fun onLoad(boardScale: Float)
-
-  /** Update the display AR Scene */
-  fun update()
 }

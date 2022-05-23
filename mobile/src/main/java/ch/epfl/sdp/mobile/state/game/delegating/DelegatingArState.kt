@@ -20,27 +20,17 @@ import kotlinx.coroutines.launch
  * @param chessScene the scene that will be displayed
  * @param scope the [CoroutineScope] on which pieces loading are performed.
  */
-class DelegatingArState(
-    private val match: Match,
-    override val chessScene: ChessScene<Piece>,
-    private val scope: CoroutineScope
-) : ArGameScreenState<Piece>, GameDelegate {
+class DelegatingArState(private val match: Match, private val scope: CoroutineScope) :
+    ArGameScreenState<Piece>, GameDelegate {
 
   override var game: Game by mutableStateOf(Game.create())
 
   override val pieces
     get() = game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
 
+  override val chessScene: ChessScene<Piece> = ChessScene(scope, pieces)
+
   init {
     scope.launch { match.game.collect { game = it } }
-  }
-
-  override fun onLoad(boardScale: Float) {
-    scope.launch { chessScene.loadBoard(pieces) }.invokeOnCompletion { update() }
-    chessScene.scale(boardScale)
-  }
-
-  override fun update() {
-    chessScene.updateBoard(pieces)
   }
 }

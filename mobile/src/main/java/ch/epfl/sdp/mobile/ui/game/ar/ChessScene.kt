@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
+import android.util.Log
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -21,6 +22,11 @@ import io.github.sceneview.node.ModelNode
 import io.github.sceneview.utils.Color as ArColor
 import java.lang.IllegalStateException
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.consumeAsFlow
+import kotlinx.coroutines.flow.onEach
 
 val TAG: String = "ChessScene"
 /**
@@ -32,12 +38,17 @@ val TAG: String = "ChessScene"
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
     private val scope: CoroutineScope,
+    startingBoard: Map<Position, Piece>,
 ) {
 
   /** The [ArModelNode] which acts as the root of the [ArModelNode] hierarchy. */
   val boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
   private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
+
+  /** A conflated [Channel] which associates the position of the pieces to their values. */
+  private val currentPositionChannel =
+      Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
 
   // Board Bounding box
   private var boundingBox: Box? = null
@@ -49,6 +60,23 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     set(value: Context) {
       _context = value
     }
+
+  init {
+
+    scope.launch {
+      val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
+      boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
+      val pieceRenderable = loadPieceRenderable()
+
+      currentPositionChannel
+          .consumeAsFlow()
+          .onEach { positionsToPieces ->
+            Log.d(TAG, "In the flow")
+            updateBoard(positionsToPieces, pieceRenderable, boundingBox!!)
+          }
+          .collect()
+    }
+  }
 
   /**
    * Prepares the [ArModelNode] which contains the AR board to be displayed, by loading the
@@ -147,34 +175,47 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    *
    * @param pieces the new pieces on the board
    */
-  fun updateBoard(pieces: Map<Position, Piece>) {
-    val boundingBox = boundingBox ?: return
+  private fun updateBoard(
+      pieces: Map<Position, Piece>,
+      pieceRenderable: (Rank) -> Renderable,
+      boundingBox: Box
+  ) {
 
-    val it = currentPieces.entries.iterator()
+    val piecesToPositions = pieces.entries.associate { (k, v) -> v to k }
+    val inserted = pieces.values - currentPieces.keys
+    val removed = currentPieces.keys - pieces.values
+    val updated = currentPieces.keys - removed
 
-    // iterate on the current pieces
-    while (it.hasNext()) {
-      val next = it.next()
-      // If the piece is in the given list update his position
-      if (pieces.containsValue(next.key)) {
-        val p = pieces.keys.first { pieces[it] == next.key }
-        next.value.position = toArPosition(p, boundingBox)
-      } else {
-        // The piece didn't exist anymore, delete it
-        boardNode.removeChild(next.value)
-        next.value.destroy()
-        it.remove()
-      }
+    // Remove all the removed pieces.
+    for (piece in removed) {
+      val node = currentPieces[piece] ?: continue
+      boardNode.removeChild(node)
+      node.destroy()
+      currentPieces -= piece
     }
 
-    // Search pieces that aren't on the AR board and load them
-    pieces.filter { (_, piece) -> !currentPieces.contains(piece) }.forEach { (position, piece) ->
-      scope.launch {
-        val pieceRenderable = loadPieceRenderable()
-
-        addPieces(position, boundingBox, pieceRenderable, piece)
-      }
+    // Move all the updated pieces.
+    for (piece in updated) {
+      val position = piecesToPositions[piece] ?: continue
+      val node = currentPieces[piece] ?: continue
+      val arPosition = toArPosition(position, boundingBox)
+      node.position = arPosition
     }
+
+    // Insert missing pieces.
+    for (piece in inserted) {
+      val position = piecesToPositions[piece] ?: continue
+      addPieces(position, boundingBox, pieceRenderable, piece)
+    }
+  }
+
+  /**
+   * Use by [ArChessBoardScreen] to update the pieces' position on the board
+   *
+   * @param pieces The new piece position
+   */
+  fun update(pieces: Map<Position, Piece>) {
+    currentPositionChannel.trySend(pieces)
   }
 
   companion object {
