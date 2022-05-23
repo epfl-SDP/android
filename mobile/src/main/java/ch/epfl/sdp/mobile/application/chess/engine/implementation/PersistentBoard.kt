@@ -47,6 +47,7 @@ fun <Piece : Any> buildBoard(
  * An implementation of a [Board] which is backed by a persistent collection.
  *
  * @param Piece the type of the pieces contained in this board.
+ * @param cells the map of the positions and their pieces.
  */
 private data class PersistentBoard<Piece : Any>
 constructor(
