@@ -575,12 +575,12 @@ class StatefulGameScreenTest {
     val robot = ChessBoardRobot(rule, strings)
 
     robot.performInput {
-      click(4, 6)
-      click(4, 5)
+      click(4, 1)
+      click(4, 2)
     }
 
     // Pawn did not move
-    robot.assertHasPiece(4, 6, White, Pawn)
+    robot.assertHasPiece(4, 1, White, Pawn)
   }
 
   @Test
@@ -670,7 +670,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingUntilCheckmate_displaysCheckmate() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(FoolsMate)
+    robot.play(block = FoolsMate)
     robot.onNodeWithLocalizedText { gameMessageCheckmate }.assertExists()
   }
 
@@ -678,14 +678,14 @@ class StatefulGameScreenTest {
   fun playingUntilStalemate_displaysStalemate() {
 
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(Stalemate)
+    robot.play(block = Stalemate)
     robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
   }
 
   @Test
   fun given_game_when_playingUntilPromotion_then_canPromoteToQueen() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(promote(Rank.Queen))
+    robot.play(block = promote(Rank.Queen))
     robot
         .onAllNodesWithContentDescription(
             robot.strings.boardPieceContentDescription(
@@ -706,7 +706,7 @@ class StatefulGameScreenTest {
   @Test
   fun given_promotionScreen_when_pressingRankTwice_then_confirmIsNotEnabled() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(UntilPromotion)
+    robot.play(block = UntilPromotion)
     robot.performInput {
       drag(from = ChessBoardState.Position(7, 1), to = ChessBoardState.Position(6, 0))
     }

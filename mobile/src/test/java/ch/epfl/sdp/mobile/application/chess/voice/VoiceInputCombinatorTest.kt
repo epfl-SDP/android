@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

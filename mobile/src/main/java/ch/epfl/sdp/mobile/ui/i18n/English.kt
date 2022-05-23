@@ -71,6 +71,7 @@ object English : LocalizedStrings {
   override val settingEditCancel = "Cancel".uppercase()
   override val settingProfileNameLabel = "Profile Name"
   override val settingProfileImageLabel = "Profile Image"
+  override val settingLogout: String = "Logout"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()

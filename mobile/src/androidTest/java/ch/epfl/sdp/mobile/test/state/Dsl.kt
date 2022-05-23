@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
@@ -15,8 +16,9 @@ import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.i18n.English
@@ -70,6 +72,7 @@ data class TestEnvironment(
 /**
  * Sets the content with to the [ComposeContentTestRule], and logs a default user in.
  *
+ * @param userId the user identifier for the test environment user.
  * @param store the [Store] to use by default.
  * @param auth the [Auth] to use by default.
  * @param assets the [AssetManager] to use by default.
@@ -81,8 +84,11 @@ data class TestEnvironment(
  * information.
  */
 suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
-    store: Store = emptyStore(),
-    auth: Auth = emptyAuth(),
+    userId: String = DefaultId,
+    store: Store = buildStore {
+      collection("users") { document(userId, ProfileDocument(uid = userId, name = DefaultName)) }
+    },
+    auth: Auth = buildAuth { user(DefaultEmail, DefaultPassword, userId) },
     assets: AssetManager = emptyAssets(),
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
     strings: LocalizedStrings = English,
@@ -93,7 +99,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val chessFacade = ChessFacade(auth, store, assets)
   val speechFacade = SpeechFacade(recognizer)
   val tournamentFacade = TournamentFacade(auth, store)
-  authenticationFacade.signUpWithEmail(DefaultEmail, DefaultName, DefaultPassword)
+  authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
   val user = authenticationFacade.awaitAuthenticatedUser()
   val environment =
       TestEnvironment(
@@ -125,6 +131,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
 }
 
 // Default values.
+private const val DefaultId = "superSU"
 private const val DefaultEmail = "alexandre@example.org"
 private const val DefaultName = "Alexandre"
 private const val DefaultPassword = "hell0hackers!!!!"
