@@ -317,29 +317,29 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-      rule.setContentWithTestEnvironment(store = store) {
-        StatefulTournamentDetailsScreen(
-          user = user,
-          reference = reference,
-          actions = TournamentDetailsActions(onBackClick = {}, onMatchClick = {}),
-        )
-      }
+        rule.setContentWithTestEnvironment(store = store) {
+          StatefulTournamentDetailsScreen(
+              user = user,
+              reference = reference,
+              actions = TournamentDetailsActions(onBackClick = {}, onMatchClick = {}),
+          )
+        }
 
     env.infrastructure
-      .store
-      .collection(TournamentDocument.Collection)
-      .document(reference.uid)
-      .set(
-        TournamentDocument(
-          name = "testTournamentName",
-          adminId = env.user.uid,
-          maxPlayers = 2,
-          poolSize = 0,
-          bestOf = 1,
-          eliminationRounds = 1,
-          playerIds = listOf("1", "2"),
-        ),
-      )
+        .store
+        .collection(TournamentDocument.Collection)
+        .document(reference.uid)
+        .set(
+            TournamentDocument(
+                name = "testTournamentName",
+                adminId = env.user.uid,
+                maxPlayers = 2,
+                poolSize = 0,
+                bestOf = 1,
+                eliminationRounds = 1,
+                playerIds = listOf("1", "2"),
+            ),
+        )
 
     rule.performClickOnceVisible(env.strings.tournamentsDetailsStartEnoughPlayersTitle)
     rule.performClickOnceVisible(env.strings.tournamentsCreateElimDemomN(1))

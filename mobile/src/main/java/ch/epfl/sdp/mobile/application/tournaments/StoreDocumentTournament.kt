@@ -188,7 +188,8 @@ class StoreDocumentTournament(
       nextDepth: (TournamentDocument) -> Int?,
   ) {
     val ranked =
-        results.players
+        results
+            .players
             .map {
               val score = results.score(it).toFloat()
               val total = results.played(it).toFloat()
