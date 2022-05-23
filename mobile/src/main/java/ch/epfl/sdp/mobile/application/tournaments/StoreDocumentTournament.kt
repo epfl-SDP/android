@@ -11,8 +11,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import ch.epfl.sdp.mobile.state.tournaments.SystemTime
-import ch.epfl.sdp.mobile.state.tournaments.Time
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
 import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
 import kotlin.math.pow
 import kotlin.time.Duration
@@ -28,19 +27,20 @@ import kotlin.time.Duration.Companion.seconds
  * @param document the backing [TournamentDocument].
  * @param user the currently logged-in [AuthenticatedUser].
  * @param store the [Store] which can be used by the [StoreDocumentTournament].
- * @param time the [Time] used to calculate the duration of creation of the tournament.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
  */
 class StoreDocumentTournament(
     private val document: TournamentDocument,
     private val user: AuthenticatedUser,
     private val store: Store,
-    private val time: Time = SystemTime(),
+    private val timeProvider: TimeProvider,
 ) : Tournament {
   override val reference = TournamentReference(document.uid ?: "")
   override val name = document.name ?: ""
   override val isAdmin = document.adminId == user.uid
   override val isParticipant = document.playerIds?.contains(user.uid) ?: false
-  override val durationCreated = roundedDuration(document.creationTimeEpochMillis, time)
+  override val durationCreated = roundedDuration(document.creationTimeEpochMillis, timeProvider)
 
   override val status: Tournament.Status
     get() {
@@ -194,11 +194,12 @@ class StoreDocumentTournament(
    * (seconds minimum).
    *
    * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
-   * @param time the [Time] used to calculate the duration of creation of the tournament.
+   * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+   * tournament.
    */
-  private fun roundedDuration(startTime: Long?, time: Time): Duration {
+  private fun roundedDuration(startTime: Long?, timeProvider: TimeProvider): Duration {
     val duration =
-        if (startTime != null) (time.getCurrentTimeMillis() - startTime).milliseconds
+        if (startTime != null) (timeProvider.getCurrentTimeMillis() - startTime).milliseconds
         else 0.milliseconds
 
     if (duration >= 1.days) {

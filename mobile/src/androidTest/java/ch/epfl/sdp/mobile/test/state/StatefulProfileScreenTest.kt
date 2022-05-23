@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
@@ -48,7 +49,7 @@ class StatefulProfileScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
+      val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
       val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -77,7 +78,7 @@ class StatefulProfileScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()

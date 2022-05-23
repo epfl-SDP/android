@@ -11,7 +11,6 @@ import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
-import ch.epfl.sdp.mobile.state.tournaments.SystemTime
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection

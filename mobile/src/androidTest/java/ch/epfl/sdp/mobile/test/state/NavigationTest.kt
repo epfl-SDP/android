@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -34,7 +35,7 @@ class NavigationTest {
     val socialFacade = SocialFacade(SuspendingAuth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(SuspendingAuth, store)
+    val tournamentFacade = TournamentFacade(SuspendingAuth, store, SystemTimeProvider)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
         Navigation()
@@ -52,7 +53,7 @@ class NavigationTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {

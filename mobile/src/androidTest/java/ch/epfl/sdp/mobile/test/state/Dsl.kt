@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
@@ -98,7 +99,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val socialFacade = SocialFacade(auth, store)
   val chessFacade = ChessFacade(auth, store, assets)
   val speechFacade = SpeechFacade(recognizer)
-  val tournamentFacade = TournamentFacade(auth, store)
+  val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
   authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
   val user = authenticationFacade.awaitAuthenticatedUser()
   val environment =

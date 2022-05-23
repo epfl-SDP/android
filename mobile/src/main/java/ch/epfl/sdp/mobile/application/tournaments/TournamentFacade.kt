@@ -6,11 +6,10 @@ import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
-import ch.epfl.sdp.mobile.state.tournaments.SystemTime
-import ch.epfl.sdp.mobile.state.tournaments.Time
 import kotlin.math.log2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -20,12 +19,13 @@ import kotlinx.coroutines.flow.map
  *
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
- * @param time the [Time] used to calculate the duration of creation of the tournament.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
  */
 class TournamentFacade(
     private val auth: Auth,
     private val store: Store,
-    private val time: Time = SystemTime(),
+    private val timeProvider: TimeProvider,
 ) {
 
   /**
@@ -36,7 +36,7 @@ class TournamentFacade(
   // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
   fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     return store.collection(TournamentDocument.Collection).asFlow<TournamentDocument>().map {
-      it.mapNotNull { doc -> doc?.toTournament(user, store, time) }
+      it.mapNotNull { doc -> doc?.toTournament(user, store, timeProvider) }
     }
   }
 
@@ -86,7 +86,7 @@ class TournamentFacade(
               adminId = user.uid,
               name = name,
               maxPlayers = maxPlayers,
-              creationTimeEpochMillis = System.currentTimeMillis(),
+              creationTimeEpochMillis = timeProvider.getCurrentTimeMillis(),
               bestOf = bestOf,
               poolSize = poolSize,
               eliminationRounds = eliminationRounds,
@@ -114,7 +114,7 @@ class TournamentFacade(
           .collection(TournamentDocument.Collection)
           .document(reference.uid)
           .asFlow<TournamentDocument>()
-          .map { it?.toTournament(user, store, time) }
+          .map { it?.toTournament(user, store, timeProvider) }
 
   /**
    * Returns the [Flow] of the [List] of [Pool]s for a given [TournamentReference].

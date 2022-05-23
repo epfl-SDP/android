@@ -9,12 +9,12 @@ import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.ui.tournaments.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.PoolBanner.*
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 /** An object representing a [Tournament] which is still loading. */
 object EmptyTournament : Tournament {

@@ -1,10 +1,11 @@
-package ch.epfl.sdp.mobile.state.tournaments
+package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
-/** A class that allows changing the time. */
-class FakeTime : Time {
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
+
+/** An object that allows changing the time. */
+object FakeTimeProvider : TimeProvider {
   /** The current time that can be modified */
-  var currentTime: Long = 1L
-    private set
+  var currentTime: Long = 0L
 
   /**
    * Sets the current time to newTime.

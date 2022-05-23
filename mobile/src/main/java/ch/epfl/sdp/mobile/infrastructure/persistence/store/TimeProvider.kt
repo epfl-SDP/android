@@ -1,7 +1,7 @@
-package ch.epfl.sdp.mobile.state.tournaments
+package ch.epfl.sdp.mobile.infrastructure.persistence.store
 
 /** Interface providing the current time. */
-interface Time {
+interface TimeProvider {
 
   /**
    * Function that returns the current time.
