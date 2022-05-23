@@ -99,7 +99,11 @@ class StatefulContestScreenTest {
           document(
               "id1",
               TournamentDocument(
-                  "tid1", "2", "Tournament 1", playerIds = listOf("1"), creationTimeEpochMillis = startTime))
+                  "tid1",
+                  "2",
+                  "Tournament 1",
+                  playerIds = listOf("1"),
+                  creationTimeEpochMillis = startTime))
         }
       }
 
