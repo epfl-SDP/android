@@ -35,7 +35,7 @@ private class ChessBoardRobotGameScope(
 
   override fun tryMove(from: Position, delta: Delta) {
     robot.performInput(rotated = rotated) {
-      val to = from + delta ?: return@performInput // Ignore out of bounds moves.
+      val to = from + delta
 
       click(from.x, from.y)
       click(to.x, to.y)

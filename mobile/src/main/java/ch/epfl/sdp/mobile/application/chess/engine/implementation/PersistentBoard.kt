@@ -14,7 +14,7 @@ import kotlinx.collections.immutable.toPersistentMap
 fun <Piece : Any> emptyBoard(): Board<Piece> = buildBoard {}
 
 /**
- * An interface which describes a build for a [PersistentBoard].
+ * An interface which describes a builder for a [Board].
  *
  * @param Piece the type of the pieces contained in this board.
  */
@@ -44,25 +44,14 @@ fun <Piece : Any> buildBoard(
 }
 
 /**
- * An implementation of a [Board] which is backed on a persistent collection.
+ * An implementation of a [Board] which is backed by a persistent collection.
  *
  * @param Piece the type of the pieces contained in this board.
  */
-data class PersistentBoard<Piece : Any>
+private data class PersistentBoard<Piece : Any>
 constructor(
     private val cells: PersistentMap<Position, Piece>,
 ) : Board<Piece>, Iterable<Pair<Position, Piece>> by cells.map({ (a, b) -> Pair(a, b) }) {
 
   override fun get(position: Position): Piece? = cells[position]
-
-  override fun set(position: Position, piece: Piece?): PersistentBoard<Piece> {
-    if (!position.inBounds) return this
-    val updated =
-        if (piece != null) {
-          cells.put(position, piece)
-        } else {
-          cells.remove(position)
-        }
-    return copy(cells = updated)
-  }
 }
