@@ -11,8 +11,16 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
+import ch.epfl.sdp.mobile.state.tournaments.SystemTime
+import ch.epfl.sdp.mobile.state.tournaments.Time
 import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
 import kotlin.math.pow
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * An implementation of a [Tournament] which uses a [TournamentDocument] under-the-hood.
@@ -20,17 +28,19 @@ import kotlin.math.pow
  * @param document the backing [TournamentDocument].
  * @param user the currently logged-in [AuthenticatedUser].
  * @param store the [Store] which can be used by the [StoreDocumentTournament].
+ * @param time the [Time] used to calculate the duration of creation of the tournament.
  */
 class StoreDocumentTournament(
     private val document: TournamentDocument,
     private val user: AuthenticatedUser,
     private val store: Store,
+    private val time: Time = SystemTime(),
 ) : Tournament {
   override val reference = TournamentReference(document.uid ?: "")
   override val name = document.name ?: ""
   override val isAdmin = document.adminId == user.uid
   override val isParticipant = document.playerIds?.contains(user.uid) ?: false
-  override val creationTime = document.creationTimeEpochMillis ?: System.currentTimeMillis()
+  override val durationCreated = roundedDuration(document.creationTimeEpochMillis, time)
 
   override val status: Tournament.Status
     get() {
@@ -177,5 +187,28 @@ class StoreDocumentTournament(
         }
       }
     }
+  }
+
+  /**
+   * Obtains the elapsed duration from the startTime and rounds it to the closest unit of time
+   * (seconds minimum).
+   *
+   * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
+   * @param time the [Time] used to calculate the duration of creation of the tournament.
+   */
+  private fun roundedDuration(startTime: Long?, time: Time): Duration {
+    val duration =
+        if (startTime != null) (time.getCurrentTimeMillis() - startTime).milliseconds
+        else 0.milliseconds
+
+    if (duration >= 1.days) {
+      return duration.inWholeDays.days
+    } else if (duration >= 1.hours) {
+      return duration.inWholeHours.hours
+    } else if (duration >= 1.minutes) {
+      return duration.inWholeMinutes.minutes
+    }
+
+    return duration.inWholeSeconds.seconds
   }
 }

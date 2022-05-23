@@ -14,12 +14,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 /** An object representing a [Tournament] which is still loading. */
 object EmptyTournament : Tournament {
   override val reference = TournamentReference("")
   override val name = ""
-  override val creationTime = System.currentTimeMillis()
+  override val durationCreated = 0.milliseconds
   override val isAdmin = false
   override val isParticipant = false
   override val status = Status.Unknown

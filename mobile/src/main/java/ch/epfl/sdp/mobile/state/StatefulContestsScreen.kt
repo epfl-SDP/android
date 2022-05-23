@@ -12,12 +12,6 @@ import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreen
 import ch.epfl.sdp.mobile.ui.tournaments.ContestScreenState
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,27 +34,7 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
         null
       }
   // TODO: Change to tournament.status when added.
-  override val status: Status = Status.Ongoing(roundedDuration(tournament.creationTime))
-}
-
-/**
- * Obtains the elapsed duration from the startTime and rounds it to the closest unit of time
- * (seconds minimum).
- *
- * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
- */
-private fun roundedDuration(startTime: Long): Duration {
-  val duration = (System.currentTimeMillis() - startTime).milliseconds
-
-  if (duration >= 1.days) {
-    return duration.inWholeDays.days
-  } else if (duration >= 1.hours) {
-    return duration.inWholeHours.hours
-  } else if (duration >= 1.minutes) {
-    return duration.inWholeMinutes.minutes
-  }
-
-  return duration.inWholeSeconds.seconds
+  override val status: Status = Status.Ongoing(tournament.durationCreated)
 }
 
 /**

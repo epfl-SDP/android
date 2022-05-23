@@ -9,6 +9,8 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.state.tournaments.SystemTime
+import ch.epfl.sdp.mobile.state.tournaments.Time
 import kotlin.math.log2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,8 +20,13 @@ import kotlinx.coroutines.flow.map
  *
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param store the [Store] which is used to manage documents.
+ * @param time the [Time] used to calculate the duration of creation of the tournament.
  */
-class TournamentFacade(private val auth: Auth, private val store: Store) {
+class TournamentFacade(
+    private val auth: Auth,
+    private val store: Store,
+    private val time: Time = SystemTime(),
+) {
 
   /**
    * Returns all of the registered tournaments of the application.
@@ -29,7 +36,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
   // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
   fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     return store.collection(TournamentDocument.Collection).asFlow<TournamentDocument>().map {
-      it.mapNotNull { doc -> doc?.toTournament(user, store) }
+      it.mapNotNull { doc -> doc?.toTournament(user, store, time) }
     }
   }
 
@@ -107,7 +114,7 @@ class TournamentFacade(private val auth: Auth, private val store: Store) {
           .collection(TournamentDocument.Collection)
           .document(reference.uid)
           .asFlow<TournamentDocument>()
-          .map { it?.toTournament(user, store) }
+          .map { it?.toTournament(user, store, time) }
 
   /**
    * Returns the [Flow] of the [List] of [Pool]s for a given [TournamentReference].

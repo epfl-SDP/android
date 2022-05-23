@@ -165,7 +165,7 @@ object English : LocalizedStrings {
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
       append("Started ")
-      withStyle(style) { append(duration.absoluteValue.toDurationString()) }
+      withStyle(style) { append(duration.absoluteValue.toEnglishString()) }
       append(" ago")
     }
   }
@@ -187,7 +187,8 @@ object English : LocalizedStrings {
   override val tournamentsCreateElimDepthFinal = "Final"
 }
 
-fun Duration.toDurationString(): String {
+/** Converts a [Duration] to an English string. */
+private fun Duration.toEnglishString(): String {
   if (this.toString().contains("d")) {
     return "${this.toLong(DurationUnit.DAYS)} days"
   } else if (this.toString().contains("h")) {

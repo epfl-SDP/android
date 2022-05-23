@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.infrastructure.assets.android.AndroidAssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
 import ch.epfl.sdp.mobile.infrastructure.speech.android.AndroidSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.state.tournaments.SystemTime
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
