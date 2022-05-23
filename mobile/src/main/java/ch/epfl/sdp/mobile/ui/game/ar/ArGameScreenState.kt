@@ -11,9 +11,6 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 @Stable
 interface ArGameScreenState<Piece : ChessBoardState.Piece> {
 
-  // Scene that contains all information about the AR
-  val chessScene: ChessScene<Piece>
-
   // A map of pieces and their position that represent the current state of the game
   val pieces: Map<ChessBoardState.Position, Piece>
 

@@ -37,6 +37,7 @@ val TAG: String = "ChessScene"
  * @param scope A scope that is used to launch the model loading
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
+    private val context : Context,
     private val scope: CoroutineScope,
     startingBoard: Map<Position, Piece>,
 ) {
@@ -53,14 +54,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   // Board Bounding box
   private var boundingBox: Box? = null
 
-  private var _context: Context? = null
-
-  var context: Context
-    get() = _context ?: throw IllegalStateException()
-    set(value: Context) {
-      _context = value
-    }
-
   init {
 
     scope.launch {
@@ -71,7 +64,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       currentPositionChannel
           .consumeAsFlow()
           .onEach { positionsToPieces ->
-            Log.d(TAG, "In the flow")
             updateBoard(positionsToPieces, pieceRenderable, boundingBox!!)
           }
           .collect()
@@ -123,20 +115,20 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    *
    * @param pieces Map of piece and their position
    */
-  suspend fun loadBoard(pieces: Map<Position, Piece>) {
-    // Load Board
-    val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
-    boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
-
-    val boundingBox = boundingBox ?: return
-
-    val pieceRenderable = loadPieceRenderable()
-
-    // Load pieces
-    for ((position, piece) in pieces) {
-      addPieces(position, boundingBox, pieceRenderable, piece)
-    }
-  }
+//  suspend fun loadBoard(pieces: Map<Position, Piece>) {
+//    // Load Board
+//    val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
+//    boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
+//
+//    val boundingBox = boundingBox ?: return
+//
+//    val pieceRenderable = loadPieceRenderable()
+//
+//    // Load pieces
+//    for ((position, piece) in pieces) {
+//      addPieces(position, boundingBox, pieceRenderable, piece)
+//    }
+//  }
 
   /**
    * Create the renderable of the given [piece] and added in to [boardNode] as a child

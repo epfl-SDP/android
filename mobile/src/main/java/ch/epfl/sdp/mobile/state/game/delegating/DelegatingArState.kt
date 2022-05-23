@@ -28,8 +28,6 @@ class DelegatingArState(private val match: Match, private val scope: CoroutineSc
   override val pieces
     get() = game.board.associate { (pos, piece) -> pos.toPosition() to Piece(piece) }
 
-  override val chessScene: ChessScene<Piece> = ChessScene(scope, pieces)
-
   init {
     scope.launch { match.game.collect { game = it } }
   }

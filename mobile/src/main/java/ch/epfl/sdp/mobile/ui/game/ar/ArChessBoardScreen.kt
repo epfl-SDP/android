@@ -9,6 +9,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
+import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
 
 private const val BoardScale = 0.2f
@@ -27,6 +28,8 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
   val view = LocalView.current
   val strings = LocalLocalizedStrings.current
 
+  var chessScene by remember { mutableStateOf<ChessScene<Piece>?>(null) }
+
   // Keep the screen on only for this composable
   DisposableEffect(view) {
     view.keepScreenOn = true
@@ -35,23 +38,27 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
 
   AndroidView(
       factory = { context ->
+        chessScene = ChessScene(context, view.lifecycleScope, state.pieces)
 
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        state.chessScene.context = context
+        val chessScene = chessScene ?: return@AndroidView arSceneView
 
-        state.chessScene.scale(BoardScale)
+        chessScene.scale(BoardScale)
 
         // Place the chess board on the taped position
         arSceneView.onTouchAr = { hitResult, _ ->
-          anchorOrMoveBoard(arSceneView, state.chessScene, hitResult.createAnchor())
+          anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
         }
 
         arSceneView
       },
       modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
-      update = { state.chessScene.update(state.pieces) })
+      update = {
+        val chessScene = chessScene ?: return@AndroidView
+        chessScene.update(state.pieces)
+      })
 }
 
 /**
