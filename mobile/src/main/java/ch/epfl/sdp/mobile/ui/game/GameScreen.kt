@@ -58,7 +58,9 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             onBackClick = state::onBackClick,
             onArClick = state::onArClick,
             onListenClick = state::onListenClick,
+            onTTsClick = state::onTTsVolumeClick,
             listening = state.listening,
+            muted = state.muted,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },

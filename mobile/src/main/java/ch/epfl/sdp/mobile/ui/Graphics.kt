@@ -95,6 +95,12 @@ val PawniesIcons.TournamentsNextStep
 val PawniesIcons.Logout
   get() = Icons.Default.Logout
 
+val PawniesIcons.TTsOn
+  get() = Icons.Default.VolumeUp
+
+val PawniesIcons.TTsOff
+  get() = Icons.Default.VolumeOff
+
 val PawniesIcons.Settings
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)
 

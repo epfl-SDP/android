@@ -40,6 +40,8 @@ object English : LocalizedStrings {
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
   override val boardContentDescription = "chessboard"
 
+  override val gameTTsOnContentDescription = "TTS on"
+  override val gameTTsOffContentDescription = "TTS off"
   override val gameBack = "Back"
   override val gameShowAr = "Start AR mode"
   override val gameMicOffContentDescription = "Microphone off"

@@ -43,7 +43,7 @@ fun ActualGameScreenState(
   val promotions = DelegatingPromotionState(chessBoard)
   val players = DelegatingPlayersInfoState(match, scope, chessBoard)
   val moves = DelegatingMovesInfoState(chessBoard)
-  val moveableChessBoard =
+  val movableChessBoard =
       DelegatingPromotionMovableChessBoardState(
           user,
           chessBoard,
@@ -58,14 +58,18 @@ fun ActualGameScreenState(
           snackbarHostState,
           scope,
       )
+
+  val ttsSynthesizer = /*TODO*/
+
   return ActualGameScreenState(
       actions = actions,
       match = match,
-      moveableChessBoard = moveableChessBoard,
+      movableChessBoard = movableChessBoard,
       promotionState = promotions,
       movesInfo = moves,
       playersInfo = players,
       speechRecognizer = speechRecognizer,
+      textToSpeech = /*TODO*/,
   )
 }
 
@@ -75,7 +79,7 @@ fun ActualGameScreenState(
  *
  * @param actions the [StatefulGameScreenActions] for this screen.
  * @param match the [Match] for this screen.
- * @param moveableChessBoard the underlying [MovableChessBoardState].
+ * @param movableChessBoard the underlying [MovableChessBoardState].
  * @param promotionState the underlying [PromotionState].
  * @param movesInfo the underlying [MovesInfoState].
  * @param playersInfo the underlying [PlayersInfoState].
@@ -85,18 +89,20 @@ class ActualGameScreenState
 constructor(
     private val actions: StatefulGameScreenActions,
     private val match: Match,
-    moveableChessBoard: MovableChessBoardState<Piece>,
+    movableChessBoard: MovableChessBoardState<Piece>,
     promotionState: PromotionState,
     movesInfo: MovesInfoState,
     playersInfo: PlayersInfoState,
     speechRecognizer: SpeechRecognizerState,
+    textToSpeech: TextToSpeechState,
 ) :
     GameScreenState<Piece>,
-    MovableChessBoardState<Piece> by moveableChessBoard,
+    MovableChessBoardState<Piece> by movableChessBoard,
     PromotionState by promotionState,
     MovesInfoState by movesInfo,
     PlayersInfoState by playersInfo,
-    SpeechRecognizerState by speechRecognizer {
+    SpeechRecognizerState by speechRecognizer,
+    TextToSpeechState by textToSpeech {
 
   override fun onArClick() = actions.onShowAr(match)
   override fun onBackClick() = actions.onBack()

@@ -37,7 +37,9 @@ fun GameScreenTopBar(
     onBackClick: () -> Unit,
     onArClick: () -> Unit,
     onListenClick: () -> Unit,
+    onTTsClick: () -> Unit,
     listening: Boolean,
+    muted: Boolean,
     modifier: Modifier = Modifier,
 ) {
   TopAppBar(
@@ -50,6 +52,8 @@ fun GameScreenTopBar(
         }
       },
       actions = {
+        TTsVolumeButton(onClick = onTTsClick, muted = muted)
+        Spacer(Modifier.width(8.dp))
         ArButton(onClick = onArClick)
         Spacer(Modifier.width(8.dp))
         ListeningButton(onClick = onListenClick, selected = listening)
@@ -140,5 +144,51 @@ private class ListeningButtonColors(
   @Composable
   override fun contentColor(enabled: Boolean): State<Color> {
     return animateColorAsState(if (listening) Green100 else Green800)
+  }
+}
+
+@Composable
+private fun TTsVolumeButton(
+    onClick: () -> Unit,
+    muted: Boolean,
+    modifier: Modifier = Modifier
+) {
+  val currentVolume = rememberUpdatedState(muted)
+  val colors = remember(currentVolume) { TTsVolumeButtonColors(currentVolume) }
+  OutlinedButton(
+      onClick = onClick,
+      shape = CircleShape,
+      modifier = modifier.height(48.dp).widthIn(min = 48.dp),
+      contentPadding = PaddingValues(),
+      colors = colors,
+      border = BorderStroke(Dp.Hairline, Green100),
+  ) {
+    if (muted) {
+      Icon(PawniesIcons.TTsOff, LocalLocalizedStrings.current.gameTTsOffContentDescription)
+    } else {
+      Icon(PawniesIcons.TTsOn, LocalLocalizedStrings.current.gameTTsOnContentDescription)
+    }
+  }
+}
+
+/**
+ * The [ButtonColors] for the text to speech volume button.
+ *
+ * @param muted the current volume [State].
+ */
+private class TTsVolumeButtonColors(
+    muted: State<Boolean>,
+) : ButtonColors {
+
+  private val muted by muted
+
+  @Composable
+  override fun backgroundColor(enabled: Boolean): State<Color> {
+    return animateColorAsState(if (!muted) Green800 else Beige050)
+  }
+
+  @Composable
+  override fun contentColor(enabled: Boolean): State<Color> {
+    return animateColorAsState(if (!muted) Green100 else Green800)
   }
 }

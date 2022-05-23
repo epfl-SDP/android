@@ -67,6 +67,8 @@ interface LocalizedStrings {
   val boardPieceContentDescription: (color: String, rank: String) -> String
   val boardContentDescription: String
 
+  val gameTTsOnContentDescription: String
+  val gameTTsOffContentDescription : String
   val gameBack: String
   val gameShowAr: String
   val gameMicOffContentDescription: String
