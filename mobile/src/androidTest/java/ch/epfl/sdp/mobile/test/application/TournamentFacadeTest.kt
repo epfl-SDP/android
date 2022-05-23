@@ -95,40 +95,40 @@ class TournamentFacadeTest {
   @Test
   fun given_tournamentParameters_when_creatingTournament_then_fetchedTournamentHasSameParameters() =
       runTest {
-        val auth = emptyAuth()
-        val dataStoreFactory = emptyDataStoreFactory()
-        val store = emptyStore()
+    val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
+    val store = emptyStore()
 
-        val authFacade = AuthenticationFacade(auth, store)
-        val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val authFacade = AuthenticationFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
-        authFacade.signUpWithEmail("email@example.org", "user", "password")
-        val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    authFacade.signUpWithEmail("email@example.org", "user", "password")
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
-        val ref =
-            tournamentFacade.createTournament(
-                user = user,
-                name = "Test tournament",
-                maxPlayers = 10,
-                bestOf = 3,
-                poolSize = 4,
-                eliminationRounds = 2,
-            )
+    val ref =
+        tournamentFacade.createTournament(
+            user = user,
+            name = "Test tournament",
+            maxPlayers = 10,
+            bestOf = 3,
+            poolSize = 4,
+            eliminationRounds = 2,
+        )
 
-        val fetched =
-            store
-                .collection(TournamentDocument.Collection)
-                .document(ref!!.uid)
-                .get<TournamentDocument>()
+    val fetched =
+        store
+            .collection(TournamentDocument.Collection)
+            .document(ref!!.uid)
+            .get<TournamentDocument>()
 
-        assertThat(fetched?.adminId).isEqualTo(user.uid)
-        assertThat(fetched?.name).isEqualTo("Test tournament")
-        assertThat(fetched?.maxPlayers).isEqualTo(10)
-        assertThat(fetched?.bestOf).isEqualTo(3)
-        assertThat(fetched?.poolSize).isEqualTo(4)
-        assertThat(fetched?.eliminationRounds).isEqualTo(2)
-        assertThat(fetched?.playerIds).isNull()
-      }
+    assertThat(fetched?.adminId).isEqualTo(user.uid)
+    assertThat(fetched?.name).isEqualTo("Test tournament")
+    assertThat(fetched?.maxPlayers).isEqualTo(10)
+    assertThat(fetched?.bestOf).isEqualTo(3)
+    assertThat(fetched?.poolSize).isEqualTo(4)
+    assertThat(fetched?.eliminationRounds).isEqualTo(2)
+    assertThat(fetched?.playerIds).isNull()
+  }
 
   @Test
   fun given_InvalidTournamentParameters_when_creatingTournament_then_returnsNull() = runTest {

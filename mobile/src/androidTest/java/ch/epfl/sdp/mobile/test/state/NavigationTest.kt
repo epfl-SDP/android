@@ -37,7 +37,8 @@ class NavigationTest {
     val socialFacade = SocialFacade(SuspendingAuth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(SuspendingAuth, dataStoreFactory, store, SystemTimeProvider)
+    val tournamentFacade =
+        TournamentFacade(SuspendingAuth, dataStoreFactory, store, SystemTimeProvider)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
         Navigation()
