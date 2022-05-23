@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.V27.Theme.Pawnies" parent="Base.V23.Theme.Pawnies">
+        <item name="android:navigationBarColor">#FFFBE6</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="Theme.Pawnies" parent="Base.V27.Theme.Pawnies" />
+
+</resources>

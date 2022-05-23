@@ -1,6 +1,9 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
     <style name="Base.V21.Theme.Pawnies" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#356859</item>
+        <item name="android:navigationBarColor">#000000</item>
         <item name="android:windowBackground">#FFFBE6</item>
     </style>
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.V23.Theme.Pawnies" parent="Base.V21.Theme.Pawnies">
+        <item name="android:statusBarColor">#FFFBE6</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Pawnies" parent="Base.V23.Theme.Pawnies" />
+
+</resources>
