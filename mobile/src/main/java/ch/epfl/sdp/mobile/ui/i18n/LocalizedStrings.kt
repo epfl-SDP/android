@@ -178,4 +178,5 @@ interface LocalizedStrings {
   val tournamentsFilterOnlyDone: String
   val tournamentsFilterOnlyParticipating: String
   val tournamentsFilterOnlyAdministrating: String
+  val tournamentsFilterBackContentDescription: String
 }

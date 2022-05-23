@@ -13,6 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
@@ -54,6 +56,7 @@ fun FiltersDialog(
     state: FiltersDialogState,
     modifier: Modifier = Modifier,
 ) {
+  val strings = LocalLocalizedStrings.current
   Box(modifier.fillMaxSize(), Alignment.BottomCenter) {
 
     // Catch clicks on the background to go up.
@@ -63,7 +66,8 @@ fun FiltersDialog(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = state::onBack,
-            ),
+            )
+            .semantics { contentDescription = strings.tournamentDetailsBackContentDescription },
     )
 
     // Bottom sheet.
@@ -75,7 +79,6 @@ fun FiltersDialog(
           Modifier.padding(vertical = 24.dp).fillMaxWidth(),
           spacedBy(16.dp),
       ) {
-        val strings = LocalLocalizedStrings.current
         Text(
             text = strings.tournamentsFilterTitle,
             style = MaterialTheme.typography.button,

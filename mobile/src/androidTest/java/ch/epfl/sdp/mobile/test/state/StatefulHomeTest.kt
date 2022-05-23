@@ -650,4 +650,16 @@ class StatefulHomeTest {
     rule.onNodeWithText(puzzleIds[0], substring = true).performClick()
     rule.onNodeWithText(strings.puzzleNumber(puzzleIds[0])).assertExists()
   }
+
+  @Test
+  fun given_home_when_navigatingToFiltersAndBack_then_goesBack() = runTest {
+    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    with(strings) {
+      rule.onNodeWithText(sectionContests).performClick()
+      rule.onNodeWithContentDescription(tournamentsFilter).performClick()
+      rule.onNodeWithText(tournamentsFilterTitle).assertIsDisplayed() // On the filters dialog
+      rule.onNodeWithContentDescription(tournamentDetailsBackContentDescription).performClick()
+      rule.onNodeWithText(tournamentsFilterTitle).assertDoesNotExist() // On the contest list
+    }
+  }
 }

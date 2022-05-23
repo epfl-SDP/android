@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.state.tournaments
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.state.tournaments.StatefulFiltersDialogScreen
@@ -43,5 +44,17 @@ class StatefulFiltersDialogScreenTest {
     val filters = facades.tournaments.filters().first()
 
     assertThat(filters.showAdministrating).isTrue()
+  }
+
+  @Test
+  fun given_dialog_when_clickingBack_then_callCallback() = runTest {
+    var clicked = false
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment {
+          StatefulFiltersDialogScreen(navigateBack = { clicked = true })
+        }
+    rule.onNodeWithContentDescription(strings.tournamentDetailsBackContentDescription)
+        .performClick()
+    assertThat(clicked).isTrue()
   }
 }
