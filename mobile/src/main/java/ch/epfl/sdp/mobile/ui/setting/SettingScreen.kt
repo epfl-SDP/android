@@ -98,7 +98,7 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
-    SettingsButton(onClick = state::onEditProfileImageClick)
+    SettingsButton(onClick = state::onEditLanguageClick)
   }
 }
 

@@ -4,39 +4,42 @@ import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
+import ch.epfl.sdp.mobile.ui.i18n.English
+import ch.epfl.sdp.mobile.ui.setting.EditLanguageDialog
+import ch.epfl.sdp.mobile.ui.setting.EditLanguageDialogState
 import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialog
 import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialogState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.Locale.ENGLISH
 
 /**
- * Implementation of the [EditProfileNameDialogState] interface
+ * Implementation of the [EditLanguageDialogState] interface
  *
- * @param user the current [AuthenticatedUser].
  * @param scope the coroutine scope.
+ * @param settingFacade the facade to access the settings
  * @param onCloseAction the callback called after we click on Cancel or Save Button.
  */
 class EditLanguageDialogStateImpl(
-    private val user: AuthenticatedUser,
     private val scope: CoroutineScope,
+    private val settingFacade: SettingsFacade,
     onCloseAction: State<() -> Unit>,
-) : EditProfileNameDialogState {
+) : EditLanguageDialogState {
   private val onCloseAction by onCloseAction
 
-  override var userName by mutableStateOf(user.name)
+  override var selectedLanguage by mutableStateOf("")
 
-  /**
-   * A [MutatorMutex] which enforces mutual exclusion of update profile name requests. Performing a
-   * new request (by clicking the button) will cancel the currently pending request.
-   */
-  private val mutex = MutatorMutex()
+  init {
+    scope.launch {
+      selectedLanguage = settingFacade.getLanguage() ?: ENGLISH.language
+    }
+  }
 
   override fun onSaveClick() {
     scope.launch {
-      mutex.mutate(MutatePriority.UserInput) {
-        user.update { name(userName) }
-        onCloseAction()
-      }
+      settingFacade.setLanguage(selectedLanguage)
+      onCloseAction()
     }
   }
 
@@ -46,24 +49,23 @@ class EditLanguageDialogStateImpl(
 }
 
 /**
- * A stateful implementation of [EditProfileNameDialog] which uses some composition-local values to
+ * A stateful implementation of [EditLanguageDialog] which uses some composition-local values to
  * retrieve the appropriate dependencies.
  *
- * @param user the current [AuthenticatedUser].
  * @param onClose the callback called after we click on the Cancel or Save Button the changes.
  */
 @Composable
 fun StatefulEditLanguageDialog(
-    user: AuthenticatedUser,
     onClose: () -> Unit,
 ) {
   val scope = rememberCoroutineScope()
   val onCloseAction = rememberUpdatedState(onClose)
+  val settingsFacade = LocalSettingsFacade.current
 
   val state =
-      remember(user, scope, onCloseAction) {
-        EditProfileNameDialogStateImpl(user, scope, onCloseAction)
+      remember(scope, onCloseAction) {
+        EditLanguageDialogStateImpl(scope, settingsFacade, onCloseAction)
       }
 
-  EditProfileNameDialog(state)
+  EditLanguageDialog(state)
 }

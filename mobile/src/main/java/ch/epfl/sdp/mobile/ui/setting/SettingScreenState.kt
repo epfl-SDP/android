@@ -23,4 +23,7 @@ interface SettingScreenState<C : ChessMatch> : ProfileScreenState<C> {
 
   /** On edit profile name button clicked */
   fun onEditProfileNameClick()
+
+  /** On edit language button clicked */
+  fun onEditLanguageClick()
 }

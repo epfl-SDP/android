@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.setting
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -40,17 +41,19 @@ fun EditLanguageDialog(
       onCancelClick = state::onCancelClick,
       onConfirmClick = state::onSaveClick
     ) {
-      Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
+      Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(strings.settingLanguageLabel, style = MaterialTheme.typography.subtitle1)
 
-        LanguageOptionList(listOf("English", "Français"), "Français", {}, modifier)
+        LanguageList(Languages, state.selectedLanguage, {
+          Log.i("myinfo", "this is called")
+          state.selectedLanguage = it}, Modifier)
       }
     }
   }
 }
 
 @Composable
-fun LanguageOptionList(
+fun LanguageList(
   languages: List<String>,
   selectedLanguage: String,
   onItemClick: (String) -> Unit,

@@ -46,6 +46,7 @@ class HomeActivity : ComponentActivity() {
               chess = chessFacade,
               speech = speechFacade,
               tournament = tournamentFacade,
+              settings = settingsFacade
           ) { Navigation() }
         }
       }
