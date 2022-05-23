@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Following
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode.Searching
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -118,6 +119,7 @@ class SnapshotSocialScreenState(
   init {
     scope.launch {
       snapshotFlow { input }
+          .debounce(DebounceDuration)
           .flatMapLatest { s -> socialFacade.search(s, user) }
           .map { list -> list.map { ProfileAdapter(it) } }
           .onEach { searchResult = it }
@@ -168,3 +170,6 @@ private fun Flow<Interaction>.reduceIsFocused(): Flow<Boolean> = flow {
     emit(focused.isNotEmpty())
   }
 }
+
+/** The duration of the debounce period for user inputs. */
+private val DebounceDuration = 500.milliseconds
