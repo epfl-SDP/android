@@ -76,6 +76,7 @@ class TournamentScreenState(
  * @param currentUser the current [AuthenticatedUser] of the application.
  * @param onTournamentClick callback called when a tournament item is clicked on.
  * @param onNewContestClickAction callback called when the new contest button is clicked on.
+ * @param onFilterClick a callback which is called when the user wants to show the filters dialog.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
