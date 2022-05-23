@@ -42,8 +42,8 @@ class PositionTest {
   }
 
   @Test
-  fun plusDeltaOutOfBounds_returnsNull() {
+  fun plusDeltaOutOfBounds_notInBounds() {
     val end = Position(0, 0) + Delta(-1, -2)
-    assertThat(end).isNull()
+    assertThat(end.inBounds).isFalse()
   }
 }

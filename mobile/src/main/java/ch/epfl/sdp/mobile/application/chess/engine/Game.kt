@@ -4,10 +4,9 @@ import ch.epfl.sdp.mobile.application.chess.engine.Color.Black
 import ch.epfl.sdp.mobile.application.chess.engine.Color.White
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.BoardBuilder
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoardGame
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.buildBoard
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import kotlinx.collections.immutable.persistentListOf
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.toMutableBoard
 
 /**
  * An interface representing the current [Game], which contains a [Board] of pieces and on which
@@ -77,9 +76,17 @@ interface Game {
 fun buildGame(
     nextPlayer: Color,
     block: BoardBuilder<Piece<Color>>.() -> Unit,
-): Game =
-    PersistentGame(
+): Game = buildGame(nextPlayer, buildBoard(block))
+
+/**
+ * Builds a new [Game] using the provided [Board].
+ *
+ * @param nextPlayer the color of the first player to play.
+ * @param board the [Board] acting as the start of the game.
+ */
+fun buildGame(nextPlayer: Color, board: Board<Piece<Color>>): Game =
+    MutableBoardGame(
         previous = null,
+        mutableBoard = board.toMutableBoard(),
         nextPlayer = nextPlayer,
-        boards = persistentListOf(buildBoard(block)),
     )

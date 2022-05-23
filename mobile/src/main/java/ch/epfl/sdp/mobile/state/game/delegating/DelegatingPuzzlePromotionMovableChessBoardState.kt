@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.state.game.delegating
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.state.game.AbstractMovableChessBoardState
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineColor
@@ -36,7 +36,7 @@ class DelegatingPuzzlePromotionMovableChessBoardState(
         delegate
             .game
             .actions(from.toEnginePosition())
-            .filter { (it.from + it.delta)?.toPosition() == to }
+            .filter { (it.from + it.delta).toPosition() == to }
             .toList()
     val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
     val userCurrentlyPlaying = step.turn == puzzleState.puzzleInfo.playerColor.toEngineColor()

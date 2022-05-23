@@ -7,9 +7,9 @@ import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Puzzle
 import ch.epfl.sdp.mobile.application.chess.baseGame
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingPuzzleInfoState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfoState
 import kotlinx.coroutines.CoroutineScope

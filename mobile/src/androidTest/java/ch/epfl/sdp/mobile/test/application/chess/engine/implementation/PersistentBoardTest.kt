@@ -33,11 +33,4 @@ class PersistentBoardTest {
     val board = buildBoard<Piece<Unit>> { set(position, pawn) }
     assertThat(board[position]).isNull()
   }
-
-  @Test
-  fun set_outOfBounds_isIgnored() {
-    val position = Position(-1, -1)
-    val board = emptyBoard<Piece<Unit>>().set(position, pawn)
-    assertThat(board[position]).isNull()
-  }
 }
