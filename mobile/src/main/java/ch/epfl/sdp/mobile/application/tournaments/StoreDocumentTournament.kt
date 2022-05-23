@@ -52,32 +52,34 @@ class StoreDocumentTournament(
 
   override suspend fun start() {
     runCatching {
-      val tournamentDocumentReference = store.collection(Collection).document(reference.uid)
-      val current = tournamentDocumentReference.get<TournamentDocument>() ?: return
-      val adminId = current.adminId ?: return
-      val maxPlayers = current.maxPlayers ?: return
-      val poolSize = current.poolSize ?: return
-      val players = current.playerIds ?: return
-      val bestOf = current.bestOf ?: return
-      val stage = current.stage
+      store.transaction {
+        val tournamentDocumentReference = store.collection(Collection).document(reference.uid)
+        val current = get<TournamentDocument>(tournamentDocumentReference) ?: return@transaction
+        val adminId = current.adminId ?: return@transaction
+        val maxPlayers = current.maxPlayers ?: return@transaction
+        val poolSize = current.poolSize ?: return@transaction
+        val players = current.playerIds ?: return@transaction
+        val bestOf = current.bestOf ?: return@transaction
+        val stage = current.stage
 
-      // Are we the tournament admin ?
-      if (adminId != user.uid) return
-      if (stage != null) return
+        // Are we the tournament admin ?
+        if (adminId != user.uid) return@transaction
+        if (stage != null) return@transaction
 
-      // Poolsize of 1 or less mean no match is possible in pool phase
-      if (poolSize <= 1) {
-        createFinalsMatchesForPlayers(players) { it.eliminationRounds }
-      } else {
-        createPools(
-            tournamentDocumentReference = tournamentDocumentReference,
-            current = current,
-            maxPlayers = maxPlayers,
-            poolSize = poolSize,
-            bestOf = bestOf,
-            adminId = adminId,
-            players = players,
-        )
+        // Poolsize of 1 or less mean no match is possible in pool phase
+        if (poolSize <= 1) {
+          createFinalsMatchesForPlayers(players) { it.eliminationRounds }
+        } else {
+          createPools(
+              tournamentDocumentReference = tournamentDocumentReference,
+              current = current,
+              maxPlayers = maxPlayers,
+              poolSize = poolSize,
+              bestOf = bestOf,
+              adminId = adminId,
+              players = players,
+          )
+        }
       }
     }
   }
@@ -91,7 +93,7 @@ class StoreDocumentTournament(
               .whereNotEquals("poolId", null)
               .get<ChessDocument>()
               .toPoolResults()
-      createMatchesForPoolResults(results) { it.eliminationRounds }
+      store.transaction { createMatchesForPoolResults(results) { it.eliminationRounds } }
     }
   }
 
@@ -105,11 +107,11 @@ class StoreDocumentTournament(
               .whereEquals("roundDepth", round)
               .get<ChessDocument>()
               .toPoolResults()
-      createMatchesForPoolResults(results) { (round - 1).takeIf { it >= 1 } }
+      store.transaction { createMatchesForPoolResults(results) { (round - 1).takeIf { it >= 1 } } }
     }
   }
 
-  private suspend fun createPools(
+  private fun Transaction<DocumentReference>.createPools(
       tournamentDocumentReference: DocumentReference,
       current: TournamentDocument,
       maxPlayers: Int,
@@ -118,80 +120,75 @@ class StoreDocumentTournament(
       adminId: String,
       players: List<String>
   ) {
-    store.transaction {
-      val chosenPlayers = players.shuffled().take(maxPlayers)
-      val pools =
-          chosenPlayers.chunked(poolSize).map { ids ->
-            ids.map { uid ->
-              uid to (get<ProfileDocument>(store.collection("users").document(uid))?.name ?: "")
-            }
+    val chosenPlayers = players.shuffled().take(maxPlayers)
+    val pools =
+        chosenPlayers.chunked(poolSize).map { ids ->
+          ids.map { uid ->
+            uid to (get<ProfileDocument>(store.collection("users").document(uid))?.name ?: "")
           }
-      val minOpponentsPerPool = pools.lastOrNull()?.size ?: 0
+        }
+    val minOpponentsPerPool = pools.lastOrNull()?.size ?: 0
 
-      set(tournamentDocumentReference, current.copy(stage = StagePools))
+    set(tournamentDocumentReference, current.copy(stage = StagePools))
 
-      pools
-          .asSequence()
-          .mapIndexed { index, participants ->
-            PoolDocument(
-                name = tournamentDetailsPoolName(index + 1),
-                tournamentId = reference.uid,
-                minOpponentsForAnyPool = minOpponentsPerPool,
-                remainingBestOfCount = bestOf,
-                tournamentBestOf = bestOf,
-                tournamentAdminId = adminId,
-                playerIds = participants.map { it.first },
-                playerNames = participants.map { it.second },
-            )
-          }
-          .forEach { set(store.collection(PoolDocument.Collection).document(), it) }
-    }
+    pools
+        .asSequence()
+        .mapIndexed { index, participants ->
+          PoolDocument(
+              name = tournamentDetailsPoolName(index + 1),
+              tournamentId = reference.uid,
+              minOpponentsForAnyPool = minOpponentsPerPool,
+              remainingBestOfCount = bestOf,
+              tournamentBestOf = bestOf,
+              tournamentAdminId = adminId,
+              playerIds = participants.map { it.first },
+              playerNames = participants.map { it.second },
+          )
+        }
+        .forEach { set(store.collection(PoolDocument.Collection).document(), it) }
   }
 
-  private suspend fun createFinalsMatchesForPlayers(
+  private fun Transaction<DocumentReference>.createFinalsMatchesForPlayers(
       players: List<String>,
       nextDepth: (TournamentDocument) -> Int?,
   ) {
-    store.transaction {
-      val ref = store.collection(Collection).document(reference.uid)
-      val currentDocument = get<TournamentDocument>(ref) ?: return@transaction
+    val ref = store.collection(Collection).document(reference.uid)
+    val currentDocument = get<TournamentDocument>(ref) ?: return
 
-      val bestOf = currentDocument.bestOf ?: return@transaction
-      val depth = nextDepth(currentDocument) ?: return@transaction
-      val count = 2.0.pow(depth).toInt()
-      val matches = players.take(count).chunked(2).filter { it.size == 2 }
+    val bestOf = currentDocument.bestOf ?: return
+    val depth = nextDepth(currentDocument) ?: return
+    val count = 2.0.pow(depth).toInt()
+    val matches = players.take(count).chunked(2).filter { it.size == 2 }
 
-      set(
-          reference = ref,
-          value = currentDocument.copy(stage = stageDirectElimination(depth)),
-      )
+    set(
+        reference = ref,
+        value = currentDocument.copy(stage = stageDirectElimination(depth)),
+    )
 
-      for (match in matches) {
-        repeat(bestOf) { index ->
-          val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
-          val matchRef = store.collection("games").document()
-          val matchDocument =
-              ChessDocument(
-                  whiteId = first,
-                  blackId = second,
-                  lastUpdatedAt = System.currentTimeMillis(),
-                  poolId = null,
-                  roundDepth = depth,
-                  tournamentId = document.uid,
-              )
-          set(matchRef, matchDocument)
-        }
+    for (match in matches) {
+      repeat(bestOf) { index ->
+        val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
+        val matchRef = store.collection("games").document()
+        val matchDocument =
+            ChessDocument(
+                whiteId = first,
+                blackId = second,
+                lastUpdatedAt = System.currentTimeMillis(),
+                poolId = null,
+                roundDepth = depth,
+                tournamentId = document.uid,
+            )
+        set(matchRef, matchDocument)
       }
     }
   }
 
-  private suspend fun createMatchesForPoolResults(
+  private fun Transaction<DocumentReference>.createMatchesForPoolResults(
       results: PoolResults,
       nextDepth: (TournamentDocument) -> Int?,
   ) {
     val ranked =
-        results
-            .players
+        results.players
             .map {
               val score = results.score(it).toFloat()
               val total = results.played(it).toFloat()
