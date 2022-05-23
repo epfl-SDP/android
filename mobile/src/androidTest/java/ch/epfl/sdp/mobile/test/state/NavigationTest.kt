@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.SuspendingAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import kotlinx.coroutines.test.runTest
@@ -30,12 +31,13 @@ class NavigationTest {
   @Test
   fun loadingSection_isEmpty() {
     val store = emptyStore()
+    val dataStoreFactory = emptyDataStoreFactory()
     val assets = emptyAssets()
     val facade = AuthenticationFacade(SuspendingAuth, store)
     val socialFacade = SocialFacade(SuspendingAuth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(SuspendingAuth, store, SystemTimeProvider)
+    val tournamentFacade = TournamentFacade(SuspendingAuth, dataStoreFactory, store, SystemTimeProvider)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
         Navigation()
@@ -48,12 +50,13 @@ class NavigationTest {
   fun notAuthenticated_displaysAuthenticationScreen() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
+    val dataStoreFactory = emptyDataStoreFactory()
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {

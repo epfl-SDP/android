@@ -29,6 +29,7 @@ import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.*
@@ -68,6 +69,7 @@ class StatefulGameScreenTest {
   ): ChessBoardRobot {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") {
@@ -79,7 +81,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(recognizer)
-    val tournament = TournamentFacade(auth, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -549,6 +551,7 @@ class StatefulGameScreenTest {
   fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
@@ -558,7 +561,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -588,6 +591,7 @@ class StatefulGameScreenTest {
   fun playingGameWithNoBlackId_isUnsuccessful() {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
@@ -597,7 +601,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"

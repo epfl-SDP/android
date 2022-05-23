@@ -16,6 +16,7 @@ import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
@@ -33,6 +34,7 @@ class StatefulProfileScreenTest {
   fun given_statefulProfileScreen_when_profileHasPastGames_then_theyAreDisplayedOnScreen() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") {
           document("1", ProfileDocument("1", name = "A"))
@@ -49,7 +51,7 @@ class StatefulProfileScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
       val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -70,6 +72,7 @@ class StatefulProfileScreenTest {
     val assets = emptyAssets()
 
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
     }
@@ -78,7 +81,7 @@ class StatefulProfileScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store, SystemTimeProvider)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
