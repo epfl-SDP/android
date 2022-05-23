@@ -1,9 +1,9 @@
 package ch.epfl.sdp.mobile.state.game.delegating
 
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.state.game.AbstractMovableChessBoardState
 import ch.epfl.sdp.mobile.state.game.core.MutableGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEnginePosition
@@ -28,12 +28,23 @@ class DelegatingPromotionMovableChessBoardState(
     private val promotion: DelegatingPromotionState,
 ) : AbstractMovableChessBoardState(delegate) {
 
+  /** Returns the color of the user, if they're participating to the game. */
+  override val rotatedBoard: Boolean
+    get() =
+        when (user.uid) {
+          // The order matters, since we want the board NOT to be rotated if the user is playing a
+          // local game against themselves !
+          playersInfo.whiteProfile?.uid -> false
+          playersInfo.blackProfile?.uid -> true
+          else -> false
+        }
+
   override fun move(from: ChessBoardState.Position, to: ChessBoardState.Position) {
     val available =
         delegate
             .game
             .actions(from.toEnginePosition())
-            .filter { (it.from + it.delta)?.toPosition() == to }
+            .filter { (it.from + it.delta).toPosition() == to }
             .toList()
     val step = delegate.game.nextStep as? NextStep.MovePiece ?: return
     val currentPlayingId =

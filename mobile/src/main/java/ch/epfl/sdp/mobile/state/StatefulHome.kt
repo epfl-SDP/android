@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 
 /** The route associated to the social tab. */
@@ -93,6 +94,10 @@ fun StatefulHome(
     controller.navigate("$GameRoute/${match.uid}")
   }
 
+  val onPuzzleItemClick: (puzzle: PuzzleInfo) -> Unit = { puzzle ->
+    controller.navigate("$PuzzleGameRoute/${puzzle.uid}")
+  }
+
   val openTournament: (ref: TournamentReference) -> Unit = { tournament ->
     controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
   }
@@ -128,6 +133,7 @@ fun StatefulHome(
         StatefulSettingsScreen(
             user = user,
             onMatchClick = onGameItemClick,
+            onPuzzleClick = onPuzzleItemClick,
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
             onEditProfileImageClick = { controller.navigate(SettingEditProfileImageRoute) },
             modifier = Modifier.fillMaxSize(),
@@ -141,8 +147,10 @@ fun StatefulHome(
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
+            user = user,
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
+            onPuzzleClick = onPuzzleItemClick,
             modifier = Modifier.fillMaxSize(),
             onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
             contentPadding = paddingValues)
@@ -188,7 +196,7 @@ fun StatefulHome(
       composable(PuzzleSelectionRoute) {
         StatefulPuzzleSelectionScreen(
             user = user,
-            onPuzzleItemClick = { puzzle -> controller.navigate("$PuzzleGameRoute/${puzzle.uid}") },
+            onPuzzleItemClick = onPuzzleItemClick,
             contentPadding = paddingValues,
         )
       }

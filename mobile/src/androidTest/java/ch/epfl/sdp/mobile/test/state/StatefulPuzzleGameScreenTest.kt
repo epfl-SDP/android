@@ -203,7 +203,7 @@ class StatefulPuzzleGameScreenTest {
     val robot = ChessBoardRobot(rule, strings)
 
     rule.onNodeWithText(strings.puzzleSolving("White"))
-    robot.performInput {
+    robot.performInput(rotated = true) {
       click('f', 7)
       click('f', 3)
     }

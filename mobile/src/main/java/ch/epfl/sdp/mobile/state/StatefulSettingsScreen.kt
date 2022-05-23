@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * An implementation of the [SettingScreenState] that performs [ChessMatch] requests on the current
@@ -24,18 +25,17 @@ import kotlinx.coroutines.CoroutineScope
  */
 class AuthenticatedUserProfileScreenState(
     actions: State<ProfileActions>,
-    user: AuthenticatedUser,
+    private val user: AuthenticatedUser,
     chessFacade: ChessFacade,
-    scope: CoroutineScope,
+    private val scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
 ) :
-    SettingScreenState<ChessMatchAdapter>,
-    ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
+    SettingScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
+    ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
-
   override val email = user.email
-  override val puzzlesCount = 0
+
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
 
@@ -44,6 +44,9 @@ class AuthenticatedUserProfileScreenState(
   }
   override fun onEditProfileImageClick() {
     onEditProfileImageClickAction()
+  }
+  override fun onLogout() {
+    scope.launch { user.signOut() }
   }
 }
 
@@ -61,16 +64,23 @@ class AuthenticatedUserProfileScreenState(
 fun StatefulSettingsScreen(
     user: AuthenticatedUser,
     onMatchClick: (ChessMatchAdapter) -> Unit,
+    onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     onEditProfileNameClick: () -> Unit,
     onEditProfileImageClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(ProfileActions(onMatchClick = onMatchClick))
+  val actions =
+      rememberUpdatedState(
+          ProfileActions(
+              onMatchClick = onMatchClick,
+              onPuzzleClick = onPuzzleClick,
+          ))
   val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
+
   val state =
       remember(
           actions,
@@ -85,7 +95,8 @@ fun StatefulSettingsScreen(
             chessFacade,
             scope,
             currentOnEditProfileNameClick,
-            currentOnEditProfileImageClick)
+            currentOnEditProfileImageClick,
+        )
       }
   SettingsScreen(state, modifier, contentPadding)
 }

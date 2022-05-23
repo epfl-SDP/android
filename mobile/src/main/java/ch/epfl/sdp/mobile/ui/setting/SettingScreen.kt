@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,30 +17,33 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Edit
+import ch.epfl.sdp.mobile.ui.Logout
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 import ch.epfl.sdp.mobile.ui.Settings
-import ch.epfl.sdp.mobile.ui.profile.SettingTabBar
+import ch.epfl.sdp.mobile.ui.profile.ProfileTabBar
 import ch.epfl.sdp.mobile.ui.profile.UserScreen
-import ch.epfl.sdp.mobile.ui.profile.rememberSettingTabBarState
+import ch.epfl.sdp.mobile.ui.profile.rememberProfileTabBarState
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <C : ChessMatch> SettingsScreen(
-    state: SettingScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
+    state: SettingScreenState<C, P>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
-  val tabBarState = rememberSettingTabBarState(state.pastGamesCount, state.puzzlesCount)
+  val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
   UserScreen(
@@ -53,17 +54,21 @@ fun <C : ChessMatch> SettingsScreen(
         )
       },
       profileTabBar = {
-        SettingTabBar(
+        ProfileTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
             elevation = elevation,
         )
       },
+      tabBarState = tabBarState,
       matches = state.matches,
+      onMatchClick = state::onMatchClick,
+      puzzles = state.puzzles,
+      onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       modifier = modifier.fillMaxSize(),
       contentPadding = contentPadding,
-      onMatchClick = state::onMatchClick)
+  )
 }
 
 /**
@@ -71,11 +76,15 @@ fun <C : ChessMatch> SettingsScreen(
  * ProfilePicture, SettingsButton, name and email of the user's profile.
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modifier = Modifier) {
+fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
+    state: SettingScreenState<C, P>,
+    modifier: Modifier = Modifier
+) {
   val strings = LocalLocalizedStrings.current
 
   Column(
@@ -98,7 +107,10 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
       }
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
-    SettingsButton(onClick = state::onEditProfileImageClick)
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+      SettingsButton(onClick = state::onEditProfileImageClick)
+      LogoutButton(onClick = state::onLogout)
+    }
   }
 }
 
@@ -106,12 +118,13 @@ fun <C : ChessMatch> SettingHeader(state: SettingScreenState<C>, modifier: Modif
  * Composes the settings picture given its [state].
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the setting screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> SettingPicture(
-    state: SettingScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> SettingPicture(
+    state: SettingScreenState<C, P>,
     modifier: Modifier = Modifier,
 ) {
   val strings = LocalLocalizedStrings.current
@@ -150,5 +163,25 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Icon(PawniesIcons.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileSettings)
+  }
+}
+
+/**
+ * Composes the logout button.
+ *
+ * @param onClick callback method for the logout button.
+ * @param modifier the [Modifier] for this composable.
+ */
+@Composable
+private fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val strings = LocalLocalizedStrings.current
+  Button(
+      onClick = onClick,
+      shape = CircleShape,
+      contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
+      modifier = modifier) {
+    Icon(PawniesIcons.Logout, null)
+    Spacer(modifier = Modifier.width(8.dp))
+    Text(strings.settingLogout)
   }
 }
