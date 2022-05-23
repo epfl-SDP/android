@@ -1,9 +1,6 @@
 package ch.epfl.sdp.mobile.application.tournaments
 
-import ch.epfl.sdp.mobile.application.ChessDocument
-import ch.epfl.sdp.mobile.application.PoolDocument
-import ch.epfl.sdp.mobile.application.ProfileDocument
-import ch.epfl.sdp.mobile.application.TournamentDocument
+import ch.epfl.sdp.mobile.application.*
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.Collection
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.StagePools
 import ch.epfl.sdp.mobile.application.TournamentDocument.Companion.stageDirectElimination
@@ -53,56 +50,37 @@ class StoreDocumentTournament(
       }
     }
 
-  override suspend fun start(): Boolean =
-      runCatching {
-        store.transaction {
-          val tournamentDocumentReference = store.collection(Collection).document(reference.uid)
-          val current =
-              get<TournamentDocument>(tournamentDocumentReference) ?: return@transaction false
-          val adminId = current.adminId ?: return@transaction false
-          val stage = current.stage
-          val maxPlayers = current.maxPlayers ?: return@transaction false
-          val poolSize = current.poolSize ?: return@transaction false
-          val players = current.playerIds ?: return@transaction false
-          val bestOf = current.bestOf ?: return@transaction false
+  override suspend fun start() {
+    runCatching {
+      val tournamentDocumentReference = store.collection(Collection).document(reference.uid)
+      val current = tournamentDocumentReference.get<TournamentDocument>() ?: return
+      val adminId = current.adminId ?: return
+      val maxPlayers = current.maxPlayers ?: return
+      val poolSize = current.poolSize ?: return
+      val players = current.playerIds ?: return
+      val bestOf = current.bestOf ?: return
+      val stage = current.stage
 
-          // Are we the tournament admin ?
-          if (adminId != user.uid) return@transaction false
-          if (stage != null) return@transaction false
+      // Are we the tournament admin ?
+      if (adminId != user.uid) return
+      if (stage != null) return
 
-          val chosenPlayers = players.shuffled().take(maxPlayers)
-          val pools =
-              chosenPlayers.chunked(poolSize).map { ids ->
-                ids.map { uid ->
-                  uid to (get<ProfileDocument>(store.collection("users").document(uid))?.name ?: "")
-                }
-              }
-          val minOpponentsPerPool = pools.lastOrNull()?.size ?: 0
-
-          // TODO : Handle zero pool size.
-
-          set(tournamentDocumentReference, current.copy(stage = StagePools))
-
-          pools
-              .asSequence()
-              .mapIndexed { index, participants ->
-                PoolDocument(
-                    name = tournamentDetailsPoolName(index + 1),
-                    tournamentId = reference.uid,
-                    minOpponentsForAnyPool = minOpponentsPerPool,
-                    remainingBestOfCount = bestOf,
-                    tournamentBestOf = bestOf,
-                    tournamentAdminId = adminId,
-                    playerIds = participants.map { it.first },
-                    playerNames = participants.map { it.second },
-                )
-              }
-              .forEach { set(store.collection(PoolDocument.Collection).document(), it) }
-
-          true
-        }
+      // Poolsize of 1 or less mean no match is possible in pool phase
+      if (poolSize <= 1) {
+        createFinalsMatchesForPlayers(players) { it.eliminationRounds }
+      } else {
+        createPools(
+            tournamentDocumentReference = tournamentDocumentReference,
+            current = current,
+            maxPlayers = maxPlayers,
+            poolSize = poolSize,
+            bestOf = bestOf,
+            adminId = adminId,
+            players = players,
+        )
       }
-          .getOrElse { false }
+    }
+  }
 
   override suspend fun startDirectElimination() {
     runCatching {
@@ -131,7 +109,46 @@ class StoreDocumentTournament(
     }
   }
 
-  private suspend fun createMatchesForPlayers(
+  private suspend fun createPools(
+      tournamentDocumentReference: DocumentReference,
+      current: TournamentDocument,
+      maxPlayers: Int,
+      poolSize: Int,
+      bestOf: Int,
+      adminId: String,
+      players: List<String>
+  ) {
+    store.transaction {
+      val chosenPlayers = players.shuffled().take(maxPlayers)
+      val pools =
+          chosenPlayers.chunked(poolSize).map { ids ->
+            ids.map { uid ->
+              uid to (get<ProfileDocument>(store.collection("users").document(uid))?.name ?: "")
+            }
+          }
+      val minOpponentsPerPool = pools.lastOrNull()?.size ?: 0
+
+      set(tournamentDocumentReference, current.copy(stage = StagePools))
+
+      pools
+          .asSequence()
+          .mapIndexed { index, participants ->
+            PoolDocument(
+                name = tournamentDetailsPoolName(index + 1),
+                tournamentId = reference.uid,
+                minOpponentsForAnyPool = minOpponentsPerPool,
+                remainingBestOfCount = bestOf,
+                tournamentBestOf = bestOf,
+                tournamentAdminId = adminId,
+                playerIds = participants.map { it.first },
+                playerNames = participants.map { it.second },
+            )
+          }
+          .forEach { set(store.collection(PoolDocument.Collection).document(), it) }
+    }
+  }
+
+  private suspend fun createFinalsMatchesForPlayers(
       players: List<String>,
       nextDepth: (TournamentDocument) -> Int?,
   ) {
@@ -183,6 +200,6 @@ class StoreDocumentTournament(
             .sortedByDescending { (_, score) -> score }
             .map { it.first }
 
-    createMatchesForPlayers(ranked, nextDepth)
+    createFinalsMatchesForPlayers(ranked, nextDepth)
   }
 }

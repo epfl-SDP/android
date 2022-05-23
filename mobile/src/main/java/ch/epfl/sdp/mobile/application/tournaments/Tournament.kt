@@ -62,10 +62,8 @@ interface Tournament {
   /**
    * Starts this tournament. If the user isn't the admin or the tournament was already started, this
    * will result in a no-op.
-   *
-   * @return a boolean value indicating if starting the tournament was a success.
    */
-  suspend fun start(): Boolean
+  suspend fun start()
 
   /** Starts the direct elimination phase of the [Tournament]. */
   suspend fun startDirectElimination()
