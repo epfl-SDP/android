@@ -110,7 +110,7 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hiddenBar = hideBar(entry?.destination?.route),
+      hiddenBar = entry?.destination?.route?.let(::hideBar) ?: false,
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -278,5 +278,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Contests -> ContestsRoute
     }
 
-private fun hideBar(route: String?): Boolean =
-    route?.let { it.startsWith(GameRoute) || it.startsWith(TournamentDetailsRoute) } ?: false
+/** Returns true iff the navigation bar should be hidden for the provided [route]. */
+private fun hideBar(
+    route: String,
+): Boolean = setOf(GameRoute, TournamentDetailsRoute, PuzzleGameRoute).any { route.startsWith(it) }
