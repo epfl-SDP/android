@@ -82,15 +82,6 @@ class StatefulFollowingScreenTest {
       infra.store.collection("users").document("other").set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
-      // Wait until debouncing is done.
-      rule.waitUntil {
-        try {
-          rule.onNodeWithText(strings.socialPerformFollow).assertExists()
-          true
-        } catch (error: Exception) {
-          false
-        }
-      }
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
       val profile =
           infra
