@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun StatefulTournamentsDialogScreen(
+fun StatefulFiltersDialogScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

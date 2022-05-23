@@ -11,8 +11,8 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.state.tournaments.StatefulFiltersDialogScreen
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
-import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentsDialogScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
 import ch.epfl.sdp.mobile.ui.home.HomeSection
@@ -139,7 +139,7 @@ fun StatefulHome(
           route = TournamentFiltersRoute,
           dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
       ) {
-        StatefulTournamentsDialogScreen(
+        StatefulFiltersDialogScreen(
             navigateBack = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
         )
