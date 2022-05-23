@@ -292,20 +292,57 @@ class StatefulTournamentDetailsScreenTest {
     assertThat(poolGames).hasSize(6)
 
     rule.performClickOnceVisible(env.strings.tournamentsDetailsStartDirectEliminationTitle)
-    rule.performClickOnceVisible("1 / 2") // TODO: Stringify this
-    rule.awaitIdle()
+    rule.performClickOnceVisible(env.strings.tournamentsCreateElimDemomN(2))
 
     val semiFinalGames = markGamesWithDepthWithStatus(env, WhiteWon, 2)
     assertThat(semiFinalGames).hasSize(2)
 
     rule.performClickOnceVisible(env.strings.tournamentsDetailsNextRoundTitle)
-    rule.performClickOnceVisible("1 / 1") // TODO: Stringify this
-    rule.awaitIdle()
+    rule.performClickOnceVisible(env.strings.tournamentsCreateElimDemomN(1))
 
     val finalGames = markGamesWithDepthWithStatus(env, ChessMetadata.Stalemate, 1)
     assertThat(finalGames).hasSize(1)
 
     rule.onNodeWithText(env.strings.tournamentsDetailsMatchDrawn).assertExists()
+  }
+
+  @Test
+  fun given_tournamentWithNoQualifiers_when_startingTournament_then_FinalsCreated() = runTest {
+    val reference = TournamentReference("1")
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", "Player 1"))
+        document("2", ProfileDocument("2", "Player 2"))
+      }
+    }
+
+    val env =
+      rule.setContentWithTestEnvironment(store = store) {
+        StatefulTournamentDetailsScreen(
+          user = user,
+          reference = reference,
+          actions = TournamentDetailsActions(onBackClick = {}, onMatchClick = {}),
+        )
+      }
+
+    env.infrastructure
+      .store
+      .collection(TournamentDocument.Collection)
+      .document(reference.uid)
+      .set(
+        TournamentDocument(
+          name = "testTournamentName",
+          adminId = env.user.uid,
+          maxPlayers = 2,
+          poolSize = 0,
+          bestOf = 1,
+          eliminationRounds = 1,
+          playerIds = listOf("1", "2"),
+        ),
+      )
+
+    rule.performClickOnceVisible(env.strings.tournamentsDetailsStartEnoughPlayersTitle)
+    rule.performClickOnceVisible(env.strings.tournamentsCreateElimDemomN(1))
   }
 
   /**
