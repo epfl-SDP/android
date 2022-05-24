@@ -4,6 +4,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
@@ -164,7 +167,7 @@ object English : LocalizedStrings {
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
       append("Started ")
-      withStyle(style) { append(duration.absoluteValue.toString()) }
+      withStyle(style) { append(duration.absoluteValue.toEnglishString()) }
       append(" ago")
     }
   }
@@ -190,4 +193,20 @@ object English : LocalizedStrings {
   override val tournamentsFilterOnlyParticipating = "Participating".uppercase()
   override val tournamentsFilterOnlyAdministrating = "Administrating".uppercase()
   override val tournamentsFilterBackContentDescription = "Back"
+}
+
+/**
+ * Converts a [Duration] to an English string by rounding it to the closest unit of time (seconds
+ * minimum).
+ */
+private fun Duration.toEnglishString(): String {
+  if (this >= 1.days) {
+    return "${this.inWholeDays} days"
+  } else if (this >= 1.hours) {
+    return "${this.inWholeHours} hours"
+  } else if (this >= 1.minutes) {
+    return "${this.inWholeMinutes} minutes"
+  }
+
+  return "${this.inWholeSeconds} seconds"
 }

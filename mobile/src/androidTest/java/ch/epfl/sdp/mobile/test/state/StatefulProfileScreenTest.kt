@@ -19,6 +19,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -50,7 +51,7 @@ class StatefulProfileScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
       val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -80,7 +81,7 @@ class StatefulProfileScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()

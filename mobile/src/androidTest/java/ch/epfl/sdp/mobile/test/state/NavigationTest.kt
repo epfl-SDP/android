@@ -19,6 +19,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -36,7 +37,8 @@ class NavigationTest {
     val socialFacade = SocialFacade(SuspendingAuth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(SuspendingAuth, dataStoreFactory, store)
+    val tournamentFacade =
+        TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
         Navigation()
@@ -55,7 +57,7 @@ class NavigationTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {

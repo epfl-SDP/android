@@ -34,7 +34,7 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
         null
       }
   // TODO: Change to tournament.status when added.
-  override val status: Status = Status.Done
+  override val status: Status = Status.Ongoing(tournament.durationCreated)
 }
 
 /**

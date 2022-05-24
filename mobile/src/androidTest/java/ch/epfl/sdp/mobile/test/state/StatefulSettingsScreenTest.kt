@@ -23,6 +23,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -56,7 +57,7 @@ class StatefulSettingsScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -96,7 +97,7 @@ class StatefulSettingsScreenTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val strings =
         rule.setContentWithLocalizedStrings {

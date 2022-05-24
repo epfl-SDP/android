@@ -6,10 +6,7 @@ import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlin.math.log2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -21,11 +18,14 @@ import kotlinx.coroutines.flow.map
  * @param auth the [Auth] instance which will be used to handle authentication.
  * @param dataStoreFactory the [DataStoreFactory] which will be used to access the preferences.
  * @param store the [Store] which is used to manage documents.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
  */
 class TournamentFacade(
     private val auth: Auth,
     private val dataStoreFactory: DataStoreFactory,
-    private val store: Store
+    private val store: Store,
+    private val timeProvider: TimeProvider,
 ) {
 
   /** An object will all the DataStore keys specific to the [TournamentFacade]. */
@@ -142,16 +142,18 @@ class TournamentFacade(
       }
 
   /**
-   * Returns all of the registered tournaments of the application.
+   * Returns all of the registered tournaments of the application in descending order of their
+   * creation date.
    *
    * @param user the current [AuthenticatedUser].
    */
-  // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
   fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     val tournaments =
-        store.collection(TournamentDocument.Collection).asFlow<TournamentDocument>().map {
-          it.mapNotNull { doc -> doc?.toTournament(user, store) }
-        }
+        store
+            .collection(TournamentDocument.Collection)
+            .orderBy("creationTimeEpochMillis", Query.Direction.Descending)
+            .asFlow<TournamentDocument>()
+            .map { it.mapNotNull { doc -> doc?.toTournament(user, store, timeProvider) } }
     val predicates = tournamentPredicate()
     return combine(tournaments, predicates) { t, p -> t.filter(p) }
   }
@@ -202,6 +204,7 @@ class TournamentFacade(
               adminId = user.uid,
               name = name,
               maxPlayers = maxPlayers,
+              creationTimeEpochMillis = timeProvider.now(),
               bestOf = bestOf,
               poolSize = poolSize,
               eliminationRounds = eliminationRounds,
@@ -229,7 +232,7 @@ class TournamentFacade(
           .collection(TournamentDocument.Collection)
           .document(reference.uid)
           .asFlow<TournamentDocument>()
-          .map { it?.toTournament(user, store) }
+          .map { it?.toTournament(user, store, timeProvider) }
 
   /**
    * Returns the [Flow] of the [List] of [Pool]s for a given [TournamentReference].

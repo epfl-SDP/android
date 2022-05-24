@@ -7,6 +7,7 @@ import androidx.compose.ui.text.SpanStyle
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.tournaments.*
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
 import org.junit.Rule
 import org.junit.Test
 
@@ -17,7 +18,9 @@ class ContestScreenTest {
     override fun onContestClick(contest: ContestInfo) = Unit
     override fun onFilterClick() = Unit
     override val contests =
-        listOf(createContest("Name", ContestInfo.Status.Ongoing(1.days), BadgeType.Admin))
+        listOf(
+            createContest("Name", ContestInfo.Status.Ongoing(1.days), BadgeType.Admin),
+            createContest("Name 2", ContestInfo.Status.Ongoing(3.hours), BadgeType.Participant))
 
     private fun createContest(
         name: String,
@@ -55,6 +58,10 @@ class ContestScreenTest {
     rule.onNodeWithText("Name").assertIsDisplayed()
     rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
     rule.onNodeWithText(strings.tournamentsStartingTime(1.days, SpanStyle()).text)
+        .assertIsDisplayed()
+    rule.onNodeWithText("Name 2").assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsBadgeParticipant).assertIsDisplayed()
+    rule.onNodeWithText(strings.tournamentsStartingTime(3.hours, SpanStyle()).text)
         .assertIsDisplayed()
   }
 }
