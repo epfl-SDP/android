@@ -11,7 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
+import ch.epfl.sdp.mobile.infrastructure.time.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
@@ -21,8 +21,8 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -53,7 +53,7 @@ class StatefulContestScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
@@ -83,7 +83,7 @@ class StatefulContestScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
@@ -135,7 +135,7 @@ class StatefulContestScreenTest {
 
       rule.onNodeWithText(strings.sectionSocial).performClick()
       val duration = 1.minutes
-      time.setTime(duration.toLong(DurationUnit.MILLISECONDS))
+      time.currentTime = (duration.toLong(DurationUnit.MILLISECONDS))
       rule.onNodeWithText(strings.sectionContests).performClick()
       rule.onNodeWithText(strings.tournamentsStartingTime(duration, SpanStyle()).text)
           .assertIsDisplayed()
@@ -180,7 +180,7 @@ class StatefulContestScreenTest {
       rule.onNodeWithText(strings.sectionSocial).performClick()
 
       val duration = 1.minutes
-      time.setTime(duration.toLong(DurationUnit.MILLISECONDS))
+      time.currentTime = (duration.toLong(DurationUnit.MILLISECONDS))
 
       rule.onNodeWithText(strings.sectionContests).performClick()
       rule.onNodeWithText(strings.tournamentsStartingTime(duration, SpanStyle()).text)
@@ -208,7 +208,7 @@ class StatefulContestScreenTest {
         }
       }
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store = store) {
+          rule.setContentWithTestEnvironment(store = store, timeProvider = SystemTimeProvider) {
             StatefulTournamentScreen(user, {}, {}, {})
           }
       rule.onNodeWithText(strings.tournamentsStartingTime(1.hours, SpanStyle()).text)
@@ -234,7 +234,7 @@ class StatefulContestScreenTest {
         }
       }
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store = store) {
+          rule.setContentWithTestEnvironment(store = store, timeProvider = SystemTimeProvider) {
             StatefulTournamentScreen(user, {}, {}, {})
           }
       rule.onNodeWithText(strings.tournamentsStartingTime(1.days, SpanStyle()).text)

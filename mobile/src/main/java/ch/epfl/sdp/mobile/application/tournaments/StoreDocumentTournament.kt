@@ -15,11 +15,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
 import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
 import kotlin.math.pow
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * An implementation of a [Tournament] which uses a [TournamentDocument] under-the-hood.
@@ -40,7 +36,7 @@ class StoreDocumentTournament(
   override val name = document.name ?: ""
   override val isAdmin = document.adminId == user.uid
   override val isParticipant = document.playerIds?.contains(user.uid) ?: false
-  override val durationCreated = roundedDuration(document.creationTimeEpochMillis, timeProvider)
+  override val durationCreated = duration(document.creationTimeEpochMillis, timeProvider)
 
   override val status: Tournament.Status
     get() {
@@ -190,26 +186,14 @@ class StoreDocumentTournament(
   }
 
   /**
-   * Obtains the elapsed duration from the startTime and rounds it to the closest unit of time
-   * (seconds minimum).
+   * Obtains the elapsed duration from the startTime using the given [TimeProvider].
    *
    * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
    * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
    * tournament.
    */
-  private fun roundedDuration(startTime: Long?, timeProvider: TimeProvider): Duration {
-    val duration =
-        if (startTime != null) (timeProvider.getCurrentTimeMillis() - startTime).milliseconds
-        else 0.milliseconds
-
-    if (duration >= 1.days) {
-      return duration.inWholeDays.days
-    } else if (duration >= 1.hours) {
-      return duration.inWholeHours.hours
-    } else if (duration >= 1.minutes) {
-      return duration.inWholeMinutes.minutes
-    }
-
-    return duration.inWholeSeconds.seconds
+  private fun duration(startTime: Long?, timeProvider: TimeProvider): Duration {
+    return if (startTime != null) (timeProvider.now() - startTime).milliseconds.absoluteValue
+    else 0.milliseconds
   }
 }

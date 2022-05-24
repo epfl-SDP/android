@@ -11,7 +11,6 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -20,6 +19,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -38,7 +38,7 @@ class NavigationTest {
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade =
-        TournamentFacade(SuspendingAuth, dataStoreFactory, store, SystemTimeProvider)
+        TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
         Navigation()
@@ -57,7 +57,7 @@ class NavigationTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {

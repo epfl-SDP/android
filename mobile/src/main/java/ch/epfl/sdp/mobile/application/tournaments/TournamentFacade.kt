@@ -6,11 +6,7 @@ import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlin.math.log2
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -146,16 +142,18 @@ class TournamentFacade(
       }
 
   /**
-   * Returns all of the registered tournaments of the application.
+   * Returns all of the registered tournaments of the application in descending order of their
+   * creation date.
    *
    * @param user the current [AuthenticatedUser].
    */
-  // TODO : Add .orderBy("creationDate", Descending) once creationDate defined.
   fun tournaments(user: AuthenticatedUser): Flow<List<Tournament>> {
     val tournaments =
-        store.collection(TournamentDocument.Collection).asFlow<TournamentDocument>().map {
-          it.mapNotNull { doc -> doc?.toTournament(user, store, timeProvider) }
-        }
+        store
+            .collection(TournamentDocument.Collection)
+            .orderBy("creationTimeEpochMillis", Query.Direction.Descending)
+            .asFlow<TournamentDocument>()
+            .map { it.mapNotNull { doc -> doc?.toTournament(user, store, timeProvider) } }
     val predicates = tournamentPredicate()
     return combine(tournaments, predicates) { t, p -> t.filter(p) }
   }
@@ -206,7 +204,7 @@ class TournamentFacade(
               adminId = user.uid,
               name = name,
               maxPlayers = maxPlayers,
-              creationTimeEpochMillis = timeProvider.getCurrentTimeMillis(),
+              creationTimeEpochMillis = timeProvider.now(),
               bestOf = bestOf,
               poolSize = poolSize,
               eliminationRounds = eliminationRounds,

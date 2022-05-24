@@ -18,7 +18,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toEngineRank
@@ -33,6 +32,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.*
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -81,7 +81,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(recognizer)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -561,7 +561,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -601,7 +601,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"

@@ -11,7 +11,6 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulPlayScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -22,6 +21,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import com.google.common.truth.Truth
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.filterIsInstance
@@ -53,7 +53,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -99,7 +99,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -144,7 +144,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -179,7 +179,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -214,7 +214,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -243,7 +243,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signUpWithEmail("email@example.org", "test", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -272,7 +272,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -307,7 +307,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -348,7 +348,7 @@ class StatefulPlayScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()

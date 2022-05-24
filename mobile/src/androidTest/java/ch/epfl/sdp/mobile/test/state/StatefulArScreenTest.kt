@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.HomeActivity
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulArScreen
@@ -22,6 +21,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import org.junit.Rule
 
 class StatefulArScreenTest {
@@ -48,7 +48,7 @@ class StatefulArScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournaments = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournaments = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val strings =
         rule.setContentWithLocalizedStrings {

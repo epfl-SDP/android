@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -24,6 +23,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -57,7 +57,7 @@ class StatefulSettingsScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -97,7 +97,7 @@ class StatefulSettingsScreenTest {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val strings =
         rule.setContentWithLocalizedStrings {

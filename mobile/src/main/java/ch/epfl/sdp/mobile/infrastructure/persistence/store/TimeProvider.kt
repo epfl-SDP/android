@@ -8,5 +8,5 @@ interface TimeProvider {
    *
    * @returns the current time in [Long] milliseconds
    */
-  fun getCurrentTimeMillis(): Long
+  fun now(): Long
 }
