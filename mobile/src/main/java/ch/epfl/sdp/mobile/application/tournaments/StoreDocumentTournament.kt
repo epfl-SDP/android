@@ -186,7 +186,7 @@ class StoreDocumentTournament(
   }
 
   /**
-   * Obtains the elapsed duration from the startTime using the given [TimeProvider].
+   * Obtains the elapsed duration from the [startTime] using the given [TimeProvider].
    *
    * @param startTime creation time in milliseconds to obtain the elapsed rounded duration.
    * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
