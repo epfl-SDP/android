@@ -92,3 +92,20 @@ fun TournamentDocument.toTournament(
     store: Store,
     timeProvider: TimeProvider
 ): Tournament = StoreDocumentTournament(this, user, store, timeProvider)
+
+/**
+ * Indicates whether a [Tournament] is done or not. A [Tournament] is considered done once it is in
+ * the finals round.
+ *
+ * @return true if the [Tournament] is done, false otherwise.
+ */
+fun Tournament.isDone(): Boolean {
+  return when (val s = status) {
+    is Tournament.Status.DirectElimination -> {
+      s.rounds.any { it.depth == 1 }
+    }
+    is Tournament.Status.NotStarted -> false
+    Tournament.Status.Pools -> false
+    Tournament.Status.Unknown -> false
+  }
+}

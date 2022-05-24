@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.application.tournaments.isDone
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType.Admin
 import ch.epfl.sdp.mobile.ui.tournaments.BadgeType.Participant
@@ -33,8 +34,13 @@ data class TournamentAdapter(val tournament: Tournament, val currentUser: Authen
         tournament.isParticipant -> Participant
         else -> null
       }
-  // TODO: Change to tournament.status when added.
-  override val status: Status = Status.Ongoing(tournament.durationCreated)
+
+  override val status: Status =
+      if (!tournament.isDone()) {
+        Status.Ongoing(tournament.durationCreated)
+      } else {
+        Status.Done
+      }
 }
 
 /**
