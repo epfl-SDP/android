@@ -294,6 +294,7 @@ private fun DetailsTopBar(
             selectedTabIndex = selected,
             backgroundColor = MaterialTheme.colors.background,
             indicator = {}, // Hide the default indicator.
+            divider = {}, // Hide the default divider.
             edgePadding = 0.dp, // No start padding.
         ) {
           for (index in 0 until count) {
