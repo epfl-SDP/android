@@ -66,7 +66,8 @@ class StatefulSettingsScreenTest {
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+            ProvideFacades(
+                authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
               StatefulSettingsScreen(user, {}, {}, {}, {}, {})
             }
           }
@@ -100,11 +101,12 @@ class StatefulSettingsScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-        val settings = SettingsFacade(dataStoreFactory)
+    val settings = SettingsFacade(dataStoreFactory)
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+          ProvideFacades(
+              authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
             StatefulSettingsScreen(user, {}, {}, openProfileEditNameMock, {}, {})
           }
         }
@@ -133,8 +135,7 @@ class StatefulSettingsScreenTest {
               onPuzzleClick = {},
               onEditProfileImageClick = {},
               onEditProfileNameClick = {},
-              onEditLanguageClick = {}
-          )
+              onEditLanguageClick = {})
         }
 
     rule.onNodeWithText(env.strings.profilePuzzle).performClick()
@@ -144,7 +145,8 @@ class StatefulSettingsScreenTest {
 
   @Test
   fun given_statefulSettingsScreen_when_logoutButtonClicked_then_disconnectsUser() = runTest {
-    val env = rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}, {}, {}) }
+    val env =
+        rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}, {}, {}) }
     rule.onNodeWithText(env.strings.settingLogout).assertExists().performClick()
     assertThat(env.facades.auth.currentUser.first()).isEqualTo(NotAuthenticatedUser)
   }

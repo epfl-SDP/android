@@ -79,9 +79,12 @@ class AuthenticationScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
@@ -107,9 +110,12 @@ class AuthenticationScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
@@ -135,9 +141,12 @@ class AuthenticationScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
@@ -163,9 +172,12 @@ class AuthenticationScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings).switchToLogIn()
@@ -191,9 +203,12 @@ class AuthenticationScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings).switchToLogIn()

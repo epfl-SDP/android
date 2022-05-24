@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.setting
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -43,13 +42,7 @@ fun EditLanguageDialog(
       Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(strings.settingLanguageLabel, style = MaterialTheme.typography.subtitle1)
 
-        LanguageList(
-            Languages,
-            state.selectedLanguage,
-            {
-              state.selectedLanguage = it
-            },
-            Modifier)
+        LanguageList(Languages, state.selectedLanguage, { state.selectedLanguage = it }, Modifier)
       }
     }
   }

@@ -7,21 +7,13 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade
-import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.time.SystemTimeProvider
-import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
-import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -52,7 +44,7 @@ class StatefulContestScreenTest {
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val (_, _, strings) =
           rule.setContentWithTestEnvironment(auth = auth, store = store) {
-              StatefulTournamentScreen(currentUser, {}, {}, {})
+            StatefulTournamentScreen(currentUser, {}, {}, {})
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
@@ -73,7 +65,7 @@ class StatefulContestScreenTest {
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val (_, _, strings) =
           rule.setContentWithTestEnvironment(store = store, auth = auth) {
-              StatefulTournamentScreen(currentUser, {}, {}, {})
+            StatefulTournamentScreen(currentUser, {}, {}, {})
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeParticipant).assertIsDisplayed()
@@ -103,8 +95,8 @@ class StatefulContestScreenTest {
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store=store, auth = auth, timeProvider = time ) {
-              StatefulHome(user)
+          rule.setContentWithTestEnvironment(store = store, auth = auth, timeProvider = time) {
+            StatefulHome(user)
           }
 
       rule.onNodeWithText(strings.sectionSocial).performClick()
@@ -127,10 +119,7 @@ class StatefulContestScreenTest {
 
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
-      val (_, _, strings) =
-          rule.setContentWithTestEnvironment(auth= auth) {
-              StatefulHome(user)
-          }
+      val (_, _, strings) = rule.setContentWithTestEnvironment(auth = auth) { StatefulHome(user) }
 
       rule.onNodeWithText(strings.sectionContests).performClick()
       rule.onNodeWithText(strings.newContest).performClick()
