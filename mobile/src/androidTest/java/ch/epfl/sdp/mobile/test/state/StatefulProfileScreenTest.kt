@@ -107,13 +107,12 @@ class StatefulProfileScreenTest {
   @Test
   fun given_userIsLoggedIn_when_clickedOnUnfollowFriend_then_theButtonShouldChangeToFollow() =
       runTest {
-    val auth = buildAuth { user("email@example.org", "password", "userId1") }
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
     }
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(store = store, auth = auth) {
+        rule.setContentWithTestEnvironment(store = store) {
           StatefulVisitedProfileScreen(
               user = user,
               uid = "userId2",
