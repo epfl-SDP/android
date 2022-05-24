@@ -162,7 +162,7 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.profileSettings)
+    Text(strings.settingsEditLanguage)
   }
 }
 

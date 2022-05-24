@@ -57,5 +57,6 @@ fun ProvideFacades(
       LocalChessFacade provides chess,
       LocalSpeechFacade provides speech,
       LocalTournamentFacade provides tournament,
-      LocalSettingsFacade provides settings) { content() }
+      LocalSettingsFacade provides settings
+  ) { content() }
 }

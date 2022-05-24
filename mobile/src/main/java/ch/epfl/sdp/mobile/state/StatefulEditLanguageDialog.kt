@@ -1,11 +1,13 @@
 package ch.epfl.sdp.mobile.state
 
+import android.util.Log
 import androidx.compose.runtime.*
 import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.ui.setting.EditLanguageDialog
 import ch.epfl.sdp.mobile.ui.setting.EditLanguageDialogState
 import java.util.Locale.ENGLISH
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 
 /**

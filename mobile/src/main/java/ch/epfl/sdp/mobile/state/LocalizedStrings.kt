@@ -33,8 +33,7 @@ fun ProvideLocalizedStrings(
 ) {
 
   val language by
-      remember(settingsFacade
-        .getLanguage()) {
+      remember(settingsFacade) {
         settingsFacade
           .getLanguage()}
           .collectAsState(initial = ConfigurationCompat.getLocales(configuration)[0].language)
