@@ -9,9 +9,11 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.filterNotNull
@@ -25,12 +27,13 @@ class TournamentFacadeTest {
   fun given_tournamentFacade_when_tournamentsExist_then_getTournamentsReturnsThemAll() {
     runTest {
       val auth = buildAuth { user("a@hotmail.com", "password", "1") }
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection(TournamentDocument.Collection) {
           document("id1", TournamentDocument("id1", "1", "Tournament 1"))
         }
       }
-      val tournamentFacade = TournamentFacade(auth, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
       val authenticationFacade = AuthenticationFacade(auth, store)
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
@@ -46,11 +49,12 @@ class TournamentFacadeTest {
   fun given_tournamentReference_when_joining_then_addsUserIdentifierInDocument() = runTest {
     val reference = TournamentReference(":-)")
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection(TournamentDocument.Collection) { document(reference.uid, TournamentDocument()) }
     }
     val authFacade = AuthenticationFacade(auth, store)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("alexandre@example.org", "Alexandre", "passw0rd!")
     val user = authFacade.awaitAuthenticatedUser()
@@ -71,13 +75,14 @@ class TournamentFacadeTest {
   fun given_tournament_when_fetchingTournament_then_hasCorrectName() = runTest {
     val reference = TournamentReference(":-)")
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection(TournamentDocument.Collection) {
         document(reference.uid, TournamentDocument(name = "Hello there"))
       }
     }
     val authFacade = AuthenticationFacade(auth, store)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("alexandre@example.org", "Alexandre", "passw0rd!")
     val user = authFacade.awaitAuthenticatedUser()
@@ -91,10 +96,11 @@ class TournamentFacadeTest {
   fun given_tournamentParameters_when_creatingTournament_then_fetchedTournamentHasSameParameters() =
       runTest {
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -127,10 +133,11 @@ class TournamentFacadeTest {
   @Test
   fun given_InvalidTournamentParameters_when_creatingTournament_then_returnsNull() = runTest {
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("email@example.org", "user", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()

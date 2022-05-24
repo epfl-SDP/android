@@ -110,7 +110,10 @@ private fun BottomNavigation(
     onSectionChange: (HomeSection) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-  BottomAppBar(modifier) {
+  BottomAppBar(
+      modifier = modifier,
+      backgroundColor = MaterialTheme.colors.background,
+  ) {
     for (it in HomeSection.values()) {
       BottomNavigationItem(
           selected = section == it,
@@ -124,6 +127,8 @@ private fun BottomNavigation(
             )
           },
           alwaysShowLabel = false,
+          selectedContentColor = PawniesColors.Green800,
+          unselectedContentColor = PawniesColors.Green200,
       )
     }
   }
