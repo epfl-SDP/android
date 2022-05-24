@@ -37,8 +37,8 @@ class HomeActivity : ComponentActivity() {
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assetManager)
     val speechFacade = SpeechFacade(AndroidSpeechRecognizerFactory(this))
-    val tournamentFacade = TournamentFacade(auth, store)
-    val settingsFacade = SettingsFacade(this)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
+    val settingsFacade = SettingsFacade(dataStoreFactory)
 
     setContent {
       PawniesTheme {

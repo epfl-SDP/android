@@ -4,6 +4,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 /** Localized strings for the English language. */
 object French : LocalizedStrings {
@@ -23,7 +26,7 @@ object French : LocalizedStrings {
   override val authenticateWrongEmailFormatFailure = "Your email must be of the form: person@domain"
   override val authenticateInvalidUserFailure = "There is no user registered with this email"
   override val authenticateIncorrectPasswordFailure =
-      "The email or password you entered is incorrect"
+    "The email or password you entered is incorrect"
   override val authenticateExistingAccountFailure = "A user with this email already exists"
   override val authenticateOr = "or"
 
@@ -70,11 +73,13 @@ object French : LocalizedStrings {
   override val settingEditCancel = "Cancel".uppercase()
   override val settingProfileNameLabel = "Profile Name"
   override val settingProfileImageLabel = "Profile Image"
+  override val settingLogout: String = "Logout"
   override val settingLanguageLabel = "Language"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
+  override val profileFollow = "Follow"
   override val profileUnfollow = "Unfollow"
   override val profileChallenge = "Challenge"
   override val profileEditImageIcon = "Edit profile image icon"
@@ -87,13 +92,13 @@ object French : LocalizedStrings {
   override val socialSearchBarPlaceHolder = "Search player ..."
   override val socialSearchEmptyTitle = "Search any player"
   override val socialSearchEmptySubtitle =
-      "Find any player using their name, follow them, or invite them to play or see their match history"
+    "Find any player using their name, follow them, or invite them to play or see their match history"
   override val socialSearchClearContentDescription = "Clear search field"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
   override val sectionSettings = "Settings"
-  override val sectionPlay = "Jeu"
+  override val sectionPlay = "Play"
   override val sectionPuzzles = "Puzzles"
   override val sectionContests = "Contests"
 
@@ -120,7 +125,7 @@ object French : LocalizedStrings {
   override val puzzlesTitle = "Puzzles"
   override val puzzleSolving = { color: String -> "Find the best move for $color" }
   override val puzzleFailed = "You've failed! Try again!"
-  override val puzzleSolved = "You've solved the puzzle! Congrats!"
+  override val puzzleSolved = "You won! Congrats!"
   override val puzzleNumber = { id: String -> "Puzzle: #$id" }
   override val puzzleRating = { rating: String -> "Rating: $rating" }
 
@@ -143,18 +148,18 @@ object French : LocalizedStrings {
     "Create match $round / $total"
   }
   override val tournamentsDetailsNextBestOfSubtitle =
-      "Add a new match to all the players in this round."
+    "Add a new match to all the players in this round."
   override val tournamentsDetailsNextRoundTitle = "Next round"
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
   override val tournamentsDetailsStartEnoughPlayersTitle = "Start the tournament"
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
-      "Once started, the tournament will assign players and the first matches will be created."
+    "Once started, the tournament will assign players and the first matches will be created."
   override val tournamentsDetailsStartNotEnoughPlayersTitle = "Start the tournament"
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
-      "If you start the tournament now, there won't be enough players to play all the matches."
+    "If you start the tournament now, there won't be enough players to play all the matches."
   override val tournamentsDetailsStartDirectEliminationTitle = "Start direct elimination"
   override val tournamentsDetailsStartDirectEliminationSubtitle =
-      "Compute the pool results and start the direct elimination matches."
+    "Compute the pool results and start the direct elimination matches."
   override val tournamentDetailsBackContentDescription = "Back"
   override val tournamentDetailsPoolName = { poolNr: Int -> "Pool #${poolNr}" }
 
@@ -163,7 +168,7 @@ object French : LocalizedStrings {
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
       append("Started ")
-      withStyle(style) { append(duration.absoluteValue.toString()) }
+      withStyle(style) { append(duration.absoluteValue.toEnglishString()) }
       append(" ago")
     }
   }
@@ -183,4 +188,26 @@ object French : LocalizedStrings {
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
+
+  override val tournamentsFilterTitle = "Show only".uppercase()
+  override val tournamentsFilterOnlyDone = "Not done".uppercase()
+  override val tournamentsFilterOnlyParticipating = "Participating".uppercase()
+  override val tournamentsFilterOnlyAdministrating = "Administrating".uppercase()
+  override val tournamentsFilterBackContentDescription = "Back"
+}
+
+/**
+ * Converts a [Duration] to an English string by rounding it to the closest unit of time (seconds
+ * minimum).
+ */
+private fun Duration.toEnglishString(): String {
+  if (this >= 1.days) {
+    return "${this.inWholeDays} days"
+  } else if (this >= 1.hours) {
+    return "${this.inWholeHours} hours"
+  } else if (this >= 1.minutes) {
+    return "${this.inWholeMinutes} minutes"
+  }
+
+  return "${this.inWholeSeconds} seconds"
 }

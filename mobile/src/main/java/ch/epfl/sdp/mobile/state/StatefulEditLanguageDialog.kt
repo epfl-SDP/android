@@ -32,7 +32,10 @@ class EditLanguageDialogStateImpl(
 
   init {
     scope.launch {
-      selectedLanguage = settingFacade.getLanguage() ?: ENGLISH.language
+      settingFacade.getLanguage().collect{
+        selectedLanguage = it ?: ENGLISH.language
+
+      }
     }
   }
 

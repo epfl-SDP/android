@@ -1,9 +1,12 @@
 package ch.epfl.sdp.mobile.application.settings
 
 import android.content.Context
+import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXDataStoreFactory
-import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.edit
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 /**
  * Represents the facade for the user to modify the global settings
@@ -11,18 +14,29 @@ import kotlinx.coroutines.flow.first
  * @param context The Android [Context] used to set the language
  */
 class SettingsFacade(
-  private val context: Context,
+  private val dataStoreFactory: DataStoreFactory,
   ) {
 
-  suspend fun setLanguage(language: String) {
-    val (store, factory) = AndroidXDataStoreFactory(context).createPreferencesDataStore()
-    val key = factory.string("language")
-    store.edit { it[key] = language }
+  private val Language = "language"
+
+  /** The [DataStore] instance in which the preferences are stored. */
+  private val dataStore: DataStore<Preferences>
+
+  /** The key which indicates which indicates what language is selected. */
+  private val keyLanguage: Key<String>
+
+
+  init {
+    val (prefs, factory) = dataStoreFactory.createPreferencesDataStore()
+    dataStore = prefs
+    keyLanguage = factory.string(Language)
   }
 
-  suspend fun getLanguage(): String? {
-    val (store, factory) = AndroidXDataStoreFactory(context).createPreferencesDataStore()
-    val key = factory.string("language")
-    return store.data.first()[key]
+  suspend fun setLanguage(language: String) {
+    dataStore.edit { it[keyLanguage] = language }
+  }
+
+  fun getLanguage(): Flow<String?> {
+    return dataStore.data.map { it[keyLanguage] }
   }
 }

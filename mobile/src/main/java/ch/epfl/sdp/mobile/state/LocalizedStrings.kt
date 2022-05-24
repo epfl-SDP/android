@@ -9,8 +9,6 @@ import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.French
 import ch.epfl.sdp.mobile.ui.i18n.German
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import java.util.Locale.FRENCH
 import java.util.Locale.GERMAN
 
@@ -33,20 +31,11 @@ fun ProvideLocalizedStrings(
     settingsFacade: SettingsFacade,
     content: @Composable () -> Unit,
 ) {
-  var language by
-      remember(settingsFacade) {
-        mutableStateOf<String>(ConfigurationCompat.getLocales(configuration)[0].language)
-      }
-  val scope = rememberCoroutineScope()
 
-  LaunchedEffect(settingsFacade){
-    scope.launch {
-      val localLanguage = settingsFacade.getLanguage()
-      if(localLanguage != null){
-        language = localLanguage
-      }
-    }
-  }
+  val language by
+      settingsFacade
+          .getLanguage()
+          .collectAsState(initial = ConfigurationCompat.getLocales(configuration)[0].language)
 
   val strings =
       when (language) {

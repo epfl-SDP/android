@@ -108,7 +108,7 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-      SettingsButton(onClick = state::onEditProfileImageClick)
+      SettingsButton(onClick = state::onEditLanguageClick)
       LogoutButton(onClick = state::onLogout)
     }
   }
