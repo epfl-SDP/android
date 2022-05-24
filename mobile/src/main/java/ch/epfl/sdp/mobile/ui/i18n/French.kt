@@ -26,7 +26,7 @@ object French : LocalizedStrings {
   override val authenticateWrongEmailFormatFailure = "Your email must be of the form: person@domain"
   override val authenticateInvalidUserFailure = "There is no user registered with this email"
   override val authenticateIncorrectPasswordFailure =
-    "The email or password you entered is incorrect"
+      "The email or password you entered is incorrect"
   override val authenticateExistingAccountFailure = "A user with this email already exists"
   override val authenticateOr = "or"
 
@@ -92,7 +92,7 @@ object French : LocalizedStrings {
   override val socialSearchBarPlaceHolder = "Search player ..."
   override val socialSearchEmptyTitle = "Search any player"
   override val socialSearchEmptySubtitle =
-    "Find any player using their name, follow them, or invite them to play or see their match history"
+      "Find any player using their name, follow them, or invite them to play or see their match history"
   override val socialSearchClearContentDescription = "Clear search field"
 
   override val sectionAr: String = "AR"
@@ -148,18 +148,18 @@ object French : LocalizedStrings {
     "Create match $round / $total"
   }
   override val tournamentsDetailsNextBestOfSubtitle =
-    "Add a new match to all the players in this round."
+      "Add a new match to all the players in this round."
   override val tournamentsDetailsNextRoundTitle = "Next round"
   override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
   override val tournamentsDetailsStartEnoughPlayersTitle = "Start the tournament"
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
-    "Once started, the tournament will assign players and the first matches will be created."
+      "Once started, the tournament will assign players and the first matches will be created."
   override val tournamentsDetailsStartNotEnoughPlayersTitle = "Start the tournament"
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
-    "If you start the tournament now, there won't be enough players to play all the matches."
+      "If you start the tournament now, there won't be enough players to play all the matches."
   override val tournamentsDetailsStartDirectEliminationTitle = "Start direct elimination"
   override val tournamentsDetailsStartDirectEliminationSubtitle =
-    "Compute the pool results and start the direct elimination matches."
+      "Compute the pool results and start the direct elimination matches."
   override val tournamentDetailsBackContentDescription = "Back"
   override val tournamentDetailsPoolName = { poolNr: Int -> "Pool #${poolNr}" }
 

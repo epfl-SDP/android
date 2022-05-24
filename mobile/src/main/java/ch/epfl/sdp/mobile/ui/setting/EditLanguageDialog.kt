@@ -20,8 +20,8 @@ import ch.epfl.sdp.mobile.ui.prepare_game.SelectableItem
  */
 @Composable
 fun EditLanguageDialog(
-  state: EditLanguageDialogState,
-  modifier: Modifier = Modifier,
+    state: EditLanguageDialogState,
+    modifier: Modifier = Modifier,
 ) {
 
   /*
@@ -36,17 +36,21 @@ fun EditLanguageDialog(
     val strings = LocalLocalizedStrings.current
 
     Dialog(
-      cancelContent = { Text(text = strings.settingEditCancel) },
-      confirmContent = { Text(text = strings.settingEditSave) },
-      onCancelClick = state::onCancelClick,
-      onConfirmClick = state::onSaveClick
-    ) {
+        cancelContent = { Text(text = strings.settingEditCancel) },
+        confirmContent = { Text(text = strings.settingEditSave) },
+        onCancelClick = state::onCancelClick,
+        onConfirmClick = state::onSaveClick) {
       Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(strings.settingLanguageLabel, style = MaterialTheme.typography.subtitle1)
 
-        LanguageList(Languages, state.selectedLanguage, {
-          Log.i("myinfo", "this is called")
-          state.selectedLanguage = it}, Modifier)
+        LanguageList(
+            Languages,
+            state.selectedLanguage,
+            {
+              Log.i("myinfo", "this is called")
+              state.selectedLanguage = it
+            },
+            Modifier)
       }
     }
   }
@@ -54,20 +58,21 @@ fun EditLanguageDialog(
 
 @Composable
 fun LanguageList(
-  languages: List<String>,
-  selectedLanguage: String,
-  onItemClick: (String) -> Unit,
-  modifier: Modifier
+    languages: Map<String, String>,
+    selectedLanguage: String,
+    onItemClick: (String) -> Unit,
+    modifier: Modifier
 ) {
   Column(
-    verticalArrangement = Arrangement.Top,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = modifier,
+      verticalArrangement = Arrangement.Top,
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = modifier,
   ) {
     languages.forEach {
-      SelectableItem(onClick = { onItemClick(it) }, it == selectedLanguage) {
-        Text(it)
-      }
+      SelectableItem(
+          onClick = { onItemClick(it.value) },
+          it.value == selectedLanguage,
+          modifier.fillMaxWidth()) { Text(it.key) }
     }
   }
 }

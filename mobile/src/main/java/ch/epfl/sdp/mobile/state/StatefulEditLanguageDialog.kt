@@ -1,18 +1,12 @@
 package ch.epfl.sdp.mobile.state
 
-import androidx.compose.foundation.MutatePriority
-import androidx.compose.foundation.MutatorMutex
 import androidx.compose.runtime.*
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.settings.SettingsFacade
-import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.setting.EditLanguageDialog
 import ch.epfl.sdp.mobile.ui.setting.EditLanguageDialogState
-import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialog
-import ch.epfl.sdp.mobile.ui.setting.EditProfileNameDialogState
+import java.util.Locale.ENGLISH
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.Locale.ENGLISH
 
 /**
  * Implementation of the [EditLanguageDialogState] interface
@@ -32,10 +26,7 @@ class EditLanguageDialogStateImpl(
 
   init {
     scope.launch {
-      settingFacade.getLanguage().collect{
-        selectedLanguage = it ?: ENGLISH.language
-
-      }
+      settingFacade.getLanguage().collect { selectedLanguage = it ?: ENGLISH.language }
     }
   }
 

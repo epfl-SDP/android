@@ -28,8 +28,7 @@ val LocalTournamentFacade =
     compositionLocalOf<TournamentFacade> { error("Missing Tournament Facade.") }
 
 /** A global composition local which provides access to an instance of [SettingsFacade]. */
-val LocalSettingsFacade =
-    compositionLocalOf<SettingsFacade> { error("Missing Settings Facade.") }
+val LocalSettingsFacade = compositionLocalOf<SettingsFacade> { error("Missing Settings Facade.") }
 
 /**
  * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values
@@ -58,6 +57,5 @@ fun ProvideFacades(
       LocalChessFacade provides chess,
       LocalSpeechFacade provides speech,
       LocalTournamentFacade provides tournament,
-      LocalSettingsFacade provides settings
-  ) { content() }
+      LocalSettingsFacade provides settings) { content() }
 }

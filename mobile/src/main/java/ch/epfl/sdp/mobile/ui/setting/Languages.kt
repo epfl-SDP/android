@@ -2,4 +2,8 @@ package ch.epfl.sdp.mobile.ui.setting
 
 import java.util.Locale.*
 
-val Languages = listOf(ENGLISH.language, FRENCH.language, GERMAN.language)
+val Languages =
+    mapOf<String, String>(
+        Pair("English", ENGLISH.language),
+        Pair("Français", FRENCH.language),
+        Pair("Deutsch", GERMAN.language))

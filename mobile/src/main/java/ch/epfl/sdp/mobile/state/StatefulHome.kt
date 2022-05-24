@@ -164,7 +164,7 @@ fun StatefulHome(
       dialog(SettingEditProfileImageRoute) {
         StatefulEditProfileImageDialog(user = user, onClose = { controller.popBackStack() })
       }
-      dialog(SettingEditLanguageRoute){
+      dialog(SettingEditLanguageRoute) {
         StatefulEditLanguageDialog(onClose = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->

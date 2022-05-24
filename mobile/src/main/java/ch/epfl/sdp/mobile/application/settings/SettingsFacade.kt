@@ -1,11 +1,8 @@
 package ch.epfl.sdp.mobile.application.settings
 
 import android.content.Context
-import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
-import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXDataStoreFactory
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /**
@@ -14,8 +11,8 @@ import kotlinx.coroutines.flow.map
  * @param context The Android [Context] used to set the language
  */
 class SettingsFacade(
-  private val dataStoreFactory: DataStoreFactory,
-  ) {
+    private val dataStoreFactory: DataStoreFactory,
+) {
 
   private val Language = "language"
 
@@ -24,7 +21,6 @@ class SettingsFacade(
 
   /** The key which indicates which indicates what language is selected. */
   private val keyLanguage: Key<String>
-
 
   init {
     val (prefs, factory) = dataStoreFactory.createPreferencesDataStore()
