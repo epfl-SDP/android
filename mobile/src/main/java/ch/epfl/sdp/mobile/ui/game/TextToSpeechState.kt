@@ -2,7 +2,8 @@ package ch.epfl.sdp.mobile.ui.game
 
 interface TextToSpeechState {
 
-    val muted: Boolean
+    var muted: Boolean
 
     fun onTTsVolumeClick()
+
 }

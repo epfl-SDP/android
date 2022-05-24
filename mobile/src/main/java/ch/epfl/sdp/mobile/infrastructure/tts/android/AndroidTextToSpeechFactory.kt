@@ -2,7 +2,6 @@ package ch.epfl.sdp.mobile.infrastructure.tts.android
 
 import android.content.Context
 import android.os.Bundle
-import android.speech.tts.UtteranceProgressListener
 import android.speech.tts.TextToSpeech as NativeTextToSpeech
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeech
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeechFactory
@@ -44,28 +43,14 @@ class AndroidTextToSpeech(
     tts.setPitch(0f)
   }
 
-  override fun setOnUtteranceListener(listener: TextToSpeech.UtteranceListener) {
-    tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-
-      override fun onStart(utteranceId: String?) {
-        listener.onStart(utteranceId)
-      }
-      override fun onDone(utteranceId: String?) {
-        listener.onDone(utteranceId)
-      }
-      override fun onError(utteranceId: String?) {
-        listener.onError(utteranceId)
-      }
-    })
-  }
-
-  override fun speak(text: String, utteranceId: String?) {
+  override fun speak(text: String) {
     // Set volume for this tts request
     val params = Bundle()
     params.putFloat(NativeTextToSpeech.Engine.KEY_PARAM_VOLUME, volume.level)
 
-    tts.speak(text, NativeTextToSpeech.QUEUE_ADD, params, utteranceId)
+    tts.speak(text, NativeTextToSpeech.QUEUE_ADD, params, null)
   }
+
 
   override fun isSpeaking(): Boolean {
     return tts.isSpeaking
