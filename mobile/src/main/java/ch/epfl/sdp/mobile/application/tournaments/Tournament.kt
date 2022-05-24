@@ -3,6 +3,8 @@ package ch.epfl.sdp.mobile.application.tournaments
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
+import kotlin.time.Duration
 
 /** An interface which represents information about a fetched tournament. */
 interface Tournament {
@@ -18,6 +20,9 @@ interface Tournament {
 
   /** True iff the user who fetched the [Tournament] participates in it. */
   val isParticipant: Boolean
+
+  /** The duration from when the tournament was created. */
+  val durationCreated: Duration
 
   /** The [Status] of the [Tournament]. */
   val status: Status
@@ -78,7 +83,12 @@ interface Tournament {
  * @receiver the [TournamentDocument] that we're transforming.
  * @param user the [AuthenticatedUser] that we see this [Tournament] as.
  * @param store the [Store] used to perform changes.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
  * @return the [Tournament] instance.
  */
-fun TournamentDocument.toTournament(user: AuthenticatedUser, store: Store): Tournament =
-    StoreDocumentTournament(this, user, store)
+fun TournamentDocument.toTournament(
+    user: AuthenticatedUser,
+    store: Store,
+    timeProvider: TimeProvider
+): Tournament = StoreDocumentTournament(this, user, store, timeProvider)

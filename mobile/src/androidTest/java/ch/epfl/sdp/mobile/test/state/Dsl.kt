@@ -11,15 +11,19 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
+import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.DataStoreFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -29,11 +33,13 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
  *
  * @property assets the [AssetManager] of the app.
  * @property auth the [Auth] of the app.
+ * @property dataStoreFactory the [DataStoreFactory] of the app.
  * @property store the [Store] of the app.
  */
 data class Infrastructure(
     val assets: AssetManager,
     val auth: Auth,
+    val dataStoreFactory: DataStoreFactory,
     val store: Store,
 )
 
@@ -77,6 +83,8 @@ data class TestEnvironment(
  * @param auth the [Auth] to use by default.
  * @param assets the [AssetManager] to use by default.
  * @param recognizer the [SpeechRecognizerFactory] to use by default.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
  * @param strings the [LocalizedStrings] for this content.
  * @param content the actual composable content to test.
  *
@@ -91,6 +99,8 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
     auth: Auth = buildAuth { user(DefaultEmail, DefaultPassword, userId) },
     assets: AssetManager = emptyAssets(),
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
+    dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
+    timeProvider: TimeProvider = FakeTimeProvider,
     strings: LocalizedStrings = English,
     content: @Composable TestEnvironment.() -> Unit,
 ): TestEnvironment {
@@ -98,7 +108,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val socialFacade = SocialFacade(auth, store)
   val chessFacade = ChessFacade(auth, store, assets)
   val speechFacade = SpeechFacade(recognizer)
-  val tournamentFacade = TournamentFacade(auth, store)
+  val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
   authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
   val user = authenticationFacade.awaitAuthenticatedUser()
   val environment =
@@ -111,7 +121,13 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
                   speech = speechFacade,
                   tournaments = tournamentFacade,
               ),
-          infrastructure = Infrastructure(assets = assets, auth = auth, store = store),
+          infrastructure =
+              Infrastructure(
+                  assets = assets,
+                  auth = auth,
+                  dataStoreFactory = dataStoreFactory,
+                  store = store,
+              ),
           strings = strings,
           user = user,
       )
