@@ -48,9 +48,10 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
         chessScene.scale(BoardScale)
 
         // Place the chess board on the taped position
-        arSceneView.onTouchAr = { hitResult, _ ->
-          anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
-        }
+        arSceneView.onTouchAr =
+            { hitResult, _ ->
+              anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
+            }
 
         arSceneView
       },

@@ -9,7 +9,6 @@ import ch.epfl.sdp.mobile.state.game.core.GameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Companion.toPosition
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.ar.ArGameScreenState
-import ch.epfl.sdp.mobile.ui.game.ar.ChessScene
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

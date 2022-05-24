@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
 import android.content.Context
-import android.util.Log
 import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
@@ -20,7 +19,6 @@ import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.GLBLoader
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.utils.Color as ArColor
-import java.lang.IllegalStateException
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.CONFLATED
@@ -37,7 +35,7 @@ val TAG: String = "ChessScene"
  * @param scope A scope that is used to launch the model loading
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
-    private val context : Context,
+    private val context: Context,
     private val scope: CoroutineScope,
     startingBoard: Map<Position, Piece>,
 ) {
@@ -115,20 +113,20 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    *
    * @param pieces Map of piece and their position
    */
-//  suspend fun loadBoard(pieces: Map<Position, Piece>) {
-//    // Load Board
-//    val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
-//    boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
-//
-//    val boundingBox = boundingBox ?: return
-//
-//    val pieceRenderable = loadPieceRenderable()
-//
-//    // Load pieces
-//    for ((position, piece) in pieces) {
-//      addPieces(position, boundingBox, pieceRenderable, piece)
-//    }
-//  }
+  //  suspend fun loadBoard(pieces: Map<Position, Piece>) {
+  //    // Load Board
+  //    val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
+  //    boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
+  //
+  //    val boundingBox = boundingBox ?: return
+  //
+  //    val pieceRenderable = loadPieceRenderable()
+  //
+  //    // Load pieces
+  //    for ((position, piece) in pieces) {
+  //      addPieces(position, boundingBox, pieceRenderable, piece)
+  //    }
+  //  }
 
   /**
    * Create the renderable of the given [piece] and added in to [boardNode] as a child
