@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.onEach
 
-val TAG: String = "ChessScene"
 /**
  * This class represent the AR chess scene which contains :
  * - The board as the root node
@@ -108,26 +107,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    */
   private suspend fun loadPieceRenderable(rank: Rank): Renderable =
       requireNotNull(GLBLoader.loadModel(context, rank.arModelPath))
-
-  /**
-   * Load the board and the given pieces
-   *
-   * @param pieces Map of piece and their position
-   */
-  //  suspend fun loadBoard(pieces: Map<Position, Piece>) {
-  //    // Load Board
-  //    val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return
-  //    boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return
-  //
-  //    val boundingBox = boundingBox ?: return
-  //
-  //    val pieceRenderable = loadPieceRenderable()
-  //
-  //    // Load pieces
-  //    for ((position, piece) in pieces) {
-  //      addPieces(position, boundingBox, pieceRenderable, piece)
-  //    }
-  //  }
 
   /**
    * Create the renderable of the given [piece] and added in to [boardNode] as a child
