@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.test.application.chess.engine
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 
 /**
  * An interface which provides some easy-to-use access to some operations which may be performed on

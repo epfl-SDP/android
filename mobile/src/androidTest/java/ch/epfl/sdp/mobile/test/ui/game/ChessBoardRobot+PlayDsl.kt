@@ -6,7 +6,6 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.test.application.chess.engine.GameScope
-import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 
 /**
  * Performs all the steps from the [block], updating the robot internally. If a step fails, it will
@@ -17,28 +16,29 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
  * some well-known games on a real board.
  *
  * @receiver the [ChessBoardRobot] to which steps will be applied.
+ * @param rotated true if the black player is at the bottom of the screen.
  * @param block the block of steps to perform.
  */
-fun ChessBoardRobot.play(block: GameScope.() -> Unit) {
-  ChessBoardRobotGameScope(this).apply(block)
-}
+fun ChessBoardRobot.play(rotated: Boolean = false, block: GameScope.() -> Unit) =
+    ChessBoardRobotGameScope(this, rotated).run(block)
 
 /**
  * An implementation of a [GameScope] which delegates moves to a [ChessBoardRobot].
  *
  * @param robot the underlying [ChessBoardRobot].
+ * @param rotated true if the black player is at the bottom of the screen.
  */
-private class ChessBoardRobotGameScope(private val robot: ChessBoardRobot) : GameScope {
+private class ChessBoardRobotGameScope(
+    private val robot: ChessBoardRobot,
+    private val rotated: Boolean,
+) : GameScope {
 
   override fun tryMove(from: Position, delta: Delta) {
-    robot.performInput {
-      val to = from + delta ?: return@performInput // Ignore out of bounds moves.
+    robot.performInput(rotated = rotated) {
+      val to = from + delta
 
-      val actualFrom = ChessBoardState.Position(from.x, from.y)
-      val actualTo = ChessBoardState.Position(to.x, to.y)
-
-      click(actualFrom.x, actualFrom.y)
-      click(actualTo.x, actualTo.y)
+      click(from.x, from.y)
+      click(to.x, to.y)
     }
   }
 

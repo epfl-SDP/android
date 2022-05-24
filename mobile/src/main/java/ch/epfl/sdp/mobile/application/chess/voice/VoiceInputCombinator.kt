@@ -1,10 +1,12 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
+import ch.epfl.sdp.mobile.application.chess.engine.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Companion.Move
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Companion.Promote
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Move
+import ch.epfl.sdp.mobile.application.chess.engine.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.engine.Board
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Move
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action.Promote
 import ch.epfl.sdp.mobile.application.chess.notation.CommonNotationCombinators
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.combine
 import ch.epfl.sdp.mobile.application.chess.parser.Combinators.failure

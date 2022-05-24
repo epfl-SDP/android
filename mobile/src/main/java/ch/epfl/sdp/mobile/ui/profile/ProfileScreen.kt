@@ -11,33 +11,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Close
 import ch.epfl.sdp.mobile.ui.PawniesIcons
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 
 /**
  * Main component of the ProfileScreen that groups ProfileHeader and list of Matches.
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <C : ChessMatch> ProfileScreen(
-    state: VisitedProfileScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
+    state: VisitedProfileScreenState<C, P>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val lazyColumnState = rememberLazyListState()
+  val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
   val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
   val elevation by animateDpAsState(targetElevation)
 
@@ -45,15 +43,18 @@ fun <C : ChessMatch> ProfileScreen(
       header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp).fillMaxWidth()) },
       profileTabBar = {
         ProfileTabBar(
-            pastGamesCount = state.pastGamesCount,
+            state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
             elevation = elevation,
         )
       },
+      tabBarState = tabBarState,
       matches = state.matches,
-      contentPadding = contentPadding,
       onMatchClick = state::onMatchClick,
+      puzzles = state.puzzles,
+      onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
+      contentPadding = contentPadding,
       modifier = modifier)
 }
 
@@ -62,13 +63,14 @@ fun <C : ChessMatch> ProfileScreen(
  * SettingsButton, name and email of th user profile.
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> ProfileHeader(
-    state: VisitedProfileScreenState<C>,
-    modifier: Modifier = Modifier,
+fun <C : ChessMatch, P : PuzzleInfo> ProfileHeader(
+    state: VisitedProfileScreenState<C, P>,
+    modifier: Modifier = Modifier
 ) {
 
   Column(
@@ -96,12 +98,13 @@ fun <C : ChessMatch> ProfileHeader(
  * Composes the profile picture given its [state].
  *
  * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param state state of profile screen.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> ProfilePicture(
-    state: VisitedProfileScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> ProfilePicture(
+    state: VisitedProfileScreenState<C, P>,
     modifier: Modifier = Modifier,
 ) {
   Box(
@@ -113,12 +116,14 @@ fun <C : ChessMatch> ProfilePicture(
 /**
  * Composes the unfollow button.
  *
+ * @param C the type of the [ChessMatch].
+ * @param P the type of the [PuzzleInfo].
  * @param onClick callback function for the unfollow button.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
-fun <C : ChessMatch> UnfollowButton(
-    state: VisitedProfileScreenState<C>,
+fun <C : ChessMatch, P : PuzzleInfo> UnfollowButton(
+    state: VisitedProfileScreenState<C, P>,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -157,57 +162,6 @@ fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileChallenge.uppercase())
   }
-}
-
-/**
- * Composes a Profile from puzzles and past games tab items.
- *
- * @param pastGamesCount total of the previous games.
- * @param modifier the [Modifier] for this composable.
- * @param backgroundColor of the tab bar.
- * @param elevation elevation dp of the tab bar.
- */
-@Composable
-fun ProfileTabBar(
-    pastGamesCount: Int,
-    modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colors.background,
-    elevation: Dp = 0.dp,
-) {
-  val strings = LocalLocalizedStrings.current
-  Surface(
-      modifier = modifier,
-      color = backgroundColor,
-      elevation = elevation,
-  ) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier,
-    ) {
-      Column(
-          horizontalAlignment = Alignment.CenterHorizontally,
-          verticalArrangement = Arrangement.Center,
-          modifier = modifier.padding(horizontal = 32.dp, vertical = 8.dp),
-      ) {
-        Text(text = strings.profilePastGames, style = MaterialTheme.typography.overline)
-        Text(
-            text = "$pastGamesCount",
-            style = MaterialTheme.typography.h5,
-            modifier = Modifier.borderBottom(2.dp, Color.Transparent),
-        )
-      }
-    }
-  }
-}
-
-private fun Modifier.borderBottom(
-    width: Dp,
-    color: Color,
-): Modifier = drawBehind {
-  val start = Offset(0f, size.height)
-  val end = Offset(size.width, size.height)
-  drawLine(color, start, end, width.toPx(), StrokeCap.Round)
 }
 
 /**

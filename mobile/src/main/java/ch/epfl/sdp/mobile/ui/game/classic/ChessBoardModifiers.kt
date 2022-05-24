@@ -221,9 +221,11 @@ private val PositionsToLetters = buildMap {
  * A [Modifier] which draws the text indications for the rows and the columns of the board.
  *
  * @param color the [Color] of the border text.
+ * @param angle the angle to apply to the text.
  */
 fun Modifier.letters(
     color: Color = Color.Unspecified,
+    angle: () -> Float = { 0f },
 ): Modifier = composed {
   val textColor = color.takeOrElse { LocalContentColor.current }
   val style = LocalTextStyle.current
@@ -252,11 +254,20 @@ fun Modifier.letters(
       val paragraphOffset = IntSize(paragraph.width.roundToInt(), paragraph.height.roundToInt())
       val sizeOffset = IntSize(size.width.roundToInt(), size.height.roundToInt())
       val topLeft = alignment.align(paragraphOffset, sizeOffset, direction).toOffset()
-      drawParagraph(
-          paragraph = paragraph,
-          color = textColor,
-          topLeft = topLeft,
-      )
+      withTransform(
+          transformBlock = {
+            rotate(
+                degrees = angle(),
+                pivot = topLeft + (Offset(paragraph.width, paragraph.height) / 2f),
+            )
+          },
+      ) {
+        drawParagraph(
+            paragraph = paragraph,
+            color = textColor,
+            topLeft = topLeft,
+        )
+      }
     }
   }
 }
@@ -299,14 +310,13 @@ internal constructor(
   private /* inline */ fun DrawScope.drawPositions(
       block: DrawScope.(Position) -> Unit,
   ) {
-    val origin = size.center - Offset(size.minDimension / 2, size.minDimension / 2)
     val squareSize = size.minDimension / cells
     for (position in positions) {
       val (x, y) = position
       withTransform(
           transformBlock = {
-            val left = origin.x + x * squareSize
-            val top = origin.y + y * squareSize
+            val left = x * squareSize
+            val top = y * squareSize
             inset(
                 left = left,
                 top = top,

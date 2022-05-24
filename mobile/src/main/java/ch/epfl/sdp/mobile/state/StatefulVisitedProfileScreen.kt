@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.profile.VisitedProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -34,8 +33,8 @@ class FetchedUserProfileScreenState(
     chessFacade: ChessFacade,
     private val scope: CoroutineScope,
 ) :
-    VisitedProfileScreenState<ChessMatchAdapter>,
-    ProfileScreenState<ChessMatchAdapter> by StatefulProfileScreen(
+    VisitedProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
+    ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
 
   private val actions by actions
@@ -72,6 +71,7 @@ class FetchedUserProfileScreenState(
  *
  * @param uid of the player.
  * @param onMatchClick callback function called when a match is clicked on.
+ * @param onPuzzleClick callback function called when a puzzle is clicked on.
  * @param onChallengeClick callback if challenge button clicked
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
@@ -81,6 +81,7 @@ fun StatefulVisitedProfileScreen(
     user: AuthenticatedUser,
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
+    onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     onBackToSocialClick: () -> Unit,
     onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -90,6 +91,7 @@ fun StatefulVisitedProfileScreen(
       rememberUpdatedState(
           VisitedProfileActions(
               onMatchClick = onMatchClick,
+              onPuzzleClick = onPuzzleClick,
               onBack = onBackToSocialClick,
               onChallengeClickAction = onChallengeClick))
 
@@ -118,6 +120,7 @@ private object EmptyProfile : Profile {
 
 data class VisitedProfileActions(
     override val onMatchClick: (ChessMatchAdapter) -> Unit,
+    override val onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     val onChallengeClickAction: (String) -> Unit,
     val onBack: () -> Unit,
 ) : ProfileActions
