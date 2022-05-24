@@ -38,28 +38,26 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
 
   AndroidView(
       factory = { context ->
-        chessScene = ChessScene(context, view.lifecycleScope, state.pieces)
 
         // Create the view
         val arSceneView = ArSceneView(context)
 
-        val chessScene = chessScene ?: return@AndroidView arSceneView
+        chessScene =
+            ChessScene(context, view.lifecycleScope, state.pieces).apply {
 
-        chessScene.scale(BoardScale)
+              // Scale the board
+              this.scale(BoardScale)
 
-        // Place the chess board on the taped position
-        arSceneView.onTouchAr =
-            { hitResult, _ ->
-              anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
+              // Place the chess board on the taped position
+              arSceneView.onTouchAr = { hitResult, _ ->
+                anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
+              }
             }
 
         arSceneView
       },
       modifier = modifier.semantics { this.contentDescription = strings.arContentDescription },
-      update = {
-        val chessScene = chessScene ?: return@AndroidView
-        chessScene.update(state.pieces)
-      })
+      update = { chessScene?.update(state.pieces) })
 }
 
 /**
