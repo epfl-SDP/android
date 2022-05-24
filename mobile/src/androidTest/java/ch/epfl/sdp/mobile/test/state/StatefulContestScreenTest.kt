@@ -40,7 +40,6 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_tournamentsExist_then_theyAreDisplayedOnTheScreen() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
-      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -48,19 +47,12 @@ class StatefulContestScreenTest {
           document("id2", TournamentDocument("tid2", "2", "Tournament 2"))
         }
       }
-      val assets = emptyAssets()
       val authFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-      val strings =
-          rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(auth = auth, store = store) {
               StatefulTournamentScreen(currentUser, {}, {}, {})
-            }
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeAdmin).assertIsDisplayed()
@@ -71,26 +63,17 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_userJoinedTournament_then_participantBadgeIsDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
-      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
           document("id1", TournamentDocument("tid1", "2", "Tournament 1", playerIds = listOf("1")))
         }
       }
-      val assets = emptyAssets()
       val authFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-      val strings =
-          rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(store = store, auth = auth) {
               StatefulTournamentScreen(currentUser, {}, {}, {})
-            }
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
       rule.onNodeWithText(strings.tournamentsBadgeParticipant).assertIsDisplayed()
@@ -101,7 +84,6 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_tournamentPresent_then_correctTimeDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
-      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -117,20 +99,12 @@ class StatefulContestScreenTest {
       }
 
       val time = FakeTimeProvider
-      val assets = emptyAssets()
       val authFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
-
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
-      val strings =
-          rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(store=store, auth = auth, timeProvider = time ) {
               StatefulHome(user)
-            }
           }
 
       rule.onNodeWithText(strings.sectionSocial).performClick()
@@ -147,23 +121,15 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_tournamentCreated_then_correctTimeDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
-      val dataStoreFactory = emptyDataStoreFactory()
       val store = emptyStore()
       val time = FakeTimeProvider
-      val assets = emptyAssets()
       val authFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
-      val strings =
-          rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(auth= auth) {
               StatefulHome(user)
-            }
           }
 
       rule.onNodeWithText(strings.sectionContests).performClick()

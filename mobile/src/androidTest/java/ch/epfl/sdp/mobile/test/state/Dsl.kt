@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -109,6 +110,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val chessFacade = ChessFacade(auth, store, assets)
   val speechFacade = SpeechFacade(recognizer)
   val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
+  val settingsFacade = SettingsFacade(dataStoreFactory)
   authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
   val user = authenticationFacade.awaitAuthenticatedUser()
   val environment =
@@ -139,6 +141,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
           chess = chessFacade,
           speech = speechFacade,
           tournament = tournamentFacade,
+          settings = settingsFacade,
           content = { with(environment) { content() } },
       )
     }

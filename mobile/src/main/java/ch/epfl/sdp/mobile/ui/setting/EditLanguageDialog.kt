@@ -47,7 +47,6 @@ fun EditLanguageDialog(
             Languages,
             state.selectedLanguage,
             {
-              Log.i("myinfo", "this is called")
               state.selectedLanguage = it
             },
             Modifier)

@@ -29,40 +29,18 @@ class NavigationTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun loadingSection_isEmpty() {
-    val store = emptyStore()
-    val dataStoreFactory = emptyDataStoreFactory()
-    val assets = emptyAssets()
-    val facade = AuthenticationFacade(SuspendingAuth, store)
-    val socialFacade = SocialFacade(SuspendingAuth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade =
-        TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
-    rule.setContentWithLocalizedStrings {
-      ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+  fun loadingSection_isEmpty() = runTest {
+    rule.setContentWithTestEnvironment {
         Navigation()
-      }
     }
     rule.onAllNodes(keyIsDefined(SemanticsProperties.Text)).assertCountEquals(0)
   }
 
   @Test
   fun notAuthenticated_displaysAuthenticationScreen() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val dataStoreFactory = emptyDataStoreFactory()
-    val assets = emptyAssets()
-    val facade = AuthenticationFacade(auth, store)
-    val socialFacade = SocialFacade(auth, store)
-    val chessFacade = ChessFacade(SuspendingAuth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment {
             Navigation()
-          }
         }
 
     // Do we see the authentication screen actions ?
