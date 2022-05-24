@@ -5,6 +5,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.application.tournaments.toTournament
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +19,7 @@ class TournamentTest {
     val store = emptyStore()
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns ""
-    val tournament = document.toTournament(user, store)
+    val tournament = document.toTournament(user, store, FakeTimeProvider)
     assertThat(tournament.reference).isEqualTo(TournamentReference(""))
     assertThat(tournament.name).isEmpty()
     assertThat(tournament.isAdmin).isFalse()
@@ -32,7 +33,7 @@ class TournamentTest {
     val store = emptyStore()
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id"
-    val tournament = document.toTournament(user, store)
+    val tournament = document.toTournament(user, store, FakeTimeProvider)
     assertThat(tournament.reference).isEqualTo(TournamentReference("1"))
     assertThat(tournament.name).isEqualTo("Hello")
     assertThat(tournament.isAdmin).isTrue()

@@ -12,8 +12,10 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.assets.android.AndroidAssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
+import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXDataStoreFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
 import ch.epfl.sdp.mobile.infrastructure.speech.android.AndroidSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.infrastructure.time.SystemTimeProvider
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -28,6 +30,7 @@ class HomeActivity : ComponentActivity() {
     val auth = FirebaseAuth(Firebase.auth)
     val store = FirestoreStore(Firebase.firestore)
     val assetManager = AndroidAssetManager(context = this)
+    val dataStoreFactory = AndroidXDataStoreFactory(context = this)
 
     // The different facades from the application.
     val authenticationFacade = AuthenticationFacade(auth, store)

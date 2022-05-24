@@ -41,6 +41,7 @@ interface LocalizedStrings {
   val profilePastGames: String
   val profilePuzzle: String
   val profileSettings: String
+  val profileFollow: String
   val profileUnfollow: String
   val profileChallenge: String
   val profileAgainst: String
@@ -53,6 +54,7 @@ interface LocalizedStrings {
   val settingEditCancel: String
   val settingProfileNameLabel: String
   val settingProfileImageLabel: String
+  val settingLogout: String
   val settingLanguageLabel: String
 
   val boardColorBlack: String
@@ -172,4 +174,10 @@ interface LocalizedStrings {
   val tournamentsCreateQualifierSizeN: (size: Int) -> String
   val tournamentsCreateElimDemomN: (denominator: Int) -> String
   val tournamentsCreateElimDepthFinal: String
+
+  val tournamentsFilterTitle: String
+  val tournamentsFilterOnlyDone: String
+  val tournamentsFilterOnlyParticipating: String
+  val tournamentsFilterOnlyAdministrating: String
+  val tournamentsFilterBackContentDescription: String
 }
