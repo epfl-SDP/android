@@ -131,7 +131,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store) {
+        rule.setContentWithTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -175,7 +175,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store) {
+        rule.setContentWithTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -213,7 +213,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store) {
+        rule.setContentWithTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -261,7 +261,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store) {
+        rule.setContentWithTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,

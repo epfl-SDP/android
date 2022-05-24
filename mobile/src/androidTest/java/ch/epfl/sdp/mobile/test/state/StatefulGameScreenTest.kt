@@ -28,9 +28,11 @@ import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.*
+import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -67,6 +69,7 @@ class StatefulGameScreenTest {
   ): ChessBoardRobot {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") {
@@ -78,7 +81,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(recognizer)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -548,6 +551,7 @@ class StatefulGameScreenTest {
   fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
@@ -557,7 +561,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -575,18 +579,19 @@ class StatefulGameScreenTest {
     val robot = ChessBoardRobot(rule, strings)
 
     robot.performInput {
-      click(4, 6)
-      click(4, 5)
+      click(4, 1)
+      click(4, 2)
     }
 
     // Pawn did not move
-    robot.assertHasPiece(4, 6, White, Pawn)
+    robot.assertHasPiece(4, 1, White, Pawn)
   }
 
   @Test
   fun playingGameWithNoBlackId_isUnsuccessful() {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId1", ProfileDocument()) }
       collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
@@ -596,7 +601,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -670,7 +675,7 @@ class StatefulGameScreenTest {
   @Test
   fun playingUntilCheckmate_displaysCheckmate() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(FoolsMate)
+    robot.play(block = FoolsMate)
     robot.onNodeWithLocalizedText { gameMessageCheckmate }.assertExists()
   }
 
@@ -678,14 +683,14 @@ class StatefulGameScreenTest {
   fun playingUntilStalemate_displaysStalemate() {
 
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(Stalemate)
+    robot.play(block = Stalemate)
     robot.onNodeWithLocalizedText { gameMessageStalemate }.assertExists()
   }
 
   @Test
   fun given_game_when_playingUntilPromotion_then_canPromoteToQueen() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(promote(Rank.Queen))
+    robot.play(block = promote(Rank.Queen))
     robot
         .onAllNodesWithContentDescription(
             robot.strings.boardPieceContentDescription(
@@ -706,7 +711,7 @@ class StatefulGameScreenTest {
   @Test
   fun given_promotionScreen_when_pressingRankTwice_then_confirmIsNotEnabled() {
     val robot = emptyGameAgainstOneselfRobot()
-    robot.play(UntilPromotion)
+    robot.play(block = UntilPromotion)
     robot.performInput {
       drag(from = ChessBoardState.Position(7, 1), to = ChessBoardState.Position(6, 0))
     }

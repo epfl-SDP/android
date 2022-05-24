@@ -1,14 +1,13 @@
 package ch.epfl.sdp.mobile.application.chess
 
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Color
 import ch.epfl.sdp.mobile.application.chess.engine.Game
 import ch.epfl.sdp.mobile.application.chess.engine.NextStep
-import ch.epfl.sdp.mobile.application.chess.engine.implementation.PersistentGame
+import ch.epfl.sdp.mobile.application.chess.engine.buildGame
 import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
-import kotlinx.collections.immutable.persistentListOf
 
 /**
  * Represents a complete [Puzzle] TODO: Will definitely change in the "Functional Puzzle Game"
@@ -37,12 +36,7 @@ interface Puzzle {
  * @return The corresponding base [Game]
  */
 fun Puzzle.baseGame(): Game {
-  val baseGame =
-      PersistentGame(
-          previous = null,
-          nextPlayer = boardSnapshot.playing,
-          boards = persistentListOf(boardSnapshot.board),
-      )
+  val baseGame = buildGame(nextPlayer = boardSnapshot.playing, board = boardSnapshot.board)
 
   val step = baseGame.nextStep as? NextStep.MovePiece ?: return baseGame
   val move = puzzleMoves.firstOrNull() ?: return baseGame
