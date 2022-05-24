@@ -57,6 +57,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     scope.launch {
       val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
       boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
+
       val pieceRenderable = loadPieceRenderable()
 
       currentPositionChannel
