@@ -5,13 +5,13 @@
     <!-- Necessary permissions for speech recognition -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
-    <!-- Required for interaction with a speech recognition service -->
-    <!-- Required for interaction with a text to speech service -->
     <queries>
+        <!-- Required for interaction with a speech recognition service -->
         <intent>
             <action
                 android:name="android.speech.RecognitionService" />
         </intent>
+        <!-- Required for interaction with a text to speech service -->
         <intent>
             <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
