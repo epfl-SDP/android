@@ -28,7 +28,9 @@ import ch.epfl.sdp.mobile.ui.tournaments.TournamentMatch.Result
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentsFinalsRound.Banner
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
 /** An interface which represents a match between two players, which both have a name. */
@@ -175,7 +177,7 @@ fun <P : PoolMember, M : TournamentMatch> TournamentDetails(
             onBadgeClick = state::onBadgeClick,
             badgeEnabled = state.badge == BadgeType.Join,
             count = sectionCount,
-            selected = pagerState.currentPage,
+            selected = pagerState.currentPageWithOffset,
             sectionTitle = {
               when (it) {
                 0 -> strings.tournamentsDetailsPools
@@ -292,6 +294,7 @@ private fun DetailsTopBar(
             selectedTabIndex = selected,
             backgroundColor = MaterialTheme.colors.background,
             indicator = {}, // Hide the default indicator.
+            divider = {}, // Hide the default divider.
             edgePadding = 0.dp, // No start padding.
         ) {
           for (index in 0 until count) {
@@ -507,3 +510,14 @@ private fun DetailsMatch(
     }
   }
 }
+
+/**
+ * A variation of [PagerState.currentPage] which displays the page which is the "most visible" on
+ * the screen.
+ */
+private val PagerState.currentPageWithOffset: Int
+  get() {
+    val page = currentPage + currentPageOffset
+    val max = (pageCount - 1).coerceAtLeast(0) // Handle pageCount = 0.
+    return page.roundToInt().coerceIn(0, max)
+  }
