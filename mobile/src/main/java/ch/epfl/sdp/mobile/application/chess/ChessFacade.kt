@@ -36,14 +36,14 @@ class ChessFacade(
     private val assets: AssetManager,
 ) {
 
-  /** Chess matches side of chess facade */
+  /** Chess matches side of chess facade. */
 
   /**
-   * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
+   * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store].
    *
-   * @param user The [AuthenticatedUser] that wants to create the [Match]
+   * @param user The [AuthenticatedUser] that wants to create the [Match].
    *
-   * @return The created [Match] before storing it in the [Store]
+   * @return The created [Match] before storing it in the [Store].
    */
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
     val document = store.collection("games").document()
@@ -54,12 +54,12 @@ class ChessFacade(
   }
 
   /**
-   * Creates a [Match] between two [Profile]s and stores it in the [Store]
+   * Creates a [Match] between two [Profile]s and stores it in the [Store].
    *
-   * @param white The [Profile] of the player that will play white
-   * @param black The [Profile] of the player that will play black
+   * @param white The [Profile] of the player that will play white.
+   * @param black The [Profile] of the player that will play black.
    *
-   * @return The created [Match] before storing it in the [Store]
+   * @return The created [Match] before storing it in the [Store].
    */
   suspend fun createMatch(white: Profile, black: Profile, user: Profile? = null): Match {
     val document = store.collection("games").document()
@@ -80,11 +80,11 @@ class ChessFacade(
 
   /**
    * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
-   * player (or even himself)
+   * player (or even himself).
    *
-   * @param profile The [Profile] whose [Match]s will be fetched
+   * @param profile The [Profile] whose [Match]s will be fetched.
    *
-   * @return The [Flow] of [List] of [Match]s for the [Profile]
+   * @return The [Flow] of [List] of [Match]s for the [Profile].
    */
   fun matches(profile: Profile): Flow<List<Match>> {
     val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", profile)
@@ -108,10 +108,10 @@ class ChessFacade(
   }
 
   /**
-   * Fetches the list of all [Puzzle]s from their source
+   * Fetches the list of all [Puzzle]s from their source.
    *
    * As of now, the puzzles come from the Lichess.org Open Database
-   * (https://database.lichess.org/#puzzles)
+   * (https://database.lichess.org/#puzzles).
    */
   private fun allPuzzles(): List<Puzzle> {
     return sequence {
@@ -139,39 +139,40 @@ class ChessFacade(
   }
 
   /**
-   * Gets a certain [Puzzle] by his uid
+   * Gets a certain [Puzzle] by his uid.
    *
-   * @param uid The uid of the [Puzzle] to get
+   * @param uid The uid of the [Puzzle] to get.
    *
-   * @return The specified [Puzzle], if it exists
+   * @return The specified [Puzzle], if it exists.
    */
   fun puzzle(uid: String): Puzzle? {
     return allPuzzles().firstOrNull { it.uid == uid }
   }
 
   /**
-   * Fetches the list of solved [Puzzle]s for a certain [Profile]
+   * Fetches the list of solved [Puzzle]s for a certain [Profile].
    *
-   * @param profile the [Profile] in question
+   * @param profile the [Profile] in question.
    *
-   * @returns The list of solved [Puzzle]s
+   * @returns The list of solved [Puzzle]s.
    */
   fun solvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
   }
 
   /**
-   * Fetches the list of unsolved [Puzzle]s for a certain [Profile]
+   * Fetches the list of unsolved [Puzzle]s for a certain [Profile].
    *
-   * @param profile the [Profile] in question
+   * @param profile the [Profile] in question.
    *
-   * @returns The list of unsolved [Puzzle]s
+   * @returns The list of unsolved [Puzzle]s.
    */
   fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
   }
 }
 
+/** TODO */
 private data class SnapshotPuzzle(
     override val uid: String,
     override val boardSnapshot: FenNotation.BoardSnapshot,
@@ -179,12 +180,19 @@ private data class SnapshotPuzzle(
     override val elo: Int,
 ) : Puzzle
 
+/** TODO */
 private data class StoreMatch(
     override val id: String,
     private val store: Store,
     private val user: Profile?
 ) : Match {
 
+  /**
+   * Retrieves the [Profile] of the given uid.
+   *
+   * @param uid the uid to retrieve its profile.
+   * @returns a flow of the [Profile] of the given uid.
+   */
   fun profile(
       uid: String,
   ): Flow<Profile?> {
@@ -194,6 +202,7 @@ private data class StoreMatch(
     }
   }
 
+  /** A flow of the [ChessDocument] of the [id]. */
   private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
 
   override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
