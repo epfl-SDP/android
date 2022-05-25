@@ -11,203 +11,203 @@ import kotlin.time.Duration.Companion.minutes
 /** Localized strings for the English language. */
 object German : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
-  override val authenticateSubtitleRegister = "Join the Pawnies community.".uppercase()
-  override val authenticateSubtitleLogIn = "Welcome back to Pawnies.".uppercase()
-  override val authenticateEmailHint = "Your email"
-  override val authenticateNameHint = "Your full name"
-  override val authenticatePasswordHint = "Password"
-  override val authenticatePasswordToggleVisibility = "Toggle password visibility"
-  override val authenticatePerformLogIn = "Log in with email".uppercase()
-  override val authenticatePerformRegister = "Sign up with email".uppercase()
-  override val authenticateSwitchToLogIn = "Log in".uppercase()
-  override val authenticateSwitchToRegister = "Sign up".uppercase()
-  override val authenticateErrorFailure = "Something went wrong when authenticating"
-  override val authenticateBadPasswordFailure = "Your password should be at least 6 characters long"
-  override val authenticateWrongEmailFormatFailure = "Your email must be of the form: person@domain"
-  override val authenticateInvalidUserFailure = "There is no user registered with this email"
+  override val authenticateSubtitleRegister = "Werden Sie Mitglied der Pawnies-Gemeinschaft.".uppercase()
+  override val authenticateSubtitleLogIn = "Willkommen zurück bei Pawnies.".uppercase()
+  override val authenticateEmailHint = "Dein Email"
+  override val authenticateNameHint = "Ihr vollständiger Name"
+  override val authenticatePasswordHint = "Passwort"
+  override val authenticatePasswordToggleVisibility = "Toggle Passwort Sichtbarkeit"
+  override val authenticatePerformLogIn = "Mit E-Mail anmelden".uppercase()
+  override val authenticatePerformRegister = "Registrieren mit E-Mail".uppercase()
+  override val authenticateSwitchToLogIn = "Anmelden".uppercase()
+  override val authenticateSwitchToRegister = "Registrieren".uppercase()
+  override val authenticateErrorFailure = "Bei der Authentifizierung ist etwas schief gelaufen"
+  override val authenticateBadPasswordFailure = "Ihr Passwort sollte mindestens 6 Zeichen lang sein."
+  override val authenticateWrongEmailFormatFailure = "Ihre E-Mail muss die Form: person@domain haben"
+  override val authenticateInvalidUserFailure = "Es ist kein Benutzer mit dieser E-Mail registriert"
   override val authenticateIncorrectPasswordFailure =
-      "The email or password you entered is incorrect"
-  override val authenticateExistingAccountFailure = "A user with this email already exists"
-  override val authenticateOr = "or"
+      "Die eingegebene E-Mail oder das Passwort sind falsch"
+  override val authenticateExistingAccountFailure = "Ein Benutzer mit dieser E-Mail existiert bereits"
+  override val authenticateOr = "Oder"
 
   override val arContentDescription: String = "ArComposable"
 
-  override val boardColorBlack = "black"
-  override val boardColorWhite = "white"
-  override val boardPieceKing = "king"
-  override val boardPieceQueen = "queen"
-  override val boardPieceRook = "rook"
-  override val boardPieceBishop = "bishop"
-  override val boardPieceKnight = "knight"
-  override val boardPiecePawn = "pawn"
+  override val boardColorBlack = "schwarz"
+  override val boardColorWhite = "weiss"
+  override val boardPieceKing = "König"
+  override val boardPieceQueen = "Königin"
+  override val boardPieceRook = "Turm"
+  override val boardPieceBishop = "Läufer"
+  override val boardPieceKnight = "Springer"
+  override val boardPiecePawn = "Bauer"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
-  override val boardContentDescription = "chessboard"
+  override val boardContentDescription = "Schachbrett"
 
-  override val gameBack = "Back"
-  override val gameShowAr = "Start AR mode"
-  override val gameMicOffContentDescription = "Microphone off"
-  override val gameMicOnContentDescription = "Microphone on"
-  override val gameListening = "Listening"
-  override val gameMessageYourTurn = "Your turn"
-  override val gameMessageCheck = "Check !"
-  override val gameMessageStalemate = "Stalemate !"
-  override val gameMessageCheckmate = "Checkmate !"
-  override val gamePromoteTitle = "Promote to:"
+  override val gameBack = "Zurück"
+  override val gameShowAr = "Starte AR Modus"
+  override val gameMicOffContentDescription = "Mikrofon aus"
+  override val gameMicOnContentDescription = "Mikrofon an"
+  override val gameListening = "Anhören"
+  override val gameMessageYourTurn = "Du bist dran"
+  override val gameMessageCheck = "Schach !"
+  override val gameMessageStalemate = "Pattsituation !"
+  override val gameMessageCheckmate = "Schachmatt !"
+  override val gamePromoteTitle = "Befördern zu:"
   override val gamePromoteConfirm = "Ok".uppercase()
 
-  override val gameSnackBarIllegalAction: String = "Illegal action, please try again"
-  override val gameSnackBarInternalFailure = "Internal failure"
-  override val gameSnackBarUnknownCommand: String = "Unknown command, please try again"
+  override val gameSnackBarIllegalAction: String = "Illegale Aktion, bitte versuchen Sie es erneut"
+  override val gameSnackBarInternalFailure = "Internes Fehlverhalten"
+  override val gameSnackBarUnknownCommand: String = "Unbekannter Befehl, bitte versuchen Sie es erneut"
 
-  override val profileMatchTitle = { opponent: String -> "Against $opponent" }
-  override val profileWonByCheckmate = { moves: Int -> "Won by checkmate after $moves moves" }
-  override val profileWonByForfeit = { moves: Int -> "Won by forfeit after $moves moves" }
-  override val profileLostByCheckmate = { moves: Int -> "Lost by checkmate after $moves moves" }
-  override val profileLostByForfeit = { moves: Int -> "Lost by forfeit after $moves moves" }
-  override val profileTieInfo = { moves: Int -> "Tie after $moves moves" }
-  override val profileAgainst = "Against " // TODO: handle right-to-left languages
-  override val profileYourTurn = "Your turn to play!"
-  override val profileOthersTurn = "Their turn to play."
+  override val profileMatchTitle = { opponent: String -> "Gegen $opponent" }
+  override val profileWonByCheckmate = { moves: Int -> "Gewonnen durch Schachmatt nach $moves Zügen" }
+  override val profileWonByForfeit = { moves: Int -> "Gewonnen durch Aufgabe nach $moves Zügen" }
+  override val profileLostByCheckmate = { moves: Int -> "Verloren durch Schachmatt nach $moves Zügen" }
+  override val profileLostByForfeit = { moves: Int -> "Verloren durch Aufgabe nach $moves Zügen" }
+  override val profileTieInfo = { moves: Int -> "Unentschieden nach $moves Zügen" }
+  override val profileAgainst = "Gegen " // TODO: handle right-to-left languages
+  override val profileYourTurn = "Du bist am Zug!"
+  override val profileOthersTurn = "Der Andere ist am Zug."
 
-  override val settingEditSave = "Save".uppercase()
-  override val settingEditCancel = "Cancel".uppercase()
-  override val settingProfileNameLabel = "Profile Name"
-  override val settingProfileImageLabel = "Profile Image"
-  override val settingLogout: String = "Logout"
+  override val settingEditSave = "Speichern".uppercase()
+  override val settingEditCancel = "Abbrechen".uppercase()
+  override val settingProfileNameLabel = "Profil Name"
+  override val settingProfileImageLabel = "Profile Bild"
+  override val settingLogout: String = "Abmelden"
   override val settingLanguageLabel = "Sprachen"
   override val settingsEditLanguage = "Sprache ändern"
 
-  override val profilePastGames = "Past Games".uppercase()
+  override val profilePastGames = "Vergangene Spiele".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
-  override val profileFollow = "Follow"
-  override val profileUnfollow = "Unfollow"
-  override val profileChallenge = "Challenge"
-  override val profileEditImageIcon = "Edit profile image icon"
-  override val profileEditNameIcon = "Edit profile name icon"
+  override val profileFollow = "Folgen"
+  override val profileUnfollow = "Entfolgen"
+  override val profileChallenge = "Herausfordern"
+  override val profileEditImageIcon = "Profilbild bearbeiten icon"
+  override val profileEditNameIcon = "Profilname bearbeiten icon"
 
   override val socialFollowingTitle = "Following"
-  override val socialPerformPlay = "Play".uppercase()
-  override val socialPerformFollow = "Follow".uppercase()
+  override val socialPerformPlay = "Spielen".uppercase()
+  override val socialPerformFollow = "Folgen".uppercase()
   override val socialPerformUnfollow = "Followed".uppercase()
-  override val socialSearchBarPlaceHolder = "Search player ..."
-  override val socialSearchEmptyTitle = "Search any player"
+  override val socialSearchBarPlaceHolder = "Suche Spieler ..."
+  override val socialSearchEmptyTitle = "Suche nach einem beliebigen Spieler"
   override val socialSearchEmptySubtitle =
-      "Find any player using their name, follow them, or invite them to play or see their match history"
-  override val socialSearchClearContentDescription = "Clear search field"
+      "Finde jeden Spieler anhand seines Namens, folgen ihm, laden ihn zum Spielen ein oder sieh dir sein Spielverlauf an."
+  override val socialSearchClearContentDescription = "Suchfeld löschen"
 
   override val sectionAr: String = "AR"
-  override val sectionSocial = "Players"
-  override val sectionSettings = "Settings"
-  override val sectionPlay = "Play"
+  override val sectionSocial = "Spieler"
+  override val sectionSettings = "Einstellungen"
+  override val sectionPlay = "Spielen"
   override val sectionPuzzles = "Puzzles"
-  override val sectionContests = "Contests"
+  override val sectionContests = "Turnier"
 
-  override val newGame = "New game".uppercase()
-  override val newContest = "New contest".uppercase()
+  override val newGame = "Neues Spiel".uppercase()
+  override val newContest = "Neues Turnier".uppercase()
 
-  override val prepareGameChooseColor = "Pick your color :"
-  override val prepareGameChooseOpponent = "Pick an opponent :"
-  override val prepareGameChooseGame = "Pick your game :"
-  override val prepareGameWhiteColor = "White".uppercase()
-  override val prepareGameBlackColor = "Black".uppercase()
-  override val prepareGamePlay = "Play !".uppercase()
-  override val prepareGameCancel = "Cancel".uppercase()
-  override val prepareGameSelectOpponent = "Select".uppercase()
-  override val prepareGameSelectedOpponent = "Selected".uppercase()
-  override val prepareGamePlayLocal = "Local".uppercase()
+  override val prepareGameChooseColor = "Wähle deine Farbe :"
+  override val prepareGameChooseOpponent = "Wähle dein Gegner:"
+  override val prepareGameChooseGame = "Wähle dein Spiel :"
+  override val prepareGameWhiteColor = "Weiss".uppercase()
+  override val prepareGameBlackColor = "Schwarz".uppercase()
+  override val prepareGamePlay = "Spielen !".uppercase()
+  override val prepareGameCancel = "Abbrechen".uppercase()
+  override val prepareGameSelectOpponent = "Wählen".uppercase()
+  override val prepareGameSelectedOpponent = "Gewählt".uppercase()
+  override val prepareGamePlayLocal = "Lokal".uppercase()
   override val prepareGamePlayOnline = "Online".uppercase()
 
-  override val playOnlineGames = "Online games"
+  override val playOnlineGames = "Online Spiele"
 
-  override val puzzlePlayingAs = { color: String -> "Playing as $color" }
-  override val puzzleUnsolvedPuzzles = "Unsolved puzzles"
-  override val puzzleListContentDescription = "Puzzles list"
+  override val puzzlePlayingAs = { color: String -> "Spiele als $color" }
+  override val puzzleUnsolvedPuzzles = "Ungelöste puzzles"
+  override val puzzleListContentDescription = "Puzzleliste"
   override val puzzlesTitle = "Puzzles"
-  override val puzzleSolving = { color: String -> "Find the best move for $color" }
-  override val puzzleFailed = "You've failed! Try again!"
-  override val puzzleSolved = "You won! Congrats!"
+  override val puzzleSolving = { color: String -> "Finde der beste Zug für $color" }
+  override val puzzleFailed = "Stimmt leider nicht! Versuche es noch einmal!"
+  override val puzzleSolved = "Du hast gewonnen! Glückwunsch!"
   override val puzzleNumber = { id: String -> "Puzzle: #$id" }
-  override val puzzleRating = { rating: String -> "Rating: $rating" }
+  override val puzzleRating = { rating: String -> "Bewertung: $rating" }
 
-  override val tournamentsBadgeJoin = "Join"
-  override val tournamentsBadgeParticipant = "Participant"
+  override val tournamentsBadgeJoin = "Beitreten"
+  override val tournamentsBadgeParticipant = "Teilnehmer"
   override val tournamentsBadgeAdmin = "Admin"
-  override val tournamentsTableScore = "Score"
-  override val tournamentsPoolStillOpen = "Still open"
-  override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
-  override val tournamentsPoolStartNextRound = "Start next round".uppercase()
-  override val tournamentsDetailsFinals = "Finals".uppercase()
+  override val tournamentsTableScore = "Spielstand"
+  override val tournamentsPoolStillOpen = "Noch offen"
+  override val tournamentsPoolRound = { current: Int, total: Int -> "Runde $current / $total" }
+  override val tournamentsPoolStartNextRound = "Beginn der nächsten Runde".uppercase()
+  override val tournamentsDetailsFinals = "Finale".uppercase()
   override val tournamentsDetailsPools = "Pools".uppercase()
-  override val tournamentsDetailsWatch = "Watch".uppercase()
-  override val tournamentsDetailsMatchWon = "Win".uppercase()
-  override val tournamentsDetailsMatchLost = "Loss".uppercase()
-  override val tournamentsDetailsMatchDrawn = "Draw".uppercase()
-  override val tournamentsDetailsHeaderOngoing = "Ongoing".uppercase()
-  override val tournamentsDetailsHeaderDone = "Done".uppercase()
+  override val tournamentsDetailsWatch = "Zuschauen".uppercase()
+  override val tournamentsDetailsMatchWon = "Sieg".uppercase()
+  override val tournamentsDetailsMatchLost = "Niederlage".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Gleichstand".uppercase()
+  override val tournamentsDetailsHeaderOngoing = "Laufend".uppercase()
+  override val tournamentsDetailsHeaderDone = "Fertig".uppercase()
   override val tournamentsDetailsNextBestOfTitle = { round: Int, total: Int ->
-    "Create match $round / $total"
+    "Erstelle Match $round / $total"
   }
   override val tournamentsDetailsNextBestOfSubtitle =
-      "Add a new match to all the players in this round."
-  override val tournamentsDetailsNextRoundTitle = "Next round"
-  override val tournamentsDetailsNextRoundSubtitle = "Move all the winners to the next round"
-  override val tournamentsDetailsStartEnoughPlayersTitle = "Start the tournament"
+      "Füge allen Spielern in dieser Runde ein neues Spiel zu."
+  override val tournamentsDetailsNextRoundTitle = "Nächste Runde"
+  override val tournamentsDetailsNextRoundSubtitle = "Alle Gewinner kommen in die nächste Runde"
+  override val tournamentsDetailsStartEnoughPlayersTitle = "Starte das Turnier"
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
-      "Once started, the tournament will assign players and the first matches will be created."
-  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Start the tournament"
+      "Sobald das Turnier gestartet ist, werden die Spieler zugewiesen und die ersten Spiele werden erstellt."
+  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Starte das Turnier"
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
-      "If you start the tournament now, there won't be enough players to play all the matches."
-  override val tournamentsDetailsStartDirectEliminationTitle = "Start direct elimination"
+      "Wenn du jetzt mit dem Turnier beginnst, gibt es nicht genug Spieler, um alle Spiele zu spielen."
+  override val tournamentsDetailsStartDirectEliminationTitle = "Start der direkten Eliminierung"
   override val tournamentsDetailsStartDirectEliminationSubtitle =
-      "Compute the pool results and start the direct elimination matches."
-  override val tournamentDetailsBackContentDescription = "Back"
+      "Berechnen Sie die Poolergebnisse und beginnen Sie mit den Direktausscheidungsspielen."
+  override val tournamentDetailsBackContentDescription = "Zurück"
   override val tournamentDetailsPoolName = { poolNr: Int -> "Pool #${poolNr}" }
 
-  override val tournamentsContestsTitle = "Contests"
+  override val tournamentsContestsTitle = "Wetkampf"
   override val tournamentsFilter = "Filter"
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
-      append("Started ")
-      withStyle(style) { append(duration.absoluteValue.toEnglishString()) }
-      append(" ago")
+      append("Ist vor")
+      withStyle(style) { append(duration.absoluteValue.toGerman()) }
+      append(" gestartet")
     }
   }
-  override val tournamentsDone = "Done"
-  override val tournamentsCreateTitle = "Create tournament"
+  override val tournamentsDone = "Fertig"
+  override val tournamentsCreateTitle = "Erstelle Turnier"
   override val tournamentsCreateNameHint = "Name"
-  override val tournamentsCreateRules = "Rules"
+  override val tournamentsCreateRules = "Regeln"
   override val tournamentsCreateBestOf = "Best of :"
-  override val tournamentsCreatePlayers = "Players"
-  override val tournamentsCreateMaximumPlayerHint = "Maximum player count"
-  override val tournamentsCreatePoolSize = "Pool size :"
-  override val tournamentsCreateDirectElimination = "Direct elim. :"
-  override val tournamentsCreateActionCancel = "Cancel".uppercase()
-  override val tournamentsCreateActionCreate = "Create".uppercase()
+  override val tournamentsCreatePlayers = "Spieler"
+  override val tournamentsCreateMaximumPlayerHint = "Maximale Spielerzahl"
+  override val tournamentsCreatePoolSize = "Pool grösse :"
+  override val tournamentsCreateDirectElimination = "Direkte elim. :"
+  override val tournamentsCreateActionCancel = "Abbrechen".uppercase()
+  override val tournamentsCreateActionCreate = "Erstellen".uppercase()
 
-  override val tournamentsCreateQualifierSize0 = "No qualifiers"
+  override val tournamentsCreateQualifierSize0 = "Keiner ist qualifiziert"
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
 
-  override val tournamentsFilterTitle = "Show only".uppercase()
-  override val tournamentsFilterOnlyDone = "Not done".uppercase()
-  override val tournamentsFilterOnlyParticipating = "Participating".uppercase()
-  override val tournamentsFilterOnlyAdministrating = "Administrating".uppercase()
-  override val tournamentsFilterBackContentDescription = "Back"
+  override val tournamentsFilterTitle = "Zeig nur".uppercase()
+  override val tournamentsFilterOnlyDone = "Nicht fertig".uppercase()
+  override val tournamentsFilterOnlyParticipating = "Teilnehmen".uppercase()
+  override val tournamentsFilterOnlyAdministrating = "Verwatet".uppercase()
+  override val tournamentsFilterBackContentDescription = "Zurück"
 }
 
 /**
- * Converts a [Duration] to an English string by rounding it to the closest unit of time (seconds
+ * Converts a [Duration] to an German string by rounding it to the closest unit of time (seconds
  * minimum).
  */
-private fun Duration.toEnglishString(): String {
+private fun Duration.toGerman(): String {
   if (this >= 1.days) {
-    return "${this.inWholeDays} days"
+    return "${this.inWholeDays} Tage"
   } else if (this >= 1.hours) {
-    return "${this.inWholeHours} hours"
+    return "${this.inWholeHours} Stunden"
   } else if (this >= 1.minutes) {
-    return "${this.inWholeMinutes} minutes"
+    return "${this.inWholeMinutes} Minuten"
   }
 
-  return "${this.inWholeSeconds} seconds"
+  return "${this.inWholeSeconds} Sekunden"
 }
