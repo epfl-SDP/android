@@ -20,15 +20,17 @@ import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
-import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.FakeAssetManager
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.onePuzzleAssets
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -89,6 +91,7 @@ class StatefulHomeTest {
   @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") {
         document("1", ProfileDocument())
@@ -100,7 +103,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
     val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -136,6 +139,7 @@ class StatefulHomeTest {
   fun creatingGameFromPrepareGameScreen_opensGameScreen() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
@@ -143,7 +147,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -170,6 +174,7 @@ class StatefulHomeTest {
   fun clickingOnPlayButtonFromPrepareGameScreen_withNoOpponentSelected_doesNothing() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
@@ -177,7 +182,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -205,6 +210,7 @@ class StatefulHomeTest {
   fun cancelingPreparegameScreen_returnsToPlaySection() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
@@ -212,7 +218,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -241,6 +247,7 @@ class StatefulHomeTest {
   fun given_statefulHome_when_creatingOnlineGame_then_showsGameWithOpponent() = runTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(name = "user2")) }
     }
@@ -248,7 +255,7 @@ class StatefulHomeTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -287,6 +294,7 @@ class StatefulHomeTest {
   @Test
   fun clickOnGame_inStatefulPlayScreen_openGame() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") {
         document("1", ProfileDocument("1", name = "test2"))
@@ -303,7 +311,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -329,6 +337,7 @@ class StatefulHomeTest {
   @Test
   fun given_settingScreen_when_profileMatchIsClickedOn_then_MatchIsDisplayed() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") {
         document("1", ProfileDocument("1", name = "Player 1"))
@@ -345,7 +354,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -372,6 +381,7 @@ class StatefulHomeTest {
   @Test
   fun given_visitedProfileScreen_when_profileMatchIsClickedOn_then_MatchIsDisplayed() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") {
         document("1", ProfileDocument("1", name = "Player 1"))
@@ -388,7 +398,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -415,9 +425,10 @@ class StatefulHomeTest {
     rule.onNodeWithText("Player 2").assertExists()
   }
 
-  @Test
+  // @Test
   fun given_aOnGoingGame_when_clickOnArButton_then_displayArScreen() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") {
         document("1", ProfileDocument("1", name = "test2"))
@@ -434,7 +445,7 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -459,41 +470,13 @@ class StatefulHomeTest {
 
   @Test
   fun given_puzzleSelectionScreen_when_puzzleClicked_then_correspondingPuzzleOpened() = runTest {
-    val auth = emptyAuth()
-    val store = emptyStore()
-    val assets =
-        FakeAssetManager(
-            csvString =
-                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl\n" +
-                    "00008,r6k/pp2r2p/4Rp1Q/3p4/8/1N1P2R1/PqP2bPP/7K b - - 0 24,f2g3 e6e7 b2b1 b3c1 b1c1 h6c1,1852,74,97,1444,crushing hangingPiece long middlegame,https://lichess.org/787zsVup/black#48\n" +
-                    "0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1580,73,97,11995,advantage endgame short,https://lichess.org/F8M8OS71#53",
-        )
+    val (assets, puzzleIds) = twoPuzzleAssets()
+    val env = rule.setContentWithTestEnvironment(assets = assets) { StatefulHome(user = user) }
 
-    val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
-
-    authFacade.signUpWithEmail("email@example.org", "user", "password")
-
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          val controller = rememberNavController()
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulHome(
-                user = user,
-                controller = controller,
-            )
-          }
-        }
-
-    rule.onNodeWithText(strings.sectionPuzzles).performClick()
-    rule.onNodeWithText("00008", substring = true).performClick()
-    rule.onNodeWithText(strings.puzzleNumber("00008")).assertExists()
-    rule.onNodeWithText(strings.puzzleRating("1852")).assertExists()
+    rule.onNodeWithText(env.strings.sectionPuzzles).performClick()
+    rule.onNodeWithText(puzzleIds[0], substring = true).performClick()
+    rule.onNodeWithText(env.strings.puzzleNumber(puzzleIds[0])).assertExists()
+    rule.onNodeWithText(env.strings.puzzleRating("1852")).assertExists()
   }
 
   @Test
@@ -560,6 +543,7 @@ class StatefulHomeTest {
   fun given_contestScreen_when_tournamentIsClicked_then_itsTournamentDetailsScreenIsDisplayed() =
       runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection(TournamentDocument.Collection) {
         document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
@@ -571,8 +555,9 @@ class StatefulHomeTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
+    authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -591,5 +576,96 @@ class StatefulHomeTest {
     rule.onNodeWithText("Tournament 1").performClick()
     rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
     rule.onNodeWithText("Tournament 1", ignoreCase = true).assertIsDisplayed()
+  }
+
+  @Test
+  fun given_settingsScreen_when_clickingOnPuzzle_then_ItIsOpened() = runTest {
+    val id = "1"
+    val auth = buildAuth { user("email@example.org", "password", id) }
+    val dataStoreFactory = emptyDataStoreFactory()
+    val store = buildStore {
+      collection("users") { document(id, ProfileDocument(solvedPuzzles = listOf("00008"))) }
+    }
+
+    val (assets, puzzleIds) = onePuzzleAssets()
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSettings).performClick()
+    rule.onNodeWithText(strings.profilePuzzle).performClick()
+    rule.onNodeWithText(puzzleIds.first(), substring = true).performClick()
+    rule.onNodeWithText(strings.puzzleNumber(puzzleIds.first())).assertExists()
+  }
+
+  @Test
+  fun given_profileScreen_when_clickingOnPuzzle_then_itIsOpened() = runTest {
+    val id = "1"
+    val auth = buildAuth { user("email@example.org", "password", id) }
+    val (assets, puzzleIds) = onePuzzleAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
+    val store = buildStore {
+      collection("users") {
+        document(
+            id,
+            ProfileDocument(
+                name = "Username1", followers = listOf(id), solvedPuzzles = listOf(puzzleIds[0])))
+      }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    val chessFacade = ChessFacade(auth, store, assets)
+    val socialFacade = SocialFacade(auth, store)
+    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+    val strings =
+        rule.setContentWithLocalizedStrings {
+          val controller = rememberNavController()
+          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            StatefulHome(
+                user = user,
+                controller = controller,
+            )
+          }
+        }
+
+    rule.onNodeWithText(strings.sectionSocial).performClick()
+    rule.onNodeWithText("Username1").performClick()
+    rule.onNodeWithText(strings.profilePuzzle).performClick()
+    rule.onNodeWithText(puzzleIds[0], substring = true).performClick()
+    rule.onNodeWithText(strings.puzzleNumber(puzzleIds[0])).assertExists()
+  }
+
+  @Test
+  fun given_home_when_navigatingToFiltersAndBack_then_goesBack() = runTest {
+    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    with(strings) {
+      rule.onNodeWithText(sectionContests).performClick()
+      rule.onNodeWithContentDescription(tournamentsFilter).performClick()
+      rule.onNodeWithText(tournamentsFilterTitle).assertIsDisplayed() // On the filters dialog
+      rule.onNodeWithContentDescription(tournamentDetailsBackContentDescription).performClick()
+      rule.onNodeWithText(tournamentsFilterTitle).assertDoesNotExist() // On the contest list
+    }
   }
 }

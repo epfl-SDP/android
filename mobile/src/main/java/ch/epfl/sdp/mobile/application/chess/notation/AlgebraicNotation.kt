@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.notation
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.notation.AlgebraicNotationCombinators.action
 
 /**
@@ -57,7 +57,7 @@ object AlgebraicNotation {
    */
   fun Action.toAlgebraicNotation(board: Board<Piece<Color>>): String {
     val fromPosition = from
-    val toPosition = from + delta ?: return "?"
+    val toPosition = from + delta
     val rank = board[fromPosition]?.rank?.toAlgebraicNotation() ?: return "?"
     val from = fromPosition.toAlgebraicNotation()
     val sep = if (board[toPosition] != null) "x" else "-"

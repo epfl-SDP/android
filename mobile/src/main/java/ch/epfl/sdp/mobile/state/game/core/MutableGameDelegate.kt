@@ -1,7 +1,7 @@
 package ch.epfl.sdp.mobile.state.game.core
 
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Game
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
 
 /** A refinement of [GameDelegate] which has write access to the underlying [Game]. */
 interface MutableGameDelegate : GameDelegate {

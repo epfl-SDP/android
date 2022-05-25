@@ -1,6 +1,6 @@
 package ch.epfl.sdp.mobile.application.chess.voice
 
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
+import ch.epfl.sdp.mobile.application.chess.engine.Action
 
 /** An object which contains some utilities to transform user's voice input to a [Action]. */
 object VoiceInput {
