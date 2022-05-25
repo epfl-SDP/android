@@ -1,4 +1,4 @@
-package ch.epfl.sdp.mobile.infrastructure.persistence.store
+package ch.epfl.sdp.mobile.infrastructure.time
 
 /** Interface providing the current time. */
 interface TimeProvider {
