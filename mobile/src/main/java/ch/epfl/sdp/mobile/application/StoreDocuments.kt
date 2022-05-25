@@ -101,6 +101,7 @@ data class ChessMetadata(
  * @param adminId the unique identifier of the user administrating the tournament.
  * @param name the name of the tournament.
  * @param maxPlayers the maximum number of players than can join this tournament.
+ * @param creationTimeEpochMillis the time of creation of the tournament.
  * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination phase.
  * @param poolSize the target size of each pool. The number of pools derives from this number and
  * the total number of players.
@@ -114,6 +115,7 @@ data class TournamentDocument(
     val adminId: String? = null,
     val name: String? = null,
     val maxPlayers: Int? = null,
+    val creationTimeEpochMillis: Long? = null,
     val bestOf: Int? = null,
     val poolSize: Int? = null,
     val eliminationRounds: Int? = null,

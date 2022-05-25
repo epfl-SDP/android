@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.state.tournaments.StatefulFiltersDialogScreen
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
@@ -68,6 +70,9 @@ private const val TournamentDefaultId = ""
 /** The route associated to new contest button in play screen */
 private const val CreateTournamentRoute = "create_tournament"
 
+/** The route associated with the tournaments filters screen. */
+private const val TournamentFiltersRoute = "tournament_filters"
+
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
  * authenticated. It displays the bottom navigation sections.
@@ -76,7 +81,7 @@ private const val CreateTournamentRoute = "create_tournament"
  * @param modifier the [Modifier] for this composable.
  * @param controller the [NavHostController] used to control the current destination.
  */
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun StatefulHome(
     user: AuthenticatedUser,
@@ -105,7 +110,7 @@ fun StatefulHome(
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hiddenBar = hideBar(entry?.destination?.route),
+      hiddenBar = entry?.destination?.route?.let(::hideBar) ?: false,
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -125,8 +130,18 @@ fun StatefulHome(
             currentUser = user,
             onTournamentClick = openTournament,
             onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
+            onFilterClick = { controller.navigate(TournamentFiltersRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
+        )
+      }
+      dialog(
+          route = TournamentFiltersRoute,
+          dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+      ) {
+        StatefulFiltersDialogScreen(
+            navigateBack = { controller.popBackStack() },
+            modifier = Modifier.fillMaxSize(),
         )
       }
       composable(SettingsRoute) {
@@ -263,5 +278,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Contests -> ContestsRoute
     }
 
-private fun hideBar(route: String?): Boolean =
-    route?.let { it.startsWith(GameRoute) || it.startsWith(TournamentDetailsRoute) } ?: false
+/** Returns true iff the navigation bar should be hidden for the provided [route]. */
+private fun hideBar(
+    route: String,
+): Boolean = setOf(GameRoute, TournamentDetailsRoute, PuzzleGameRoute).any { route.startsWith(it) }
