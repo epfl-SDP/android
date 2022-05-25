@@ -21,8 +21,7 @@ import kotlinx.coroutines.launch
  *
  * @param currentUser current logged in user
  * @param user the given [Profile].
- * @param actions the [ProfileActions] which are available on the screen.
- * @param onChallengeClickAction callback if challenge button clicked
+ * @param actions the [VisitedProfileActions] which are available on the screen.
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
@@ -73,6 +72,7 @@ class FetchedUserProfileScreenState(
  * @param onMatchClick callback function called when a match is clicked on.
  * @param onPuzzleClick callback function called when a puzzle is clicked on.
  * @param onChallengeClick callback if challenge button clicked
+ * @param onBack callback to go to the previous screen
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
