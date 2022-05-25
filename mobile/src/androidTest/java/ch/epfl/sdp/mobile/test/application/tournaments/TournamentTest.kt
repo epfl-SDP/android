@@ -5,7 +5,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.application.tournaments.toTournament
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk

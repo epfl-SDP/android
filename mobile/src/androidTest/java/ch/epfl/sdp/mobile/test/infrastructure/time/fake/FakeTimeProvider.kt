@@ -1,6 +1,6 @@
-package ch.epfl.sdp.mobile.test.infrastructure.time
+package ch.epfl.sdp.mobile.test.infrastructure.time.fake
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
+import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
 
 /** An object that allows changing the time. */
 object FakeTimeProvider : TimeProvider {
