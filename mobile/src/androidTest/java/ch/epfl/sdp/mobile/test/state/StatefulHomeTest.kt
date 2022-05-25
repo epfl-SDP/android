@@ -557,6 +557,7 @@ class StatefulHomeTest {
     val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
+    authFacade.signInWithEmail("email@example.org", "password")
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
     val strings =
@@ -592,6 +593,8 @@ class StatefulHomeTest {
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+
+    authFacade.signInWithEmail("email@example.org", "password")
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
@@ -631,6 +634,8 @@ class StatefulHomeTest {
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+
+    authFacade.signInWithEmail("email@example.org", "password")
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 

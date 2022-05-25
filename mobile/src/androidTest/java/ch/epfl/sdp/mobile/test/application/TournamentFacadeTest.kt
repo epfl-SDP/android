@@ -35,6 +35,7 @@ class TournamentFacadeTest {
       }
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
       val authenticationFacade = AuthenticationFacade(auth, store)
+      authenticationFacade.signInWithEmail("a@hotmail.com", "password")
       val user = authenticationFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val tournaments = tournamentFacade.tournaments(user).first()
