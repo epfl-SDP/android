@@ -68,6 +68,7 @@ class FetchedUserProfileScreenState(
 /**
  * A stateful composable to visit the profile page of other players
  *
+ * @param user the currently authenticated user.
  * @param uid of the player.
  * @param onMatchClick callback function called when a match is clicked on.
  * @param onPuzzleClick callback function called when a puzzle is clicked on.
