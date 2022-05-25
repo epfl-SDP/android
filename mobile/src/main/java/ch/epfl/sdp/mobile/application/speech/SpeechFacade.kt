@@ -1,21 +1,30 @@
 package ch.epfl.sdp.mobile.application.speech
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
+import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
+import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeech
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeechFactory
 import kotlin.coroutines.resume
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * A facade which provides access to functions to perform some voice recognition.
  *
- * @param factory the [SpeechRecognizerFactory] which is used internally by this [SpeechFacade].
+ * @param speechFactory the [SpeechRecognizerFactory] which is used internally by this
+ * [SpeechFacade].
  */
-class SpeechFacade(private val factory: SpeechRecognizerFactory, private val ttsFactory: TextToSpeechFactory) {
+class SpeechFacade(
+    private val speechFactory: SpeechRecognizerFactory,
+    private val textToSpeechFactory: TextToSpeechFactory,
+    dataStoreFactory: DataStoreFactory,
+) {
 
   /** The result of a call to [SpeechFacade.recognize]. */
   sealed interface RecognitionResult {
@@ -42,7 +51,7 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory, private val tts
    * @return the [RecognitionResult] from the recognition request.
    */
   suspend fun recognize(): RecognitionResult = suspendCancellableCoroutine { cont ->
-    val recognizer = factory.createSpeechRecognizer()
+    val recognizer = speechFactory.createSpeechRecognizer()
 
     /** Cleans up the recognizer. */
     fun cleanup() {
@@ -67,12 +76,53 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory, private val tts
     cont.invokeOnCancellation { cleanup() }
   }
 
-   var muted by mutableStateOf(false)
-   private val tts = suspend {  ttsFactory.create() }
+  object DataStoreKeys {
+    const val TextToSpeechEnabled = "textToSpeech_enabled"
+  }
+
+  /** The [DataStore] instance in which the preferences are stored. */
+  private val dataStore: DataStore<Preferences>
+
+  private val keyTextToSpeechEnabled: Key<Boolean>
+
+  init {
+    val (prefs, factory) = dataStoreFactory.createPreferencesDataStore()
+    dataStore = prefs
+    keyTextToSpeechEnabled = factory.boolean(DataStoreKeys.TextToSpeechEnabled)
+  }
+
+  class TextToSpeechSettings(val enabled: Boolean, private val facade: SpeechFacade) {
+
+    suspend fun update(scope: UpdateScope.() -> Unit) =
+        facade.dataStore.edit { scope(UpdateScope(facade, it)) }
+
+    class UpdateScope(
+        private val facade: SpeechFacade,
+        private val preferences: MutablePreferences,
+    ) {
+      fun enabled(value: Boolean) = preferences.set(facade.keyTextToSpeechEnabled, value)
+    }
+  }
+
+  fun textToSpeechSettings(): Flow<TextToSpeechSettings> =
+      dataStore.data.map { prefs ->
+        val enabled = prefs[keyTextToSpeechEnabled] ?: true
+        TextToSpeechSettings(enabled, this)
+      }
+
+  private var textToSpeech: TextToSpeech? = null
+  private val mutex = Mutex()
 
   suspend fun synthesize(text: String) {
-    if(!muted){
-      tts().speak(text)
+    val tts =
+        mutex.withLock {
+          val tts = textToSpeech ?: textToSpeechFactory.create()
+          textToSpeech = tts
+          tts
+        }
+
+    if (textToSpeechSettings().first().enabled) {
+      tts.speak(text)
     }
   }
 }

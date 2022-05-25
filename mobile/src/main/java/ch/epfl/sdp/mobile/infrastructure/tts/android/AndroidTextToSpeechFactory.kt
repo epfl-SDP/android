@@ -1,8 +1,6 @@
 package ch.epfl.sdp.mobile.infrastructure.tts.android
 
 import android.content.Context
-import android.os.Bundle
-import androidx.core.os.bundleOf
 import android.speech.tts.TextToSpeech as NativeTextToSpeech
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeech
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeechFactory
@@ -12,7 +10,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 import kotlin.properties.Delegates.notNull
-
 
 class AndroidTextToSpeechFactory(
     private val context: Context,
@@ -36,10 +33,10 @@ class AndroidTextToSpeech(
 ) : TextToSpeech {
   init {
     // Set up properties like voice, languages ...
-      tts.language = Locale.ENGLISH
-//    tts.voice = null
-//    tts.setSpeechRate(0f)
-//    tts.setPitch(0f)
+    tts.language = Locale.ENGLISH
+    //    tts.voice = null
+    //    tts.setSpeechRate(0f)
+    //    tts.setPitch(0f)
   }
 
   override fun speak(text: String) {

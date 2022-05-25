@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.state.game.core.PuzzleGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.*
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfoState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -31,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
  */
 fun ActualPuzzleGameScreenState(
     currentActions: State<StatefulGameScreenActions>,
+    currentStrings: State<LocalizedStrings>,
     currentUser: State<AuthenticatedUser>,
     puzzle: Puzzle,
     permission: PermissionState,
@@ -61,7 +63,7 @@ fun ActualPuzzleGameScreenState(
           snackbarHostState,
           scope,
       )
-  val textToSpeech = DelegatingTextToSpeechState(chessBoard, speechFacade, scope)
+  val textToSpeech = DelegatingTextToSpeechState(chessBoard, speechFacade, currentStrings, scope)
   return ActualPuzzleGameScreenState(
       currentActions = currentActions,
       moveableChessBoard = moveableChessBoard,
@@ -69,7 +71,7 @@ fun ActualPuzzleGameScreenState(
       movesInfo = moves,
       puzzleInfo = puzzleInfo,
       speechRecognizer = speechRecognizer,
-      textToSpeechState = textToSpeech
+      textToSpeechState = textToSpeech,
   )
 }
 

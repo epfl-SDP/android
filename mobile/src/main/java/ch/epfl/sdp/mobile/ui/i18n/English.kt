@@ -42,6 +42,13 @@ object English : LocalizedStrings {
   override val boardPiecePawn = "pawn"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
   override val boardContentDescription = "chessboard"
+  override val boardMove = { piece: String, from: String, to: String ->
+    "Moved $piece from $from to $to"
+  }
+  override val boardPromoted = { piece: String, from: String, to: String, rank: String ->
+    "Promoted $piece from $from at $to to $rank"
+  }
+  override val boardPosition = { x: Int, y: Int -> "${'A' + x} ${8 - y} " }
 
   override val gameTTsOnContentDescription = "TTS on"
   override val gameTTsOffContentDescription = "TTS off"

@@ -37,7 +37,7 @@ fun GameScreenTopBar(
     onBackClick: () -> Unit,
     onArClick: () -> Unit,
     onListenClick: () -> Unit,
-    onTTsClick: () -> Unit,
+    onTextToSpeechClick: () -> Unit,
     listening: Boolean,
     muted: Boolean,
     modifier: Modifier = Modifier,
@@ -52,7 +52,7 @@ fun GameScreenTopBar(
         }
       },
       actions = {
-        TTsVolumeButton(onClick = onTTsClick, muted = muted)
+        TextToSpeechVolumeButton(onClick = onTextToSpeechClick, muted = muted)
         Spacer(Modifier.width(8.dp))
         ArButton(onClick = onArClick)
         Spacer(Modifier.width(8.dp))
@@ -148,7 +148,7 @@ private class ListeningButtonColors(
 }
 
 @Composable
-private fun TTsVolumeButton(
+private fun TextToSpeechVolumeButton(
     onClick: () -> Unit,
     muted: Boolean,
     modifier: Modifier = Modifier

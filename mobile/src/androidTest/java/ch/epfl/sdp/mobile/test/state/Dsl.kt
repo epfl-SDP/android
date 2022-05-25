@@ -107,7 +107,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val authenticationFacade = AuthenticationFacade(auth, store)
   val socialFacade = SocialFacade(auth, store)
   val chessFacade = ChessFacade(auth, store, assets)
-  val speechFacade = SpeechFacade(recognizer)
+  val speechFacade = SpeechFacade(recognizer, textToSpeechFactoy, dataStoreFactory)
   val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
   authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
   val user = authenticationFacade.awaitAuthenticatedUser()

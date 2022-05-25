@@ -13,7 +13,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
-import ch.epfl.sdp.mobile.state.LocalSpeechFacade
 import ch.epfl.sdp.mobile.ui.BlackKing
 import ch.epfl.sdp.mobile.ui.ChessIcons
 import ch.epfl.sdp.mobile.ui.game.*
@@ -58,12 +57,12 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
-            onTTsClick = state::onTTsVolumeClick,
+            onTextToSpeechClick = state::onTextToSpeechToggle,
             onBackClick = state::onBackClick,
             onArClick = {},
             onListenClick = state::onListenClick,
             listening = state.listening,
-            muted = LocalSpeechFacade.current.muted,
+            muted = !state.textToSpeechEnabled,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },

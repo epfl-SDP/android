@@ -3,6 +3,8 @@
 package ch.epfl.sdp.mobile.state.game
 
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.Match
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
@@ -11,6 +13,7 @@ import ch.epfl.sdp.mobile.state.game.core.MatchGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.*
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +30,8 @@ import kotlinx.coroutines.CoroutineScope
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
 fun ActualGameScreenState(
-    actions: StatefulGameScreenActions,
+    actions: State<StatefulGameScreenActions>,
+    strings: State<LocalizedStrings>,
     user: AuthenticatedUser,
     match: Match,
     permission: PermissionState,
@@ -59,7 +63,7 @@ fun ActualGameScreenState(
           scope,
       )
 
-  val ttsSynthesizer = DelegatingTextToSpeechState(chessBoard,speechFacade,scope)
+  val textToSpeech = DelegatingTextToSpeechState(chessBoard, speechFacade, strings, scope)
 
   return ActualGameScreenState(
       actions = actions,
@@ -69,7 +73,7 @@ fun ActualGameScreenState(
       movesInfo = moves,
       playersInfo = players,
       speechRecognizer = speechRecognizer,
-      textToSpeech = ttsSynthesizer,
+      textToSpeech = textToSpeech,
   )
 }
 
@@ -87,7 +91,7 @@ fun ActualGameScreenState(
  */
 class ActualGameScreenState
 constructor(
-    private val actions: StatefulGameScreenActions,
+    actions: State<StatefulGameScreenActions>,
     private val match: Match,
     movableChessBoard: MovableChessBoardState<Piece>,
     promotionState: PromotionState,
@@ -103,6 +107,8 @@ constructor(
     PlayersInfoState by playersInfo,
     SpeechRecognizerState by speechRecognizer,
     TextToSpeechState by textToSpeech {
+
+  private val actions by actions
 
   override fun onArClick() = actions.onShowAr(match)
   override fun onBackClick() = actions.onBack()
