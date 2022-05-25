@@ -14,9 +14,11 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.state.DebounceDuration
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.performClickOnceVisible
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -82,7 +84,7 @@ class StatefulFollowingScreenTest {
       infra.store.collection("users").document("other").set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
-      rule.onNodeWithText(strings.socialPerformFollow).performClick()
+      rule.performClickOnceVisible(strings.socialPerformFollow)
       val profile =
           infra
               .store
@@ -105,7 +107,7 @@ class StatefulFollowingScreenTest {
       infra.store.collection("users").document().set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
-      rule.onNodeWithText(strings.socialPerformFollow).performClick()
+      rule.performClickOnceVisible(strings.socialPerformFollow)
       rule.onNodeWithText(strings.socialPerformUnfollow).assertExists()
       rule.onNodeWithText(strings.socialPerformUnfollow).performClick()
       rule.onNodeWithText(strings.socialPerformFollow).assertExists()
@@ -151,6 +153,13 @@ class StatefulFollowingScreenTest {
     infra.store.collection("users").document().set(ProfileDocument(name = "Alexandre"))
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
-    rule.onNodeWithText("Alexandre").assertIsDisplayed()
+    rule.waitUntil(timeoutMillis = 2 * DebounceDuration.inWholeMilliseconds) {
+      try {
+        rule.onNodeWithText("Alexandre").assertIsDisplayed()
+        true
+      } catch (_: Throwable) {
+        false
+      }
+    }
   }
 }

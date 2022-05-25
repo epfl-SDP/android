@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.test.state.tournaments
 
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ChessMetadata
@@ -16,6 +15,7 @@ import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.performClickOnceVisible
 import ch.epfl.sdp.mobile.test.state.TestEnvironment
 import ch.epfl.sdp.mobile.test.state.setContentWithTestEnvironment
 import com.google.common.truth.Truth.assertThat
@@ -306,16 +306,6 @@ class StatefulTournamentDetailsScreenTest {
     assertThat(finalGames).hasSize(1)
 
     rule.onNodeWithText(env.strings.tournamentsDetailsMatchDrawn).assertExists()
-  }
-
-  /**
-   * Wait until a certain text is visible before clicking on it
-   *
-   * @param text the text
-   */
-  private fun ComposeTestRule.performClickOnceVisible(text: String) {
-    this.waitUntil { onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
-    onNodeWithText(text).performClick()
   }
 
   private suspend fun markGamesWithDepthWithStatus(

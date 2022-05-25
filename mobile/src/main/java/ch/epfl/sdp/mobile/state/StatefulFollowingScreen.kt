@@ -172,4 +172,4 @@ private fun Flow<Interaction>.reduceIsFocused(): Flow<Boolean> = flow {
 }
 
 /** The duration of the debounce period for user inputs. */
-private val DebounceDuration = 500.milliseconds
+val DebounceDuration = 500.milliseconds
