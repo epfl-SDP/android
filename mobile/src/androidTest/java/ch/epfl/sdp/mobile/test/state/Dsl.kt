@@ -2,6 +2,10 @@ package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
@@ -144,6 +148,16 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
     }
   }
   return environment
+}
+
+/**
+ * Wait until a certain text is visible before clicking on it
+ *
+ * @param text the text
+ */
+fun ComposeTestRule.performClickOnceVisible(text: String) {
+  this.waitUntil { onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
+  onNodeWithText(text).performClick()
 }
 
 // Default values.

@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.test.state.tournaments
 
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ChessMetadata
@@ -12,11 +11,13 @@ import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.state.TestEnvironment
+import ch.epfl.sdp.mobile.test.state.performClickOnceVisible
 import ch.epfl.sdp.mobile.test.state.setContentWithTestEnvironment
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
@@ -345,14 +346,41 @@ class StatefulTournamentDetailsScreenTest {
     rule.performClickOnceVisible(env.strings.tournamentsCreateElimDemomN(1))
   }
 
-  /**
-   * Wait until a certain text is visible before clicking on it
-   *
-   * @param text the text
-   */
-  private fun ComposeTestRule.performClickOnceVisible(text: String) {
-    this.waitUntil { onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
-    onNodeWithText(text).performClick()
+  @Test
+  fun given_tournament_when_stageFinals_then_MarkedAsDone() = runTest {
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", "Player 1"))
+        document("2", ProfileDocument("2", "Player 2"))
+      }
+      collection(TournamentDocument.Collection) {
+        document(
+            "tournamentId",
+            TournamentDocument(
+                name = "testTournamentName",
+                adminId = "adminId",
+                maxPlayers = 2,
+                poolSize = 0,
+                bestOf = 1,
+                eliminationRounds = 1,
+                playerIds = listOf("1", "2"),
+                creationTimeEpochMillis = 1500,
+                stage = "1",
+            ),
+        )
+      }
+    }
+
+    val env =
+        rule.setContentWithTestEnvironment(store = store) {
+          StatefulTournamentScreen(
+              currentUser = user,
+              onTournamentClick = {},
+              onNewContestClickAction = {},
+              onFilterClick = {})
+        }
+
+    rule.onNodeWithText(env.strings.tournamentsDone).assertExists()
   }
 
   private suspend fun markGamesWithDepthWithStatus(
