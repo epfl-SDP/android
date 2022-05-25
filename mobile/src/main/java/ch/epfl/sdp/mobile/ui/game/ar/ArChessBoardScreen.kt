@@ -22,7 +22,7 @@ private const val BoardScale = 0.2f
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
-    state: ArGameScreenState<Piece>,
+    state: ChessBoardState<Piece>,
     modifier: Modifier = Modifier
 ) {
   val view = LocalView.current
