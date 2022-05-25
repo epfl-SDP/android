@@ -151,7 +151,7 @@ fun StatefulHome(
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
             onPuzzleClick = onPuzzleItemClick,
-            onBackToSocialClick = { controller.popBackStack() },
+            onBack = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
             onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
             contentPadding = paddingValues)

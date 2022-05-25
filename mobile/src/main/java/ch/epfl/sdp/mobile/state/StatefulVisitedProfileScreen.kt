@@ -82,7 +82,7 @@ fun StatefulVisitedProfileScreen(
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
     onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
-    onBackToSocialClick: () -> Unit,
+    onBack: () -> Unit,
     onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
@@ -92,7 +92,7 @@ fun StatefulVisitedProfileScreen(
           VisitedProfileActions(
               onMatchClick = onMatchClick,
               onPuzzleClick = onPuzzleClick,
-              onBack = onBackToSocialClick,
+              onBack = onBack,
               onChallengeClickAction = onChallengeClick))
 
   val socialFacade = LocalSocialFacade.current
@@ -118,6 +118,13 @@ private object EmptyProfile : Profile {
   override val solvedPuzzles = emptyList<PuzzleId>()
 }
 
+/**
+ * Available set of actions for the visited profile screen
+ * @property onMatchClick callback for match action
+ * @property onPuzzleClick callback for puzzle action
+ * @property onChallengeClickAction callback for game challenge action
+ * @property onBack call back used to go to previous screen
+ */
 data class VisitedProfileActions(
     override val onMatchClick: (ChessMatchAdapter) -> Unit,
     override val onPuzzleClick: (PuzzleInfoAdapter) -> Unit,

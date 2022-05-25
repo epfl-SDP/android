@@ -118,7 +118,7 @@ class StatefulProfileScreenTest {
               onMatchClick = {},
               onChallengeClick = {},
               onPuzzleClick = {},
-              onBackToSocialClick = {})
+              onBack = {})
         }
 
     rule.onNodeWithText("user2").performClick()
@@ -147,7 +147,7 @@ class StatefulProfileScreenTest {
               onMatchClick = {},
               onChallengeClick = {},
               onPuzzleClick = {},
-              onBackToSocialClick = {})
+              onBack = {})
         }
 
     rule.onNodeWithText(env.strings.profilePuzzle).performClick()
