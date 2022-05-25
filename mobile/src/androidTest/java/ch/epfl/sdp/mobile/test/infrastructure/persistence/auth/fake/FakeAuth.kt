@@ -35,7 +35,7 @@ class FakeAuth : Auth, AuthBuilder {
       email: String,
       password: String,
   ): Auth.AuthenticationResult {
-    return addUser(email, password)
+    return addUser(email = email, password = password, logIn = true)
   }
 
   override suspend fun signOut() {
@@ -43,11 +43,11 @@ class FakeAuth : Auth, AuthBuilder {
   }
 
   override fun user(email: String, password: String) {
-    addUser(email, password)
+    addUser(email = email, password = password, logIn = false)
   }
 
   override fun user(email: String, password: String, uid: String) {
-    addUser(email, password, uid)
+    addUser(email = email, password = password, logIn = false, uid = uid)
   }
 
   /**
@@ -55,6 +55,7 @@ class FakeAuth : Auth, AuthBuilder {
    *
    * @param email the email address to use.
    * @param password the password of the added user.
+   * @param logIn true iff the newly added user logged in.
    * @param uid the unique identifier for this newly added user.
    *
    * @return the result of adding the new user.
@@ -62,6 +63,7 @@ class FakeAuth : Auth, AuthBuilder {
   private fun addUser(
       email: String,
       password: String,
+      logIn: Boolean,
       uid: String = UUID.randomUUID().toString(),
   ): Auth.AuthenticationResult {
 
@@ -78,7 +80,11 @@ class FakeAuth : Auth, AuthBuilder {
       if (exists) return Failure.ExistingAccount
 
       val newUser = FakeUser(uid = uid, email = email, password = password)
-      val newRec = FakeAuthRecord(currentUser = newUser, users = users + newUser)
+      val newRec =
+          FakeAuthRecord(
+              currentUser = if (logIn) newUser else rec.currentUser,
+              users = users + newUser,
+          )
 
       // Only update if the data is consistent with what we had read. Otherwise, we can safely retry
       // to perform the whole block atomically. A new UID may be generated, and we'll see newly
