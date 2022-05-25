@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.application.tournaments
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
+import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
 import kotlin.time.Duration
 
 /** An interface which represents information about a fetched tournament. */
