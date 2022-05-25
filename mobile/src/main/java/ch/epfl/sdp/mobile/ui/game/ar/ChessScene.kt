@@ -116,7 +116,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param pieceRenderable The function that load a renderable given a [Rank]
    * @param piece The piece that need to be place on the board
    */
-  private fun addPieces(
+  private fun addPiece(
       position: Position,
       boundingBox: Box,
       pieceRenderable: (Rank) -> Renderable,
@@ -175,7 +175,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     // Insert missing pieces.
     for (piece in inserted) {
       val position = piecesToPositions[piece] ?: continue
-      addPieces(position, boundingBox, pieceRenderable, piece)
+      addPiece(position, boundingBox, pieceRenderable, piece)
     }
   }
 
