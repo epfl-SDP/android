@@ -500,25 +500,15 @@ class StatefulHomeTest {
     val store = buildStore {
       collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
     }
-    val assets = emptyAssets()
-
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val socialFacade = SocialFacade(auth, store)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
-
     authFacade.signInWithEmail("email@example.org", "password")
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) { Navigation() }
-        }
+    val env = rule.setContentWithTestEnvironment(auth = auth, store = store) { Navigation() }
 
-    rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
+    rule.onNodeWithText(env.strings.sectionSettings).performClick()
+    rule.onNodeWithContentDescription(env.strings.profileEditNameIcon).performClick()
     rule.onNode(hasText("test") and hasSetTextAction()).performTextReplacement("test2")
-    rule.onNodeWithText(strings.settingEditSave).performClick()
+    rule.onNodeWithText(env.strings.settingEditSave).performClick()
     rule.onNodeWithText("test2").assertIsDisplayed()
   }
 
@@ -528,24 +518,15 @@ class StatefulHomeTest {
     val store = buildStore {
       collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
     }
-    val assets = emptyAssets()
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val socialFacade = SocialFacade(auth, store)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
-
     authFacade.signInWithEmail("email@example.org", "password")
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speech, tournament) { Navigation() }
-        }
+    val env = rule.setContentWithTestEnvironment(auth = auth, store = store) { Navigation() }
 
-    rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
-    rule.onNodeWithText(strings.settingEditCancel).performClick()
+    rule.onNodeWithText(env.strings.sectionSettings).performClick()
+    rule.onNodeWithContentDescription(env.strings.profileEditNameIcon).performClick()
+    rule.onNodeWithText(env.strings.settingEditCancel).performClick()
     rule.onNodeWithText("test").assertIsDisplayed()
   }
 
