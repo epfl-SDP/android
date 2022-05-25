@@ -25,6 +25,13 @@ class DslTest {
   }
 
   @Test
+  fun given_buildAuthWithOneUser_when_getsCurrentUser_then_isEmpty() = runTest {
+    val auth = buildAuth { user("alexandre.piveteau@epfl.ch", "password") }
+    val result = auth.currentUser.first()
+    assertThat(result).isNull()
+  }
+
+  @Test
   fun existingUser_canSignIn() = runTest {
     val auth = buildAuth { user("alexandre.piveteau@epfl.ch", "password") }
     val result = auth.signInWithEmail("alexandre.piveteau@epfl.ch", "password")
