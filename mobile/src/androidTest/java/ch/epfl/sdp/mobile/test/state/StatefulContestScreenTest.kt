@@ -55,6 +55,7 @@ class StatefulContestScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
+      authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
@@ -85,6 +86,7 @@ class StatefulContestScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
+      authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val strings =
           rule.setContentWithLocalizedStrings {
@@ -124,6 +126,7 @@ class StatefulContestScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
+      authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
@@ -157,6 +160,7 @@ class StatefulContestScreenTest {
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
+      authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
