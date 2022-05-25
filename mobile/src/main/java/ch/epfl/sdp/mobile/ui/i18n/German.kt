@@ -11,7 +11,8 @@ import kotlin.time.Duration.Companion.minutes
 /** Localized strings for the English language. */
 object German : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
-  override val authenticateSubtitleRegister = "Werden Sie Mitglied der Pawnies-Gemeinschaft.".uppercase()
+  override val authenticateSubtitleRegister =
+      "Werden Sie Mitglied der Pawnies-Gemeinschaft.".uppercase()
   override val authenticateSubtitleLogIn = "Willkommen zurück bei Pawnies.".uppercase()
   override val authenticateEmailHint = "Dein Email"
   override val authenticateNameHint = "Ihr vollständiger Name"
@@ -22,12 +23,15 @@ object German : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Anmelden".uppercase()
   override val authenticateSwitchToRegister = "Registrieren".uppercase()
   override val authenticateErrorFailure = "Bei der Authentifizierung ist etwas schief gelaufen"
-  override val authenticateBadPasswordFailure = "Ihr Passwort sollte mindestens 6 Zeichen lang sein."
-  override val authenticateWrongEmailFormatFailure = "Ihre E-Mail muss die Form: person@domain haben"
+  override val authenticateBadPasswordFailure =
+      "Ihr Passwort sollte mindestens 6 Zeichen lang sein."
+  override val authenticateWrongEmailFormatFailure =
+      "Ihre E-Mail muss die Form: person@domain haben"
   override val authenticateInvalidUserFailure = "Es ist kein Benutzer mit dieser E-Mail registriert"
   override val authenticateIncorrectPasswordFailure =
       "Die eingegebene E-Mail oder das Passwort sind falsch"
-  override val authenticateExistingAccountFailure = "Ein Benutzer mit dieser E-Mail existiert bereits"
+  override val authenticateExistingAccountFailure =
+      "Ein Benutzer mit dieser E-Mail existiert bereits"
   override val authenticateOr = "Oder"
 
   override val arContentDescription: String = "ArComposable"
@@ -35,7 +39,7 @@ object German : LocalizedStrings {
   override val boardColorBlack = "schwarz"
   override val boardColorWhite = "weiss"
   override val boardPieceKing = "König"
-  override val boardPieceQueen = "Königin"
+  override val boardPieceQueen = "Dame"
   override val boardPieceRook = "Turm"
   override val boardPieceBishop = "Läufer"
   override val boardPieceKnight = "Springer"
@@ -57,12 +61,17 @@ object German : LocalizedStrings {
 
   override val gameSnackBarIllegalAction: String = "Illegale Aktion, bitte versuchen Sie es erneut"
   override val gameSnackBarInternalFailure = "Internes Fehlverhalten"
-  override val gameSnackBarUnknownCommand: String = "Unbekannter Befehl, bitte versuchen Sie es erneut"
+  override val gameSnackBarUnknownCommand: String =
+      "Unbekannter Befehl, bitte versuchen Sie es erneut"
 
   override val profileMatchTitle = { opponent: String -> "Gegen $opponent" }
-  override val profileWonByCheckmate = { moves: Int -> "Gewonnen durch Schachmatt nach $moves Zügen" }
+  override val profileWonByCheckmate = { moves: Int ->
+    "Gewonnen durch Schachmatt nach $moves Zügen"
+  }
   override val profileWonByForfeit = { moves: Int -> "Gewonnen durch Aufgabe nach $moves Zügen" }
-  override val profileLostByCheckmate = { moves: Int -> "Verloren durch Schachmatt nach $moves Zügen" }
+  override val profileLostByCheckmate = { moves: Int ->
+    "Verloren durch Schachmatt nach $moves Zügen"
+  }
   override val profileLostByForfeit = { moves: Int -> "Verloren durch Aufgabe nach $moves Zügen" }
   override val profileTieInfo = { moves: Int -> "Unentschieden nach $moves Zügen" }
   override val profileAgainst = "Gegen " // TODO: handle right-to-left languages

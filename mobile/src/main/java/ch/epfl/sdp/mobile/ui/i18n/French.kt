@@ -22,12 +22,16 @@ object French : LocalizedStrings {
   override val authenticateSwitchToLogIn = "Connectez-toi".uppercase()
   override val authenticateSwitchToRegister = "Inscrivez-toi".uppercase()
   override val authenticateErrorFailure = "Un problème est survenu lors de l'authentification"
-  override val authenticateBadPasswordFailure = "Ton mot de passe doit comporter au moins 6 caractères"
-  override val authenticateWrongEmailFormatFailure = "Ton courriel doit être de la forme : person@domain"
-  override val authenticateInvalidUserFailure = "Il n'y a pas d'utilisateur enregistré avec cet email"
+  override val authenticateBadPasswordFailure =
+      "Ton mot de passe doit comporter au moins 6 caractères"
+  override val authenticateWrongEmailFormatFailure =
+      "Ton courriel doit être de la forme : person@domain"
+  override val authenticateInvalidUserFailure =
+      "Il n'y a pas d'utilisateur enregistré avec cet email"
   override val authenticateIncorrectPasswordFailure =
       "L'adresse électronique ou le mot de passe que vous avez saisi est incorrect"
-  override val authenticateExistingAccountFailure = "Un utilisateur avec cette adresse e-mail existe déjà"
+  override val authenticateExistingAccountFailure =
+      "Un utilisateur avec cette adresse e-mail existe déjà"
   override val authenticateOr = "ou"
 
   override val arContentDescription: String = "ArComposable"
@@ -62,7 +66,9 @@ object French : LocalizedStrings {
   override val profileMatchTitle = { opponent: String -> "Contre $opponent" }
   override val profileWonByCheckmate = { moves: Int -> "Gagné par échec et mat après $moves coups" }
   override val profileWonByForfeit = { moves: Int -> "Gagné par forfait après $moves coups" }
-  override val profileLostByCheckmate = { moves: Int -> "Perdu par échec et mat après $moves coups" }
+  override val profileLostByCheckmate = { moves: Int ->
+    "Perdu par échec et mat après $moves coups"
+  }
   override val profileLostByForfeit = { moves: Int -> "Perdu par forfait après $moves coups" }
   override val profileTieInfo = { moves: Int -> "Egalité après $moves coups" }
   override val profileAgainst = "Contre " // TODO: handle right-to-left languages
@@ -150,7 +156,8 @@ object French : LocalizedStrings {
   override val tournamentsDetailsNextBestOfSubtitle =
       "Ajoutes un nouveau match à tous les joueurs de ce tour."
   override val tournamentsDetailsNextRoundTitle = "Prochain tour"
-  override val tournamentsDetailsNextRoundSubtitle = "Faire passer tous les gagnants au tour suivant"
+  override val tournamentsDetailsNextRoundSubtitle =
+      "Faire passer tous les gagnants au tour suivant"
   override val tournamentsDetailsStartEnoughPlayersTitle = "Commencez le tournoi"
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
       "Une fois lancé, le tournoi assignera les joueurs et les premiers matchs seront créés."
