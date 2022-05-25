@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.application.settings
 
 import android.content.Context
-import android.util.Log
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -30,15 +29,10 @@ class SettingsFacade(
   }
 
   suspend fun setLanguage(language: String) {
-      dataStore.edit { it[keyLanguage] = language }
+    dataStore.edit { it[keyLanguage] = language }
   }
 
   fun getLanguage(): Flow<String?> {
-    return dataStore.data.map {
-      Log.i("myinfo", "this one ${it[keyLanguage].let { "lelel" }}")
-
-      it[keyLanguage]
-
-    }
+    return dataStore.data.map { it[keyLanguage] }
   }
 }

@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.test.state
 
-import android.os.SystemClock.sleep
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.state.Navigation
@@ -28,6 +27,5 @@ class StatefulEditLanguageDialogTest {
     rule.onNodeWithText("SAVE").performClick()
     advanceUntilIdle()
     rule.onNodeWithText(German.settingsEditLanguage).assertIsDisplayed()
-
   }
 }

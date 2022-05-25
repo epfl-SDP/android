@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.setting
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -34,7 +33,6 @@ fun EditLanguageDialog(
   */
   Box(modifier.fillMaxSize(), Alignment.Center) {
     val strings = LocalLocalizedStrings.current
-    Log.i("myinfo", "in component ${state.selectedLanguage}")
     Dialog(
         cancelContent = { Text(text = strings.settingEditCancel) },
         confirmContent = { Text(text = strings.settingEditSave) },

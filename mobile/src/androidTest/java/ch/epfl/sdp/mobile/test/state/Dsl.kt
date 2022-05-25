@@ -17,6 +17,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.state.ProvideLocalizedStrings
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -102,7 +103,6 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
     dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
     timeProvider: TimeProvider = FakeTimeProvider,
-    strings: LocalizedStrings = English,
     content: @Composable TestEnvironment.() -> Unit,
 ): TestEnvironment {
   val authenticationFacade = AuthenticationFacade(auth, store)
@@ -130,10 +130,11 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
                   dataStoreFactory = dataStoreFactory,
                   store = store,
               ),
-          strings = strings,
+          // This ignores the language in the dataStoreFactory
+          strings = English,
           user = user,
       )
-  setContentWithLocalizedStrings(strings) {
+  setContent {
     PawniesTheme {
       ProvideFacades(
           authentication = authenticationFacade,
@@ -142,8 +143,9 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
           speech = speechFacade,
           tournament = tournamentFacade,
           settings = settingsFacade,
-          content = { with(environment) { content() } },
-      )
+      ) {
+        ProvideLocalizedStrings(settingsFacade = settingsFacade) { with(environment) { content() } }
+      }
     }
   }
   return environment

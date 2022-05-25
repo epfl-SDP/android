@@ -41,7 +41,7 @@ class NavigationTest {
     val settings = SettingsFacade(dataStoreFactory)
 
     val tournamentFacade =
-      TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
+        TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
     rule.setContentWithLocalizedStrings {
       ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
         Navigation()
@@ -64,11 +64,12 @@ class NavigationTest {
     val settings = SettingsFacade(dataStoreFactory)
 
     val strings =
-      rule.setContentWithLocalizedStrings {
-        ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-          Navigation()
+        rule.setContentWithLocalizedStrings {
+          ProvideFacades(
+              facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+            Navigation()
+          }
         }
-      }
 
     // Do we see the authentication screen actions ?
     rule.onNodeWithText(strings.authenticatePerformRegister).assertExists()
