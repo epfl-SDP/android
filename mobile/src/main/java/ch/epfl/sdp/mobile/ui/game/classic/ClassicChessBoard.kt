@@ -16,9 +16,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
@@ -60,6 +63,8 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
           targetValue = if (state.rotatedBoard) 180f else 0f,
           animationSpec = spring(stiffness = StiffnessVeryLow),
       )
+
+  HapticFeedback(state.pieces)
 
   BoxWithConstraints(
       modifier
@@ -302,3 +307,14 @@ private val Piece.contentDescription: String
     val rank = rank.contentDescription(strings)
     return strings.boardPieceContentDescription(color, rank)
   }
+
+/**
+ * Performs Haptic Feedback (Phone vibration) when the given [key] changes.
+ *
+ * @param key the changeable key upon which the haptic feedback is performed.
+ */
+@Composable
+fun HapticFeedback(key: Any) {
+  val feedback = LocalHapticFeedback.current
+  LaunchedEffect(key, feedback) { feedback.performHapticFeedback(HapticFeedbackType.LongPress) }
+}
