@@ -43,12 +43,12 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   /** The [ArModelNode] which acts as the root of the [ArModelNode] hierarchy. */
   val boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
+  /** A mutable map that track the piece currently display in the scene */
   private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   /** A conflated [Channel] which associates the position of the pieces to their values. */
   private val currentPositionChannel =
       Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
-
 
   init {
 
