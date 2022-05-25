@@ -78,9 +78,9 @@ object English : LocalizedStrings {
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileSettings = "Settings"
-  override val profileFollow = "Follow"
-  override val profileUnfollow = "Unfollow"
-  override val profileChallenge = "Challenge"
+  override val profileFollow = "Follow".uppercase()
+  override val profileUnfollow = "Unfollow".uppercase()
+  override val profileChallenge = "Challenge".uppercase()
   override val profileEditImageIcon = "Edit profile image icon"
   override val profileEditNameIcon = "Edit profile name icon"
 

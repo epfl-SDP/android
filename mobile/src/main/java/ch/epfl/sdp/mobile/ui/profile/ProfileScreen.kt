@@ -134,7 +134,6 @@ fun <C : ChessMatch, P : PuzzleInfo> UnfollowButton(
       shape = CircleShape,
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
       modifier = modifier) {
-    Spacer(modifier = Modifier.width(8.dp))
     if (state.follows) {
       Text(strings.profileUnfollow)
     } else {
@@ -159,7 +158,6 @@ fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
       colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface),
       modifier = modifier) {
-    Spacer(modifier = Modifier.width(8.dp))
     Text(strings.profileChallenge.uppercase())
   }
 }
