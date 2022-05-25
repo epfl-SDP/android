@@ -58,6 +58,7 @@ class ChessFacade(
    *
    * @param white The [Profile] of the player that will play white.
    * @param black The [Profile] of the player that will play black.
+   * @param user the [Profile] currently viewing the game.
    *
    * @return The created [Match] before storing it in the [Store].
    */
@@ -73,6 +74,7 @@ class ChessFacade(
    * Returns the [Match] associated to the given identifier.
    *
    * @param id the unique identifier for this [Match].
+   * @param user the [Profile] currently viewing the game.
    */
   fun match(id: String, user: Profile? = null): Match {
     return StoreMatch(id, store, user)
@@ -172,7 +174,7 @@ class ChessFacade(
   }
 }
 
-/** TODO */
+/** A class representing a chess [Puzzle]. */
 private data class SnapshotPuzzle(
     override val uid: String,
     override val boardSnapshot: FenNotation.BoardSnapshot,
@@ -180,7 +182,12 @@ private data class SnapshotPuzzle(
     override val elo: Int,
 ) : Puzzle
 
-/** TODO */
+/**
+ * A class representing a [Game] between two online players viewed by a user.
+ *
+ * @param store the [Store] which is used to manage documents.
+ * @param user the [Profile] currently viewing the game.
+ */
 private data class StoreMatch(
     override val id: String,
     private val store: Store,
