@@ -17,17 +17,11 @@ fun StatefulArScreen(
     modifier: Modifier = Modifier,
 ) {
 
-  val facade = LocalChessFacade.current
+  val chessFacade = LocalChessFacade.current
   val scope = rememberCoroutineScope()
-  val match = remember(facade, id) { facade.match(id) }
+  val match = remember(chessFacade, id) { chessFacade.match(id) }
 
-  val gameScreenState =
-      remember(match, scope) {
-        ActualChessBoardState(
-            match = match,
-            scope = scope,
-        )
-      }
+  val state = remember(match, scope) { ActualChessBoardState(match, scope) }
 
-  ArChessBoardScreen(gameScreenState, modifier)
+  ArChessBoardScreen(state, modifier)
 }
