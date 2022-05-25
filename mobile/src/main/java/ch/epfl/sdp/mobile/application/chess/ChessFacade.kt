@@ -75,6 +75,8 @@ class ChessFacade(
    *
    * @param id the unique identifier for this [Match].
    * @param user the [Profile] currently viewing the game.
+   *
+   * @return the [Match] associated to the given identifier.
    */
   fun match(id: String, user: Profile? = null): Match {
     return StoreMatch(id, store, user)
@@ -95,6 +97,15 @@ class ChessFacade(
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
+  /**
+   * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
+   * player (or even himself) while playing with the given [colorField].
+   *
+   * @param colorField the color the [user] played as.
+   * @param user The [Profile] whose [Match]s will be fetched.
+   *
+   * @return The [Flow] of [List] of [Match]s for the [Profile].
+   */
   private fun getMatchesForPlayer(colorField: String, user: Profile): Flow<List<Match>> {
     return store
         .collection("games")
@@ -103,6 +114,13 @@ class ChessFacade(
         .onStart { emit(emptyList()) }
   }
 
+  /**
+   * Converts a [Query] to a [Flow] of [List] of [Match]s of the given [user].
+   *
+   * @param user The [Profile] whose [Match]s will be converted.
+   *
+   * @return The [Flow] of [List] of [Match]s for the [Profile].
+   */
   private fun Query.asMatchListFlow(user: Profile? = null): Flow<List<Match>> {
     return this.asFlow<ChessDocument>().map {
       it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store, user) }
@@ -114,6 +132,8 @@ class ChessFacade(
    *
    * As of now, the puzzles come from the Lichess.org Open Database
    * (https://database.lichess.org/#puzzles).
+   *
+   * @return the fetched list of all [Puzzle]s.
    */
   private fun allPuzzles(): List<Puzzle> {
     return sequence {
@@ -156,7 +176,7 @@ class ChessFacade(
    *
    * @param profile the [Profile] in question.
    *
-   * @returns The list of solved [Puzzle]s.
+   * @return The list of solved [Puzzle]s.
    */
   fun solvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
@@ -167,7 +187,7 @@ class ChessFacade(
    *
    * @param profile the [Profile] in question.
    *
-   * @returns The list of unsolved [Puzzle]s.
+   * @return The list of unsolved [Puzzle]s.
    */
   fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
@@ -198,7 +218,8 @@ private data class StoreMatch(
    * Retrieves the [Profile] of the given uid.
    *
    * @param uid the uid to retrieve its profile.
-   * @returns a flow of the [Profile] of the given uid.
+   *
+   * @return a flow of the [Profile] of the given uid.
    */
   fun profile(
       uid: String,
