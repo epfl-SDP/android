@@ -11,14 +11,15 @@ import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.state.Navigation
-import ch.epfl.sdp.mobile.state.ProvideFacades
-import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
+import ch.epfl.sdp.mobile.state.*
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -33,6 +34,7 @@ class StatefulProfileScreenTest {
   fun given_statefulProfileScreen_when_profileHasPastGames_then_theyAreDisplayedOnScreen() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") {
           document("1", ProfileDocument("1", name = "A"))
@@ -49,7 +51,7 @@ class StatefulProfileScreenTest {
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, store)
+      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
       val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -57,7 +59,7 @@ class StatefulProfileScreenTest {
       val strings =
           rule.setContentWithLocalizedStrings {
             ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulVisitedProfileScreen(authUser1, "1", {}, {})
+              StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -70,6 +72,7 @@ class StatefulProfileScreenTest {
     val assets = emptyAssets()
 
     val auth = buildAuth { user("email@example.org", "password", "1") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
     }
@@ -78,7 +81,7 @@ class StatefulProfileScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -104,15 +107,18 @@ class StatefulProfileScreenTest {
   @Test
   fun given_userIsLoggedIn_when_clickedOnUnfollowFriend_then_theButtonShouldChangeToFollow() =
       runTest {
-    val auth = buildAuth { user("email@example.org", "password", "userId1") }
     val store = buildStore {
       collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
     }
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(store = store, auth = auth) {
+        rule.setContentWithTestEnvironment(store = store) {
           StatefulVisitedProfileScreen(
-              user = user, uid = "userId2", onMatchClick = {}, onChallengeClick = {})
+              user = user,
+              uid = "userId2",
+              onMatchClick = {},
+              onChallengeClick = {},
+              onPuzzleClick = {})
         }
 
     rule.onNodeWithText("user2").performClick()
@@ -120,5 +126,27 @@ class StatefulProfileScreenTest {
     rule.onNodeWithText(strings.profileUnfollow).assertExists()
     rule.onNodeWithText(strings.profileUnfollow).performClick()
     rule.onNodeWithText(strings.profileFollow).assertExists()
+  }
+
+  @Test
+  fun given_statefulProfileScreen_when_profileHasSolvedPuzzles_then_theyAreDisplayedOnScreen() =
+      runTest {
+    val id = "1"
+    val (assets, puzzleIds) = twoPuzzleAssets()
+    val store = buildStore {
+      collection("users") {
+        document(id, ProfileDocument(id, solvedPuzzles = listOf(puzzleIds[1])))
+      }
+    }
+
+    val env =
+        rule.setContentWithTestEnvironment(userId = id, store = store, assets = assets) {
+          StatefulVisitedProfileScreen(
+              user = user, uid = id, onMatchClick = {}, onChallengeClick = {}, onPuzzleClick = {})
+        }
+
+    rule.onNodeWithText(env.strings.profilePuzzle).performClick()
+    rule.onNodeWithText(puzzleIds[1], substring = true).assertExists()
+    rule.onNodeWithText(puzzleIds[0], substring = true).assertDoesNotExist()
   }
 }

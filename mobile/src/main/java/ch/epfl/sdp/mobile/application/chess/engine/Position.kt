@@ -1,48 +1,74 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
+import ch.epfl.sdp.mobile.application.chess.engine.utils.packShorts
+import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort1
+import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort2
+
 /**
  * A class representing some valid coordinates on a board. Coordinates start at the top-left corner
  * of the board, and the x axis increases towards the right while the y axis increases towards the
  * bottom.
  *
- * @param x the coordinate on the first axis.
- * @param y the coordinate on the second axis.
+ * @param backing the backing field for the inline class.
  */
-data class Position(val x: Int, val y: Int) {
+@JvmInline
+value class Position private constructor(private val backing: Int) {
 
-  /** Returns true iff the [x] and the [y] coordinates are both the board bounds. */
-  val inBounds: Boolean = x in AxisBounds && y in AxisBounds
+  /**
+   * Creates a new [Position].
+   *
+   * @param x the coordinate on the first axis.
+   * @param y the coordinate on the second axis.
+   */
+  constructor(x: Int, y: Int) : this(packShorts(x.toShort(), y.toShort()))
 
-  /** Adds a [Delta] to the [Position], and returns it only if the result is in bounds. */
-  operator fun plus(delta: Delta): Position? {
-    return Position(x + delta.x, y + delta.y).takeIf { it.inBounds }
-  }
+  /** Returns true iff the [x] and [y] coordinates are in bounds. */
+  val inBounds: Boolean
+    get() = x in MutableBoard.AxisBounds && y in MutableBoard.AxisBounds
 
-  /** Removes a [Position] from another [Position], and returns the corresponding [Delta]. */
-  operator fun minus(position: Position): Delta {
-    return Delta(x - position.x, y - position.y)
-  }
+  /** Returns the [x] coordinate of the [Position]. */
+  val x: Int
+    get() = unpackShort1(backing).toInt()
+
+  /** Returns the [y] coordinate of the [Position]. */
+  val y: Int
+    get() = unpackShort2(backing).toInt()
+
+  operator fun component1(): Int = x
+  operator fun component2(): Int = y
+
+  /**
+   * Adds a [Delta] to this [Position].
+   *
+   * @param delta the [Delta] which is added.
+   * @return the [Position] with the [Delta].
+   */
+  operator fun plus(delta: Delta): Position = Position(delta.x + x, delta.y + y)
+
+  /**
+   * Removes a [Delta] to this [Position].
+   *
+   * @param delta the [Delta] which is removed.
+   * @return the [Position] without the [Delta].
+   */
+  operator fun minus(delta: Delta): Position = Position(x - delta.x, y - delta.y)
+
+  /**
+   * Returns the difference between two [Position].
+   *
+   * @param other the other [Position].
+   * @return the [Delta] to apply to this [Position] to obtain the [other] position.
+   */
+  operator fun minus(other: Position): Delta = Delta(x - other.x, y - other.y)
 
   companion object {
 
-    /** The bounds which correspond to the valid positions on a board. */
-    private val AxisBounds = 0 until Board.Size
-
     /** Returns a [Sequence] with all the valid [Position] within a board. */
     fun all(): Sequence<Position> = sequence {
-      AxisBounds.forEach { i -> AxisBounds.forEach { j -> yield(Position(i, j)) } }
+      MutableBoard.AxisBounds.forEach { i ->
+        MutableBoard.AxisBounds.forEach { j -> yield(Position(i, j)) }
+      }
     }
   }
-}
-
-/**
- * A class representing the difference between two [Position].
- *
- * @param x the delta on the first axis.
- * @param y the delta on the second axis.
- */
-data class Delta(val x: Int, val y: Int) {
-
-  /** Multiplies this [Delta] the given amount of times. */
-  operator fun times(count: Int): Delta = Delta(x = x * count, y = y * count)
 }

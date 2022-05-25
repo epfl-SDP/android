@@ -8,6 +8,7 @@ import ch.epfl.sdp.mobile.state.ChessMatchAdapter
 import ch.epfl.sdp.mobile.state.toColor
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
+import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.setting.SettingScreenState
 import ch.epfl.sdp.mobile.ui.setting.SettingsScreen
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
@@ -22,13 +23,17 @@ class SettingScreenTest {
 
   @get:Rule val rule = createComposeRule()
 
-  open class TestSettingScreenState(override val matches: List<ChessMatch>) :
-      SettingScreenState<ChessMatch> {
+  open class TestSettingScreenState(
+      override val matches: List<ChessMatch>,
+      override val puzzles: List<PuzzleInfo>
+  ) : SettingScreenState<ChessMatch, PuzzleInfo> {
     override val email = "example@epfl.ch"
+
     override val pastGamesCount = 10
     override fun onMatchClick(match: ChessMatch) = Unit
 
-    override val puzzlesCount = 12
+    override val solvedPuzzlesCount = 12
+    override fun onPuzzleClick(puzzle: PuzzleInfo) = Unit
 
     override val backgroundColor = Color.Default.toColor()
     override fun onEditProfileNameClick() = Unit
@@ -42,8 +47,9 @@ class SettingScreenTest {
   object FakeSetttingScreenState :
       TestSettingScreenState(
           List(20) { ChessMatchAdapter("1", "Konor($it)", Win(CHECKMATE), 27) },
+          emptyList(),
       ) {
-    override val puzzlesCount = 12
+    override val solvedPuzzlesCount = 12
   }
 
   @Test
@@ -76,7 +82,7 @@ class SettingScreenTest {
       match: ChessMatchAdapter,
       expected: LocalizedStrings.() -> String,
   ) {
-    val state = TestSettingScreenState(List(20) { match })
+    val state = TestSettingScreenState(List(20) { match }, emptyList())
     val strings = rule.setContentWithLocalizedStrings { SettingsScreen(state) }
 
     rule.onRoot().performTouchInput { swipeUp() }

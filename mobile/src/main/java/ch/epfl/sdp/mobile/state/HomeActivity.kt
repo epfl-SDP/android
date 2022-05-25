@@ -10,8 +10,10 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.assets.android.AndroidAssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
+import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXDataStoreFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
 import ch.epfl.sdp.mobile.infrastructure.speech.android.AndroidSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.infrastructure.time.system.SystemTimeProvider
 import ch.epfl.sdp.mobile.infrastructure.tts.android.AndroidTextToSpeechFactory
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import com.google.firebase.auth.ktx.auth
@@ -27,15 +29,18 @@ class HomeActivity : ComponentActivity() {
     val auth = FirebaseAuth(Firebase.auth)
     val store = FirestoreStore(Firebase.firestore)
     val assetManager = AndroidAssetManager(context = this)
+    val dataStoreFactory = AndroidXDataStoreFactory(context = this)
 
     // The different facades from the application.
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assetManager)
     val speechFacade =
-        SpeechFacade(AndroidSpeechRecognizerFactory(this),
-            AndroidTextToSpeechFactory(this))
-    val tournamentFacade = TournamentFacade(auth, store)
+        SpeechFacade(
+            factory = AndroidSpeechRecognizerFactory(this),
+            ttsFactory = AndroidTextToSpeechFactory(this),
+        )
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)
 
     setContent {
       PawniesTheme {

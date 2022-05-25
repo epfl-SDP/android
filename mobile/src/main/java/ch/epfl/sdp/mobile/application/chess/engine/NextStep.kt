@@ -1,7 +1,5 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
-import ch.epfl.sdp.mobile.application.chess.engine.rules.Action
-
 /**
  * An interface representing the next steps that could be performed on an existing [Game] instance.
  * Because [Game] is immutable, the only way to move forward in a chess game is to perform a
