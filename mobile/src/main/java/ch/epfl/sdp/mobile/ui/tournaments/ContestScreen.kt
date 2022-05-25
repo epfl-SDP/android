@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.tournaments
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,7 +24,10 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
  * @param contentPadding the [PaddingValues] for this screen.
  * @param C the type of the [ContestInfo].
  */
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalFoundationApi::class,
+    ExperimentalMaterialApi::class,
+)
 @Composable
 fun <C : ContestInfo> ContestScreen(
     state: ContestScreenState<C>,
@@ -47,6 +51,7 @@ fun <C : ContestInfo> ContestScreen(
             Contest(
                 contestInfo = contest,
                 onClick = { state.onContestClick(contest) },
+                modifier = Modifier.animateItemPlacement(),
             )
           }
         }

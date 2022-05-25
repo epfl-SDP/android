@@ -1,6 +1,6 @@
-package ch.epfl.sdp.mobile.infrastructure.time
+package ch.epfl.sdp.mobile.infrastructure.time.system
 
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
+import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
 
 /** An object providing the actual current time according to System.currentTimeMillis(). */
 object SystemTimeProvider : TimeProvider {
