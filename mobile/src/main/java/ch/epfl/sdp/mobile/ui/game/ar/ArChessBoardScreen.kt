@@ -53,8 +53,16 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
               // Place the chess board on the tapped position.
               arSceneView.onTouchAr =
                   { hitResult, _ ->
-                    anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
+                    anchorOrMoveBoard(/*arSceneView,*/ chessScene, hitResult.createAnchor())
                   }
+
+              /**
+               * FIXME : Workaround : A strange bug make the animation fail when we add the child
+               * via a function. To solve this quickly, we add the board when is loaded and set it
+               * to invisible. We reset the visibility when the user tap on the screen
+               */
+              arSceneView.addChild(this.boardNode)
+              this.boardNode.isVisible = false
             }
 
         arSceneView
@@ -72,7 +80,7 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
  * @param anchor The (new) board's anchor position
  */
 private fun <Piece : ChessBoardState.Piece> anchorOrMoveBoard(
-    arSceneView: ArSceneView,
+    // arSceneView: ArSceneView,
     chessScene: ChessScene<Piece>?,
     anchor: Anchor
 ) {
@@ -80,10 +88,15 @@ private fun <Piece : ChessBoardState.Piece> anchorOrMoveBoard(
   val currentChessScene = chessScene ?: return
 
   currentChessScene.let {
+    // FIXME : Workaround see line 55
+
     // Add only one instance of the node
-    if (!arSceneView.children.contains(it.boardNode)) {
+    /*if (!arSceneView.children.contains(it.boardNode)) {
       arSceneView.addChild(it.boardNode)
-    }
+    }*/
+
+    if (!it.boardNode.isVisible) it.boardNode.isVisible = true
+
     it.boardNode.anchor = anchor
   }
 }
