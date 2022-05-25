@@ -48,21 +48,21 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   private val currentPositionChannel =
       Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
 
-  // Board Bounding box
-  private var boundingBox: Box? = null
 
   init {
 
     scope.launch {
       val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
-      boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
+
+      // Board Bounding box
+      val boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
 
       val pieceRenderable = loadPieceRenderable()
 
       currentPositionChannel
           .consumeAsFlow()
           .onEach { positionsToPieces ->
-            updateBoard(positionsToPieces, pieceRenderable, boundingBox!!)
+            updateBoard(positionsToPieces, pieceRenderable, boundingBox)
           }
           .collect()
     }
