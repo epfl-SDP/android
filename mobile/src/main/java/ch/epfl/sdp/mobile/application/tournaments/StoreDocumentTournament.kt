@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.NotStarted
 import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
-import ch.epfl.sdp.mobile.infrastructure.persistence.store.TimeProvider
+import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
 import ch.epfl.sdp.mobile.ui.i18n.English.tournamentDetailsPoolName
 import kotlin.math.pow
 import kotlin.time.Duration
