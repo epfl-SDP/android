@@ -81,9 +81,9 @@ class ChessSceneTest {
 }
 
 /**
- * This function yield until the [predicate] is not satisfied.
+ * This function yields until the [predicate] is not satisfied.
  *
- * @param predicate If this function return true yield, otherwise the function end
+ * @param predicate if this function returns true yield, otherwise the function ends.
  */
 private suspend fun yieldWhile(predicate: () -> Boolean) {
   while (predicate()) yield()

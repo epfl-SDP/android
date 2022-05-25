@@ -43,7 +43,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   /** The [ArModelNode] which acts as the root of the [ArModelNode] hierarchy. */
   val boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
 
-  /** A mutable map that track the piece currently display in the scene */
+  /** A mutable map that tracks the pieces currently displayed in the scene. */
   private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   /** A conflated [Channel] which associates the position of the pieces to their values. */
@@ -110,12 +110,12 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       requireNotNull(GLBLoader.loadModel(context, rank.arModelPath))
 
   /**
-   * Create the renderable of the given [piece] and added in to [boardNode] as a child
+   * Creates the renderable of the given [Piece] and adds it to [boardNode] as a child.
    *
-   * @param position The position of the piece on the board
-   * @param boundingBox The bounding box of [boardNode]
-   * @param pieceRenderable The function that load a renderable given a [Rank]
-   * @param piece The piece that need to be place on the board
+   * @param position the position of the piece on the board.
+   * @param boundingBox the bounding box of [boardNode].
+   * @param pieceRenderable the function that loads a renderable given a [Rank].
+   * @param piece the piece that needs to be placed on the board.
    */
   private fun addPiece(
       position: Position,
@@ -136,15 +136,15 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     }
   }
 
-  /** Scale the whole scene with the given [value] */
+  /** Scales the whole scene with the given [value]. */
   internal fun scale(value: Float) {
     boardNode.scale(value)
   }
 
   /**
-   * Update the board with the given pieces
+   * Updates the board with the given pieces.
    *
-   * @param pieces the new pieces on the board
+   * @param pieces the new pieces on the board.
    */
   private fun updateBoard(
       pieces: Map<Position, Piece>,
@@ -181,9 +181,9 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   }
 
   /**
-   * Use by [ArChessBoardScreen] to update the pieces' position on the board
+   * Used by [ArChessBoardScreen] to update the pieces' positions on the board.
    *
-   * @param pieces The new piece position
+   * @param pieces a map of the pieces and their new positions.
    */
   fun update(pieces: Map<Position, Piece>) {
     currentPositionChannel.trySend(pieces)
