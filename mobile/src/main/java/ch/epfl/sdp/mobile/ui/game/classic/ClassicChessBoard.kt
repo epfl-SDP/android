@@ -314,7 +314,7 @@ private val Piece.contentDescription: String
  * @param key the changeable key upon which the haptic feedback is performed.
  */
 @Composable
-fun HapticFeedback(key: Any) {
+private fun HapticFeedback(key: Any) {
   val feedback = LocalHapticFeedback.current
   LaunchedEffect(key, feedback) { feedback.performHapticFeedback(HapticFeedbackType.LongPress) }
 }
