@@ -118,6 +118,20 @@ class StoreDocumentTournament(
     }
   }
 
+  /**
+   * Creates the necessary [PoolDocument]s in the [Store] for the given parameters.
+   *
+   * @receiver the ongoing [Transaction].
+   * @param tournamentDocumentReference the reference to the tournament's [DocumentReference]
+   * @param current the [TournamentDocument]
+   * @param maxPlayers the maximum number of players than can join this tournament.
+   * @param poolSize the target size of each pool. The number of pools derives from this number and
+   * the total number of players.
+   * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination
+   * phase.
+   * @param adminId the unique identifier of the user administrating the tournament.
+   * @param players the [List] of unique identifier of users to try to place in the pools.
+   */
   private fun Transaction<DocumentReference>.createPools(
       tournamentDocumentReference: DocumentReference,
       current: TournamentDocument,
@@ -155,6 +169,13 @@ class StoreDocumentTournament(
         .forEach { set(store.collection(PoolDocument.Collection).document(), it) }
   }
 
+  /**
+   * Creates the matches corresponding to the given finals phase.
+   *
+   * @receiver the ongoing [Transaction].
+   * @param players the identifiers of the players,
+   * @param nextDepth the function which computes the depth of the elimination tree.
+   */
   private fun Transaction<DocumentReference>.createFinalsMatchesForPlayers(
       players: List<String>,
       nextDepth: (TournamentDocument) -> Int?,
@@ -189,7 +210,13 @@ class StoreDocumentTournament(
       }
     }
   }
-
+  /**
+   * Creates the matches corresponding to the given [PoolResults].
+   *
+   * @receiver the ongoing [Transaction].
+   * @param results the [PoolResults] for which the matches are created.
+   * @param nextDepth the function which computes the depth of the elimination tree.
+   */
   private fun Transaction<DocumentReference>.createMatchesForPoolResults(
       results: PoolResults,
       nextDepth: (TournamentDocument) -> Int?,
