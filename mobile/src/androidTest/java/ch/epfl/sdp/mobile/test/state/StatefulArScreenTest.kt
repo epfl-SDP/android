@@ -22,7 +22,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
-import ch.epfl.sdp.mobile.test.infrastructure.time.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import org.junit.Rule
 
 class StatefulArScreenTest {
