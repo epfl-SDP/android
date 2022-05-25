@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.state.LocalSpeechFacade
 import ch.epfl.sdp.mobile.ui.BlackKing
 import ch.epfl.sdp.mobile.ui.ChessIcons
 import ch.epfl.sdp.mobile.ui.PawniesColors
@@ -60,7 +61,7 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             onListenClick = state::onListenClick,
             onTTsClick = state::onTTsVolumeClick,
             listening = state.listening,
-            muted = state.muted,
+            muted = LocalSpeechFacade.current.muted,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },

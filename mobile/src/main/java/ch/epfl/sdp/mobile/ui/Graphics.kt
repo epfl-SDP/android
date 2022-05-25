@@ -3,6 +3,8 @@ package ch.epfl.sdp.mobile.ui
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.SkipNext
+import androidx.compose.material.icons.outlined.VolumeOff
+import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
@@ -96,10 +98,10 @@ val PawniesIcons.Logout
   get() = Icons.Default.Logout
 
 val PawniesIcons.TTsOn
-  get() = Icons.Default.VolumeUp
+  get() = Icons.Outlined.VolumeUp
 
 val PawniesIcons.TTsOff
-  get() = Icons.Default.VolumeOff
+  get() = Icons.Outlined.VolumeOff
 
 val PawniesIcons.Settings
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_settings_hollow)

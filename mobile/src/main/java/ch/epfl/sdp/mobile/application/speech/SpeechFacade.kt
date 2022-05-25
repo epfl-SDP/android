@@ -1,8 +1,12 @@
 package ch.epfl.sdp.mobile.application.speech
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
+import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeechFactory
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -11,7 +15,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
  *
  * @param factory the [SpeechRecognizerFactory] which is used internally by this [SpeechFacade].
  */
-class SpeechFacade(private val factory: SpeechRecognizerFactory) {
+class SpeechFacade(private val factory: SpeechRecognizerFactory, private val ttsFactory: TextToSpeechFactory) {
 
   /** The result of a call to [SpeechFacade.recognize]. */
   sealed interface RecognitionResult {
@@ -61,5 +65,14 @@ class SpeechFacade(private val factory: SpeechRecognizerFactory) {
     )
     recognizer.startListening()
     cont.invokeOnCancellation { cleanup() }
+  }
+
+   var muted by mutableStateOf(false)
+   private val tts = suspend {  ttsFactory.create() }
+
+  suspend fun synthesize(text: String) {
+    if(!muted){
+      tts().speak(text)
+    }
   }
 }
