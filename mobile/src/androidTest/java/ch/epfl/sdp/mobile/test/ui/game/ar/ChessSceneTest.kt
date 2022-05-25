@@ -18,6 +18,9 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 
+// Increase the timeout to allow the CI to have enough time to load the 3D Model
+const val Timeout = 5000L
+
 class ChessSceneTest {
 
   @get:Rule val rule = createAndroidComposeRule<HomeActivity>()
@@ -31,7 +34,7 @@ class ChessSceneTest {
 
     val chessScene = ChessScene(context, rule.activity.lifecycleScope, simpleBoard)
 
-    rule.waitUntil(5000) { chessScene.boardNode.children.size == simpleBoard.size }
+    rule.waitUntil(Timeout) { chessScene.boardNode.children.size == simpleBoard.size }
 
     assertThat(chessScene.boardNode.children.size).isEqualTo(simpleBoard.size)
   }
@@ -42,7 +45,7 @@ class ChessSceneTest {
 
     val chessScene = ChessScene(context, rule.activity.lifecycleScope, simpleBoard)
 
-    rule.waitUntil(5000) { chessScene.boardNode.children.size == simpleBoard.size }
+    rule.waitUntil(Timeout) { chessScene.boardNode.children.size == simpleBoard.size }
 
     chessScene.scale(4f)
     assertThat(chessScene.boardNode.scale).isEqualTo(Scale(4f))
@@ -53,7 +56,7 @@ class ChessSceneTest {
     val context = rule.activity.applicationContext
 
     val chessScene = ChessScene(context, rule.activity.lifecycleScope, simpleBoard)
-    rule.waitUntil(5000) { chessScene.boardNode.children.size == simpleBoard.size }
+    rule.waitUntil(Timeout) { chessScene.boardNode.children.size == simpleBoard.size }
 
     val iterator = simpleBoard.entries.iterator()
     val oldMovePiece = iterator.next()
@@ -65,7 +68,7 @@ class ChessSceneTest {
 
     chessScene.update(newBoard)
 
-    rule.waitUntil(5000) { chessScene.boardNode.children.size == newBoard.size }
+    rule.waitUntil(Timeout) { chessScene.boardNode.children.size == newBoard.size }
 
     assertThat(chessScene.boardNode.children.size).isEqualTo(newBoard.size)
   }
