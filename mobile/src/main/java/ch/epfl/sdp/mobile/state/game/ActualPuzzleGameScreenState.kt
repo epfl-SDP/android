@@ -61,6 +61,7 @@ fun ActualPuzzleGameScreenState(
           snackbarHostState,
           scope,
       )
+  val textToSpeech = DelegatingTextToSpeechState(chessBoard, speechFacade, scope)
   return ActualPuzzleGameScreenState(
       currentActions = currentActions,
       moveableChessBoard = moveableChessBoard,
@@ -68,6 +69,7 @@ fun ActualPuzzleGameScreenState(
       movesInfo = moves,
       puzzleInfo = puzzleInfo,
       speechRecognizer = speechRecognizer,
+      textToSpeechState = textToSpeech
   )
 }
 
@@ -90,13 +92,15 @@ constructor(
     movesInfo: MovesInfoState,
     puzzleInfo: PuzzleInfoState,
     speechRecognizer: SpeechRecognizerState,
+    textToSpeechState: TextToSpeechState,
 ) :
     PuzzleGameScreenState<Piece>,
     MovableChessBoardState<Piece> by moveableChessBoard,
     PromotionState by promotionState,
     MovesInfoState by movesInfo,
     PuzzleInfoState by puzzleInfo,
-    SpeechRecognizerState by speechRecognizer {
+    SpeechRecognizerState by speechRecognizer,
+    TextToSpeechState by textToSpeechState {
 
   override fun onBackClick() = currentActions.value.onBack()
 }

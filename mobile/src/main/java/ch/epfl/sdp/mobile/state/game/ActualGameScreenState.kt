@@ -59,7 +59,7 @@ fun ActualGameScreenState(
           scope,
       )
 
-  val ttsSynthesizer = /*TODO*/
+  val ttsSynthesizer = DelegatingTextToSpeechState(chessBoard,speechFacade,scope)
 
   return ActualGameScreenState(
       actions = actions,
@@ -69,7 +69,7 @@ fun ActualGameScreenState(
       movesInfo = moves,
       playersInfo = players,
       speechRecognizer = speechRecognizer,
-      textToSpeech = /*TODO*/,
+      textToSpeech = ttsSynthesizer,
   )
 }
 
