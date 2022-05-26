@@ -12,10 +12,11 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.time.system.SystemTimeProvider
-import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
+import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -62,6 +63,8 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_userJoinedTournament_then_participantBadgeIsDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val assets = emptyAssets()
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -89,6 +92,8 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_tournamentPresent_then_correctTimeDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
+      val assets = emptyAssets()
+      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
