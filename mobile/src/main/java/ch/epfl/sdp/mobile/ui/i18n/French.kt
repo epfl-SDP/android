@@ -98,7 +98,7 @@ object French : LocalizedStrings {
   override val socialSearchBarPlaceHolder = "Rechercher un joueur ..."
   override val socialSearchEmptyTitle = "Rechercher n'importe quel joueur"
   override val socialSearchEmptySubtitle =
-      "Trouves un joueur en utilisant son nom, suis le, invites-le à jouer ou consultes l'historique de ses matchs."
+      "Trouve un joueur en utilisant son nom, suis le, invite-le à jouer ou consulte l'historique de ses matchs."
   override val socialSearchClearContentDescription = "Effacer le champ de recherche"
   override val socialCloseVisitedProfile = "Fermer"
 
