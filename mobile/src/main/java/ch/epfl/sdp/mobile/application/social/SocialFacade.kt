@@ -61,10 +61,10 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       user: AuthenticationUser = NotAuthenticatedUser,
   ): Flow<List<Profile>> =
       store
-          .collection("users")
-          .orderBy("name")
-          .whereGreaterThan("name", text, inclusive = true)
-          .whereLessThan("name", text.upperSearchBound(), inclusive = true)
+          .collection(ProfileDocument.Collection)
+          .orderBy(ProfileDocument.Name)
+          .whereGreaterThan(ProfileDocument.Name, text, inclusive = true)
+          .whereLessThan(ProfileDocument.Name, text.upperSearchBound(), inclusive = true)
           .limit(MaxSearchResultCount)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
@@ -80,8 +80,10 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       uid: String,
       user: AuthenticationUser = NotAuthenticatedUser,
   ): Flow<Profile?> {
-    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
-      doc?.toProfile(user)
-    }
+    return store
+        .collection(ProfileDocument.Collection)
+        .document(uid)
+        .asFlow<ProfileDocument>()
+        .map { doc -> doc?.toProfile(user) }
   }
 }

@@ -72,8 +72,8 @@ class StatefulGameScreenTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") {
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
         document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId1"))
       }
     }
@@ -555,8 +555,10 @@ class StatefulGameScreenTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
+        document("gameId", ChessDocument(whiteId = null, blackId = "userId1"))
+      }
     }
 
     val authApi = AuthenticationFacade(auth, store)
@@ -596,8 +598,10 @@ class StatefulGameScreenTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
+        document("gameId", ChessDocument(whiteId = "userId1", blackId = null))
+      }
     }
 
     val authApi = AuthenticationFacade(auth, store)

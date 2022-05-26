@@ -95,9 +95,9 @@ class StoreDocumentTournament(
     runCatching {
       val results =
           store
-              .collection("games")
-              .whereEquals("tournamentId", reference.uid)
-              .whereNotEquals("poolId", null)
+              .collection(ChessDocument.Collection)
+              .whereEquals(ChessDocument.TournamentId, reference.uid)
+              .whereNotEquals(ChessDocument.PoolId, null)
               .get<ChessDocument>()
               .toPoolResults()
       store.transaction { createMatchesForPoolResults(results) { it.eliminationRounds } }
@@ -109,9 +109,9 @@ class StoreDocumentTournament(
       val round = document.stage?.toIntOrNull() ?: 1
       val results =
           store
-              .collection("games")
-              .whereEquals("tournamentId", reference.uid)
-              .whereEquals("roundDepth", round)
+              .collection(ChessDocument.Collection)
+              .whereEquals(ChessDocument.TournamentId, reference.uid)
+              .whereEquals(ChessDocument.RoundDepth, round)
               .get<ChessDocument>()
               .toPoolResults()
       store.transaction { createMatchesForPoolResults(results) { (round - 1).takeIf { it >= 1 } } }
@@ -145,7 +145,10 @@ class StoreDocumentTournament(
     val pools =
         chosenPlayers.chunked(poolSize).map { ids ->
           ids.map { uid ->
-            uid to (get<ProfileDocument>(store.collection("users").document(uid))?.name ?: "")
+            uid to
+                (get<ProfileDocument>(store.collection(ProfileDocument.Collection).document(uid))
+                    ?.name
+                    ?: "")
           }
         }
     val minOpponentsPerPool = pools.lastOrNull()?.size ?: 0
@@ -196,7 +199,7 @@ class StoreDocumentTournament(
     for (match in matches) {
       repeat(bestOf) { index ->
         val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
-        val matchRef = store.collection("games").document()
+        val matchRef = store.collection(ChessDocument.Collection).document()
         val matchDocument =
             ChessDocument(
                 whiteId = first,

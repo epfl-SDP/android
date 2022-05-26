@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.application
 
+import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.PoolDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
@@ -15,7 +16,7 @@ class StoreDocumentsTest {
 
   @Test
   fun given_tournamentDocuments_when_settingAndGettingThem_then_theyAreTheSame() = runTest {
-    val tournamentId = "tournamentId"
+    val tournamentId = ChessDocument.TournamentId
     val store = emptyStore()
     val tournaments = store.collection(TournamentDocument.Collection)
     val pools = store.collection("tournaments/$tournamentId")
@@ -56,7 +57,7 @@ class StoreDocumentsTest {
     val fetchedTournament = tournament.asFlow<TournamentDocument>().filterNotNull().first()
     val fetchedPools =
         pools
-            .whereEquals("tournamentId", tournamentId)
+            .whereEquals(PoolDocument.TournamentId, tournamentId)
             .asFlow<PoolDocument>()
             .filterNotNull()
             .first()
@@ -67,13 +68,13 @@ class StoreDocumentsTest {
 
   @Test
   fun given_emptyTournamentDocuments_when_settingAndGettingThem_then_theyAreTheSame() = runTest {
-    val tournamentId = "tournamentId"
+    val tournamentId = ChessDocument.TournamentId
     val store = emptyStore()
     val tournaments = store.collection(TournamentDocument.Collection)
     val pools = store.collection("tournaments/$tournamentId")
 
     val tournament = tournaments.document(tournamentId)
-    val pool = pools.document("poolId")
+    val pool = pools.document(ChessDocument.PoolId)
 
     val tournamentDocument = TournamentDocument()
     val poolDocument = PoolDocument()

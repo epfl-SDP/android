@@ -39,8 +39,8 @@ class StatefulArScreenTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") {
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
         document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId1"))
       }
     }

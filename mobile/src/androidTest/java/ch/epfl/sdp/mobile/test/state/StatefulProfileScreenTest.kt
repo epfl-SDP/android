@@ -39,11 +39,11 @@ class StatefulProfileScreenTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
-        collection("users") {
+        collection(ProfileDocument.Collection) {
           document("1", ProfileDocument("1", name = "A"))
           document("2", ProfileDocument("2", name = "B"))
         }
-        collection("games") {
+        collection(ChessDocument.Collection) {
           document(
               "id",
               ChessDocument(uid = "45", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
@@ -79,7 +79,9 @@ class StatefulProfileScreenTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(uid = "userId2", name = "user2"))
+      }
     }
 
     val authFacade = AuthenticationFacade(auth, store)
@@ -115,7 +117,9 @@ class StatefulProfileScreenTest {
   fun given_userIsLoggedIn_when_clickedOnUnfollowFriend_then_theButtonShouldChangeToFollow() =
       runTest {
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(uid = "userId2", name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(uid = "userId2", name = "user2"))
+      }
     }
 
     val (_, _, strings) =
@@ -142,7 +146,7 @@ class StatefulProfileScreenTest {
     val id = "1"
     val (assets, puzzleIds) = twoPuzzleAssets()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document(id, ProfileDocument(id, solvedPuzzles = listOf(puzzleIds[1])))
       }
     }

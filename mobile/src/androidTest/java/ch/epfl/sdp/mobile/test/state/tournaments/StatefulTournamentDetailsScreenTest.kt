@@ -124,7 +124,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournament_when_allParticipantsJoined_then_showStartBanner() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
         document("3", ProfileDocument("3", "Player 3"))
@@ -168,7 +168,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWithAllPlayerJoined_when_startTournament_then_showExactlyOnePool() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
         document("3", ProfileDocument("3", "Player 3"))
@@ -207,7 +207,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWith2Players_when_goingThroughTournament_then_showsWinLossFinal() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
@@ -253,7 +253,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWith4Players_when_goingThroughTournament_then_showsWinLossFinal() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
         document("3", ProfileDocument("3", "Player 3"))
@@ -311,7 +311,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWithNoQualifiers_when_startingTournament_then_FinalsCreated() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
@@ -349,7 +349,7 @@ class StatefulTournamentDetailsScreenTest {
   @Test
   fun given_tournament_when_stageFinals_then_MarkedAsDone() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
@@ -391,8 +391,8 @@ class StatefulTournamentDetailsScreenTest {
     val games: List<ChessDocument> =
         env.infrastructure
             .store
-            .collection("games")
-            .whereEquals("roundDepth", depth)
+            .collection(ChessDocument.Collection)
+            .whereEquals(ChessDocument.RoundDepth, depth)
             .get<ChessDocument>()
             .map {
               it.copy(
@@ -403,7 +403,11 @@ class StatefulTournamentDetailsScreenTest {
             }
 
     games.forEach { game ->
-      env.infrastructure.store.collection("games").document(game.uid ?: "").set(game)
+      env.infrastructure
+          .store
+          .collection(ChessDocument.Collection)
+          .document(game.uid ?: "")
+          .set(game)
     }
 
     return games

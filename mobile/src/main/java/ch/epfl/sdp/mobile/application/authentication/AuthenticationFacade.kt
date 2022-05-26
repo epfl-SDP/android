@@ -73,7 +73,10 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
   ): AuthenticationResult = authenticate {
     val result = auth.signUpWithEmail(email, password)
     if (result is Success && result.user != null) {
-      store.collection("users").document(result.user.uid).set(ProfileDocument(name = name))
+      store
+          .collection(ProfileDocument.Collection)
+          .document(result.user.uid)
+          .set(ProfileDocument(name = name))
     }
     result
   }
@@ -81,7 +84,9 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
 
 private fun FacadeUser?.profileFlow(store: Store): Flow<Pair<FacadeUser, ProfileDocument?>?> {
   return if (this != null) {
-    store.collection("users").document(uid).asFlow<ProfileDocument>().map { this to it }
+    store.collection(ProfileDocument.Collection).document(uid).asFlow<ProfileDocument>().map {
+      this to it
+    }
   } else {
     flowOf(null)
   }
