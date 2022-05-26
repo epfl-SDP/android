@@ -11,10 +11,17 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/** Indicates that an [AuthenticatedUser] is currently authenticated. */
+/**
+ * Indicates that an [AuthenticatedUser] is currently authenticated.
+ *
+ * @param auth the used [Auth] for authentication queries.
+ * @param store the used [Store].
+ * @param user the current [User].
+ * @param document the user's [ProfileDocument].
+ */
 class AuthenticatedUser(
     private val auth: Auth,
-    private val firestore: Store,
+    private val store: Store,
     private val user: User,
     document: ProfileDocument?,
 ) : AuthenticationUser, Profile by document.toProfile(user.uid) {
@@ -77,6 +84,7 @@ class AuthenticatedUser(
     firestore.collection(ProfileDocument.Collection).document(unfollowed.uid).update {
       arrayRemove(ProfileDocument.Followers, user.uid)
     }
+
   }
 
   /**
@@ -88,6 +96,7 @@ class AuthenticatedUser(
     firestore.collection(ProfileDocument.Collection).document(this.uid).update {
       arrayUnion(ProfileDocument.SolvedPuzzles, puzzle.uid)
     }
+
   }
 
   /** Signs this user out of the [AuthenticationFacade]. */
