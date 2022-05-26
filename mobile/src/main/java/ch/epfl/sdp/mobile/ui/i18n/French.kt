@@ -20,7 +20,7 @@ object French : LocalizedStrings {
   override val authenticatePerformLogIn = "Se connecter avec l'email".uppercase()
   override val authenticatePerformRegister = "S'inscrire avec l'email".uppercase()
   override val authenticateSwitchToLogIn = "Connecte toi".uppercase()
-  override val authenticateSwitchToRegister = "Inscrive toi".uppercase()
+  override val authenticateSwitchToRegister = "Inscris toi".uppercase()
   override val authenticateErrorFailure = "Un problème est survenu lors de l'authentification"
   override val authenticateBadPasswordFailure =
       "Ton mot de passe doit comporter au moins 6 caractères"
