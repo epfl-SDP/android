@@ -30,6 +30,7 @@ class AuthenticatedUserProfileScreenState(
     private val scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
+    onEditLanguageClickAction: State<() -> Unit>
 ) :
     SettingScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
     ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
@@ -38,6 +39,7 @@ class AuthenticatedUserProfileScreenState(
 
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
+  private val onEditLanguageClickAction by onEditLanguageClickAction
 
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
@@ -45,6 +47,11 @@ class AuthenticatedUserProfileScreenState(
   override fun onEditProfileImageClick() {
     onEditProfileImageClickAction()
   }
+
+  override fun onEditLanguageClick() {
+    onEditLanguageClickAction()
+  }
+
   override fun onLogout() {
     scope.launch { user.signOut() }
   }
@@ -67,6 +74,7 @@ fun StatefulSettingsScreen(
     onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     onEditProfileNameClick: () -> Unit,
     onEditProfileImageClick: () -> Unit,
+    onEditLanguageClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
@@ -80,6 +88,7 @@ fun StatefulSettingsScreen(
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
+  val currentonEditLanguageClick = rememberUpdatedState(onEditLanguageClick)
 
   val state =
       remember(
@@ -96,6 +105,7 @@ fun StatefulSettingsScreen(
             scope,
             currentOnEditProfileNameClick,
             currentOnEditProfileImageClick,
+            currentonEditLanguageClick,
         )
       }
   SettingsScreen(state, modifier, contentPadding)

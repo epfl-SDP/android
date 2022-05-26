@@ -8,6 +8,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -54,13 +55,15 @@ class StatefulProfileScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+      val settings = SettingsFacade(dataStoreFactory)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
       val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            ProvideFacades(
+                authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
               StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {}, {})
             }
           }
@@ -86,6 +89,7 @@ class StatefulProfileScreenTest {
     val socialFacade = SocialFacade(auth, store)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
     val authUser1 = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
@@ -96,7 +100,8 @@ class StatefulProfileScreenTest {
     val strings =
         rule.setContentWithLocalizedStrings {
           PawniesTheme {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+            ProvideFacades(
+                authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
               Navigation()
             }
           }

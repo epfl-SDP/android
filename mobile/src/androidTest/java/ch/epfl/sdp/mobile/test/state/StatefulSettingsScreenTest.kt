@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -58,14 +59,16 @@ class StatefulSettingsScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+      val settings = SettingsFacade(dataStoreFactory)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-              StatefulSettingsScreen(user, {}, {}, {}, {})
+            ProvideFacades(
+                authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+              StatefulSettingsScreen(user, {}, {}, {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -98,11 +101,13 @@ class StatefulSettingsScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulSettingsScreen(user, {}, {}, openProfileEditNameMock, {})
+          ProvideFacades(
+              authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+            StatefulSettingsScreen(user, {}, {}, openProfileEditNameMock, {}, {})
           }
         }
 
@@ -130,7 +135,7 @@ class StatefulSettingsScreenTest {
               onPuzzleClick = {},
               onEditProfileImageClick = {},
               onEditProfileNameClick = {},
-          )
+              onEditLanguageClick = {})
         }
 
     rule.onNodeWithText(env.strings.profilePuzzle).performClick()
@@ -140,7 +145,8 @@ class StatefulSettingsScreenTest {
 
   @Test
   fun given_statefulSettingsScreen_when_logoutButtonClicked_then_disconnectsUser() = runTest {
-    val env = rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}, {}) }
+    val env =
+        rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}, {}, {}) }
     rule.onNodeWithText(env.strings.settingLogout).assertExists().performClick()
     assertThat(env.facades.auth.currentUser.first()).isEqualTo(NotAuthenticatedUser)
   }
