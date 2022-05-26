@@ -41,7 +41,7 @@ class HomeActivity : ComponentActivity() {
 
     setContent {
       PawniesTheme {
-        ProvideLocalizedStrings(settingsFacade = settingsFacade) {
+        ProvideLocalizedStrings {
           ProvideFacades(
               authentication = authenticationFacade,
               social = socialFacade,

@@ -49,6 +49,14 @@ fun EditLanguageDialog(
   }
 }
 
+/**
+ * Component to list the language options
+ *
+ * @param languages the map which consists the languages
+ * @param selectedLanguage the language that is currently selected
+ * @param onItemClick the callback function if lanugage is selected
+ * @param modifier the [Modifier] for this composable.
+ */
 @Composable
 private fun LanguageList(
     languages: Map<Language, String>,

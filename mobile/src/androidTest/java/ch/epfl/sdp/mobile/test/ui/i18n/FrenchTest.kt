@@ -17,27 +17,29 @@ class FrenchTest {
   @Test
   fun given_french2days_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
     assertThat(
-        French.tournamentsStartingTime(2.days, SpanStyle()).equals("Commencé il y a 2 jours"))
+        French.tournamentsStartingTime(2.days, SpanStyle()).equals("Commencé il y a 2 jour(s)"))
   }
 
   @OptIn(ExperimentalTime::class)
   @Test
   fun given_french2hours_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
     assertThat(
-        French.tournamentsStartingTime(2.hours, SpanStyle()).equals("Commencé il y a 2 heures"))
+        French.tournamentsStartingTime(2.hours, SpanStyle()).equals("Commencé il y a 2 heure(s)"))
   }
 
   @OptIn(ExperimentalTime::class)
   @Test
   fun given_french2minutes_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
     assertThat(
-        French.tournamentsStartingTime(2.minutes, SpanStyle()).equals("Commencé il y a 2 minutes"))
+        French.tournamentsStartingTime(2.minutes, SpanStyle())
+            .equals("Commencé il y a 2 minute(s)"))
   }
 
   @OptIn(ExperimentalTime::class)
   @Test
   fun given_french2seconds_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
     assertThat(
-        French.tournamentsStartingTime(2.seconds, SpanStyle()).equals("Commencé il y a 2 seconds"))
+        French.tournamentsStartingTime(2.seconds, SpanStyle())
+            .equals("Commencé il y a 2 second(s)"))
   }
 }

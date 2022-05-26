@@ -85,20 +85,20 @@ object French : LocalizedStrings {
 
   override val profilePastGames = "Jeux passés".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
-  override val profileFollow = "Follow"
+  override val profileFollow = "Suivre"
   override val profileUnfollow = "Unfollow"
   override val profileChallenge = "Challenge"
-  override val profileEditImageIcon = "Icône de modification de l'image du profil"
-  override val profileEditNameIcon = "Icône de modification du nom du profil"
+  override val profileEditImageIcon = "Icône de modification de l'image de profil"
+  override val profileEditNameIcon = "Icône de modification du nom d'utilisateur"
 
   override val socialFollowingTitle = "Following"
   override val socialPerformPlay = "Jouer".uppercase()
-  override val socialPerformFollow = "Follow".uppercase()
-  override val socialPerformUnfollow = "Followed".uppercase()
+  override val socialPerformFollow = "Suivre".uppercase()
+  override val socialPerformUnfollow = "Suivi".uppercase()
   override val socialSearchBarPlaceHolder = "Rechercher un joueur ..."
-  override val socialSearchEmptyTitle = "Recherchez n'importe quel joueur"
+  override val socialSearchEmptyTitle = "Rechercher n'importe quel joueur"
   override val socialSearchEmptySubtitle =
-      "Trouves un joueur en utilisant son nom, suives-le, invites-le à jouer ou consultes l'historique de ses matchs."
+      "Trouves un joueur en utilisant son nom, suis le, invites-le à jouer ou consultes l'historique de ses matchs."
   override val socialSearchClearContentDescription = "Effacer le champ de recherche"
   override val socialCloseVisitedProfile = "Fermer"
 
@@ -107,14 +107,14 @@ object French : LocalizedStrings {
   override val sectionSettings = "Paramètres"
   override val sectionPlay = "Jouer"
   override val sectionPuzzles = "Puzzles"
-  override val sectionContests = "Concours"
+  override val sectionContests = "Tournois"
 
-  override val newGame = "Nouveau jeu".uppercase()
-  override val newContest = "Nouveau concours".uppercase()
+  override val newGame = "Nouveau partie".uppercase()
+  override val newContest = "Nouveau Tournois".uppercase()
 
-  override val prepareGameChooseColor = "Choisissez votre couleur :"
-  override val prepareGameChooseOpponent = "Choisissez un adversaire :"
-  override val prepareGameChooseGame = "Choisissez un adversaire :"
+  override val prepareGameChooseColor = "Choisi votre couleur :"
+  override val prepareGameChooseOpponent = "Choisi un adversaire :"
+  override val prepareGameChooseGame = "Choisi un adversaire :"
   override val prepareGameWhiteColor = "Blanc".uppercase()
   override val prepareGameBlackColor = "Noir".uppercase()
   override val prepareGamePlay = "Jouer !".uppercase()
@@ -124,19 +124,19 @@ object French : LocalizedStrings {
   override val prepareGamePlayLocal = "Local".uppercase()
   override val prepareGamePlayOnline = "En ligne".uppercase()
 
-  override val playOnlineGames = "Jeux en ligne"
+  override val playOnlineGames = "Partie en ligne"
 
   override val puzzlePlayingAs = { color: String -> "Jouer comme $color" }
   override val puzzleUnsolvedPuzzles = "Puzzles non résolus"
   override val puzzleListContentDescription = "Liste de puzzles"
   override val puzzlesTitle = "Puzzles"
-  override val puzzleSolving = { color: String -> "Trouves le meilleur déménagement pour $color" }
+  override val puzzleSolving = { color: String -> "Trouves le meilleur coup pour $color" }
   override val puzzleFailed = "Tu as échoué ! Essayes encore !"
   override val puzzleSolved = "Tu as gagné ! Félicitations !"
   override val puzzleNumber = { id: String -> "Puzzle: #$id" }
   override val puzzleRating = { rating: String -> "Rating: $rating" }
 
-  override val tournamentsBadgeJoin = "Rejoignes"
+  override val tournamentsBadgeJoin = "Rejoindre"
   override val tournamentsBadgeParticipant = "Participant"
   override val tournamentsBadgeAdmin = "Admin"
   override val tournamentsTableScore = "Score"
@@ -146,32 +146,32 @@ object French : LocalizedStrings {
   override val tournamentsDetailsFinals = "Finales".uppercase()
   override val tournamentsDetailsPools = "Pools".uppercase()
   override val tournamentsDetailsWatch = "Regarder".uppercase()
-  override val tournamentsDetailsMatchWon = "Win".uppercase()
-  override val tournamentsDetailsMatchLost = "Perte".uppercase()
-  override val tournamentsDetailsMatchDrawn = "Tirer".uppercase()
+  override val tournamentsDetailsMatchWon = "Gagné".uppercase()
+  override val tournamentsDetailsMatchLost = "Perdu".uppercase()
+  override val tournamentsDetailsMatchDrawn = "Egalité".uppercase()
   override val tournamentsDetailsHeaderOngoing = "En cours".uppercase()
   override val tournamentsDetailsHeaderDone = "Terminé".uppercase()
   override val tournamentsDetailsNextBestOfTitle = { round: Int, total: Int ->
     "Créer un match $round / $total"
   }
   override val tournamentsDetailsNextBestOfSubtitle =
-      "Ajoutes un nouveau match à tous les joueurs de ce tour."
+      "Ajoute un nouveau match à tous les joueurs de ce tour."
   override val tournamentsDetailsNextRoundTitle = "Prochain tour"
   override val tournamentsDetailsNextRoundSubtitle =
       "Faire passer tous les gagnants au tour suivant"
-  override val tournamentsDetailsStartEnoughPlayersTitle = "Commencez le tournoi"
+  override val tournamentsDetailsStartEnoughPlayersTitle = "Commencer le tournoi"
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
-      "Une fois lancé, le tournoi assignera les joueurs et les premiers matchs seront créés."
-  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencez le tournoi"
+      "Une fois lancée, le tournoi assignera les joueurs et les premiers matchs seront créés."
+  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencer le tournoi"
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
       "Si tu commences le tournoi maintenant, il n'y aura pas assez de joueurs pour jouer tous les matchs."
   override val tournamentsDetailsStartDirectEliminationTitle = "Commencer l'élimination directe"
   override val tournamentsDetailsStartDirectEliminationSubtitle =
       "Calculer les résultats de la poule et commencer les matchs d'élimination directe."
   override val tournamentDetailsBackContentDescription = "Retour"
-  override val tournamentDetailsPoolName = { poolNr: Int -> "Pool #${poolNr}" }
+  override val tournamentDetailsPoolName = { poolNr: Int -> "Poule #${poolNr}" }
 
-  override val tournamentsContestsTitle = "Concours"
+  override val tournamentsContestsTitle = "Tournois"
   override val tournamentsFilter = "Filtre"
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
@@ -186,18 +186,18 @@ object French : LocalizedStrings {
   override val tournamentsCreateBestOf = "Best of :"
   override val tournamentsCreatePlayers = "Joueurs"
   override val tournamentsCreateMaximumPlayerHint = "Nombre maximum de joueurs"
-  override val tournamentsCreatePoolSize = "Taille du pool :"
+  override val tournamentsCreatePoolSize = "Taille du poule :"
   override val tournamentsCreateDirectElimination = "Direct elim. :"
   override val tournamentsCreateActionCancel = "Annuler".uppercase()
   override val tournamentsCreateActionCreate = "Créer".uppercase()
 
-  override val tournamentsCreateQualifierSize0 = "Aucun qualificatif"
+  override val tournamentsCreateQualifierSize0 = "Aucun qualification"
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
 
   override val tournamentsFilterTitle = "Afficher seulement".uppercase()
-  override val tournamentsFilterOnlyDone = "Pas fait".uppercase()
+  override val tournamentsFilterOnlyDone = "Pas terminé".uppercase()
   override val tournamentsFilterOnlyParticipating = "Participant".uppercase()
   override val tournamentsFilterOnlyAdministrating = "Administrer".uppercase()
   override val tournamentsFilterBackContentDescription = "Retour"
