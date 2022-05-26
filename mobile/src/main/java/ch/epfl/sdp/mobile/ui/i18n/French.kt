@@ -16,7 +16,7 @@ object French : LocalizedStrings {
   override val authenticateEmailHint = "Ton email"
   override val authenticateNameHint = "Ton nom complet"
   override val authenticatePasswordHint = "Mot de passe"
-  override val authenticatePasswordToggleVisibility = "Toggle la visibilité du mot de passe"
+  override val authenticatePasswordToggleVisibility = "Inverser la visibilité du mot de passe"
   override val authenticatePerformLogIn = "Se connecter avec l'email".uppercase()
   override val authenticatePerformRegister = "S'inscrire avec l'email".uppercase()
   override val authenticateSwitchToLogIn = "Connecte toi".uppercase()
