@@ -22,7 +22,16 @@ data class ProfileDocument(
     val backgroundColor: String? = null,
     val followers: List<String>? = null,
     val solvedPuzzles: List<String>? = null,
-)
+) {
+  companion object {
+
+    /** The name of the collection. */
+    const val Collection = "users"
+
+    /** The name field of this document. */
+    const val Name = "name"
+  }
+}
 
 /**
  * Transforms a given unique identifier to a [Profile].
@@ -72,7 +81,43 @@ data class ChessDocument(
     val tournamentId: String? = null,
     val poolId: String? = null,
     val roundDepth: Int? = null,
-)
+) {
+  companion object {
+
+    /** The name of the collection. */
+    const val Collection = "games"
+
+    /** The blackId colorField. */
+    const val BlackId = "blackId"
+
+    /** The whiteId colorField. */
+    const val WhiteId = "whiteId"
+
+    /** The metadata field of this document. */
+    const val Metadata = "metadata"
+
+    /** The status field of this document. */
+    const val Status = "status"
+
+    /** The blackName field of this document. */
+    const val BlackName = "blackName"
+
+    /** The whiteName field of this document. */
+    const val WhiteName = "whiteName"
+
+    /** The moves field of this document. */
+    const val Moves = "moves"
+
+    /** The tournamentId field of this document. */
+    const val TournamentId = "tournamentId"
+
+    /** The poolId field of this document. */
+    const val PoolId = "poolId"
+
+    /** The lastUpdatedAt field of this document. */
+    const val LastUpdatedAt = "lastUpdatedAt"
+  }
+}
 
 /**
  * Additional information to a ChessDocument. This can speed up some queries.
@@ -132,6 +177,9 @@ data class TournamentDocument(
 
     /** Indicates that the [TournamentDocument.stage] is pools. */
     const val StagePools = "pools"
+
+    /** The creationTimeEpochMillis field of this document. */
+    const val CreationTimeEpochMillis = "creationTimeEpochMillis"
 
     /**
      * Indicates the depth of the last created elimination round.

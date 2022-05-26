@@ -43,7 +43,7 @@ class SocialFacadeTest {
   fun search_successfullySearch() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
-      collection("users") { document("uid", ProfileDocument(name = "test")) }
+      collection(ProfileDocument.Collection) { document("uid", ProfileDocument(name = "test")) }
     }
     val facade = SocialFacade(auth, store)
 
@@ -55,7 +55,7 @@ class SocialFacadeTest {
   fun search_matchesAllWithPrefix() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument(name = "alice"))
         document("2", ProfileDocument(name = "alexandre"))
         document("3", ProfileDocument(name = "bob"))
@@ -71,7 +71,9 @@ class SocialFacadeTest {
   fun search_matchesNameWithOnlyMaxChars() = runTest {
     val name = CharArray(10) { Char.MAX_VALUE }.concatToString() // what a weird name
     val auth = emptyAuth()
-    val store = buildStore { collection("users") { document("1", ProfileDocument(name = name)) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("1", ProfileDocument(name = name)) }
+    }
     val facade = SocialFacade(auth, store)
 
     val profile = facade.search(name).first()[0]
@@ -82,7 +84,7 @@ class SocialFacadeTest {
   fun search_limitsResults() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         // Insert more profiles than MaxSearchResultCount.
         repeat(SocialFacade.MaxSearchResultCount.toInt() + 1) {
           document(it.toString(), ProfileDocument(name = "alexandre"))

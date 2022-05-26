@@ -81,7 +81,11 @@ class StoreDocumentTournament(
           val pools =
               chosenPlayers.chunked(poolSize).map { ids ->
                 ids.map { uid ->
-                  uid to (get<ProfileDocument>(store.collection("users").document(uid))?.name ?: "")
+                  uid to
+                      (get<ProfileDocument>(
+                              store.collection(ProfileDocument.Collection).document(uid))
+                          ?.name
+                          ?: "")
                 }
               }
           val minOpponentsPerPool = pools.lastOrNull()?.size ?: 0
@@ -115,7 +119,7 @@ class StoreDocumentTournament(
     runCatching {
       val results =
           store
-              .collection("games")
+              .collection(ChessDocument.Collection)
               .whereEquals("tournamentId", reference.uid)
               .whereNotEquals("poolId", null)
               .get<ChessDocument>()
@@ -129,7 +133,7 @@ class StoreDocumentTournament(
       val round = document.stage?.toIntOrNull() ?: 1
       val results =
           store
-              .collection("games")
+              .collection(ChessDocument.Collection)
               .whereEquals("tournamentId", reference.uid)
               .whereEquals("roundDepth", round)
               .get<ChessDocument>()
@@ -169,7 +173,7 @@ class StoreDocumentTournament(
       for (match in matches) {
         repeat(bestOf) { index ->
           val (first, second) = if (index % 2 == 0) match[0] to match[1] else match[1] to match[0]
-          val matchRef = store.collection("games").document()
+          val matchRef = store.collection(ChessDocument.Collection).document()
           val matchDocument =
               ChessDocument(
                   whiteId = first,

@@ -47,7 +47,9 @@ class AuthenticatedUser(
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
-      firestore.collection("users").document(user.uid).update { UpdateScope(this).also(block) }
+      firestore.collection(ProfileDocument.Collection).document(user.uid).update {
+        UpdateScope(this).also(block)
+      }
       true
     } catch (exception: Throwable) {
       false
@@ -60,7 +62,7 @@ class AuthenticatedUser(
    * @param followed the [Profile] to follow.
    */
   suspend fun follow(followed: Profile) {
-    firestore.collection("users").document(followed.uid).update {
+    firestore.collection(ProfileDocument.Collection).document(followed.uid).update {
       arrayUnion("followers", user.uid)
     }
   }
@@ -72,7 +74,7 @@ class AuthenticatedUser(
    * @param unfollowed the [Profile] to unfollow.
    */
   suspend fun unfollow(unfollowed: Profile) {
-    firestore.collection("users").document(unfollowed.uid).update {
+    firestore.collection(ProfileDocument.Collection).document(unfollowed.uid).update {
       arrayRemove("followers", user.uid)
     }
   }
@@ -83,7 +85,7 @@ class AuthenticatedUser(
    * @param puzzle the [Puzzle] to mark as solved.
    */
   suspend fun solvePuzzle(puzzle: Puzzle) {
-    firestore.collection("users").document(this.uid).update {
+    firestore.collection(ProfileDocument.Collection).document(this.uid).update {
       arrayUnion("solvedPuzzles", puzzle.uid)
     }
   }
@@ -99,7 +101,7 @@ class AuthenticatedUser(
    */
   val following: Flow<List<Profile>> =
       firestore
-          .collection("users")
+          .collection(ProfileDocument.Collection)
           .whereArrayContains("followers", user.uid)
           .orderBy("name")
           .asFlow<ProfileDocument>()
