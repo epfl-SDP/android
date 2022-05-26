@@ -136,15 +136,15 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
       )
   setContent {
     PawniesTheme {
-      ProvideLocalizedStrings(settingsFacade = settingsFacade) {
-        ProvideFacades(
-            authentication = authenticationFacade,
-            social = socialFacade,
-            chess = chessFacade,
-            speech = speechFacade,
-            tournament = tournamentFacade,
-            settings = settingsFacade,
-            content = { with(environment) { content() } })
+      ProvideFacades(
+          authentication = authenticationFacade,
+          social = socialFacade,
+          chess = chessFacade,
+          speech = speechFacade,
+          tournament = tournamentFacade,
+          settings = settingsFacade,
+      ) {
+        ProvideLocalizedStrings(settingsFacade = settingsFacade) { with(environment) { content() } }
       }
     }
   }
