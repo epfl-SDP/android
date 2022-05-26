@@ -51,6 +51,7 @@ class AuthenticatedUserProfileScreenState(
   override fun onEditLanguageClick() {
     onEditLanguageClickAction()
   }
+
   override fun onLogout() {
     scope.launch { user.signOut() }
   }
