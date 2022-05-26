@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
+import ch.epfl.sdp.mobile.state.Navigation
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -466,6 +467,67 @@ class StatefulHomeTest {
     withCanceledIntents {
       rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()
     }
+  }
+
+  @Test
+  fun given_visitedProfileScreen_when_cancelButtonClicked_then_socialScreenIsDisplayed() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") {
+        document("1", ProfileDocument("1", name = "A"))
+        document("2", ProfileDocument("2", name = "B"))
+      }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val env = rule.setContentWithTestEnvironment(auth = auth, store = store) { StatefulHome(user) }
+
+    val user = env.facades.auth.currentUser.filterIsInstance<AuthenticatedUser>().first()
+    val follower = env.facades.social.profile("2").first()!!
+    user.follow(follower)
+
+    rule.onNodeWithText("B").assertExists().performClick()
+    rule.onNodeWithContentDescription(env.strings.socialCloseVisitedProfile)
+        .assertExists()
+        .performClick()
+    rule.onNodeWithText(env.strings.socialFollowingTitle).assertExists()
+  }
+  @Test
+  fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val env = rule.setContentWithTestEnvironment(auth = auth, store = store) { Navigation() }
+
+    rule.onNodeWithText(env.strings.sectionSettings).performClick()
+    rule.onNodeWithContentDescription(env.strings.profileEditNameIcon).performClick()
+    rule.onNode(hasText("test") and hasSetTextAction()).performTextReplacement("test2")
+    rule.onNodeWithText(env.strings.settingEditSave).performClick()
+    rule.onNodeWithText("test2").assertIsDisplayed()
+  }
+
+  @Test
+  fun given_userIsLoggedIn_when_editProfileName_then_cancelWithoutSave() = runTest {
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
+    }
+
+    val authFacade = AuthenticationFacade(auth, store)
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val env = rule.setContentWithTestEnvironment(auth = auth, store = store) { Navigation() }
+
+    rule.onNodeWithText(env.strings.sectionSettings).performClick()
+    rule.onNodeWithContentDescription(env.strings.profileEditNameIcon).performClick()
+    rule.onNodeWithText(env.strings.settingEditCancel).performClick()
+    rule.onNodeWithText("test").assertIsDisplayed()
   }
 
   @Test
