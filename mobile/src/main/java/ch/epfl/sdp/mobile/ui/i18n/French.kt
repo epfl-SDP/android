@@ -77,7 +77,7 @@ object French : LocalizedStrings {
 
   override val settingEditSave = "Sauvegarder".uppercase()
   override val settingEditCancel = "Annuler".uppercase()
-  override val settingProfileNameLabel = "Nom du profil"
+  override val settingProfileNameLabel = "Nom d'utilisateur"
   override val settingProfileImageLabel = "Image de profil"
   override val settingLogout: String = "Déconnexion"
   override val settingLanguageLabel = "Langue"
