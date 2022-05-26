@@ -2,10 +2,12 @@ package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -18,20 +20,33 @@ class SpeechFacadeTest {
   @Test
   fun given_suspendingRecognizer_when_recognizesThenCancels_then_terminatesWithoutException() =
       runTest(UnconfinedTestDispatcher()) {
-        val facade = SpeechFacade(SuspendingSpeechRecognizerFactory)
+        val facade =
+            SpeechFacade(
+                SuspendingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
         val job = launch { facade.recognize() }
         job.cancelAndJoin()
       }
 
   @Test
   fun given_failingRecognizer_when_recognizes_then_returnsErrorInternal() = runTest {
-    val facade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val facade =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     assertThat(facade.recognize()).isEqualTo(Failure.Internal)
   }
 
   @Test
   fun given_successfulRecognizer_when_recognizes_then_returnsResults() = runTest {
-    val facade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val facade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     assertThat(facade.recognize()).isEqualTo(Success(SuccessfulSpeechRecognizer.Results))
+  }
+
+  @Test
+  fun given_fakeTextToSpeech_when_synthesizing_then_nothing_happens() = runTest {
+    val facade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+    assertThat(facade.synthesize("Pawnies")).isEqualTo(Unit)
   }
 }

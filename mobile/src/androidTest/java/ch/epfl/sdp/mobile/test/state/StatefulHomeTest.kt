@@ -26,11 +26,13 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -102,7 +104,8 @@ class StatefulHomeTest {
     val facade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     facade.signInWithEmail("email@example.org", "password")
@@ -146,7 +149,8 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
@@ -181,7 +185,8 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
@@ -217,7 +222,8 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
@@ -254,7 +260,8 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
@@ -310,7 +317,8 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -353,7 +361,9 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -397,7 +407,9 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -444,7 +456,8 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speech =
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -554,7 +567,9 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -591,7 +606,9 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")
@@ -632,7 +649,9 @@ class StatefulHomeTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signInWithEmail("email@example.org", "password")

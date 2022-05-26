@@ -22,6 +22,8 @@ class GameScreenTest {
       MovableChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
 
     override var currentError: SpeechRecognizerError = None
+    override val textToSpeechEnabled = false
+    override fun onTextToSpeechToggle() {}
 
     override val moves: List<Move>
       get() =
@@ -81,5 +83,14 @@ class GameScreenTest {
 
     rule.onNodeWithContentDescription(strings.gameMicOffContentDescription).performClick()
     rule.onNodeWithContentDescription(strings.gameMicOnContentDescription).assertExists()
+  }
+  @Test
+  fun given_disabled_volume_button_when_clicked_then_enabled() {
+    val strings =
+        rule.setContentWithLocalizedStrings { GameScreen(rememberSnapshotGameScreenState()) }
+    rule.onNodeWithContentDescription(strings.gameTTsOffContentDescription)
+        .assertExists()
+        .performClick()
+    rule.onNodeWithContentDescription(strings.gameTTsOnContentDescription).assertExists()
   }
 }
