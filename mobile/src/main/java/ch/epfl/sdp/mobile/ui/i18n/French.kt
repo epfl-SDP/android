@@ -114,7 +114,7 @@ object French : LocalizedStrings {
 
   override val prepareGameChooseColor = "Choisi votre couleur :"
   override val prepareGameChooseOpponent = "Choisi un adversaire :"
-  override val prepareGameChooseGame = "Choisi un adversaire :"
+  override val prepareGameChooseGame = "Choisis un adversaire :"
   override val prepareGameWhiteColor = "Blanc".uppercase()
   override val prepareGameBlackColor = "Noir".uppercase()
   override val prepareGamePlay = "Jouer !".uppercase()
