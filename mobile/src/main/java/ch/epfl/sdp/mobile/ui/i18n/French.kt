@@ -191,7 +191,7 @@ object French : LocalizedStrings {
   override val tournamentsCreateActionCancel = "Annuler".uppercase()
   override val tournamentsCreateActionCreate = "Créer".uppercase()
 
-  override val tournamentsCreateQualifierSize0 = "Aucun qualification"
+  override val tournamentsCreateQualifierSize0 = "Aucune qualification"
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
