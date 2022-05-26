@@ -162,7 +162,7 @@ object French : LocalizedStrings {
   override val tournamentsDetailsStartEnoughPlayersTitle = "Commencer le tournoi"
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
       "Une fois lancée, le tournoi assignera les joueurs et les premiers matchs seront créés."
-  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencer le tournoi"
+  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencer le tournoi."
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
       "Si tu commences le tournoi maintenant, il n'y aura pas assez de joueurs pour jouer tous les matchs."
   override val tournamentsDetailsStartDirectEliminationTitle = "Commencer l'élimination directe."
