@@ -83,7 +83,7 @@ object French : LocalizedStrings {
   override val settingLanguageLabel = "Langue"
   override val settingsEditLanguage = "Changer langue"
 
-  override val profilePastGames = "Jeux passés".uppercase()
+  override val profilePastGames = "Anciennes parties".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileFollow = "Follow"
   override val profileUnfollow = "Unfollow"
