@@ -72,10 +72,6 @@ class StatefulContestScreenTest {
         }
       }
       val authFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()

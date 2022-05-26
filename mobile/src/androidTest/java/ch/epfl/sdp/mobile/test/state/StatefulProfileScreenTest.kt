@@ -62,7 +62,8 @@ class StatefulProfileScreenTest {
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+            ProvideFacades(
+                authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
               StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {}, {})
             }
           }
