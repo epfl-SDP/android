@@ -73,7 +73,7 @@ object French : LocalizedStrings {
   override val profileTieInfo = { moves: Int -> "Egalité après $moves coups" }
   override val profileAgainst = "Contre " // TODO: handle right-to-left languages
   override val profileYourTurn = "A toi de jouer !"
-  override val profileOthersTurn = "C'est son tour de jouer."
+  override val profileOthersTurn = "C'est au tour de l'adversaire de jouer."
 
   override val settingEditSave = "Sauvegarder".uppercase()
   override val settingEditCancel = "Annuler".uppercase()
