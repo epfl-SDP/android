@@ -74,7 +74,7 @@ private fun anchorOrMoveBoard(
     anchor: Anchor
 ) {
 
-  // FIXME : Workaround see line 55
+  // FIXME : Workaround see line 117
 
   // Add only one instance of the node
   /*if (!arSceneView.children.contains(boardNode)) {
