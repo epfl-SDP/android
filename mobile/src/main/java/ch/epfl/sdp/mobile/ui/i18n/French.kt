@@ -12,15 +12,15 @@ import kotlin.time.Duration.Companion.minutes
 object French : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
   override val authenticateSubtitleRegister = "Rejoignez la communauté Pawnies.".uppercase()
-  override val authenticateSubtitleLogIn = "Bienvenue à nouveau sur Pawnies.".uppercase()
+  override val authenticateSubtitleLogIn = "Bon retour sur Pawnies.".uppercase()
   override val authenticateEmailHint = "Ton email"
   override val authenticateNameHint = "Ton nom complet"
   override val authenticatePasswordHint = "Mot de passe"
-  override val authenticatePasswordToggleVisibility = "Toggle la visibilité du mot de passe"
+  override val authenticatePasswordToggleVisibility = "Inverser la visibilité du mot de passe"
   override val authenticatePerformLogIn = "Se connecter avec l'email".uppercase()
   override val authenticatePerformRegister = "S'inscrire avec l'email".uppercase()
   override val authenticateSwitchToLogIn = "Connecte toi".uppercase()
-  override val authenticateSwitchToRegister = "Inscrive toi".uppercase()
+  override val authenticateSwitchToRegister = "Inscris toi".uppercase()
   override val authenticateErrorFailure = "Un problème est survenu lors de l'authentification"
   override val authenticateBadPasswordFailure =
       "Ton mot de passe doit comporter au moins 6 caractères"
@@ -98,7 +98,7 @@ object French : LocalizedStrings {
   override val socialSearchBarPlaceHolder = "Rechercher un joueur ..."
   override val socialSearchEmptyTitle = "Rechercher n'importe quel joueur"
   override val socialSearchEmptySubtitle =
-      "Trouves un joueur en utilisant son nom, suis le, invites-le à jouer ou consultes l'historique de ses matchs."
+      "Trouve un joueur en utilisant son nom, suis le, invite-le à jouer ou consulte l'historique de ses matchs."
   override val socialSearchClearContentDescription = "Effacer le champ de recherche"
   override val socialCloseVisitedProfile = "Fermer"
 
@@ -112,9 +112,9 @@ object French : LocalizedStrings {
   override val newGame = "Nouveau partie".uppercase()
   override val newContest = "Nouveau Tournois".uppercase()
 
-  override val prepareGameChooseColor = "Choisi votre couleur :"
-  override val prepareGameChooseOpponent = "Choisi un adversaire :"
-  override val prepareGameChooseGame = "Choisi un adversaire :"
+  override val prepareGameChooseColor = "Choisis votre couleur :"
+  override val prepareGameChooseOpponent = "Choisis un adversaire :"
+  override val prepareGameChooseGame = "Choisis un adversaire :"
   override val prepareGameWhiteColor = "Blanc".uppercase()
   override val prepareGameBlackColor = "Noir".uppercase()
   override val prepareGamePlay = "Jouer !".uppercase()
@@ -144,7 +144,7 @@ object French : LocalizedStrings {
   override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
   override val tournamentsPoolStartNextRound = "Commencer le prochain tour".uppercase()
   override val tournamentsDetailsFinals = "Finales".uppercase()
-  override val tournamentsDetailsPools = "Pools".uppercase()
+  override val tournamentsDetailsPools = "Poules".uppercase()
   override val tournamentsDetailsWatch = "Regarder".uppercase()
   override val tournamentsDetailsMatchWon = "Gagné".uppercase()
   override val tournamentsDetailsMatchLost = "Perdu".uppercase()
@@ -159,13 +159,13 @@ object French : LocalizedStrings {
   override val tournamentsDetailsNextRoundTitle = "Prochain tour"
   override val tournamentsDetailsNextRoundSubtitle =
       "Faire passer tous les gagnants au tour suivant"
-  override val tournamentsDetailsStartEnoughPlayersTitle = "Commencer le tournoi"
+  override val tournamentsDetailsStartEnoughPlayersTitle = "Commencer le tournoi."
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
       "Une fois lancée, le tournoi assignera les joueurs et les premiers matchs seront créés."
-  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencer le tournoi"
+  override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencer le tournoi."
   override val tournamentsDetailsStartNotEnoughPlayersSubtitle =
       "Si tu commences le tournoi maintenant, il n'y aura pas assez de joueurs pour jouer tous les matchs."
-  override val tournamentsDetailsStartDirectEliminationTitle = "Commencer l'élimination directe"
+  override val tournamentsDetailsStartDirectEliminationTitle = "Commencer l'élimination directe."
   override val tournamentsDetailsStartDirectEliminationSubtitle =
       "Calculer les résultats de la poule et commencer les matchs d'élimination directe."
   override val tournamentDetailsBackContentDescription = "Retour"
