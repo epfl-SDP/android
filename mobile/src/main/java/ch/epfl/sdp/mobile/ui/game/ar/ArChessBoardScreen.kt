@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
+import android.content.Context
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -12,6 +13,8 @@ import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.arcore.LightEstimationMode
+import io.github.sceneview.ar.node.ArModelNode
+import kotlinx.coroutines.CoroutineScope
 
 private const val BoardScale = 0.2f
 
@@ -45,25 +48,11 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
             ArSceneView(context).apply { lightEstimationMode = LightEstimationMode.SPECTACULAR }
 
         chessScene =
-            ChessScene(context, view.lifecycleScope, state.pieces).apply {
-
-              // Scale the board
-              this.scale(BoardScale)
-
-              // Place the chess board on the tapped position.
-              arSceneView.onTouchAr =
-                  { hitResult, _ ->
-                    anchorOrMoveBoard(/*arSceneView,*/ chessScene, hitResult.createAnchor())
-                  }
-
-              /**
-               * FIXME : Workaround : A strange bug make the animation fail when we add the child
-               * via a function. To solve this quickly, we add the board when is loaded and set it
-               * to invisible. We reset the visibility when the user tap on the screen
-               */
-              arSceneView.addChild(this.boardNode)
-              this.boardNode.isVisible = false
-            }
+            createChessScene(
+                context = context,
+                arSceneView = arSceneView,
+                startingBoard = state.pieces,
+                lifecycleScope = view.lifecycleScope)
 
         arSceneView
       },
@@ -76,27 +65,60 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
  * and change the displayed position
  *
  * @param arSceneView The view where the scene will be displayed
- * @param chessScene The scene that contains the boards node
+ * @param boardNode The node that will be added into the view
  * @param anchor The (new) board's anchor position
  */
-private fun <Piece : ChessBoardState.Piece> anchorOrMoveBoard(
+private fun anchorOrMoveBoard(
     // arSceneView: ArSceneView,
-    chessScene: ChessScene<Piece>?,
+    boardNode: ArModelNode,
     anchor: Anchor
 ) {
 
-  val currentChessScene = chessScene ?: return
+  // FIXME : Workaround see line 55
 
-  currentChessScene.let {
-    // FIXME : Workaround see line 55
+  // Add only one instance of the node
+  /*if (!arSceneView.children.contains(boardNode)) {
+    arSceneView.addChild(boardNode)
+  }*/
 
-    // Add only one instance of the node
-    /*if (!arSceneView.children.contains(it.boardNode)) {
-      arSceneView.addChild(it.boardNode)
-    }*/
+  if (!boardNode.isVisible) boardNode.isVisible = true
 
-    if (!it.boardNode.isVisible) it.boardNode.isVisible = true
+  boardNode.anchor = anchor
+}
 
-    it.boardNode.anchor = anchor
+/**
+ * Create an instance of [ChessScene] and setup the onTouch callback
+ *
+ * @param context The context of the view
+ * @param arSceneView the linked [ArSceneView] where the piece will be display
+ * @param startingBoard the board configuration of the beginning
+ * @param lifecycleScope the lifecycle of the view
+ *
+ * @return An instance of [ChessScene]
+ */
+private fun <Piece : ChessBoardState.Piece> createChessScene(
+    context: Context,
+    arSceneView: ArSceneView,
+    startingBoard: Map<ChessBoardState.Position, Piece>,
+    lifecycleScope: CoroutineScope
+): ChessScene<Piece> {
+  return ChessScene(context, lifecycleScope, startingBoard).apply {
+
+    // Scale the board
+    this.scale(BoardScale)
+
+    // Place the chess board on the tapped position.
+    arSceneView.onTouchAr =
+        { hitResult, _ ->
+          anchorOrMoveBoard(/*arSceneView,*/ this.boardNode, hitResult.createAnchor())
+        }
+
+    /**
+     * FIXME : Workaround : A strange bug make the animation fail when we add the child via a
+     * function. To solve this quickly, we add the board when is loaded and set it to invisible. We
+     * reset the visibility when the user tap on the screen
+     */
+    arSceneView.addChild(this.boardNode)
+    this.boardNode.isVisible = false
   }
 }
