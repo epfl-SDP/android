@@ -48,7 +48,7 @@ object French : LocalizedStrings {
   override val boardContentDescription = "échiquier"
 
   override val gameBack = "Retour"
-  override val gameShowAr = "Lancer le mode AR"
+  override val gameShowAr = "Activer le mode AR"
   override val gameMicOffContentDescription = "Microphone désactivé"
   override val gameMicOnContentDescription = "Microphone activé"
   override val gameListening = "Écoute"
