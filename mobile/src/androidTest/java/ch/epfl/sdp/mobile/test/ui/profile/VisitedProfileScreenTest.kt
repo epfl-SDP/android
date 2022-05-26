@@ -31,13 +31,14 @@ class VisitedProfileScreenTest {
     override val pastGamesCount = 10
     override val solvedPuzzlesCount = 0
     override fun onChallengeClick() = Unit
-    override fun onFollowClick() = Unit
     override val follows: Boolean = false
     override val backgroundColor = Color.Default.toColor()
     override val name = "Example"
     override val emoji = "🎁"
     override val followed = false
     override fun onMatchClick(match: ChessMatch) = Unit
+    override fun onFollowClick() = Unit
+    override fun onBack() = Unit
     override fun onPuzzleClick(puzzle: PuzzleInfo) = Unit
   }
 
@@ -114,5 +115,12 @@ class VisitedProfileScreenTest {
     testMatchResult(rule, ChessMatchAdapter("1", "John", Win(FORFEIT), 10)) {
       profileWonByForfeit(10)
     }
+  }
+
+  @Test
+  fun given_socialScreen_when_userProfileVisited_then_backButtonExists() {
+    val strings =
+        rule.setContentWithLocalizedStrings { ProfileScreen(state = FakeProfileScreenState) }
+    rule.onNodeWithContentDescription(strings.socialCloseVisitedProfile).assertExists()
   }
 }

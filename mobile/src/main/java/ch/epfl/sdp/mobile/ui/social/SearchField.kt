@@ -69,7 +69,7 @@ fun SearchField(
               },
           ) {
             Icon(
-                imageVector = PawniesIcons.GameClose,
+                imageVector = PawniesIcons.Close,
                 contentDescription = strings.socialSearchClearContentDescription,
             )
           }

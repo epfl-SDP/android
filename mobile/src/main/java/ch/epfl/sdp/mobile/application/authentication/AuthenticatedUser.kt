@@ -11,10 +11,17 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/** Indicates that an [AuthenticatedUser] is currently authenticated. */
+/**
+ * Indicates that an [AuthenticatedUser] is currently authenticated.
+ *
+ * @param auth the used [Auth] for authentication queries.
+ * @param store the used [Store].
+ * @param user the current [User].
+ * @param document the user's [ProfileDocument].
+ */
 class AuthenticatedUser(
     private val auth: Auth,
-    private val firestore: Store,
+    private val store: Store,
     private val user: User,
     document: ProfileDocument?,
 ) : AuthenticationUser, Profile by document.toProfile(user.uid) {
@@ -47,7 +54,7 @@ class AuthenticatedUser(
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
-      firestore.collection("users").document(user.uid).update { UpdateScope(this).also(block) }
+      store.collection("users").document(user.uid).update { UpdateScope(this).also(block) }
       true
     } catch (exception: Throwable) {
       false
@@ -60,9 +67,7 @@ class AuthenticatedUser(
    * @param followed the [Profile] to follow.
    */
   suspend fun follow(followed: Profile) {
-    firestore.collection("users").document(followed.uid).update {
-      arrayUnion("followers", user.uid)
-    }
+    store.collection("users").document(followed.uid).update { arrayUnion("followers", user.uid) }
   }
 
   /**
@@ -72,9 +77,7 @@ class AuthenticatedUser(
    * @param unfollowed the [Profile] to unfollow.
    */
   suspend fun unfollow(unfollowed: Profile) {
-    firestore.collection("users").document(unfollowed.uid).update {
-      arrayRemove("followers", user.uid)
-    }
+    store.collection("users").document(unfollowed.uid).update { arrayRemove("followers", user.uid) }
   }
 
   /**
@@ -83,9 +86,7 @@ class AuthenticatedUser(
    * @param puzzle the [Puzzle] to mark as solved.
    */
   suspend fun solvePuzzle(puzzle: Puzzle) {
-    firestore.collection("users").document(this.uid).update {
-      arrayUnion("solvedPuzzles", puzzle.uid)
-    }
+    store.collection("users").document(this.uid).update { arrayUnion("solvedPuzzles", puzzle.uid) }
   }
 
   /** Signs this user out of the [AuthenticationFacade]. */
@@ -98,7 +99,7 @@ class AuthenticatedUser(
    * all users' list of followers.
    */
   val following: Flow<List<Profile>> =
-      firestore
+      store
           .collection("users")
           .whereArrayContains("followers", user.uid)
           .orderBy("name")

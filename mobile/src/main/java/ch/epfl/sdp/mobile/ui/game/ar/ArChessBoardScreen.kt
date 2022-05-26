@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.arcore.LightEstimationMode
 
 private const val BoardScale = 0.2f
 
@@ -40,7 +41,8 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
       factory = { context ->
 
         // Create the view
-        val arSceneView = ArSceneView(context)
+        val arSceneView =
+            ArSceneView(context).apply { lightEstimationMode = LightEstimationMode.SPECTACULAR }
 
         chessScene =
             ChessScene(context, view.lifecycleScope, state.pieces).apply {

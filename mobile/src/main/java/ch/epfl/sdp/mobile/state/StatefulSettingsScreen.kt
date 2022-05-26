@@ -79,7 +79,7 @@ fun StatefulSettingsScreen(
 ) {
   val actions =
       rememberUpdatedState(
-          ProfileActions(
+          SettingsActions(
               onMatchClick = onMatchClick,
               onPuzzleClick = onPuzzleClick,
           ))
@@ -108,3 +108,9 @@ fun StatefulSettingsScreen(
       }
   SettingsScreen(state, modifier, contentPadding)
 }
+
+/** Class of available callback actions in the settings screen */
+data class SettingsActions(
+    override val onMatchClick: (ChessMatchAdapter) -> Unit,
+    override val onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
+) : ProfileActions

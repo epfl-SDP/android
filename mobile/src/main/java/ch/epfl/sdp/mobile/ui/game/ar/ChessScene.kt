@@ -14,6 +14,8 @@ import com.google.ar.sceneform.rendering.RenderableInstance
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.material.setBaseColor
+import io.github.sceneview.material.setMetallicFactor
+import io.github.sceneview.material.setRoughnessFactor
 import io.github.sceneview.math.Position as ArPosition
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.GLBLoader
@@ -126,11 +128,19 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     val arPosition = toArPosition(position, boundingBox)
     with(ModelNode(position = arPosition)) {
       val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
+
+      val mat = renderable.material.filamentMaterialInstance
+
       // Rotate the black pieces to face the right direction.
       if (piece.color == Black) {
         modelRotation = Rotation(0f, 180f, 0f)
       }
-      renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
+
+      // Set material parameters
+      mat.setBaseColor(piece.color.colorVector)
+      mat.setMetallicFactor(0f)
+      mat.setRoughnessFactor(0.1f)
+
       boardNode.addChild(this)
       currentPieces[piece] = this
     }

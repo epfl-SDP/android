@@ -12,7 +12,9 @@ import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
-import ch.epfl.sdp.mobile.state.*
+import ch.epfl.sdp.mobile.state.Navigation
+import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.state.StatefulVisitedProfileScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -60,9 +62,8 @@ class StatefulProfileScreenTest {
 
       val strings =
           rule.setContentWithLocalizedStrings {
-            ProvideFacades(
-                authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-              StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {})
+            ProvideFacades(authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+              StatefulVisitedProfileScreen(authUser1, "1", {}, {}, {}, {})
             }
           }
       rule.onNodeWithText(strings.profileMatchTitle("B")).assertExists()
@@ -123,7 +124,8 @@ class StatefulProfileScreenTest {
               uid = "userId2",
               onMatchClick = {},
               onChallengeClick = {},
-              onPuzzleClick = {})
+              onPuzzleClick = {},
+              onBack = {})
         }
 
     rule.onNodeWithText("user2").performClick()
@@ -147,7 +149,12 @@ class StatefulProfileScreenTest {
     val env =
         rule.setContentWithTestEnvironment(userId = id, store = store, assets = assets) {
           StatefulVisitedProfileScreen(
-              user = user, uid = id, onMatchClick = {}, onChallengeClick = {}, onPuzzleClick = {})
+              user = user,
+              uid = id,
+              onMatchClick = {},
+              onChallengeClick = {},
+              onPuzzleClick = {},
+              onBack = {})
         }
 
     rule.onNodeWithText(env.strings.profilePuzzle).performClick()
