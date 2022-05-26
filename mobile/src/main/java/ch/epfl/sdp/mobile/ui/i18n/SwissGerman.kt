@@ -93,6 +93,7 @@ object SwissGerman : LocalizedStrings {
   override val socialSearchEmptySubtitle =
       "Find irgend en Spieler mit sim Name, folg ihn, odr lad ihn i um sini altä Spiu azluege"
   override val socialSearchClearContentDescription = "Suech fäld löschä"
+  override val socialCloseVisitedProfile = "Schlüüse"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Spieler"

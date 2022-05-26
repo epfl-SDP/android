@@ -100,6 +100,7 @@ object French : LocalizedStrings {
   override val socialSearchEmptySubtitle =
       "Trouves un joueur en utilisant son nom, suives-le, invites-le à jouer ou consultes l'historique de ses matchs."
   override val socialSearchClearContentDescription = "Effacer le champ de recherche"
+  override val socialCloseVisitedProfile = "Fermer"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Joueurs"
