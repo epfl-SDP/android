@@ -13,7 +13,7 @@ class StatefulEditLanguageDialogTest {
   @get:Rule val rule = createComposeRule()
 
   @Test
-  fun given_userIsLoggedIn_when_changeLanguageToGerman_then_SettingShouldBeInGerman() = runTest {
+  fun given_userIsLoggedIn_when_changeLanguageToGerman_then_SettingShouldBeChanged() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { Navigation() }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
@@ -25,6 +25,14 @@ class StatefulEditLanguageDialogTest {
     rule.onNodeWithText(Language.SwissGerman.toReadableString()).performClick()
     rule.onNodeWithText(German.settingEditSave).performClick()
     rule.onNodeWithText(SwissGerman.settingsEditLanguage).assertIsDisplayed()
+    rule.onNodeWithText(SwissGerman.settingsEditLanguage).performClick()
+    rule.onNodeWithText(Language.French.toReadableString()).performClick()
+    rule.onNodeWithText(SwissGerman.settingEditSave).performClick()
+    rule.onNodeWithText(French.settingsEditLanguage).assertIsDisplayed()
+    rule.onNodeWithText(French.settingsEditLanguage).performClick()
+    rule.onNodeWithText(Language.English.toReadableString()).performClick()
+    rule.onNodeWithText(French.settingEditSave).performClick()
+    rule.onNodeWithText(English.settingsEditLanguage).assertIsDisplayed()
   }
 
   @Test
