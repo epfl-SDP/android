@@ -25,7 +25,7 @@ object French : LocalizedStrings {
   override val authenticateBadPasswordFailure =
       "Ton mot de passe doit comporter au moins 6 caractères"
   override val authenticateWrongEmailFormatFailure =
-      "Ton courriel doit être de la forme : person@domain"
+      "Ton email doit être de la forme : person@domain"
   override val authenticateInvalidUserFailure =
       "Il n'y a pas d'utilisateur enregistré avec cet email"
   override val authenticateIncorrectPasswordFailure =
