@@ -311,7 +311,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWithNoQualifiers_when_startingTournament_then_FinalsCreated() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
@@ -349,7 +349,7 @@ class StatefulTournamentDetailsScreenTest {
   @Test
   fun given_tournament_when_stageFinals_then_MarkedAsDone() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
