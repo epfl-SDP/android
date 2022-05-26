@@ -21,6 +21,7 @@ private const val BoardScale = 0.2f
 /**
  * Composable used to display a AR chess board
  *
+ * @param Piece the type of the pieces which are present in a board.
  * @param state The state of the game, it's used to track the modification on the game
  * @param modifier modifier the [Modifier] for this composable.
  */
@@ -89,6 +90,7 @@ private fun anchorOrMoveBoard(
 /**
  * Create an instance of [ChessScene] and setup the onTouch callback
  *
+ * @param Piece the type of the pieces which are present in a board.
  * @param context The context of the view
  * @param arSceneView the linked [ArSceneView] where the piece will be display
  * @param startingBoard the board configuration of the beginning
