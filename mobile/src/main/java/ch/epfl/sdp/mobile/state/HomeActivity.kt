@@ -38,7 +38,7 @@ class HomeActivity : ComponentActivity() {
     val speechFacade =
         SpeechFacade(
             speechFactory = AndroidSpeechRecognizerFactory(this),
-            ttsFactory = AndroidTextToSpeechFactory(this),
+            textToSpeechFactory = AndroidTextToSpeechFactory(this),
             dataStoreFactory = dataStoreFactory,
         )
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)

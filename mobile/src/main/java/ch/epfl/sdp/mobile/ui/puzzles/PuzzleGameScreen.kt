@@ -62,7 +62,7 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
             onArClick = {},
             onListenClick = state::onListenClick,
             listening = state.listening,
-            muted = !state.textToSpeechEnabled,
+            enabledTextToSpeech = !state.textToSpeechEnabled,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },
