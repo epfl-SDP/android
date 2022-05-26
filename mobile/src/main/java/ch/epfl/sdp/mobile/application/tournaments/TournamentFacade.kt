@@ -136,9 +136,9 @@ class TournamentFacade(
   private fun tournamentPredicate(): Flow<(Tournament) -> Boolean> =
       filters().map { filters ->
         { t: Tournament ->
-          // TODO : Use showDone when tournament statuses work.
           (!filters.showParticipating || t.isParticipant) &&
-              (!filters.showAdministrating || t.isAdmin)
+              (!filters.showAdministrating || t.isAdmin) &&
+              (!filters.showDone || !t.isDone())
         }
       }
 

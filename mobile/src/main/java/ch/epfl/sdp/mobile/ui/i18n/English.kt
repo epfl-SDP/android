@@ -190,7 +190,7 @@ object English : LocalizedStrings {
   override val tournamentsCreateElimDepthFinal = "Final"
 
   override val tournamentsFilterTitle = "Show only".uppercase()
-  override val tournamentsFilterOnlyDone = "Not done".uppercase()
+  override val tournamentsFilterOnlyDone = "Ongoing".uppercase()
   override val tournamentsFilterOnlyParticipating = "Participating".uppercase()
   override val tournamentsFilterOnlyAdministrating = "Administrating".uppercase()
   override val tournamentsFilterBackContentDescription = "Back"

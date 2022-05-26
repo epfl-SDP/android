@@ -67,10 +67,8 @@ interface Tournament {
   /**
    * Starts this tournament. If the user isn't the admin or the tournament was already started, this
    * will result in a no-op.
-   *
-   * @return a boolean value indicating if starting the tournament was a success.
    */
-  suspend fun start(): Boolean
+  suspend fun start()
 
   /** Starts the direct elimination phase of the [Tournament]. */
   suspend fun startDirectElimination()
@@ -94,3 +92,20 @@ fun TournamentDocument.toTournament(
     store: Store,
     timeProvider: TimeProvider
 ): Tournament = StoreDocumentTournament(this, user, store, timeProvider)
+
+/**
+ * Indicates whether a [Tournament] is done or not. A [Tournament] is considered done once it is in
+ * the finals round.
+ *
+ * @return true if the [Tournament] is done, false otherwise.
+ */
+fun Tournament.isDone(): Boolean {
+  return when (val s = status) {
+    is Tournament.Status.DirectElimination -> {
+      s.rounds.any { it.depth == 1 }
+    }
+    is Tournament.Status.NotStarted -> false
+    Tournament.Status.Pools -> false
+    Tournament.Status.Unknown -> false
+  }
+}
