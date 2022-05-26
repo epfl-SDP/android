@@ -87,7 +87,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -117,7 +119,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -153,7 +157,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -190,7 +196,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -222,7 +230,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -263,7 +273,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -303,7 +315,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)
@@ -342,7 +356,9 @@ class StatefulPrepareGameScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
     val facade = AuthenticationFacade(auth, store)

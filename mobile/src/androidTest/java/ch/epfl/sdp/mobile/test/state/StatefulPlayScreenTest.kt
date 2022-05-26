@@ -38,11 +38,11 @@ class StatefulPlayScreenTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
@@ -78,11 +78,11 @@ class StatefulPlayScreenTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             /* Funfact: Fool's Mate, Fastest checkmate possible https://www.chess.com/article/view/fastest-chess-checkmates */
             "id",
@@ -124,11 +124,11 @@ class StatefulPlayScreenTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id",
             ChessDocument(
@@ -168,8 +168,8 @@ class StatefulPlayScreenTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("1", ProfileDocument("1")) }
-      collection("games") {
+      collection(ProfileDocument.Collection) { document("1", ProfileDocument("1")) }
+      collection(ChessDocument.Collection) {
         document("id", ChessDocument(uid = null, whiteId = null, blackId = "1"))
       }
     }
@@ -203,8 +203,8 @@ class StatefulPlayScreenTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("1", ProfileDocument("1")) }
-      collection("games") {
+      collection(ProfileDocument.Collection) { document("1", ProfileDocument("1")) }
+      collection(ChessDocument.Collection) {
         document("id", ChessDocument(uid = null, whiteId = "1", blackId = null))
       }
     }
@@ -299,7 +299,9 @@ class StatefulPlayScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
 
@@ -340,7 +342,9 @@ class StatefulPlayScreenTest {
     val auth = emptyAuth()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val assets = emptyAssets()
 

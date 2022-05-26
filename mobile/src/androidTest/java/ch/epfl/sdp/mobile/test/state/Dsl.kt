@@ -98,7 +98,9 @@ data class TestEnvironment(
 suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
     userId: String = DefaultId,
     store: Store = buildStore {
-      collection("users") { document(userId, ProfileDocument(uid = userId, name = DefaultName)) }
+      collection(ProfileDocument.Collection) {
+        document(userId, ProfileDocument(uid = userId, name = DefaultName))
+      }
     },
     auth: Auth = buildAuth { user(DefaultEmail, DefaultPassword, userId) },
     assets: AssetManager = emptyAssets(),

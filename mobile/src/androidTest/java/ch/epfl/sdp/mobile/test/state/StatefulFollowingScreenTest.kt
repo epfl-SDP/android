@@ -79,14 +79,18 @@ class StatefulFollowingScreenTest {
       val (_, infra, strings, user) =
           rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
 
-      infra.store.collection("users").document("other").set(ProfileDocument(name = name))
+      infra
+          .store
+          .collection(ProfileDocument.Collection)
+          .document("other")
+          .set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
       val profile =
           infra
               .store
-              .collection("users")
+              .collection(ProfileDocument.Collection)
               .document("other")
               .asFlow<ProfileDocument>()
               .filterNotNull()
@@ -102,7 +106,11 @@ class StatefulFollowingScreenTest {
       val (_, infra, strings) =
           rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
 
-      infra.store.collection("users").document().set(ProfileDocument(name = name))
+      infra
+          .store
+          .collection(ProfileDocument.Collection)
+          .document()
+          .set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
@@ -148,7 +156,11 @@ class StatefulFollowingScreenTest {
           StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
-    infra.store.collection("users").document().set(ProfileDocument(name = "Alexandre"))
+    infra
+        .store
+        .collection(ProfileDocument.Collection)
+        .document()
+        .set(ProfileDocument(name = "Alexandre"))
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
     rule.onNodeWithText("Alexandre").assertIsDisplayed()
