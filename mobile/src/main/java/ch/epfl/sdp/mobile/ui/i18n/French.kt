@@ -211,7 +211,7 @@ private fun Duration.toFrenchString(): String {
   if (this >= 1.days) {
     return "${this.inWholeDays} jours"
   } else if (this >= 1.hours) {
-    return "${this.inWholeHours} heures"
+    return "${this.inWholeHours} heure(s)"
   } else if (this >= 1.minutes) {
     return "${this.inWholeMinutes} minute(s)"
   }
