@@ -159,7 +159,7 @@ object French : LocalizedStrings {
   override val tournamentsDetailsNextRoundTitle = "Prochain tour"
   override val tournamentsDetailsNextRoundSubtitle =
       "Faire passer tous les gagnants au tour suivant"
-  override val tournamentsDetailsStartEnoughPlayersTitle = "Commencer le tournoi"
+  override val tournamentsDetailsStartEnoughPlayersTitle = "Commencer le tournoi."
   override val tournamentsDetailsStartEnoughPlayersSubtitle =
       "Une fois lancée, le tournoi assignera les joueurs et les premiers matchs seront créés."
   override val tournamentsDetailsStartNotEnoughPlayersTitle = "Commencer le tournoi."
