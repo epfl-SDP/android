@@ -13,19 +13,19 @@ object French : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
   override val authenticateSubtitleRegister = "Rejoignez la communauté Pawnies.".uppercase()
   override val authenticateSubtitleLogIn = "Bienvenue à nouveau sur Pawnies.".uppercase()
-  override val authenticateEmailHint = "Ton e-mail"
+  override val authenticateEmailHint = "Ton email"
   override val authenticateNameHint = "Ton nom complet"
   override val authenticatePasswordHint = "Mot de passe"
   override val authenticatePasswordToggleVisibility = "Toggle la visibilité du mot de passe"
   override val authenticatePerformLogIn = "Se connecter avec l'email".uppercase()
   override val authenticatePerformRegister = "S'inscrire avec l'email".uppercase()
-  override val authenticateSwitchToLogIn = "Connectez-toi".uppercase()
-  override val authenticateSwitchToRegister = "Inscrivez-toi".uppercase()
+  override val authenticateSwitchToLogIn = "Connecte toi".uppercase()
+  override val authenticateSwitchToRegister = "Inscrive toi".uppercase()
   override val authenticateErrorFailure = "Un problème est survenu lors de l'authentification"
   override val authenticateBadPasswordFailure =
       "Ton mot de passe doit comporter au moins 6 caractères"
   override val authenticateWrongEmailFormatFailure =
-      "Ton courriel doit être de la forme : person@domain"
+      "Ton email doit être de la forme : person@domain"
   override val authenticateInvalidUserFailure =
       "Il n'y a pas d'utilisateur enregistré avec cet email"
   override val authenticateIncorrectPasswordFailure =
@@ -48,7 +48,7 @@ object French : LocalizedStrings {
   override val boardContentDescription = "échiquier"
 
   override val gameBack = "Retour"
-  override val gameShowAr = "Lancer le mode AR"
+  override val gameShowAr = "Activer le mode AR"
   override val gameMicOffContentDescription = "Microphone désactivé"
   override val gameMicOnContentDescription = "Microphone activé"
   override val gameListening = "Écoute"
@@ -72,21 +72,21 @@ object French : LocalizedStrings {
   override val profileLostByForfeit = { moves: Int -> "Perdu par forfait après $moves coups" }
   override val profileTieInfo = { moves: Int -> "Egalité après $moves coups" }
   override val profileAgainst = "Contre " // TODO: handle right-to-left languages
-  override val profileYourTurn = "A vous de jouer !"
-  override val profileOthersTurn = "C'est son tour de jouer."
+  override val profileYourTurn = "A toi de jouer !"
+  override val profileOthersTurn = "C'est au tour de l'adversaire de jouer."
 
   override val settingEditSave = "Sauvegarder".uppercase()
   override val settingEditCancel = "Annuler".uppercase()
-  override val settingProfileNameLabel = "Nom du profil"
+  override val settingProfileNameLabel = "Nom d'utilisateur"
   override val settingProfileImageLabel = "Image de profil"
   override val settingLogout: String = "Déconnexion"
   override val settingLanguageLabel = "Langue"
   override val settingsEditLanguage = "Changer langue"
 
-  override val profilePastGames = "Jeux passés".uppercase()
+  override val profilePastGames = "Anciennes parties".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
   override val profileFollow = "Suivre"
-  override val profileUnfollow = "Unfollow"
+  override val profileUnfollow = "Se désabonner"
   override val profileChallenge = "Challenge"
   override val profileEditImageIcon = "Icône de modification de l'image de profil"
   override val profileEditNameIcon = "Icône de modification du nom d'utilisateur"
@@ -199,7 +199,7 @@ object French : LocalizedStrings {
   override val tournamentsFilterTitle = "Afficher seulement".uppercase()
   override val tournamentsFilterOnlyDone = "Pas terminé".uppercase()
   override val tournamentsFilterOnlyParticipating = "Participant".uppercase()
-  override val tournamentsFilterOnlyAdministrating = "Administrer".uppercase()
+  override val tournamentsFilterOnlyAdministrating = "Administrateur".uppercase()
   override val tournamentsFilterBackContentDescription = "Retour"
 }
 
@@ -209,12 +209,12 @@ object French : LocalizedStrings {
  */
 private fun Duration.toFrenchString(): String {
   if (this >= 1.days) {
-    return "${this.inWholeDays} jours"
+    return "${this.inWholeDays} jour(s)"
   } else if (this >= 1.hours) {
-    return "${this.inWholeHours} heures"
+    return "${this.inWholeHours} heure(s)"
   } else if (this >= 1.minutes) {
-    return "${this.inWholeMinutes} minutes"
+    return "${this.inWholeMinutes} minute(s)"
   }
 
-  return "${this.inWholeSeconds} seconds"
+  return "${this.inWholeSeconds} seconde(s)"
 }
