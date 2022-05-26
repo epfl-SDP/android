@@ -30,6 +30,18 @@ data class ProfileDocument(
 
     /** The name field of this document. */
     const val Name = "name"
+
+    /** The emoji field of this document. */
+    const val Emoji = "emoji"
+
+    /** The backgroundColor field of this document. */
+    const val BackgroundColor = "backgroundColor"
+
+    /** The followers field of this document. */
+    const val Followers = "followers"
+
+    /** The solvedPuzzles field of this document. */
+    const val SolvedPuzzles = "solvedPuzzles"
   }
 }
 
@@ -87,11 +99,17 @@ data class ChessDocument(
     /** The name of the collection. */
     const val Collection = "games"
 
-    /** The blackId colorField. */
-    const val BlackId = "blackId"
+    /** The moves field of this document. */
+    const val Moves = "moves"
 
     /** The whiteId colorField. */
     const val WhiteId = "whiteId"
+
+    /** The blackId colorField. */
+    const val BlackId = "blackId"
+
+    /** The lastUpdatedAt field of this document. */
+    const val LastUpdatedAt = "lastUpdatedAt"
 
     /** The metadata field of this document. */
     const val Metadata = "metadata"
@@ -105,17 +123,14 @@ data class ChessDocument(
     /** The whiteName field of this document. */
     const val WhiteName = "whiteName"
 
-    /** The moves field of this document. */
-    const val Moves = "moves"
-
     /** The tournamentId field of this document. */
     const val TournamentId = "tournamentId"
 
     /** The poolId field of this document. */
     const val PoolId = "poolId"
 
-    /** The lastUpdatedAt field of this document. */
-    const val LastUpdatedAt = "lastUpdatedAt"
+    /** The roundDepth field of this document. */
+    const val RoundDepth = "roundDepth"
   }
 }
 
@@ -172,6 +187,9 @@ data class TournamentDocument(
     /** The name of the collection. */
     const val Collection = "tournaments"
 
+    /** The field with the tournament name. */
+    const val Name = "name"
+
     /** The field with the tournament participants. */
     const val Participants = "playerIds"
 
@@ -221,8 +239,10 @@ data class PoolDocument(
     /** The name of the collection. */
     const val Collection = "pools"
 
+    /** The tournamentId field of this document. */
     const val TournamentId = "tournamentId"
 
+    /** The name field of this document. */
     const val Name = "name"
   }
 }

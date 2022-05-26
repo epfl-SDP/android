@@ -42,7 +42,7 @@ class StatefulPlayScreenTest {
         document("1", ProfileDocument("1"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
@@ -82,7 +82,7 @@ class StatefulPlayScreenTest {
         document("1", ProfileDocument("1"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             /* Funfact: Fool's Mate, Fastest checkmate possible https://www.chess.com/article/view/fastest-chess-checkmates */
             "id",
@@ -128,7 +128,7 @@ class StatefulPlayScreenTest {
         document("1", ProfileDocument("1"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id",
             ChessDocument(
@@ -169,7 +169,7 @@ class StatefulPlayScreenTest {
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection(ProfileDocument.Collection) { document("1", ProfileDocument("1")) }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document("id", ChessDocument(uid = null, whiteId = null, blackId = "1"))
       }
     }
@@ -204,7 +204,7 @@ class StatefulPlayScreenTest {
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
       collection(ProfileDocument.Collection) { document("1", ProfileDocument("1")) }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document("id", ChessDocument(uid = null, whiteId = "1", blackId = null))
       }
     }

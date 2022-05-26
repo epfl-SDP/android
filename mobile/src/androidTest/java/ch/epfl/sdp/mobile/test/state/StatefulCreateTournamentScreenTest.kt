@@ -74,7 +74,7 @@ class StatefulCreateTournamentScreenTest {
         infra
             .store
             .collection(TournamentDocument.Collection)
-            .whereEquals("name", "Test name")
+            .whereEquals(TournamentDocument.Name, "Test name")
             .asFlow<TournamentDocument>()
             .first()
             .firstOrNull()

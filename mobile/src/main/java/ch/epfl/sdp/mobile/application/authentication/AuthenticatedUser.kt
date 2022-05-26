@@ -30,13 +30,13 @@ class AuthenticatedUser(
   class UpdateScope(private val scope: DocumentEditScope) {
 
     /** Updates the profile emoji with [emoji]. */
-    fun emoji(emoji: String): Unit = scope.set("emoji", emoji)
+    fun emoji(emoji: String): Unit = scope.set(ProfileDocument.Emoji, emoji)
 
     /** Updates the profile color with [color]. */
-    fun backgroundColor(color: Color?) = scope.set("backgroundColor", color?.hex)
+    fun backgroundColor(color: Color?) = scope.set(ProfileDocument.BackgroundColor, color?.hex)
 
     /** Updates the profile name with [name]. */
-    fun name(name: String) = scope.set("name", name)
+    fun name(name: String) = scope.set(ProfileDocument.Name, name)
   }
 
   /**
@@ -63,7 +63,7 @@ class AuthenticatedUser(
    */
   suspend fun follow(followed: Profile) {
     firestore.collection(ProfileDocument.Collection).document(followed.uid).update {
-      arrayUnion("followers", user.uid)
+      arrayUnion(ProfileDocument.Followers, user.uid)
     }
   }
 
@@ -75,7 +75,7 @@ class AuthenticatedUser(
    */
   suspend fun unfollow(unfollowed: Profile) {
     firestore.collection(ProfileDocument.Collection).document(unfollowed.uid).update {
-      arrayRemove("followers", user.uid)
+      arrayRemove(ProfileDocument.Followers, user.uid)
     }
   }
 
@@ -86,7 +86,7 @@ class AuthenticatedUser(
    */
   suspend fun solvePuzzle(puzzle: Puzzle) {
     firestore.collection(ProfileDocument.Collection).document(this.uid).update {
-      arrayUnion("solvedPuzzles", puzzle.uid)
+      arrayUnion(ProfileDocument.SolvedPuzzles, puzzle.uid)
     }
   }
 
@@ -102,8 +102,8 @@ class AuthenticatedUser(
   val following: Flow<List<Profile>> =
       firestore
           .collection(ProfileDocument.Collection)
-          .whereArrayContains("followers", user.uid)
-          .orderBy("name")
+          .whereArrayContains(ProfileDocument.Followers, user.uid)
+          .orderBy(ProfileDocument.Name)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(this) } }
 }

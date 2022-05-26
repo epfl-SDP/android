@@ -42,11 +42,11 @@ class StatefulSettingsScreenTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
-        collection("users") {
+        collection(ProfileDocument.Collection) {
           document("1", ProfileDocument("1", name = "A"))
           document("2", ProfileDocument("2", name = "B"))
         }
-        collection("games") {
+        collection(ChessDocument.Collection) {
           document(
               "id",
               ChessDocument(uid = "45", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
@@ -117,7 +117,7 @@ class StatefulSettingsScreenTest {
     val id = "1"
     val (assets, puzzleIds) = twoPuzzleAssets()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document(id, ProfileDocument(id, solvedPuzzles = listOf(puzzleIds[1])))
       }
     }

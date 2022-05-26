@@ -100,7 +100,9 @@ class SocialFacadeTest {
   @Test
   fun follow_addUidOfFollowedProfile() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "password1") }
-    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("other", ProfileDocument()) }
+    }
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@hotmail.com", "name", "password")
@@ -113,7 +115,9 @@ class SocialFacadeTest {
   @Test
   fun follow_removeUidOfFollowedProfile() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "password1") }
-    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("other", ProfileDocument()) }
+    }
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@hotmail.com", "name", "password")
@@ -127,7 +131,9 @@ class SocialFacadeTest {
   @Test
   fun follow_unfollowProfileNotInFollowersDoesNothing() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "password1") }
-    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("other", ProfileDocument()) }
+    }
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
@@ -140,7 +146,9 @@ class SocialFacadeTest {
   @Test
   fun following_newUserHasNoFollowings() = runTest {
     val auth = buildAuth { user("a@hotmail.com", "password1") }
-    val store = buildStore { collection("users") { document("other", ProfileDocument()) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("other", ProfileDocument()) }
+    }
     val authenticationFacade = AuthenticationFacade(auth, store)
 
     authenticationFacade.signUpWithEmail("example@epfl.ch", "name", "password")
@@ -153,7 +161,7 @@ class SocialFacadeTest {
   fun get_successfully_userIsInDatabse() = runTest {
     val auth = emptyAuth()
     val store = buildStore {
-      collection("users") { document("uid", ProfileDocument(name = "test")) }
+      collection(ProfileDocument.Collection) { document("uid", ProfileDocument(name = "test")) }
     }
     val facade = SocialFacade(auth, store)
 

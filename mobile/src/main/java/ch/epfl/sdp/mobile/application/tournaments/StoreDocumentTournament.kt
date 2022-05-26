@@ -120,8 +120,8 @@ class StoreDocumentTournament(
       val results =
           store
               .collection(ChessDocument.Collection)
-              .whereEquals("tournamentId", reference.uid)
-              .whereNotEquals("poolId", null)
+              .whereEquals(ChessDocument.TournamentId, reference.uid)
+              .whereNotEquals(ChessDocument.PoolId, null)
               .get<ChessDocument>()
               .toPoolResults()
       createMatchesForRankedPlayers(results) { it.eliminationRounds }
@@ -134,8 +134,8 @@ class StoreDocumentTournament(
       val results =
           store
               .collection(ChessDocument.Collection)
-              .whereEquals("tournamentId", reference.uid)
-              .whereEquals("roundDepth", round)
+              .whereEquals(ChessDocument.TournamentId, reference.uid)
+              .whereEquals(ChessDocument.RoundDepth, round)
               .get<ChessDocument>()
               .toPoolResults()
       createMatchesForRankedPlayers(results) { (round - 1).takeIf { it >= 1 } }

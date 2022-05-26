@@ -94,7 +94,7 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument())
         document("2", ProfileDocument(emoji = ":)", name = "testName", followers = listOf("1")))
       }
@@ -142,7 +142,9 @@ class StatefulHomeTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -177,7 +179,9 @@ class StatefulHomeTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -213,7 +217,9 @@ class StatefulHomeTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -250,7 +256,9 @@ class StatefulHomeTest {
     val assets = emptyAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId2", ProfileDocument(name = "user2")) }
+      collection(ProfileDocument.Collection) {
+        document("userId2", ProfileDocument(name = "user2"))
+      }
     }
     val authFacade = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
@@ -297,11 +305,11 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", name = "test2"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
@@ -340,11 +348,11 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", name = "Player 1"))
         document("2", ProfileDocument("2", name = "Player 2"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
@@ -384,11 +392,11 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", name = "Player 1"))
         document("2", ProfileDocument("2", name = "Player 2"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
@@ -431,11 +439,11 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", name = "test2"))
         document("2", ProfileDocument("2", name = "test"))
       }
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "id", ChessDocument(uid = "786", whiteId = "1", blackId = "2", moves = listOf("e2-e4")))
       }
@@ -473,7 +481,7 @@ class StatefulHomeTest {
   fun given_visitedProfileScreen_when_cancelButtonClicked_then_socialScreenIsDisplayed() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", name = "A"))
         document("2", ProfileDocument("2", name = "B"))
       }
@@ -498,7 +506,9 @@ class StatefulHomeTest {
   fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("users") { document("1", ProfileDocument(name = "test", emoji = ":)")) }
+      collection(ProfileDocument.Collection) {
+        document("1", ProfileDocument(name = "test", emoji = ":)"))
+      }
     }
     val authFacade = AuthenticationFacade(auth, store)
     authFacade.signInWithEmail("email@example.org", "password")
@@ -516,7 +526,9 @@ class StatefulHomeTest {
   fun given_userIsLoggedIn_when_editProfileName_then_cancelWithoutSave() = runTest {
     val auth = buildAuth { user("email@example.org", "password", "1") }
     val store = buildStore {
-      collection("users") { document("1", ProfileDocument("1", name = "test", emoji = ":)")) }
+      collection(ProfileDocument.Collection) {
+        document("1", ProfileDocument("1", name = "test", emoji = ":)"))
+      }
     }
 
     val authFacade = AuthenticationFacade(auth, store)
@@ -646,7 +658,9 @@ class StatefulHomeTest {
     val auth = buildAuth { user("email@example.org", "password", id) }
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document(id, ProfileDocument(solvedPuzzles = listOf("00008"))) }
+      collection(ProfileDocument.Collection) {
+        document(id, ProfileDocument(solvedPuzzles = listOf("00008")))
+      }
     }
 
     val (assets, puzzleIds) = onePuzzleAssets()
@@ -684,7 +698,7 @@ class StatefulHomeTest {
     val (assets, puzzleIds) = onePuzzleAssets()
     val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document(
             id,
             ProfileDocument(
