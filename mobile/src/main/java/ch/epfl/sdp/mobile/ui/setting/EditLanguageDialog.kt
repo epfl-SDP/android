@@ -40,7 +40,7 @@ fun EditLanguageDialog(
         confirmContent = { Text(text = strings.settingEditSave) },
         onCancelClick = state::onCancelClick,
         onConfirmClick = state::onSaveClick) {
-      Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(strings.settingLanguageLabel, style = MaterialTheme.typography.subtitle1)
 
         LanguageList(Languages, state.selectedLanguage, { state.selectedLanguage = it }, Modifier)
