@@ -98,4 +98,4 @@ private fun Pair<FacadeUser, ProfileDocument?>.toAuthenticatedUser(
     auth: Auth,
     store: Store,
 ): AuthenticatedUser =
-    AuthenticatedUser(auth = auth, firestore = store, user = first, document = second)
+    AuthenticatedUser(auth = auth, store = store, user = first, document = second)
