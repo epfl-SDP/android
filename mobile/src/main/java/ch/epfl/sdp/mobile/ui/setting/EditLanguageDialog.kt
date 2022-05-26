@@ -62,7 +62,7 @@ private fun LanguageList(
     languages: Map<Language, String>,
     selectedLanguage: Language,
     onItemClick: (Language) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier,
 ) {
   Column(
       verticalArrangement = Arrangement.Top,
