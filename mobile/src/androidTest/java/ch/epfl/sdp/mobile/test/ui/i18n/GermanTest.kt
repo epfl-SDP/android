@@ -33,4 +33,12 @@ class GermanTest {
         German.tournamentsStartingTime(2.minutes, SpanStyle())
             .equals("Ist vor 2 Minuten gestartet"))
   }
+
+  @OptIn(ExperimentalTime::class)
+  @Test
+  fun given_german2seconds_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
+    assertThat(
+        German.tournamentsStartingTime(2.minutes, SpanStyle())
+            .equals("Ist vor 2 Sekunden gestartet"))
+  }
 }

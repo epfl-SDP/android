@@ -6,6 +6,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -31,5 +32,12 @@ class FrenchTest {
   fun given_french2minutes_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
     assertThat(
         French.tournamentsStartingTime(2.minutes, SpanStyle()).equals("Commencé il y a 2 minutes"))
+  }
+
+  @OptIn(ExperimentalTime::class)
+  @Test
+  fun given_french2seconds_when_exuctingWith2Days_then_shouldReturnCorrectString() = runTest {
+    assertThat(
+        French.tournamentsStartingTime(2.seconds, SpanStyle()).equals("Commencé il y a 2 seconds"))
   }
 }
