@@ -209,7 +209,7 @@ object French : LocalizedStrings {
  */
 private fun Duration.toFrenchString(): String {
   if (this >= 1.days) {
-    return "${this.inWholeDays} jours"
+    return "${this.inWholeDays} jour(s)"
   } else if (this >= 1.hours) {
     return "${this.inWholeHours} heure(s)"
   } else if (this >= 1.minutes) {
