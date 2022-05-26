@@ -28,4 +28,10 @@ In the future I need to remember that my tasks are not finished once their work 
 
 ## Alexandre Piveteau (Scrum Master)
 
+My tasks for this sprint consisted of some refactoring of the tournaments, displaying the list of solved puzzles in the user profile, as well UI improvements to be like in the Figma prototype. Finally, I needed to work with Alexandre to create a promo video for the app.
+
+I managed to get everything except the video done during the first week, and could focus on the video during the second week.
+
+Overall, the sprint went really well and I had no problem for my tasks.
+
 ## Mohamed Badr Taddist
