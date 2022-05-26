@@ -180,13 +180,57 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       val position = piecesToPositions[piece] ?: continue
       val node = currentPieces[piece] ?: continue
       val arPosition = toArPosition(position, boundingBox)
-      node.position = arPosition
+      move(node, arPosition)
     }
 
     // Insert missing pieces.
     for (piece in inserted) {
       val position = piecesToPositions[piece] ?: continue
       addPiece(position, boundingBox, pieceRenderable, piece)
+    }
+  }
+
+  /**
+   * A custom method that performs smooth displacement of objects following a list of points.
+   *
+   * @param node The model to move
+   * @param position the final position
+   * @param height the max height of the animation
+   * @param speed of the smooth animation
+   */
+  private fun move(node: ModelNode, position: ArPosition, height: Float = 2f, speed: Float = 10f) {
+
+    // If the position is the same, don't move
+    if (node.position == position) return
+
+    // List of points
+    val pathIt =
+        listOf(
+                ArPosition(node.position.x, height, node.position.z),
+                ArPosition(position.x, height, position.z),
+                position)
+            .iterator()
+
+    var targetPosition = pathIt.next()
+
+    /**
+     * Update the target position and start to move the next position
+     *
+     * @param newPosition the new target position
+     */
+    fun changeTarget(newPosition: ArPosition) {
+      targetPosition = newPosition
+      node.smooth(targetPosition)
+    }
+
+    // start to move to the 1st position
+    node.smooth(targetPosition, speed = speed)
+
+    // Add a callback
+    node.onFrame.add { _, _ ->
+      if (node.position == targetPosition && pathIt.hasNext()) {
+        changeTarget(pathIt.next())
+      }
     }
   }
 

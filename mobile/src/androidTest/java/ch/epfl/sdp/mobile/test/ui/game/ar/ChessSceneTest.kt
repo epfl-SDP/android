@@ -60,7 +60,8 @@ class ChessSceneTest {
 
       val iterator = simpleBoard.entries.iterator()
       val oldMovePiece = iterator.next()
-      val newMovePiece = oldMovePiece.apply { (Position(4, 4) to value) }.toPair()
+      val newPosition = Position(oldMovePiece.key.x + 1, oldMovePiece.key.y)
+      val newMovePiece = Pair(newPosition, oldMovePiece.value)
 
       val newPiece = (Position(4, 5) to Piece(EnginePiece(White, Rank.Pawn, PieceIdentifier(40))))
       val newBoard = mapOf(newMovePiece, newPiece)
