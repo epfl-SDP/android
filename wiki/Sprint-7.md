@@ -8,6 +8,12 @@ This sprint consisted of two completely different weeks. The tasks I had in the 
 
 ## Matthieu Burguburu
 
+My tasks for this sprint consisted of some refactoring of the tournaments, displaying the list of solved puzzles in the user profile, as well UI improvements to be like in the Figma prototype. Finally, I needed to work with Alexandre to create a promo video for the app.
+
+I managed to get everything except the video done during the first week, and could focus on the video during the second week.
+
+Overall, the sprint went really well and I had no problem for my tasks.
+
 ## Chau Ying Kot
 
 This sprint, I work on the UI of the app. One small task on the 2D chessboard and the rest on the AR chessboard. To implement the AR part, a refactoring was required, it was on reviewing at the end of the 1st week. But the process was a bit long and unfortunately the remaining task was to depend on it.
@@ -28,10 +34,6 @@ In the future I need to remember that my tasks are not finished once their work 
 
 ## Alexandre Piveteau (Scrum Master)
 
-My tasks for this sprint consisted of some refactoring of the tournaments, displaying the list of solved puzzles in the user profile, as well UI improvements to be like in the Figma prototype. Finally, I needed to work with Alexandre to create a promo video for the app.
-
-I managed to get everything except the video done during the first week, and could focus on the video during the second week.
-
-Overall, the sprint went really well and I had no problem for my tasks.
-
 ## Mohamed Badr Taddist
+
+This sprint went well. I managed to merge the previous PRs that I was not able to. I got unlucky with my back button PR, since I had to resolve merge conflicts 4 times which led to extra time before it got merged. Nonetheless, I had some good time implementing the text to speech feature, plus I received help and guidance from Alexandre that got me going with my task.
