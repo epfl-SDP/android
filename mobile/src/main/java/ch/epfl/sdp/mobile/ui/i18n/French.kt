@@ -13,7 +13,7 @@ object French : LocalizedStrings {
   override val authenticateTitle = "Pawnies"
   override val authenticateSubtitleRegister = "Rejoignez la communauté Pawnies.".uppercase()
   override val authenticateSubtitleLogIn = "Bienvenue à nouveau sur Pawnies.".uppercase()
-  override val authenticateEmailHint = "Ton e-mail"
+  override val authenticateEmailHint = "Ton email"
   override val authenticateNameHint = "Ton nom complet"
   override val authenticatePasswordHint = "Mot de passe"
   override val authenticatePasswordToggleVisibility = "Toggle la visibilité du mot de passe"
