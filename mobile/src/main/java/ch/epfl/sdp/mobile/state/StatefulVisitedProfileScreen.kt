@@ -12,7 +12,6 @@ import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.profile.VisitedProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -22,16 +21,14 @@ import kotlinx.coroutines.launch
  *
  * @param currentUser current logged in user
  * @param user the given [Profile].
- * @param actions the [ProfileActions] which are available on the screen.
- * @param onChallengeClickAction callback if challenge button clicked
+ * @param actions the [VisitedProfileActions] which are available on the screen.
  * @param chessFacade the [ChessFacade] used to perform some requests.
  * @param scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
     private val currentUser: AuthenticatedUser,
     private val user: Profile,
-    actions: State<ProfileActions>,
-    onChallengeClickAction: State<(String) -> Unit>,
+    actions: State<VisitedProfileActions>,
     chessFacade: ChessFacade,
     private val scope: CoroutineScope,
 ) :
@@ -39,8 +36,7 @@ class FetchedUserProfileScreenState(
     ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
         user, actions, chessFacade, scope) {
 
-  val onChallengeClickAction by onChallengeClickAction
-
+  private val actions by actions
   override var follows by mutableStateOf(false)
 
   init {
@@ -52,7 +48,7 @@ class FetchedUserProfileScreenState(
   }
 
   override fun onChallengeClick() {
-    onChallengeClickAction(user.uid)
+    actions.onChallengeClickAction(user.uid)
   }
 
   override fun onFollowClick() {
@@ -64,15 +60,20 @@ class FetchedUserProfileScreenState(
       }
     }
   }
+  override fun onBack() {
+    actions.onBack()
+  }
 }
 
 /**
  * A stateful composable to visit the profile page of other players
  *
+ * @param user the currently authenticated user.
  * @param uid of the player.
  * @param onMatchClick callback function called when a match is clicked on.
  * @param onPuzzleClick callback function called when a puzzle is clicked on.
  * @param onChallengeClick callback if challenge button clicked
+ * @param onBack callback to go to the previous screen
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
@@ -82,19 +83,21 @@ fun StatefulVisitedProfileScreen(
     uid: String,
     onMatchClick: (ChessMatchAdapter) -> Unit,
     onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
+    onBack: () -> Unit,
     onChallengeClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val actions =
       rememberUpdatedState(
-          ProfileActions(
+          VisitedProfileActions(
               onMatchClick = onMatchClick,
               onPuzzleClick = onPuzzleClick,
-          ))
+              onBack = onBack,
+              onChallengeClickAction = onChallengeClick))
+
   val socialFacade = LocalSocialFacade.current
   val chessFacade = LocalChessFacade.current
-  val onChallengeClick = rememberUpdatedState(onChallengeClick)
 
   val profile by
       remember(socialFacade, uid) { socialFacade.profile(uid).map { it ?: EmptyProfile } }
@@ -102,7 +105,7 @@ fun StatefulVisitedProfileScreen(
   val scope = rememberCoroutineScope()
   val state =
       remember(actions, profile, chessFacade, scope, socialFacade) {
-        FetchedUserProfileScreenState(user, profile, actions, onChallengeClick, chessFacade, scope)
+        FetchedUserProfileScreenState(user, profile, actions, chessFacade, scope)
       }
   ProfileScreen(state, modifier, contentPadding)
 }
@@ -115,3 +118,17 @@ private object EmptyProfile : Profile {
   override val followed: Boolean = false
   override val solvedPuzzles = emptyList<PuzzleId>()
 }
+
+/**
+ * Available set of actions for the visited profile screen
+ * @property onMatchClick callback for match action
+ * @property onPuzzleClick callback for puzzle action
+ * @property onChallengeClickAction callback for game challenge action
+ * @property onBack call back used to go to previous screen
+ */
+data class VisitedProfileActions(
+    override val onMatchClick: (ChessMatchAdapter) -> Unit,
+    override val onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
+    val onChallengeClickAction: (String) -> Unit,
+    val onBack: () -> Unit,
+) : ProfileActions
