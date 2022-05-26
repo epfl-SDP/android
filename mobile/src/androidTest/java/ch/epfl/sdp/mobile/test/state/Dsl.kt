@@ -153,7 +153,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
 /**
  * Wait until a certain text is visible before clicking on it
  *
- * @param text the text
+ * @param text the expected text
  */
 fun ComposeTestRule.performClickOnceVisible(text: String) {
   this.waitUntil { onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
