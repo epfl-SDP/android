@@ -1,14 +1,16 @@
 package ch.epfl.sdp.mobile.application.settings
 
-import android.content.Context
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
+import ch.epfl.sdp.mobile.ui.i18n.Language
+import ch.epfl.sdp.mobile.ui.i18n.fromISOStringToLanguage
+import ch.epfl.sdp.mobile.ui.i18n.fromLanguageToISOString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
  * Represents the facade for the user to modify the global settings
  *
- * @param context The Android [Context] used to set the language
+ * @param dataStoreFactory a reference to the data store
  */
 class SettingsFacade(
     private val dataStoreFactory: DataStoreFactory,
@@ -28,11 +30,21 @@ class SettingsFacade(
     keyLanguage = factory.string(Language)
   }
 
-  suspend fun setLanguage(language: String) {
-    dataStore.edit { it[keyLanguage] = language }
+  /**
+   * Writes a [Language] into the dataStore.
+   *
+   * @param language The [Language] which should be stored.
+   */
+  suspend fun setLanguage(language: Language) {
+    dataStore.edit { it[keyLanguage] = fromLanguageToISOString(language) }
   }
 
-  fun getLanguage(): Flow<String?> {
-    return dataStore.data.map { it[keyLanguage] }
+  /**
+   * Get the [Language] which has been in the dataStore.
+   *
+   * @return The flow of language [Language] which has been stored .
+   */
+  fun getLanguage(): Flow<Language?> {
+    return dataStore.data.map { fromISOStringToLanguage(it[keyLanguage]) }
   }
 }

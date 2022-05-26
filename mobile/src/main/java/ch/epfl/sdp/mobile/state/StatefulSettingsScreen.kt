@@ -104,7 +104,8 @@ fun StatefulSettingsScreen(
             scope,
             currentOnEditProfileNameClick,
             currentOnEditProfileImageClick,
-            currentonEditLanguageClick)
+            currentonEditLanguageClick,
+        )
       }
   SettingsScreen(state, modifier, contentPadding)
 }

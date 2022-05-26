@@ -3,10 +3,7 @@ package ch.epfl.sdp.mobile.test.state
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.state.Navigation
-import ch.epfl.sdp.mobile.ui.i18n.English
-import ch.epfl.sdp.mobile.ui.i18n.German
-import ch.epfl.sdp.mobile.ui.i18n.SwissGerman
-import ch.epfl.sdp.mobile.ui.setting.Languages
+import ch.epfl.sdp.mobile.ui.i18n.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -21,11 +18,11 @@ class StatefulEditLanguageDialogTest {
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.settingsEditLanguage).performClick()
-    rule.onNodeWithText(Languages.keys.elementAt(2)).performClick()
+    rule.onNodeWithText(Language.German.toReadableString()).performClick()
     rule.onNodeWithText(strings.settingEditSave).performClick()
     rule.onNodeWithText(German.settingsEditLanguage).assertIsDisplayed()
     rule.onNodeWithText(German.settingsEditLanguage).performClick()
-    rule.onNodeWithText(Languages.keys.elementAt(3)).performClick()
+    rule.onNodeWithText(Language.SwissGerman.toReadableString()).performClick()
     rule.onNodeWithText(German.settingEditSave).performClick()
     rule.onNodeWithText(SwissGerman.settingsEditLanguage).assertIsDisplayed()
   }

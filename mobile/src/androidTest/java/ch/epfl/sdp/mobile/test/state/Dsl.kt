@@ -60,6 +60,7 @@ data class Facades(
     val social: SocialFacade,
     val speech: SpeechFacade,
     val tournaments: TournamentFacade,
+    val settings: SettingsFacade,
 )
 
 /**
@@ -122,7 +123,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
                   social = socialFacade,
                   speech = speechFacade,
                   tournaments = tournamentFacade,
-              ),
+                  settings = settingsFacade),
           infrastructure =
               Infrastructure(
                   assets = assets,
@@ -143,9 +144,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
           speech = speechFacade,
           tournament = tournamentFacade,
           settings = settingsFacade,
-      ) {
-        ProvideLocalizedStrings(settingsFacade = settingsFacade) { with(environment) { content() } }
-      }
+      ) { ProvideLocalizedStrings { with(environment) { content() } } }
     }
   }
   return environment

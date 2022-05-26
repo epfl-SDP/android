@@ -8,6 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
+import ch.epfl.sdp.mobile.ui.i18n.Language
+import ch.epfl.sdp.mobile.ui.i18n.Languages
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 import ch.epfl.sdp.mobile.ui.prepare_game.SelectableItem
 
@@ -48,10 +50,10 @@ fun EditLanguageDialog(
 }
 
 @Composable
-fun LanguageList(
-    languages: Map<String, String>,
-    selectedLanguage: String,
-    onItemClick: (String) -> Unit,
+private fun LanguageList(
+    languages: Map<Language, String>,
+    selectedLanguage: Language,
+    onItemClick: (Language) -> Unit,
     modifier: Modifier
 ) {
   Column(
@@ -61,9 +63,9 @@ fun LanguageList(
   ) {
     languages.forEach {
       SelectableItem(
-          onClick = { onItemClick(it.value) },
-          it.value == selectedLanguage,
-          modifier.fillMaxWidth()) { Text(it.key) }
+          onClick = { onItemClick(it.key) }, it.key == selectedLanguage, Modifier.fillMaxWidth()) {
+        Text(it.value)
+      }
     }
   }
 }

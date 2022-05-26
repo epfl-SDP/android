@@ -81,7 +81,7 @@ object French : LocalizedStrings {
   override val settingProfileImageLabel = "Image de profil"
   override val settingLogout: String = "Déconnexion"
   override val settingLanguageLabel = "Langue"
-  override val settingsEditLanguage = "Changer de langue"
+  override val settingsEditLanguage = "Changer langue"
 
   override val profilePastGames = "Jeux passés".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()

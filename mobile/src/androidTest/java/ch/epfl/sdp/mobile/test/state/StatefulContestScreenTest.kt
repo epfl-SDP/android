@@ -7,20 +7,14 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.TournamentDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
-import ch.epfl.sdp.mobile.application.chess.ChessFacade
-import ch.epfl.sdp.mobile.application.social.SocialFacade
-import ch.epfl.sdp.mobile.application.speech.SpeechFacade
-import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.time.system.SystemTimeProvider
 import ch.epfl.sdp.mobile.state.StatefulHome
 import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
-import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -63,8 +57,6 @@ class StatefulContestScreenTest {
   fun given_statefulContestScreen_when_userJoinedTournament_then_participantBadgeIsDisplayed() {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
-      val assets = emptyAssets()
-      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -89,7 +81,6 @@ class StatefulContestScreenTest {
     runTest {
       val auth = buildAuth { user("email@example.org", "password", "1") }
       val assets = emptyAssets()
-      val dataStoreFactory = emptyDataStoreFactory()
       val store = buildStore {
         collection("users") { document("1", ProfileDocument("1", name = "A")) }
         collection(TournamentDocument.Collection) {
@@ -106,16 +97,13 @@ class StatefulContestScreenTest {
 
       val time = FakeTimeProvider
       val authFacade = AuthenticationFacade(auth, store)
-      val socialFacade = SocialFacade(auth, store)
-      val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-      val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store = store, auth = auth, timeProvider = time) {
+          rule.setContentWithTestEnvironment(
+              assets = assets, store = store, auth = auth, timeProvider = time) {
             StatefulHome(user)
           }
 
@@ -140,7 +128,12 @@ class StatefulContestScreenTest {
       authFacade.signInWithEmail("email@example.org", "password")
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
-      val (_, _, strings) = rule.setContentWithTestEnvironment(auth = auth) { StatefulHome(user) }
+      val (_, _, strings) =
+          rule.setContentWithTestEnvironment(
+              store = store,
+              auth = auth,
+              timeProvider = time,
+          ) { StatefulHome(user) }
 
       rule.onNodeWithText(strings.sectionContests).performClick()
       rule.onNodeWithText(strings.newContest).performClick()
