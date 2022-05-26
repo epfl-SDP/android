@@ -216,5 +216,5 @@ private fun Duration.toFrenchString(): String {
     return "${this.inWholeMinutes} minutes"
   }
 
-  return "${this.inWholeSeconds} seconds"
+  return "${this.inWholeSeconds} seconde(s)"
 }
