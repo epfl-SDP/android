@@ -199,7 +199,7 @@ object French : LocalizedStrings {
   override val tournamentsFilterTitle = "Afficher seulement".uppercase()
   override val tournamentsFilterOnlyDone = "Pas fait".uppercase()
   override val tournamentsFilterOnlyParticipating = "Participant".uppercase()
-  override val tournamentsFilterOnlyAdministrating = "Administrer".uppercase()
+  override val tournamentsFilterOnlyAdministrating = "Administrateur".uppercase()
   override val tournamentsFilterBackContentDescription = "Retour"
 }
 
