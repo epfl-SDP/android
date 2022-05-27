@@ -121,90 +121,36 @@ class StatefulHomeTest {
 
     FollowingSectionRobot(rule, strings)
         .switchToPlaySection()
-        .switchToPrepareGameOnline {
+        .performNewGameOnline {
           assertIsDisplayed()
           selectOpponent("user2")
         }
-        .switchToGame { assertIsDisplayed() }
+        .performPlay { assertIsDisplayed() }
   }
 
   @Test
   fun clickingOnPlayButtonFromPrepareGameScreen_withNoOpponentSelected_doesNothing() = runTest {
-    val auth = emptyAuth()
-    val assets = emptyAssets()
-    val dataStoreFactory = emptyDataStoreFactory()
-    val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document("userId2", ProfileDocument(name = "user2"))
-      }
-    }
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-    val settings = SettingsFacade(dataStoreFactory)
+    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
 
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val user2 =
-        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
-    currentUser.follow(user2)
+    val prepareGameOnlineRobot =
+        FollowingSectionRobot(rule, strings).switchToPlaySection().performNewGameOnline()
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech, tournament, settings) {
-            StatefulHome(currentUser)
-          }
-        }
-
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-    rule.onNodeWithText(strings.prepareGamePlay).performClick()
-
-    rule.onNodeWithContentDescription(strings.boardContentDescription).assertDoesNotExist()
-    rule.onNodeWithText("user2").assertExists()
+    prepareGameOnlineRobot.performPlay { assertIsNotDisplayed() }
+    prepareGameOnlineRobot.assertIsDisplayed()
   }
 
   @Test
   fun cancelingPreparegameScreen_returnsToPlaySection() = runTest {
-    val auth = emptyAuth()
-    val assets = emptyAssets()
-    val dataStoreFactory = emptyDataStoreFactory()
-    val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document("userId2", ProfileDocument(name = "user2"))
-      }
+    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+
+    val playSectionRobot = FollowingSectionRobot(rule, strings).switchToPlaySection()
+
+    playSectionRobot.performNewGameOnline {
+      assertIsDisplayed()
+      performCancel()
     }
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-    val settings = SettingsFacade(dataStoreFactory)
 
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val user2 =
-        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
-    currentUser.follow(user2)
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech, tournament, settings) {
-            StatefulHome(currentUser)
-          }
-        }
-
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-
-    rule.onNodeWithText("user2").assertExists()
-    rule.onNodeWithText(strings.prepareGameCancel).performClick()
-    rule.onNodeWithText("user2").assertDoesNotExist()
-    rule.onNodeWithText(strings.newGame).assertExists()
+    playSectionRobot.assertIsDisplayed()
   }
 
   @Test

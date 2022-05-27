@@ -33,13 +33,18 @@ class PrepareGameRobot(
     waitUntilSuccess { onNodeWithText(name, ignoreCase = true) }.performClick()
   }
 
+  /** Presses the cancel action. */
+  fun performCancel() {
+    onNodeWithLocalizedText { prepareGameCancel }.performClick()
+  }
+
   /**
    * Switches to the robot which plays chess games.
    *
    * @param block the body of the [ChessBoardRobot].
    * @return the [ChessBoardRobot] which can be used.
    */
-  inline fun switchToGame(block: ChessBoardRobot.() -> Unit): ChessBoardRobot {
+  inline fun performPlay(block: ChessBoardRobot.() -> Unit = {}): ChessBoardRobot {
     onNodeWithLocalizedText { prepareGamePlay }.performClick()
     return switchTo(::ChessBoardRobot, block)
   }

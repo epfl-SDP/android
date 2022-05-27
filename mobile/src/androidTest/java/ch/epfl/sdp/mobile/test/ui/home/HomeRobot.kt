@@ -99,7 +99,7 @@ class PlaySectionRobot(
    * @param block the block to run with the [PrepareGameRobot].
    * @return the [PrepareGameRobot] that should be used.
    */
-  inline fun switchToPrepareGameOnline(
+  inline fun performNewGameOnline(
       block: PrepareGameRobot.() -> Unit = {},
   ): PrepareGameRobot {
     onNodeWithLocalizedText { newGame }.performClick()
