@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
@@ -140,6 +141,8 @@ fun <P : Person> FollowList(
       Text(
           text = strings.socialFollowingTitle,
           style = MaterialTheme.typography.h4,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
           modifier = Modifier.padding(horizontal = 16.dp),
       )
     }
@@ -158,7 +161,8 @@ fun <P : Person> FollowList(
               Text(
                   modifier = Modifier.padding(horizontal = 8.dp),
                   text = strings.socialPerformPlay,
-              )
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis)
             }
           },
       )
@@ -185,13 +189,19 @@ fun EmptySearch(
       horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Icon(PawniesIcons.Search, null, modifier = Modifier.size(72.dp), tint = color)
-    Text(text = strings.socialSearchEmptyTitle, style = MaterialTheme.typography.h4, color = color)
+    Text(
+        text = strings.socialSearchEmptyTitle,
+        style = MaterialTheme.typography.h4,
+        color = color,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis)
     Text(
         text = strings.socialSearchEmptySubtitle,
         style = MaterialTheme.typography.body1,
         color = color,
         textAlign = TextAlign.Center,
-    )
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis)
   }
 }
 

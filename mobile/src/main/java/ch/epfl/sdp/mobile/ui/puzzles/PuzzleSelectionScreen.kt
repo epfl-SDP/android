@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -111,8 +112,14 @@ fun PuzzleListInfo(
                     append("(${puzzleInfo.elo})")
                   }
                 },
-        )
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
       },
-      secondaryText = { Text(text = strings.puzzlePlayingAs(puzzleInfo.playerColor.toString())) },
+      secondaryText = {
+        Text(
+            text = strings.puzzlePlayingAs(puzzleInfo.playerColor.toString()),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
+      },
   )
 }

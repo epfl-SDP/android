@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.i18n.Language
@@ -41,7 +42,11 @@ fun EditLanguageDialog(
         onCancelClick = state::onCancelClick,
         onConfirmClick = state::onSaveClick) {
       Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(strings.settingLanguageLabel, style = MaterialTheme.typography.subtitle1)
+        Text(
+            strings.settingLanguageLabel,
+            style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
 
         LanguageList(Languages, state.selectedLanguage, { state.selectedLanguage = it }, Modifier)
       }
@@ -72,7 +77,7 @@ private fun LanguageList(
     languages.forEach {
       SelectableItem(
           onClick = { onItemClick(it.key) }, it.key == selectedLanguage, Modifier.fillMaxWidth()) {
-        Text(it.value)
+        Text(it.value, maxLines = 1, overflow = TextOverflow.Ellipsis)
       }
     }
   }

@@ -17,6 +17,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
@@ -52,7 +53,7 @@ fun SearchField(
             verticalAlignment = Alignment.CenterVertically,
         ) {
           Icon(Icons.Branded.Search, null)
-          Text(strings.socialSearchBarPlaceHolder)
+          Text(strings.socialSearchBarPlaceHolder, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
       },
       trailingIcon = {
