@@ -33,6 +33,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.ui.home.FollowingSectionRobot
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -48,46 +49,31 @@ class StatefulHomeTest {
   @Test
   fun defaultSection_isSocial() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-
-    rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
-    rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
+    FollowingSectionRobot(rule, strings).check()
   }
 
   @Test
   fun clickingSettingsTab_selectsSettingsSection() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-
-    rule.onNodeWithText(strings.sectionSettings).performClick()
-    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
-    rule.onAllNodesWithText(strings.sectionSettings).assertAny(isSelected())
+    FollowingSectionRobot(rule, strings).switchToSettingsSection().check()
   }
 
   @Test
   fun clickSocialSection_selectsSocialSection() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-
-    rule.onNodeWithText(strings.sectionSocial).performClick()
-    rule.onNodeWithText(strings.sectionSocial).assertIsSelected()
-    rule.onNodeWithText(strings.sectionSettings).assertIsNotSelected()
+    FollowingSectionRobot(rule, strings).switchToFollowingSection().check()
   }
 
   @Test
   fun clickPlaySection_selectsPlaySection() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.sectionPlay).assertIsSelected()
-    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+    FollowingSectionRobot(rule, strings).switchToPlaySection().check()
   }
 
   @Test
   fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-
-    rule.onNodeWithText(strings.sectionContests).assertExists()
-    rule.onNodeWithText(strings.sectionContests).performClick()
-    rule.onAllNodesWithText(strings.sectionContests).assertCountEquals(2)
-    rule.onNodeWithText(strings.sectionSocial).assertIsNotSelected()
+    FollowingSectionRobot(rule, strings).switchToTournamentsSection().check()
   }
 
   @Test
@@ -491,7 +477,8 @@ class StatefulHomeTest {
     user.follow(follower)
 
     rule.onNodeWithText("B").assertExists().performClick()
-    rule.onNodeWithContentDescription(env.strings.socialCloseVisitedProfile)
+    rule
+        .onNodeWithContentDescription(env.strings.socialCloseVisitedProfile)
         .assertExists()
         .performClick()
     rule.onNodeWithText(env.strings.socialFollowingTitle).assertExists()
@@ -561,8 +548,7 @@ class StatefulHomeTest {
               controller = controller,
           )
         }
-    env.infrastructure
-        .store
+    env.infrastructure.store
         .collection(TournamentDocument.Collection)
         .document("123")
         .set(TournamentDocument(name = "Hello"))
@@ -610,43 +596,43 @@ class StatefulHomeTest {
   @Test
   fun given_contestScreen_when_tournamentIsClicked_then_itsTournamentDetailsScreenIsDisplayed() =
       runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val dataStoreFactory = emptyDataStoreFactory()
-    val store = buildStore {
-      collection(TournamentDocument.Collection) {
-        document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
-      }
-    }
-    val assets = emptyAssets()
-
-    val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets)
-    val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-    val settings = SettingsFacade(dataStoreFactory)
-
-    authFacade.signInWithEmail("email@example.org", "password")
-    val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          val controller = rememberNavController()
-          ProvideFacades(
-              authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
-            StatefulHome(
-                user = user,
-                controller = controller,
-            )
+        val auth = buildAuth { user("email@example.org", "password", "1") }
+        val dataStoreFactory = emptyDataStoreFactory()
+        val store = buildStore {
+          collection(TournamentDocument.Collection) {
+            document("id1", TournamentDocument("tid1", "1", "Tournament 1"))
           }
         }
+        val assets = emptyAssets()
 
-    rule.onNodeWithText(strings.sectionContests).performClick()
-    rule.onNodeWithText("Tournament 1").assertExists()
-    rule.onNodeWithText("Tournament 1").performClick()
-    rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
-    rule.onNodeWithText("Tournament 1", ignoreCase = true).assertIsDisplayed()
-  }
+        val authFacade = AuthenticationFacade(auth, store)
+        val chessFacade = ChessFacade(auth, store, assets)
+        val socialFacade = SocialFacade(auth, store)
+        val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+        val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+        val settings = SettingsFacade(dataStoreFactory)
+
+        authFacade.signInWithEmail("email@example.org", "password")
+        val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
+
+        val strings =
+            rule.setContentWithLocalizedStrings {
+              val controller = rememberNavController()
+              ProvideFacades(
+                  authFacade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
+                StatefulHome(
+                    user = user,
+                    controller = controller,
+                )
+              }
+            }
+
+        rule.onNodeWithText(strings.sectionContests).performClick()
+        rule.onNodeWithText("Tournament 1").assertExists()
+        rule.onNodeWithText("Tournament 1").performClick()
+        rule.onNodeWithText(strings.tournamentsBadgeJoin).assertIsDisplayed()
+        rule.onNodeWithText("Tournament 1", ignoreCase = true).assertIsDisplayed()
+      }
 
   @Test
   fun given_settingsScreen_when_clickingOnPuzzle_then_ItIsOpened() = runTest {

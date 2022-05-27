@@ -20,6 +20,25 @@ abstract class AbstractRobot(
 ) : ComposeTestRule by rule {
 
   /**
+   * Returns a [SemanticsMatcher] which filters our nodes which contain the provided localized
+   * string.
+   *
+   * @param substring whether to match nodes by substring.
+   * @param ignoreCase whether to ignore case in text matching.
+   * @param text a lambda which provides the [LocalizedStrings] to use to match the node.
+   */
+  fun hasLocalizedText(
+      substring: Boolean = false,
+      ignoreCase: Boolean = false,
+      text: LocalizedStrings.() -> String,
+  ): SemanticsMatcher =
+      hasText(
+          substring = substring,
+          ignoreCase = ignoreCase,
+          text = text(strings),
+      )
+
+  /**
    * Finds the [SemanticsNodeInteraction] with a node with the given text.
    *
    * @see onNodeWithText
