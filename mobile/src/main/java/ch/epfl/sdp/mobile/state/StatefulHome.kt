@@ -31,6 +31,9 @@ private const val SettingEditProfileNameRoute = "profile-name/edit"
 /** The route associated to the profile image editing button on the setting screen. */
 private const val SettingEditProfileImageRoute = "profile-image/edit"
 
+/** The route associated to the language editing button on the setting screen. */
+private const val SettingEditLanguageRoute = "language/edit"
+
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
 
@@ -151,6 +154,7 @@ fun StatefulHome(
             onPuzzleClick = onPuzzleItemClick,
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
             onEditProfileImageClick = { controller.navigate(SettingEditProfileImageRoute) },
+            onEditLanguageClick = { controller.navigate(SettingEditLanguageRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
@@ -159,6 +163,9 @@ fun StatefulHome(
       }
       dialog(SettingEditProfileImageRoute) {
         StatefulEditProfileImageDialog(user = user, onClose = { controller.popBackStack() })
+      }
+      dialog(SettingEditLanguageRoute) {
+        StatefulEditLanguageDialog(onClose = { controller.popBackStack() })
       }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(

@@ -8,6 +8,7 @@ import androidx.compose.ui.test.SemanticsMatcher.Companion.keyIsDefined
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -20,7 +21,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
-import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -40,10 +40,12 @@ class NavigationTest {
     val speechFacade =
         SpeechFacade(
             FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val settings = SettingsFacade(dataStoreFactory)
+
     val tournamentFacade =
         TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
     rule.setContentWithLocalizedStrings {
-      ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+      ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
         Navigation()
       }
     }
@@ -63,9 +65,12 @@ class NavigationTest {
         SpeechFacade(
             FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+          ProvideFacades(
+              facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
             Navigation()
           }
         }

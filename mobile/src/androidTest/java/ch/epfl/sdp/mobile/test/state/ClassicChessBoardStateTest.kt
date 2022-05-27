@@ -35,11 +35,13 @@ class ClassicChessBoardStateTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("id1", ProfileDocument())
         document("id2", ProfileDocument())
       }
-      collection("games") { document("id", ChessDocument(whiteId = "id1", blackId = "id2")) }
+      collection(ChessDocument.Collection) {
+        document("id", ChessDocument(whiteId = "id1", blackId = "id2"))
+      }
     }
     val facade = ChessFacade(auth, store, assets)
     val speechFacade =

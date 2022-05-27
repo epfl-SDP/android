@@ -51,11 +51,11 @@ class ChessFacadeTest {
     val auth = mockk<Auth>()
     val assets = emptyAssets()
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("userId1", ProfileDocument(uid = "userId1"))
         document("userId2", ProfileDocument(uid = "userId2"))
       }
-      collection("games") {}
+      collection(ChessDocument.Collection) {}
     }
 
     val chessFacade = ChessFacade(auth, store, assets)
@@ -82,7 +82,7 @@ class ChessFacadeTest {
     val auth = mockk<Auth>()
     val assets = emptyAssets()
     val store = buildStore {
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId2"))
       }
     }
@@ -148,7 +148,7 @@ class ChessFacadeTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
     val store = buildStore {
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "gameId",
             ChessDocument(
@@ -163,14 +163,16 @@ class ChessFacadeTest {
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    store.collection("games").document("gameId").update { set("whiteId", userAuthenticated.uid) }
+    store.collection(ChessDocument.Collection).document("gameId").update {
+      set(ChessDocument.WhiteId, userAuthenticated.uid)
+    }
 
     val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
     val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
 
     match.update(newGame)
 
-    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+    val chess = store.collection(ChessDocument.Collection).document("gameId").get<ChessDocument>()
 
     assertThat(chess?.metadata?.whiteName).isEqualTo("test3")
   }
@@ -181,7 +183,7 @@ class ChessFacadeTest {
     val assets = emptyAssets()
     val auth = emptyAuth()
     val store = buildStore {
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "gameId",
             ChessDocument(
@@ -196,14 +198,16 @@ class ChessFacadeTest {
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    store.collection("games").document("gameId").update { set("blackId", userAuthenticated.uid) }
+    store.collection(ChessDocument.Collection).document("gameId").update {
+      set(ChessDocument.BlackId, userAuthenticated.uid)
+    }
 
     val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
     val newGame = Game.create().play { Position(0, 6) += Delta(0, -2) }
 
     match.update(newGame)
 
-    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+    val chess = store.collection(ChessDocument.Collection).document("gameId").get<ChessDocument>()
 
     assertThat(chess?.metadata?.blackName).isEqualTo("test3")
   }
@@ -214,7 +218,7 @@ class ChessFacadeTest {
     val auth = emptyAuth()
     val assets = emptyAssets()
     val store = buildStore {
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "gameId",
             ChessDocument(
@@ -229,16 +233,18 @@ class ChessFacadeTest {
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    store.collection("games").document("gameId").update { set("blackId", userAuthenticated.uid) }
+    store.collection(ChessDocument.Collection).document("gameId").update {
+      set(ChessDocument.BlackId, userAuthenticated.uid)
+    }
 
     val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
     val newGame = Game.create().play(FoolsMate)
 
     match.update(newGame)
 
-    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+    val chess = store.collection(ChessDocument.Collection).document("gameId").get<ChessDocument>()
 
-    assertThat(chess?.metadata?.status).isEqualTo("blackWon")
+    assertThat(chess?.metadata?.status).isEqualTo(ChessMetadata.BlackWon)
   }
 
   @Test
@@ -248,7 +254,7 @@ class ChessFacadeTest {
     val assets = emptyAssets()
 
     val store = buildStore {
-      collection("games") {
+      collection(ChessDocument.Collection) {
         document(
             "gameId",
             ChessDocument(
@@ -263,14 +269,16 @@ class ChessFacadeTest {
 
     authFacade.signUpWithEmail("email@example.org", "test3", "password")
     val userAuthenticated = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    store.collection("games").document("gameId").update { set("whiteId", userAuthenticated.uid) }
+    store.collection(ChessDocument.Collection).document("gameId").update {
+      set(ChessDocument.WhiteId, userAuthenticated.uid)
+    }
 
     val match = chessFacade.matches(userAuthenticated).mapNotNull { it.firstOrNull() }.first()
     val newGame = Game.create().play(Games.Stalemate)
     match.update(newGame)
 
-    val chess = store.collection("games").document("gameId").get<ChessDocument>()
+    val chess = store.collection(ChessDocument.Collection).document("gameId").get<ChessDocument>()
 
-    assertThat(chess?.metadata?.status).isEqualTo("stalemate")
+    assertThat(chess?.metadata?.status).isEqualTo(ChessMetadata.Stalemate)
   }
 }

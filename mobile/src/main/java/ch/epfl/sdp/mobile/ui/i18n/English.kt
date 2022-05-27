@@ -83,10 +83,11 @@ object English : LocalizedStrings {
   override val settingProfileNameLabel = "Profile Name"
   override val settingProfileImageLabel = "Profile Image"
   override val settingLogout: String = "Logout"
+  override val settingLanguageLabel = "Language"
+  override val settingsEditLanguage = "Edit Language"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
-  override val profileSettings = "Settings"
   override val profileFollow = "Follow"
   override val profileUnfollow = "Unfollow"
   override val profileChallenge = "Challenge"
@@ -199,7 +200,7 @@ object English : LocalizedStrings {
   override val tournamentsCreateElimDepthFinal = "Final"
 
   override val tournamentsFilterTitle = "Show only".uppercase()
-  override val tournamentsFilterOnlyDone = "Not done".uppercase()
+  override val tournamentsFilterOnlyDone = "Ongoing".uppercase()
   override val tournamentsFilterOnlyParticipating = "Participating".uppercase()
   override val tournamentsFilterOnlyAdministrating = "Administrating".uppercase()
   override val tournamentsFilterBackContentDescription = "Back"

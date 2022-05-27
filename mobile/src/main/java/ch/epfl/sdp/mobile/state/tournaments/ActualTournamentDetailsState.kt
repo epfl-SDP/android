@@ -24,7 +24,7 @@ object EmptyTournament : Tournament {
   override val isAdmin = false
   override val isParticipant = false
   override val status = Status.Unknown
-  override suspend fun start(): Boolean = false
+  override suspend fun start() = Unit
   override suspend fun startDirectElimination() = Unit
   override suspend fun startNextRound() = Unit
 }
