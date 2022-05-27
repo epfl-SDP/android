@@ -30,7 +30,8 @@ class SpeechFacadeTest {
   @Test
   fun given_failingRecognizer_when_recognizes_then_returnsErrorInternal() = runTest {
     val facade =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     assertThat(facade.recognize()).isEqualTo(Failure.Internal)
   }
 
@@ -38,7 +39,7 @@ class SpeechFacadeTest {
   fun given_successfulRecognizer_when_recognizes_then_returnsResults() = runTest {
     val facade =
         SpeechFacade(
-            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     assertThat(facade.recognize()).isEqualTo(Success(SuccessfulSpeechRecognizer.Results))
   }
 
@@ -46,7 +47,7 @@ class SpeechFacadeTest {
   fun given_fakeTextToSpeech_when_synthesizing_then_nothing_happens() = runTest {
     val facade =
         SpeechFacade(
-            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     assertThat(facade.synthesize("Pawnies")).isEqualTo(Unit)
   }
 }

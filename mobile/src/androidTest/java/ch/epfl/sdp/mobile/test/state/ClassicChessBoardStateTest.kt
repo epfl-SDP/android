@@ -44,8 +44,7 @@ class ClassicChessBoardStateTest {
     val facade = ChessFacade(auth, store, assets)
     val speechFacade =
         SpeechFacade(
-            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory()
-        )
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id1"
 

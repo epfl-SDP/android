@@ -49,7 +49,8 @@ class StatefulArScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournaments = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val strings =

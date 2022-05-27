@@ -58,7 +58,8 @@ class StatefulFollowingScreenTest {
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
     val mockChessFacade = mockk<ChessFacade>()
     val mockSpeechFacade =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val mockTournamentFacade = mockk<TournamentFacade>()
 
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()

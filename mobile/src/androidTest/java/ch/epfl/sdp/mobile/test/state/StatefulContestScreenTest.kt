@@ -55,7 +55,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
@@ -88,7 +88,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
@@ -130,7 +130,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
       authFacade.signInWithEmail("email@example.org", "password")
@@ -166,7 +166,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
       authFacade.signInWithEmail("email@example.org", "password")

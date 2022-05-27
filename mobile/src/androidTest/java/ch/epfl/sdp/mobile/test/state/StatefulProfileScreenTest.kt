@@ -55,7 +55,7 @@ class StatefulProfileScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
@@ -86,7 +86,8 @@ class StatefulProfileScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")

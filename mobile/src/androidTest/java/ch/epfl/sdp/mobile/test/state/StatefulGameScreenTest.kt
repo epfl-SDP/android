@@ -563,7 +563,8 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -604,7 +605,8 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
