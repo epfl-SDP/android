@@ -21,6 +21,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test

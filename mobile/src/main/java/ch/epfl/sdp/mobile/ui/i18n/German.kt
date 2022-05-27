@@ -46,6 +46,16 @@ object German : LocalizedStrings {
   override val boardPiecePawn = "Bauer"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
   override val boardContentDescription = "Schachbrett"
+  override val boardMove: (piece: String, from: String, to: String) -> String
+    get() = TODO("Not yet implemented")
+  override val boardPromoted: (piece: String, from: String, to: String, rank: String) -> String
+    get() = TODO("Not yet implemented")
+  override val boardPosition: (x: Int, y: Int) -> String
+    get() = TODO("Not yet implemented")
+  override val gameTTsOnContentDescription: String
+    get() = TODO("Not yet implemented")
+  override val gameTTsOffContentDescription: String
+    get() = TODO("Not yet implemented")
 
   override val gameBack = "Zurück"
   override val gameShowAr = "Starte AR Modus"
