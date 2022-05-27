@@ -26,7 +26,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.onePuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
@@ -155,53 +154,30 @@ class StatefulHomeTest {
 
   @Test
   fun given_statefulHome_when_creatingOnlineGame_then_showsGameWithOpponent() = runTest {
-    val auth = emptyAuth()
-    val assets = emptyAssets()
-    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document("userId2", ProfileDocument(name = "user2"))
-      }
+      collection(ProfileDocument.Collection) { document("id", ProfileDocument(name = "user2")) }
     }
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
-    val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
-    val settings = SettingsFacade(dataStoreFactory)
+    val (facade, _, strings, user) =
+        rule.setContentWithTestEnvironment(store = store) { StatefulHome(user) }
 
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val user2 =
-        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
-    currentUser.follow(user2)
+    user.follow(facade.social.profile("id").first() ?: throw IllegalStateException())
 
-    val strings =
-        rule.setContentWithLocalizedStrings {
-          ProvideFacades(authFacade, social, chess, speech, tournament, settings) {
-            StatefulHome(currentUser)
-          }
+    FollowingSectionRobot(rule, strings)
+        .switchToPlaySection()
+        .performNewGameOnline { selectOpponent("user2") }
+        .performPlay {
+          assertIsDisplayed()
+          assertHasPlayer("user2")
         }
-
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-    rule.onNodeWithText("user2").performClick()
-    rule.onNodeWithText(strings.prepareGamePlay).performClick()
-
-    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
-    rule.onNodeWithText("user2").assertExists()
   }
 
   @Test
   fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
 
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayLocal).performClick()
-
-    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    FollowingSectionRobot(rule, strings).switchToPlaySection().performNewGameLocal {
+      assertIsDisplayed()
+    }
   }
 
   @Test

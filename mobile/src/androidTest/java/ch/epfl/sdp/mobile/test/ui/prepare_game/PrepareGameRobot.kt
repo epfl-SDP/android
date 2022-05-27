@@ -5,7 +5,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
-import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
+import ch.epfl.sdp.mobile.test.ui.game.GameScreenRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -41,11 +41,11 @@ class PrepareGameRobot(
   /**
    * Switches to the robot which plays chess games.
    *
-   * @param block the body of the [ChessBoardRobot].
-   * @return the [ChessBoardRobot] which can be used.
+   * @param block the body of the [GameScreenRobot].
+   * @return the [GameScreenRobot] which can be used.
    */
-  inline fun performPlay(block: ChessBoardRobot.() -> Unit = {}): ChessBoardRobot {
+  inline fun performPlay(block: GameScreenRobot.() -> Unit = {}): GameScreenRobot {
     onNodeWithLocalizedText { prepareGamePlay }.performClick()
-    return switchTo(::ChessBoardRobot, block)
+    return switchTo(::GameScreenRobot, block)
   }
 }

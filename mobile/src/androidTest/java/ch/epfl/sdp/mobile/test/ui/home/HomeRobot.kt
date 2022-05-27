@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
+import ch.epfl.sdp.mobile.test.ui.game.GameScreenRobot
 import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
 import ch.epfl.sdp.mobile.test.ui.profile.ProfileRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -91,6 +92,20 @@ class PlaySectionRobot(
 
   override fun assertIsDisplayed() {
     onNode(hasLocalizedText { sectionPlay } and isSelectable()).assertIsSelected()
+  }
+
+  /**
+   * Switches to the local game screen by clicking the local game action.
+   *
+   * @param block the block to run with the [GameScreenRobot].
+   * @return the [GameScreenRobot] that should be used.
+   */
+  inline fun performNewGameLocal(
+      block: GameScreenRobot.() -> Unit = {},
+  ): GameScreenRobot {
+    onNodeWithLocalizedText { newGame }.performClick()
+    onNodeWithLocalizedText { prepareGamePlayLocal }.performClick()
+    return switchTo(::GameScreenRobot, block)
   }
 
   /**

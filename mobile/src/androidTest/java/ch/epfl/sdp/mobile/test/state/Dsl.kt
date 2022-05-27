@@ -100,6 +100,7 @@ data class TestEnvironment(
  */
 suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
     userId: String = DefaultId,
+    // TODO : Create the document manually in the body function rather than here.
     store: Store = buildStore {
       collection(ProfileDocument.Collection) {
         document(userId, ProfileDocument(uid = userId, name = DefaultName))

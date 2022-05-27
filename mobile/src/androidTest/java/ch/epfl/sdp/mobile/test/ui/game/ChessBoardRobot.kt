@@ -140,7 +140,7 @@ class ChessBoardRobot(
 
   /** Asserts that this robot is currently displayed. */
   fun assertIsDisplayed() {
-    onChessBoard().assertDoesNotExist()
+    onChessBoard().assertExists()
   }
 
   /** Asserts that this robot is currently not displayed. */
