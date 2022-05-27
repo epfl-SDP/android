@@ -2,6 +2,12 @@
 
 ## Summary
 
+Over the past sprint, our focus was mostly on refining the user experience in the app and performing some necessary refactorings to improve the performance and reliability of our project.
+
+Most of our user stories were implemented and integrated, and the workload seemed to be much more appropriate than during the destabilization sprint. Overall coordination was good, and we showed some flexibility when some team members had to re-arrange and swap some tasks with each other.
+
+We particularly enjoyed this sprint, since it let us focus on some details and refinements which increased the quality of our product and code.
+
 ## Lars Barmettler
 
 This sprint consisted of two completely different weeks. The tasks I had in the first week were easy to handle and more and less quickly done. However, in the second week I had to implement a functionality which was much more sophisticated. Multiple times I managed to destroy a big chunk of the tests and I had no clue why. After I got some help from other team member, we figured out that this was a problem of the imported library. This took so much time and prevented me to efficiently finish my tasks. The work in the group was as always quite good. Also, I can see that we come to the final part of our project and the app takes slowly it’s final shape.
@@ -33,6 +39,12 @@ In hindsight, my other tasks were finished a lot quicker.
 In the future I need to remember that my tasks are not finished once their work is done, I also need to take into account the pull request review’s potential numerous requested changes that can take double the time of that of my initial task.
 
 ## Alexandre Piveteau (Scrum Master)
+
+During the first week of the sprint, I had the responsibility to improve the visuals of the app by making sure it better conforms to our Figma prototypes, and adding some micro-interactions which make it more enlightening to use. For instance, I added some confetti when a user wins a match or a puzzle. I performed some test infrastructure work and refactorings, so we could store user preferences, and completely refactored the game engine to make it faster. I also implemented filtering of tournaments.
+
+During the second week, I worked with Matthieu to create the promo video of the app. I also gave a hand to a few of my teammates, implementing some features and solving some bugs.
+
+I finished all my tasks according to the sprint schedule, and the sprint went really well overall.
 
 ## Mohamed Badr Taddist
 
