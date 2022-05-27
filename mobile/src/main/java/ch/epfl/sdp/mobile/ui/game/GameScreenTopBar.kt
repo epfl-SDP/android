@@ -49,7 +49,7 @@ fun GameScreenTopBar(
       elevation = 0.dp,
       navigationIcon = {
         IconButton(onBackClick) {
-          Icon(Icons.Branded.GameClose, LocalLocalizedStrings.current.gameBack)
+          Icon(Icons.Branded.Close, LocalLocalizedStrings.current.gameBack)
         }
       },
       actions = {

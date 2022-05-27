@@ -21,7 +21,7 @@ val PawniesIcons.ArView
   get() = Icons.Default.ViewInAr
 
 /** An icon to close the game screen. */
-val PawniesIcons.GameClose
+val PawniesIcons.Close
   get() = Icons.Rounded.Close
 
 /** An icon that indicates that the mic if on. */

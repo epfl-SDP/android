@@ -44,7 +44,7 @@ class SettingScreenTest {
     override val followed = true
   }
 
-  object FakeSetttingScreenState :
+  object FakeSettingScreenState :
       TestSettingScreenState(
           List(20) { ChessMatchAdapter("1", "Konor($it)", Win(CHECKMATE), 27) },
           emptyList(),
@@ -54,23 +54,23 @@ class SettingScreenTest {
 
   @Test
   fun profile_isDisplayed() {
-    rule.setContent { SettingsScreen(FakeSetttingScreenState) }
+    rule.setContent { SettingsScreen(FakeSettingScreenState) }
 
-    rule.onNodeWithText(FakeSetttingScreenState.email).assertExists()
-    rule.onNodeWithText(FakeSetttingScreenState.name).assertExists()
-    rule.onNodeWithText(FakeSetttingScreenState.emoji).assertExists()
+    rule.onNodeWithText(FakeSettingScreenState.email).assertExists()
+    rule.onNodeWithText(FakeSettingScreenState.name).assertExists()
+    rule.onNodeWithText(FakeSettingScreenState.emoji).assertExists()
   }
 
   @Test
   fun pastGameCount_areDisplayed() {
-    rule.setContent { SettingsScreen(FakeSetttingScreenState) }
+    rule.setContent { SettingsScreen(FakeSettingScreenState) }
 
-    rule.onNodeWithText(FakeSetttingScreenState.pastGamesCount.toString()).assertExists()
+    rule.onNodeWithText(FakeSettingScreenState.pastGamesCount.toString()).assertExists()
   }
 
   @Test
   fun scroll_makesMatchesVisible() {
-    rule.setContentWithLocalizedStrings { SettingsScreen(FakeSetttingScreenState) }
+    rule.setContentWithLocalizedStrings { SettingsScreen(FakeSettingScreenState) }
 
     rule.onRoot().performTouchInput { swipeUp() }
     rule.onAllNodesWithText("Konor", substring = true)
