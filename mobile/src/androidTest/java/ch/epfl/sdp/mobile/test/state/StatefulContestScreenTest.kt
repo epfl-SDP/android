@@ -18,7 +18,6 @@ import ch.epfl.sdp.mobile.state.StatefulTournamentScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
@@ -56,7 +55,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
@@ -89,7 +88,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signInWithEmail("email@example.org", "password")
@@ -131,7 +130,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
       authFacade.signInWithEmail("email@example.org", "password")
@@ -167,7 +166,7 @@ class StatefulContestScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, time)
 
       authFacade.signInWithEmail("email@example.org", "password")

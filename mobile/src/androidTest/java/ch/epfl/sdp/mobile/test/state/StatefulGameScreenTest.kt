@@ -29,7 +29,6 @@ import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.*
@@ -48,6 +47,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -82,7 +82,7 @@ class StatefulGameScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(recognizer, FakeTextToSpeechFactory, FakeDataStoreFactory)
+    val speech = SpeechFacade(recognizer, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -563,7 +563,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -604,7 +604,7 @@ class StatefulGameScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val user1 = mockk<AuthenticatedUser>()
@@ -792,6 +792,28 @@ class StatefulGameScreenTest {
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
     robot.onNodeWithLocalizedText { gameListening }.performClick()
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.assertExists()
+  }
+
+  @Test
+  fun given_enabled_volume_button_when_clicked_then_disable() = runTest {
+    val user = mockk<AuthenticatedUser>()
+    every { user.uid } returns "userId1"
+    every { user.name } returns "userName1"
+
+    val env =
+        rule.setContentWithTestEnvironment {
+          StatefulGameScreen(
+              user = user,
+              id = "gameId",
+              actions = StatefulGameScreenActions(onBack = {}, onShowAr = {}))
+        }
+
+    assertThat(env.facades.speech.textToSpeechSettings().first().enabled).isTrue()
+    rule.onNodeWithContentDescription(env.strings.gameTTsOnContentDescription)
+        .assertExists()
+        .performClick()
+    rule.onNodeWithContentDescription(env.strings.gameTTsOffContentDescription).assertExists()
+    assertThat(env.facades.speech.textToSpeechSettings().first().enabled).isFalse()
   }
 }
 

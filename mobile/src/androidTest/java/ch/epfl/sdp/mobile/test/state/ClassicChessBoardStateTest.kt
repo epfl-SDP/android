@@ -11,7 +11,7 @@ import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
@@ -44,7 +44,8 @@ class ClassicChessBoardStateTest {
     val facade = ChessFacade(auth, store, assets)
     val speechFacade =
         SpeechFacade(
-            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory()
+        )
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id1"
 

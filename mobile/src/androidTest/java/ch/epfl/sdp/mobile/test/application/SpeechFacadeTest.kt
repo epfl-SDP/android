@@ -2,7 +2,7 @@ package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
@@ -22,7 +22,7 @@ class SpeechFacadeTest {
       runTest(UnconfinedTestDispatcher()) {
         val facade =
             SpeechFacade(
-                SuspendingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+                SuspendingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
         val job = launch { facade.recognize() }
         job.cancelAndJoin()
       }
@@ -30,7 +30,7 @@ class SpeechFacadeTest {
   @Test
   fun given_failingRecognizer_when_recognizes_then_returnsErrorInternal() = runTest {
     val facade =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     assertThat(facade.recognize()).isEqualTo(Failure.Internal)
   }
 
@@ -38,7 +38,7 @@ class SpeechFacadeTest {
   fun given_successfulRecognizer_when_recognizes_then_returnsResults() = runTest {
     val facade =
         SpeechFacade(
-            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     assertThat(facade.recognize()).isEqualTo(Success(SuccessfulSpeechRecognizer.Results))
   }
 
@@ -46,7 +46,7 @@ class SpeechFacadeTest {
   fun given_fakeTextToSpeech_when_synthesizing_then_nothing_happens() = runTest {
     val facade =
         SpeechFacade(
-            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     assertThat(facade.synthesize("Pawnies")).isEqualTo(Unit)
   }
 }

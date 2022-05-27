@@ -18,7 +18,6 @@ import ch.epfl.sdp.mobile.state.StatefulArScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
@@ -50,7 +49,7 @@ class StatefulArScreenTest {
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
     val speech =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     val tournaments = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     val strings =

@@ -16,7 +16,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.twoPuzzleAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.fake.FakeDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
@@ -54,7 +53,7 @@ class StatefulProfileScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
       authFacade.signUpWithEmail("user1@email", "user1", "password")
@@ -85,7 +84,7 @@ class StatefulProfileScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
     val speechFacade =
-        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, FakeDataStoreFactory)
+        SpeechFacade(FailingSpeechRecognizerFactory, FakeTextToSpeechFactory,  emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
 
     authFacade.signUpWithEmail("user1@email", "user1", "password")
