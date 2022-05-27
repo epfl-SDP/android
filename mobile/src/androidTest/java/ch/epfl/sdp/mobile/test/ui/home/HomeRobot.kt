@@ -3,8 +3,11 @@ package ch.epfl.sdp.mobile.test.ui.home
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
+import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
+import ch.epfl.sdp.mobile.test.ui.profile.ProfileRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -18,6 +21,9 @@ abstract class HomeRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
 ) : AbstractRobot(rule, strings) {
+
+  /** Asserts that this section is currently being displayed. */
+  abstract fun assertIsDisplayed()
 
   /**
    * Switches to the play section.
@@ -83,9 +89,22 @@ class PlaySectionRobot(
     strings: LocalizedStrings,
 ) : HomeRobot(rule, strings) {
 
-  /** Checks that this robot is indeed the one currently displayed on the screen. */
-  fun check() {
+  override fun assertIsDisplayed() {
     onNode(hasLocalizedText { sectionPlay } and isSelectable()).assertIsSelected()
+  }
+
+  /**
+   * Switches to the prepare game dialog.
+   *
+   * @param block the block to run with the [PrepareGameRobot].
+   * @return the [PrepareGameRobot] that should be used.
+   */
+  inline fun switchToPrepareGameOnline(
+      block: PrepareGameRobot.() -> Unit = {},
+  ): PrepareGameRobot {
+    onNodeWithLocalizedText { newGame }.performClick()
+    onNodeWithLocalizedText { prepareGamePlayOnline }.performClick()
+    return switchTo(::PrepareGameRobot, block)
   }
 }
 
@@ -100,9 +119,23 @@ class FollowingSectionRobot(
     strings: LocalizedStrings,
 ) : HomeRobot(rule, strings) {
 
-  /** Checks that this robot is indeed the one currently displayed on the screen. */
-  fun check() {
+  override fun assertIsDisplayed() {
     onNode(hasLocalizedText { sectionSocial } and isSelectable()).assertIsSelected()
+  }
+
+  /**
+   * Switches to the profile with the given user name.
+   *
+   * @param name the name of the user whose name is clicked.
+   * @param block the block to run with the [ProfileRobot].
+   * @return the [ProfileRobot] that should be used.
+   */
+  inline fun switchToProfile(
+      name: String,
+      block: ProfileRobot.() -> Unit = {},
+  ): ProfileRobot {
+    waitUntilSuccess { onNodeWithText(name, ignoreCase = true).performClick() }
+    return switchTo(::ProfileRobot, block)
   }
 }
 
@@ -117,8 +150,7 @@ class TournamentsSectionRobot(
     strings: LocalizedStrings,
 ) : HomeRobot(rule, strings) {
 
-  /** Checks that this robot is indeed the one currently displayed on the screen. */
-  fun check() {
+  override fun assertIsDisplayed() {
     onNode(hasLocalizedText { sectionContests } and isSelectable()).assertIsSelected()
   }
 }
@@ -134,8 +166,7 @@ class SettingsSectionRobot(
     strings: LocalizedStrings,
 ) : HomeRobot(rule, strings) {
 
-  /** Checks that this robot is indeed the one currently displayed on the screen. */
-  fun check() {
+  override fun assertIsDisplayed() {
     onNode(hasLocalizedText { sectionSettings } and isSelectable()).assertIsSelected()
   }
 }

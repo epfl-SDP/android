@@ -138,6 +138,11 @@ class ChessBoardRobot(
     }
   }
 
+  /** Asserts that this robot is currently displayed. */
+  fun assertIsDisplayed() {
+    onChessBoard().assertIsDisplayed()
+  }
+
   /**
    * Asserts that a piece with the given [color] and [rank] is present at the given position. This
    * will essentially check that the center of the piece is present in a specific cell.

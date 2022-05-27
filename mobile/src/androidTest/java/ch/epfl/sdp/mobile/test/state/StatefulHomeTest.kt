@@ -49,53 +49,46 @@ class StatefulHomeTest {
   @Test
   fun defaultSection_isSocial() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).check()
+    FollowingSectionRobot(rule, strings).assertIsDisplayed()
   }
 
   @Test
   fun clickingSettingsTab_selectsSettingsSection() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToSettingsSection().check()
+    FollowingSectionRobot(rule, strings).switchToSettingsSection().assertIsDisplayed()
   }
 
   @Test
   fun clickSocialSection_selectsSocialSection() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToFollowingSection().check()
+    FollowingSectionRobot(rule, strings).switchToFollowingSection().assertIsDisplayed()
   }
 
   @Test
   fun clickPlaySection_selectsPlaySection() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToPlaySection().check()
+    FollowingSectionRobot(rule, strings).switchToPlaySection().assertIsDisplayed()
   }
 
   @Test
   fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
     val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToTournamentsSection().check()
+    FollowingSectionRobot(rule, strings).switchToTournamentsSection().assertIsDisplayed()
   }
 
   @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document("1", ProfileDocument())
-        document("2", ProfileDocument(emoji = ":)", name = "testName", followers = listOf("1")))
-      }
+    val (_, infra, strings, user) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+
+    infra.store
+        .collection(ProfileDocument.Collection)
+        .document()
+        .set(ProfileDocument(name = "testName", followers = listOf(user.uid)))
+
+    FollowingSectionRobot(rule, strings).switchToProfile(name = "testName") {
+      assertIsDisplayed()
+      assertHasName("testName")
     }
-    val facade = AuthenticationFacade(auth, store)
-
-    facade.signInWithEmail("email@example.org", "password")
-    val user = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val (_, _, strings) =
-        rule.setContentWithTestEnvironment(auth = auth, store = store) { StatefulHome(user) }
-
-    rule.onNodeWithText(strings.sectionSocial).performClick()
-    rule.onNodeWithText("testName").assertExists()
-    rule.onNodeWithText("testName").performClick()
-    rule.onNodeWithText(strings.profilePastGames).assertExists()
   }
 
   @Test
@@ -118,30 +111,21 @@ class StatefulHomeTest {
 
   @Test
   fun creatingGameFromPrepareGameScreen_opensGameScreen() = runTest {
-    val auth = emptyAuth()
     val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document("userId2", ProfileDocument(name = "user2"))
-      }
+      collection(ProfileDocument.Collection) { document("id", ProfileDocument(name = "user2")) }
     }
-    val authFacade = AuthenticationFacade(auth, store)
-    val social = SocialFacade(auth, store)
+    val (facades, _, strings, user) =
+        rule.setContentWithTestEnvironment(store = store) { StatefulHome(user) }
 
-    authFacade.signUpWithEmail("user1@email", "user1", "password")
-    val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
-    val user2 =
-        social.profile(uid = "userId2", user = currentUser).filterIsInstance<Profile>().first()
-    currentUser.follow(user2)
+    user.follow(facades.social.profile("id", user).first() ?: throw IllegalStateException())
 
-    val (_, _, strings) =
-        rule.setContentWithTestEnvironment(auth = auth, store = store) { StatefulHome(currentUser) }
-
-    rule.onNodeWithText(strings.sectionPlay).performClick()
-    rule.onNodeWithText(strings.newGame).performClick()
-    rule.onNodeWithText(strings.prepareGamePlayOnline).performClick()
-    rule.onNodeWithText("user2").performClick()
-    rule.onNodeWithText(strings.prepareGamePlay).performClick()
-    rule.onNodeWithContentDescription(strings.boardContentDescription).assertExists()
+    FollowingSectionRobot(rule, strings)
+        .switchToPlaySection()
+        .switchToPrepareGameOnline {
+          assertIsDisplayed()
+          selectOpponent("user2")
+        }
+        .switchToGame { assertIsDisplayed() }
   }
 
   @Test
