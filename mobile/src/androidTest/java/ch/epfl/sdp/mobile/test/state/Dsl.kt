@@ -10,6 +10,7 @@ import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -20,6 +21,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
 import ch.epfl.sdp.mobile.state.ProvideFacades
+import ch.epfl.sdp.mobile.state.ProvideLocalizedStrings
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
@@ -62,6 +64,7 @@ data class Facades(
     val social: SocialFacade,
     val speech: SpeechFacade,
     val tournaments: TournamentFacade,
+    val settings: SettingsFacade,
 )
 
 /**
@@ -98,14 +101,15 @@ data class TestEnvironment(
 suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
     userId: String = DefaultId,
     store: Store = buildStore {
-      collection("users") { document(userId, ProfileDocument(uid = userId, name = DefaultName)) }
+      collection(ProfileDocument.Collection) {
+        document(userId, ProfileDocument(uid = userId, name = DefaultName))
+      }
     },
     auth: Auth = buildAuth { user(DefaultEmail, DefaultPassword, userId) },
     assets: AssetManager = emptyAssets(),
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
     dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
     timeProvider: TimeProvider = FakeTimeProvider,
-    strings: LocalizedStrings = English,
     content: @Composable TestEnvironment.() -> Unit,
 ): TestEnvironment {
   val authenticationFacade = AuthenticationFacade(auth, store)
@@ -113,6 +117,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val chessFacade = ChessFacade(auth, store, assets)
   val speechFacade = SpeechFacade(recognizer)
   val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
+  val settingsFacade = SettingsFacade(dataStoreFactory)
   authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
   val user = authenticationFacade.awaitAuthenticatedUser()
   val environment =
@@ -124,7 +129,7 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
                   social = socialFacade,
                   speech = speechFacade,
                   tournaments = tournamentFacade,
-              ),
+                  settings = settingsFacade),
           infrastructure =
               Infrastructure(
                   assets = assets,
@@ -132,10 +137,11 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
                   dataStoreFactory = dataStoreFactory,
                   store = store,
               ),
-          strings = strings,
+          // This ignores the language in the dataStoreFactory
+          strings = English,
           user = user,
       )
-  setContentWithLocalizedStrings(strings) {
+  setContent {
     PawniesTheme {
       ProvideFacades(
           authentication = authenticationFacade,
@@ -143,8 +149,8 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
           chess = chessFacade,
           speech = speechFacade,
           tournament = tournamentFacade,
-          content = { with(environment) { content() } },
-      )
+          settings = settingsFacade,
+      ) { ProvideLocalizedStrings { with(environment) { content() } } }
     }
   }
   return environment

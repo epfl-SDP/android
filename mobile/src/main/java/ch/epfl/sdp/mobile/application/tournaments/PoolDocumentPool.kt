@@ -54,7 +54,7 @@ class PoolDocumentPool(
                       poolId = document.uid,
                       tournamentId = document.tournamentId,
                   )
-              set(store.collection("games").document(), match)
+              set(store.collection(ChessDocument.Collection).document(), match)
             }
           }
         }

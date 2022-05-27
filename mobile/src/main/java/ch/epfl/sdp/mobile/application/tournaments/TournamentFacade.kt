@@ -152,7 +152,7 @@ class TournamentFacade(
     val tournaments =
         store
             .collection(TournamentDocument.Collection)
-            .orderBy("creationTimeEpochMillis", Query.Direction.Descending)
+            .orderBy(TournamentDocument.CreationTimeEpochMillis, Query.Direction.Descending)
             .asFlow<TournamentDocument>()
             .map { it.mapNotNull { doc -> doc?.toTournament(user, store, timeProvider) } }
     val predicates = tournamentPredicate()
@@ -263,9 +263,9 @@ class TournamentFacade(
    */
   fun poolResults(reference: TournamentReference): Flow<PoolResults> =
       store
-          .collection("games")
-          .whereEquals("tournamentId", reference.uid)
-          .whereNotEquals("poolId", null)
+          .collection(ChessDocument.Collection)
+          .whereEquals(ChessDocument.TournamentId, reference.uid)
+          .whereNotEquals(ChessDocument.PoolId, null)
           .asFlow<ChessDocument>()
           .map { it.filterNotNull().toPoolResults() }
 
@@ -277,9 +277,9 @@ class TournamentFacade(
    */
   fun eliminationMatches(reference: TournamentReference): Flow<List<EliminationMatch>> =
       store
-          .collection("games")
-          .whereEquals("tournamentId", reference.uid)
-          .whereEquals("poolId", null)
+          .collection(ChessDocument.Collection)
+          .whereEquals(ChessDocument.TournamentId, reference.uid)
+          .whereEquals(ChessDocument.PoolId, null)
           .asFlow<ChessDocument>()
           .map { list -> list.mapNotNull { it?.toEliminationMatch() } }
 

@@ -40,7 +40,6 @@ interface LocalizedStrings {
   val profileTieInfo: (Int) -> String
   val profilePastGames: String
   val profilePuzzle: String
-  val profileSettings: String
   val profileFollow: String
   val profileUnfollow: String
   val profileChallenge: String
@@ -55,6 +54,8 @@ interface LocalizedStrings {
   val settingProfileNameLabel: String
   val settingProfileImageLabel: String
   val settingLogout: String
+  val settingLanguageLabel: String
+  val settingsEditLanguage: String
 
   val boardColorBlack: String
   val boardColorWhite: String

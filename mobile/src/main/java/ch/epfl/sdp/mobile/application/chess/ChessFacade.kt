@@ -46,7 +46,7 @@ class ChessFacade(
    * @return The created [Match] before storing it in the [Store].
    */
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
-    val document = store.collection("games").document()
+    val document = store.collection(ChessDocument.Collection).document()
     document.set(
         ChessDocument(
             whiteId = user.uid, blackId = user.uid, lastUpdatedAt = System.currentTimeMillis()))
@@ -63,7 +63,7 @@ class ChessFacade(
    * @return The created [Match] before storing it in the [Store].
    */
   suspend fun createMatch(white: Profile, black: Profile, user: Profile? = null): Match {
-    val document = store.collection("games").document()
+    val document = store.collection(ChessDocument.Collection).document()
     document.set(
         ChessDocument(
             whiteId = white.uid, blackId = black.uid, lastUpdatedAt = System.currentTimeMillis()))
@@ -91,8 +91,8 @@ class ChessFacade(
    * @return The [Flow] of [List] of [Match]s for the [Profile].
    */
   fun matches(profile: Profile): Flow<List<Match>> {
-    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", profile)
-    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", profile)
+    val gamesAsWhite = getMatchesForPlayer(colorField = ChessDocument.WhiteId, profile)
+    val gamesAsBlack = getMatchesForPlayer(colorField = ChessDocument.BlackId, profile)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
@@ -108,7 +108,7 @@ class ChessFacade(
    */
   private fun getMatchesForPlayer(colorField: String, user: Profile): Flow<List<Match>> {
     return store
-        .collection("games")
+        .collection(ChessDocument.Collection)
         .whereEquals(colorField, user.uid)
         .asMatchListFlow(user)
         .onStart { emit(emptyList()) }
@@ -225,13 +225,16 @@ private data class StoreMatch(
       uid: String,
   ): Flow<Profile?> {
 
-    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
-      doc?.toProfile(NotAuthenticatedUser)
-    }
+    return store
+        .collection(ProfileDocument.Collection)
+        .document(uid)
+        .asFlow<ProfileDocument>()
+        .map { doc -> doc?.toProfile(NotAuthenticatedUser) }
   }
 
   /** A flow of the [ChessDocument] of the [id]. */
-  private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
+  private val documentFlow =
+      store.collection(ChessDocument.Collection).document(id).asFlow<ChessDocument>()
 
   override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
 
@@ -245,10 +248,10 @@ private data class StoreMatch(
       }
 
   override suspend fun update(game: Game) {
-    val document = store.collection("games").document(id).get<ChessDocument>()
+    val document = store.collection(ChessDocument.Collection).document(id).get<ChessDocument>()
 
-    store.collection("games").document(id).update {
-      this[FieldPath(listOf("metadata", "status"))] =
+    store.collection(ChessDocument.Collection).document(id).update {
+      this[FieldPath(listOf(ChessDocument.Metadata, ChessDocument.Status))] =
           when (val step = game.nextStep) {
             NextStep.Stalemate -> Stalemate
             is NextStep.MovePiece -> null
@@ -256,15 +259,15 @@ private data class StoreMatch(
           }
 
       if (document?.blackId == user?.uid) {
-        this[FieldPath(listOf("metadata", "blackName"))] = user?.name
+        this[FieldPath(listOf(ChessDocument.Metadata, ChessDocument.BlackName))] = user?.name
       }
 
       if (document?.whiteId == user?.uid) {
-        this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
+        this[FieldPath(listOf(ChessDocument.Metadata, ChessDocument.WhiteName))] = user?.name
       }
 
-      this["moves"] = game.toAlgebraicNotation()
-      this["lastUpdatedAt"] = System.currentTimeMillis()
+      this[ChessDocument.Moves] = game.toAlgebraicNotation()
+      this[ChessDocument.LastUpdatedAt] = System.currentTimeMillis()
     }
   }
 }

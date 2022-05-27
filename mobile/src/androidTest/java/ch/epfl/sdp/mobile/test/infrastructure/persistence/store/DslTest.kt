@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store
 
+import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
@@ -49,32 +50,32 @@ class DslTest {
 
   @Test
   fun nonNullDocument_isNotNull() = runTest {
-    val store = buildStore { collection("users") { document("id", alexandre) } }
-    val value = store.collection("users").document("id").asFlow<User>().first()
+    val store = buildStore { collection(ProfileDocument.Collection) { document("id", alexandre) } }
+    val value = store.collection(ProfileDocument.Collection).document("id").asFlow<User>().first()
     assertThat(value).isEqualTo(alexandre)
   }
 
   @Test
   fun multipleDocuments_areAllPresent() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("alexandre", alexandre)
         document("chau", chau)
         document("matthieu", matthieu)
       }
     }
-    val people = store.collection("users").asFlow<User>().first().toSet()
+    val people = store.collection(ProfileDocument.Collection).asFlow<User>().first().toSet()
     assertThat(people).containsExactly(alexandre, chau, matthieu)
   }
 
   @Test
   fun collection_canBeBuiltInSteps() = runTest {
     val store = buildStore {
-      collection("users") { document("alexandre", alexandre) }
-      collection("users") { document("chau", chau) }
-      collection("users") { document("matthieu", matthieu) }
+      collection(ProfileDocument.Collection) { document("alexandre", alexandre) }
+      collection(ProfileDocument.Collection) { document("chau", chau) }
+      collection(ProfileDocument.Collection) { document("matthieu", matthieu) }
     }
-    val people = store.collection("users").asFlow<User>().first().toSet()
+    val people = store.collection(ProfileDocument.Collection).asFlow<User>().first().toSet()
     assertThat(people).containsExactly(alexandre, chau, matthieu)
   }
 
@@ -85,25 +86,39 @@ class DslTest {
 
   @Test
   fun document_isUpdated() = runTest {
-    val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
-    store.collection("users").document("doc").update {
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("doc", SampleDocument()) }
+    }
+    store.collection(ProfileDocument.Collection).document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
     }
-    val doc = store.collection("users").document("doc").asFlow<SampleDocument>().first()
+    val doc =
+        store
+            .collection(ProfileDocument.Collection)
+            .document("doc")
+            .asFlow<SampleDocument>()
+            .first()
     assertThat(doc).isEqualTo(SampleDocument(title = "Hello", subtitle = "World"))
   }
 
   @Test
   fun document_supportsSet() = runTest {
-    val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
-    store.collection("users").document("doc").update {
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("doc", SampleDocument()) }
+    }
+    store.collection(ProfileDocument.Collection).document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
     }
-    store.collection("users").document("doc").set { this["title"] = "Hello" }
+    store.collection(ProfileDocument.Collection).document("doc").set { this["title"] = "Hello" }
 
-    val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
+    val data =
+        store
+            .collection(ProfileDocument.Collection)
+            .document("doc")
+            .asFlow<SampleDocument>()
+            .first()
 
     assertThat(data).isEqualTo(SampleDocument(title = "Hello", subtitle = null))
   }
@@ -111,29 +126,41 @@ class DslTest {
   @Test
   fun document_supportsSetWithClass() = runTest {
     val store = emptyStore()
-    store.collection("users").document("alexandre").set(alexandre)
-    val data = store.collection("users").document("alexandre").asFlow<User>().first()
+    store.collection(ProfileDocument.Collection).document("alexandre").set(alexandre)
+    val data =
+        store.collection(ProfileDocument.Collection).document("alexandre").asFlow<User>().first()
     assertThat(data).isEqualTo(alexandre)
   }
 
   @Test
   fun document_setWithKeyValues() = runTest {
     val store = emptyStore()
-    store.collection("users").document("alexandre").set(mapOf("name" to "Alexandre"))
-    val data = store.collection("users").document("alexandre").asFlow<User>().first()
+    store
+        .collection(ProfileDocument.Collection)
+        .document("alexandre")
+        .set(mapOf("name" to "Alexandre"))
+    val data =
+        store.collection(ProfileDocument.Collection).document("alexandre").asFlow<User>().first()
     assertThat(data).isEqualTo(alexandre)
   }
 
   @Test
   fun document_supportsPartialUpdate() = runTest {
-    val store = buildStore { collection("users") { document("doc", SampleDocument()) } }
-    store.collection("users").document("doc").update {
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("doc", SampleDocument()) }
+    }
+    store.collection(ProfileDocument.Collection).document("doc").update {
       this["title"] = "Hello"
       this["subtitle"] = "World"
     }
-    store.collection("users").document("doc").update { this["title"] = "Hello2" }
+    store.collection(ProfileDocument.Collection).document("doc").update { this["title"] = "Hello2" }
 
-    val data = store.collection("users").document("doc").asFlow<SampleDocument>().first()
+    val data =
+        store
+            .collection(ProfileDocument.Collection)
+            .document("doc")
+            .asFlow<SampleDocument>()
+            .first()
 
     assertThat(data).isEqualTo(SampleDocument(title = "Hello2", subtitle = "World"))
   }
@@ -141,39 +168,49 @@ class DslTest {
   @Test
   fun limit_works() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("alexandre", alexandre)
         document("chau", chau)
         document("matthieu", matthieu)
       }
     }
-    val users = store.collection("users").limit(2).asFlow<User>().first()
+    val users = store.collection(ProfileDocument.Collection).limit(2).asFlow<User>().first()
     assertThat(users).hasSize(2)
   }
 
   @Test
   fun whereEquals_works() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("alexandre", alexandre)
         document("chau", chau)
         document("matthieu", matthieu)
       }
     }
-    val users = store.collection("users").whereEquals("name", "Alexandre").asFlow<User>().first()
+    val users =
+        store
+            .collection(ProfileDocument.Collection)
+            .whereEquals(ProfileDocument.Name, "Alexandre")
+            .asFlow<User>()
+            .first()
     assertThat(users.single()).isEqualTo(alexandre)
   }
 
   @Test
   fun whereNotEquals_works() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("alexandre", alexandre)
         document("chau", chau)
         document("matthieu", matthieu)
       }
     }
-    val users = store.collection("users").whereNotEquals("name", "Alexandre").asFlow<User>().first()
+    val users =
+        store
+            .collection(ProfileDocument.Collection)
+            .whereNotEquals(ProfileDocument.Name, "Alexandre")
+            .asFlow<User>()
+            .first()
     assertThat(users.size).isEqualTo(2)
     assertThat(users.toSet()).containsExactly(chau, matthieu)
   }
@@ -181,14 +218,18 @@ class DslTest {
   @Test
   fun whereArrayContains_works() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("alexandre", alexandre)
         document("chau", chau)
         document("matthieu", matthieu)
       }
     }
     val users =
-        store.collection("users").whereArrayContains("friends", "Matthieu").asFlow<User>().first()
+        store
+            .collection(ProfileDocument.Collection)
+            .whereArrayContains("friends", "Matthieu")
+            .asFlow<User>()
+            .first()
     assertThat(users.single()).isEqualTo(chau)
   }
 
@@ -201,14 +242,17 @@ class DslTest {
 
   @Test
   fun given_document_when_readingThenSettingInTransaction_then_succeeds() = runTest {
-    val store = buildStore { collection("users") { document("alexandre", alexandre) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("alexandre", alexandre) }
+    }
     store.transaction {
-      val document = get<User>(store.collection("users").document("alexandre"))
+      val document = get<User>(store.collection(ProfileDocument.Collection).document("alexandre"))
       if (document != null) {
-        set(store.collection("users").document("matthieu"), document)
+        set(store.collection(ProfileDocument.Collection).document("matthieu"), document)
       }
     }
-    val fetched = store.collection("users").document("matthieu").asFlow<User>().first()
+    val fetched =
+        store.collection(ProfileDocument.Collection).document("matthieu").asFlow<User>().first()
     assertThat(fetched).isEqualTo(alexandre)
   }
 }
