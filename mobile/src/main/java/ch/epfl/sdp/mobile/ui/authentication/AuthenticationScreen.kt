@@ -60,7 +60,7 @@ fun AuthenticationScreen(
       Column {
         TextField(
             value = state.email,
-            onValueChange = { state.email = it },
+            onValueChange = { state.email = it.trim() },
             label = { Text(strings.authenticateEmailHint) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -72,7 +72,7 @@ fun AuthenticationScreen(
         ) {
           TextField(
               value = state.name,
-              onValueChange = { state.name = it },
+              onValueChange = { state.name = it.trim() },
               label = { Text(strings.authenticateNameHint) },
               modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
           )
