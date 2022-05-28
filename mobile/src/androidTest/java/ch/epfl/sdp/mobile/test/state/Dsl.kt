@@ -1,14 +1,15 @@
 package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import ch.epfl.sdp.mobile.application.ProfileDocument
-import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
-import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
+import ch.epfl.sdp.mobile.application.authentication.*
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
@@ -24,15 +25,15 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.ProvideLocalizedStrings
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
-import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
+import kotlinx.coroutines.flow.filterIsInstance
 
 /**
  * The lowest-level abstractions with which we can interact during testing.
@@ -67,51 +68,78 @@ data class Facades(
     val settings: SettingsFacade,
 )
 
-/**
- * A class representing a standard testing environment.
- *
- * @property facades the [Facades] used.
- * @property infrastructure the [Infrastructure] used.
- * @property strings the [LocalizedStrings] applied to the GUI.
- * @property user the default [AuthenticatedUser].
- */
-data class TestEnvironment(
-    val facades: Facades,
-    val infrastructure: Infrastructure,
-    val strings: LocalizedStrings,
-    val user: AuthenticatedUser,
-)
+/** An interface representing a standard testing environment. */
+interface TestEnvironment {
+
+  /** The [Facades] used. */
+  val facades: Facades
+
+  /** The [Infrastructure] used. */
+  val infrastructure: Infrastructure
+
+  /** The [LocalizedStrings] applied to the GUI. */
+  val strings: LocalizedStrings
+
+  /** The default [AuthenticationUser], which may be authenticated or not. */
+  val user: AuthenticationUser
+
+  // Destructuring-friendly syntax.
+  operator fun component1(): Facades = facades
+  operator fun component2(): Infrastructure = infrastructure
+  operator fun component3(): LocalizedStrings = strings
+  operator fun component4(): AuthenticationUser = user
+}
 
 /**
- * Sets the content with to the [ComposeContentTestRule], and logs a default user in.
+ * An implementation of [TestEnvironment].
  *
- * @param userId the user identifier for the test environment user.
- * @param store the [Store] to use by default.
- * @param auth the [Auth] to use by default.
- * @param assets the [AssetManager] to use by default.
- * @param recognizer the [SpeechRecognizerFactory] to use by default.
- * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
- * tournament.
- * @param strings the [LocalizedStrings] for this content.
- * @param content the actual composable content to test.
- *
- * @return the [TestEnvironment] with all the facades, infrastructure and general testing
- * information.
+ * @see TestEnvironment
  */
-suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
-    userId: String = DefaultId,
-    // TODO : Create the document manually in the body function rather than here.
-    store: Store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document(userId, ProfileDocument(uid = userId, name = DefaultName))
-      }
-    },
-    auth: Auth = buildAuth { user(DefaultEmail, DefaultPassword, userId) },
-    assets: AssetManager = emptyAssets(),
-    recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
-    dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
-    timeProvider: TimeProvider = FakeTimeProvider,
-    content: @Composable TestEnvironment.() -> Unit,
+private class ActualTestEnvironment(
+    override val facades: Facades,
+    override val infrastructure: Infrastructure,
+    override val strings: LocalizedStrings,
+    override val user: AuthenticationUser,
+) : TestEnvironment
+
+/** An interface representing a testing environment with an authenticated user. */
+interface AuthenticatedTestEnvironment : TestEnvironment {
+  override val user: AuthenticatedUser
+  override operator fun component4(): AuthenticatedUser = user
+}
+
+/**
+ * An implementation of [AuthenticatedTestEnvironment].
+ *
+ * @param delegate the [TestEnvironment] delegate.
+ * @see AuthenticatedTestEnvironment
+ */
+private class ActualAuthenticatedTestEnvironment(
+    delegate: TestEnvironment,
+    override val user: AuthenticatedUser,
+) : AuthenticatedTestEnvironment, TestEnvironment by delegate {
+  override fun component4(): AuthenticatedUser = user
+}
+
+/**
+ * Creates a [TestEnvironment] using the provided services.
+ *
+ * @param store the underlying [Store].
+ * @param auth the underlying [Auth].
+ * @param assets the underlying [AssetManager].
+ * @param recognizer the underlying [SpeechRecognizerFactory].
+ * @param dataStoreFactory the underlying [DataStoreFactory].
+ * @param timeProvider the underlying [TimeProvider].
+ *
+ * @return a [TestEnvironment] with a disconnected user.
+ */
+private fun createTestEnvironment(
+    store: Store,
+    auth: Auth,
+    assets: AssetManager,
+    recognizer: SpeechRecognizerFactory,
+    dataStoreFactory: DataStoreFactory,
+    timeProvider: TimeProvider,
 ): TestEnvironment {
   val authenticationFacade = AuthenticationFacade(auth, store)
   val socialFacade = SocialFacade(auth, store)
@@ -119,38 +147,168 @@ suspend fun ComposeContentTestRule.setContentWithTestEnvironment(
   val speechFacade = SpeechFacade(recognizer)
   val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
   val settingsFacade = SettingsFacade(dataStoreFactory)
-  authenticationFacade.signInWithEmail(DefaultEmail, DefaultPassword)
-  val user = authenticationFacade.awaitAuthenticatedUser()
+  return ActualTestEnvironment(
+      facades =
+          Facades(
+              auth = authenticationFacade,
+              chess = chessFacade,
+              social = socialFacade,
+              speech = speechFacade,
+              tournaments = tournamentFacade,
+              settings = settingsFacade,
+          ),
+      infrastructure =
+          Infrastructure(
+              assets = assets,
+              auth = auth,
+              dataStoreFactory = dataStoreFactory,
+              store = store,
+          ),
+      // This ignores the language in the dataStoreFactory
+      strings = English,
+      user = NotAuthenticatedUser,
+  )
+}
+
+/**
+ * Authenticates in the current [TestEnvironment].
+ *
+ * @receiver the [TestEnvironment] on which authentication is performed.
+ * @return the [AuthenticatedTestEnvironment] with the authenticated user.
+ */
+private suspend fun TestEnvironment.authenticate(): AuthenticatedTestEnvironment {
+  val result = facades.auth.signUpWithEmail(DefaultEmail, DefaultName, DefaultPassword)
+  check(result == AuthenticationResult.Success) { "Failed authentication in TestEnvironment." }
+  val user = facades.auth.awaitAuthenticatedUser()
+  return ActualAuthenticatedTestEnvironment(this, user)
+}
+
+/**
+ * Sets the content with to the [ComposeContentTestRule], and logs a default user in.
+ *
+ * @param store the [Store] to use by default.
+ * @param auth the [Auth] to use by default.
+ * @param assets the [AssetManager] to use by default.
+ * @param recognizer the [SpeechRecognizerFactory] to use by default.
+ * @param dataStoreFactory the [DataStoreFactory] to use by default.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
+ * @param content the actual composable content to test.
+ *
+ * @return the [AuthenticatedTestEnvironment] with all the facades, infrastructure and general
+ * testing information. The provided [AuthenticatedUser] will be updated whenever the current user
+ * profile changes.
+ */
+suspend fun ComposeContentTestRule.setContentWithAuthenticatedTestEnvironment(
+    store: Store = emptyStore(),
+    auth: Auth = emptyAuth(),
+    assets: AssetManager = emptyAssets(),
+    recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
+    dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
+    timeProvider: TimeProvider = FakeTimeProvider,
+    content: @Composable AuthenticatedTestEnvironment.() -> Unit,
+): AuthenticatedTestEnvironment {
   val environment =
-      TestEnvironment(
-          facades =
-              Facades(
-                  auth = authenticationFacade,
-                  chess = chessFacade,
-                  social = socialFacade,
-                  speech = speechFacade,
-                  tournaments = tournamentFacade,
-                  settings = settingsFacade),
-          infrastructure =
-              Infrastructure(
-                  assets = assets,
-                  auth = auth,
-                  dataStoreFactory = dataStoreFactory,
-                  store = store,
-              ),
-          // This ignores the language in the dataStoreFactory
-          strings = English,
-          user = user,
+      createTestEnvironment(
+              store = store,
+              auth = auth,
+              assets = assets,
+              recognizer = recognizer,
+              dataStoreFactory = dataStoreFactory,
+              timeProvider = timeProvider,
+          )
+          .authenticate()
+  return setContentWithEnvironment(environment) {
+    val user by
+        remember(environment) {
+              environment.facades.auth.currentUser.filterIsInstance<AuthenticatedUser>()
+            }
+            .collectAsState(environment.user)
+    content(
+        ActualAuthenticatedTestEnvironment(
+            delegate =
+                ActualTestEnvironment(
+                    facades = environment.facades,
+                    infrastructure = environment.infrastructure,
+                    strings = environment.strings,
+                    user = user,
+                ),
+            user = user,
+        ),
+    )
+  }
+}
+
+/**
+ * Sets the content with to the [ComposeContentTestRule], with a default not authenticated user.
+ *
+ * @param store the [Store] to use by default.
+ * @param auth the [Auth] to use by default.
+ * @param assets the [AssetManager] to use by default.
+ * @param recognizer the [SpeechRecognizerFactory] to use by default.
+ * @param dataStoreFactory the [DataStoreFactory] to use by default.
+ * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * tournament.
+ * @param content the actual composable content to test.
+ *
+ * @return the [TestEnvironment] with all the facades, infrastructure and general testing
+ * information.
+ */
+fun ComposeContentTestRule.setContentWithTestEnvironment(
+    store: Store = emptyStore(),
+    auth: Auth = emptyAuth(),
+    assets: AssetManager = emptyAssets(),
+    recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
+    dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
+    timeProvider: TimeProvider = FakeTimeProvider,
+    content: @Composable TestEnvironment.() -> Unit,
+): TestEnvironment {
+  val environment =
+      createTestEnvironment(
+          store = store,
+          auth = auth,
+          assets = assets,
+          recognizer = recognizer,
+          dataStoreFactory = dataStoreFactory,
+          timeProvider = timeProvider,
       )
+  return setContentWithEnvironment(environment) {
+    val user by
+        remember(environment) { environment.facades.auth.currentUser }
+            .collectAsState(environment.user)
+    content(
+        ActualTestEnvironment(
+            facades = environment.facades,
+            infrastructure = environment.infrastructure,
+            strings = environment.strings,
+            user = user,
+        ),
+    )
+  }
+}
+
+/**
+ * Sets the content of this [ComposeContentTestRule] with the given [TestEnvironment], providing all
+ * the facades.
+ *
+ * @param E the type of [TestEnvironment].
+ * @receiver the [ComposeContentTestRule] on which the content is performed.
+ * @param environment the [TestEnvironment] which is used.
+ * @param content the body of the content.
+ */
+private fun <E : TestEnvironment> ComposeContentTestRule.setContentWithEnvironment(
+    environment: E,
+    content: @Composable E.() -> Unit,
+): E {
   setContent {
     PawniesTheme {
       ProvideFacades(
-          authentication = authenticationFacade,
-          social = socialFacade,
-          chess = chessFacade,
-          speech = speechFacade,
-          tournament = tournamentFacade,
-          settings = settingsFacade,
+          authentication = environment.facades.auth,
+          social = environment.facades.social,
+          chess = environment.facades.chess,
+          speech = environment.facades.speech,
+          tournament = environment.facades.tournaments,
+          settings = environment.facades.settings,
       ) { ProvideLocalizedStrings { with(environment) { content() } } }
     }
   }
@@ -168,7 +326,6 @@ fun ComposeTestRule.performClickOnceVisible(text: String) {
 }
 
 // Default values.
-private const val DefaultId = "superSU"
 private const val DefaultEmail = "alexandre@example.org"
 private const val DefaultName = "Alexandre"
 private const val DefaultPassword = "hell0hackers!!!!"

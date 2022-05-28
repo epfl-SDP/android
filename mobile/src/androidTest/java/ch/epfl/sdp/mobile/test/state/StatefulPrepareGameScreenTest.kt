@@ -38,7 +38,7 @@ class StatefulPrepareGameScreenTest {
   @Test
   fun defaultScreen_isDisplayed() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -53,7 +53,7 @@ class StatefulPrepareGameScreenTest {
   @Test
   fun switchColorToBlack_works() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -71,7 +71,7 @@ class StatefulPrepareGameScreenTest {
   @Test
   fun switchColorBackToWhite_works() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},

@@ -9,6 +9,8 @@ import ch.epfl.sdp.mobile.test.ui.AbstractRobot
 import ch.epfl.sdp.mobile.test.ui.game.GameScreenRobot
 import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
 import ch.epfl.sdp.mobile.test.ui.profile.ProfileRobot
+import ch.epfl.sdp.mobile.test.ui.profile.SettingsRobot
+import ch.epfl.sdp.mobile.test.ui.profile.VisitedProfileRobot
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 
 /**
@@ -143,14 +145,14 @@ class FollowingSectionRobot(
    *
    * @param name the name of the user whose name is clicked.
    * @param block the block to run with the [ProfileRobot].
-   * @return the [ProfileRobot] that should be used.
+   * @return the [VisitedProfileRobot] that should be used.
    */
-  inline fun switchToProfile(
+  inline fun performClickProfile(
       name: String,
-      block: ProfileRobot.() -> Unit = {},
-  ): ProfileRobot {
+      block: VisitedProfileRobot.() -> Unit = {},
+  ): VisitedProfileRobot {
     waitUntilSuccess { onNodeWithText(name, ignoreCase = true).performClick() }
-    return switchTo(::ProfileRobot, block)
+    return switchTo(::VisitedProfileRobot, block)
   }
 }
 
@@ -183,5 +185,12 @@ class SettingsSectionRobot(
 
   override fun assertIsDisplayed() {
     onNode(hasLocalizedText { sectionSettings } and isSelectable()).assertIsSelected()
+  }
+
+  /** Returns the [ProfileRobot] corresponding to this [SettingsSectionRobot]. */
+  fun asProfileRobot(): ProfileRobot {
+    // TODO : We may want to refine the hierarchy of robots so SettingsSectionRobot is a
+    //        ProfileRobot too.
+    return switchTo(::SettingsRobot)
   }
 }

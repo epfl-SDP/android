@@ -47,37 +47,38 @@ class StatefulHomeTest {
 
   @Test
   fun defaultSection_isSocial() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
     FollowingSectionRobot(rule, strings).assertIsDisplayed()
   }
 
   @Test
   fun clickingSettingsTab_selectsSettingsSection() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
     FollowingSectionRobot(rule, strings).switchToSettingsSection().assertIsDisplayed()
   }
 
   @Test
   fun clickSocialSection_selectsSocialSection() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
     FollowingSectionRobot(rule, strings).switchToFollowingSection().assertIsDisplayed()
   }
 
   @Test
   fun clickPlaySection_selectsPlaySection() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
     FollowingSectionRobot(rule, strings).switchToPlaySection().assertIsDisplayed()
   }
 
   @Test
   fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
     FollowingSectionRobot(rule, strings).switchToTournamentsSection().assertIsDisplayed()
   }
 
   @Test
   fun clickOnPlayer_inFollowerScreen_openProfileScreen() = runTest {
-    val (_, infra, strings, user) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, infra, strings, user) =
+        rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
     infra
         .store
@@ -85,7 +86,7 @@ class StatefulHomeTest {
         .document()
         .set(ProfileDocument(name = "testName", followers = listOf(user.uid)))
 
-    FollowingSectionRobot(rule, strings).switchToProfile(name = "testName") {
+    FollowingSectionRobot(rule, strings).performClickProfile(name = "testName") {
       assertIsDisplayed()
       assertHasName("testName")
     }
@@ -94,7 +95,7 @@ class StatefulHomeTest {
   @Test
   fun gameRoute_displaysAChessGame() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           val controller = rememberNavController()
           StatefulHome(
               user = user,
@@ -115,7 +116,7 @@ class StatefulHomeTest {
       collection(ProfileDocument.Collection) { document("id", ProfileDocument(name = "user2")) }
     }
     val (facades, _, strings, user) =
-        rule.setContentWithTestEnvironment(store = store) { StatefulHome(user) }
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) { StatefulHome(user) }
 
     user.follow(facades.social.profile("id", user).first() ?: throw IllegalStateException())
 
@@ -130,7 +131,7 @@ class StatefulHomeTest {
 
   @Test
   fun clickingOnPlayButtonFromPrepareGameScreen_withNoOpponentSelected_doesNothing() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
     val prepareGameOnlineRobot =
         FollowingSectionRobot(rule, strings).switchToPlaySection().performNewGameOnline()
@@ -141,7 +142,7 @@ class StatefulHomeTest {
 
   @Test
   fun cancelingPreparegameScreen_returnsToPlaySection() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
     val playSectionRobot = FollowingSectionRobot(rule, strings).switchToPlaySection()
 
@@ -159,7 +160,7 @@ class StatefulHomeTest {
       collection(ProfileDocument.Collection) { document("id", ProfileDocument(name = "user2")) }
     }
     val (facade, _, strings, user) =
-        rule.setContentWithTestEnvironment(store = store) { StatefulHome(user) }
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) { StatefulHome(user) }
 
     user.follow(facade.social.profile("id").first() ?: throw IllegalStateException())
 
@@ -174,7 +175,7 @@ class StatefulHomeTest {
 
   @Test
   fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
     FollowingSectionRobot(rule, strings).switchToPlaySection().performNewGameLocal {
       assertIsDisplayed()
@@ -377,7 +378,10 @@ class StatefulHomeTest {
 
     authFacade.signInWithEmail("email@example.org", "password")
 
-    val env = rule.setContentWithTestEnvironment(auth = auth, store = store) { StatefulHome(user) }
+    val env =
+        rule.setContentWithAuthenticatedTestEnvironment(auth = auth, store = store) {
+          StatefulHome(user)
+        }
 
     val user = env.facades.auth.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val follower = env.facades.social.profile("2").first()!!
@@ -432,7 +436,10 @@ class StatefulHomeTest {
   @Test
   fun given_puzzleSelectionScreen_when_puzzleClicked_then_correspondingPuzzleOpened() = runTest {
     val (assets, puzzleIds) = twoPuzzleAssets()
-    val env = rule.setContentWithTestEnvironment(assets = assets) { StatefulHome(user = user) }
+    val env =
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
+          StatefulHome(user = user)
+        }
 
     rule.onNodeWithText(env.strings.sectionPuzzles).performClick()
     rule.onNodeWithText(puzzleIds[0], substring = true).performClick()
@@ -443,7 +450,7 @@ class StatefulHomeTest {
   @Test
   fun given_home_when_routeUpdatedToTournamentDetails_then_displaysTournament() = runTest {
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           val controller = rememberNavController()
           StatefulHome(
               user = user,
@@ -464,7 +471,7 @@ class StatefulHomeTest {
 
   @Test
   fun given_home_when_creatingTournament_then_navigatesToTournament() = runTest {
-    val env = rule.setContentWithTestEnvironment { StatefulHome(user = user) }
+    val env = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user = user) }
     rule.onNodeWithText(env.strings.sectionContests).performClick()
     rule.onNodeWithText(env.strings.newContest).performClick()
     rule.onNodeWithText(env.strings.tournamentsCreateNameHint).performTextInput("Hello")
@@ -481,7 +488,7 @@ class StatefulHomeTest {
 
   @Test
   fun given_tournamentScreen_when_clickingCreate_createTournamentDialogIsOpened() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
     rule.onNodeWithText(strings.sectionContests).performClick()
     rule.onNodeWithText(strings.newContest).performClick()
@@ -491,7 +498,7 @@ class StatefulHomeTest {
 
   @Test
   fun given_tournamentScreen_when_clickingCancel_createTournamentDialogIsClosed() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
     rule.onNodeWithText(strings.sectionContests).performClick()
     rule.onNodeWithText(strings.newContest).performClick()
@@ -628,7 +635,7 @@ class StatefulHomeTest {
 
   @Test
   fun given_home_when_navigatingToFiltersAndBack_then_goesBack() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { StatefulHome(user) }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
     with(strings) {
       rule.onNodeWithText(sectionContests).performClick()
       rule.onNodeWithContentDescription(tournamentsFilter).performClick()
