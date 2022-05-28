@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.onEach
  * - The board as the root node
  * - A number of chess pieces depending on the game state
  *
+ * The assets used in this scene are from : https://free3d.com/3d-model/chessboard-716865.html
+ *
  * @param context The context used to load the 3d models
  * @param scope A scope that is used to launch the model loading
  */
