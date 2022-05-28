@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.ui.prepare_game
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -22,6 +23,28 @@ class PrepareGameRobot(
   /** Asserts that this robot is currently displayed on the screen. */
   fun assertIsDisplayed() {
     onNodeWithLocalizedText { prepareGameChooseOpponent }.assertIsDisplayed()
+    onNodeWithLocalizedText { prepareGameBlackColor }.assertIsDisplayed()
+    onNodeWithLocalizedText { prepareGameWhiteColor }.assertIsDisplayed()
+  }
+
+  /** Asserts that the black color is currently selected. */
+  fun assertBlackSelected() {
+    onNodeWithLocalizedText { prepareGameBlackColor }.assertIsSelected()
+  }
+
+  /** Asserts that the white color is currently selected. */
+  fun assertWhiteSelected() {
+    onNodeWithLocalizedText { prepareGameWhiteColor }.assertIsSelected()
+  }
+
+  /** Presses the button to play as the black player. */
+  fun playAsBlack() {
+    onNodeWithLocalizedText { prepareGameBlackColor }.performClick()
+  }
+
+  /** Presses the button to play as the white player. */
+  fun playAsWhite() {
+    onNodeWithLocalizedText { prepareGameWhiteColor }.performClick()
   }
 
   /**

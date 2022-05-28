@@ -21,6 +21,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.filterIsInstance
@@ -46,8 +47,7 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
+    PrepareGameRobot(rule, strings).assertIsDisplayed()
   }
 
   @Test
@@ -62,8 +62,10 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
+    PrepareGameRobot(rule, strings).apply {
+      playAsBlack()
+      assertBlackSelected()
+    }
   }
 
   @Test
@@ -78,9 +80,11 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
-    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
+    PrepareGameRobot(rule, strings).apply {
+      playAsBlack()
+      playAsWhite()
+      assertWhiteSelected()
+    }
   }
 
   @Test
