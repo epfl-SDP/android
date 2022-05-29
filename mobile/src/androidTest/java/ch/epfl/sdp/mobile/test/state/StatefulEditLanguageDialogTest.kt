@@ -14,7 +14,7 @@ class StatefulEditLanguageDialogTest {
 
   @Test
   fun given_userIsLoggedIn_when_changeLanguageToGerman_then_SettingShouldBeChanged() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.settingsEditLanguage).performClick()
@@ -37,7 +37,7 @@ class StatefulEditLanguageDialogTest {
 
   @Test
   fun given_userIsLoggedIn_when_openedChangeLanguageDialog_then_clickCancleButton() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithText(strings.settingsEditLanguage).performClick()

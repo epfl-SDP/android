@@ -1,8 +1,8 @@
 package ch.epfl.sdp.mobile.ui.prepare_game
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -34,7 +35,7 @@ fun ColorChoiceBar(
 ) {
   val strings = LocalLocalizedStrings.current
 
-  Row(modifier = modifier) {
+  Row(modifier = modifier.selectableGroup()) {
     ColorChoiceTabItem(
         text = strings.prepareGameWhiteColor,
         onClick = { onSelectColor(ColorChoice.White) },
@@ -80,12 +81,18 @@ fun ColorChoiceTabItem(
       contentColor = contentColor,
       shape = shape,
       modifier =
-          modifier.let { if (selected) it.dashedBorder(borderWidth, borderColor, shape) else it }) {
+          modifier
+              .clip(shape)
+              .selectable(selected, onClick = onClick)
+              .then(
+                  if (selected) Modifier.dashedBorder(borderWidth, borderColor, shape)
+                  else Modifier,
+              ),
+  ) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            Modifier.selectable(selected, onClick = onClick).clickable { onClick() }.padding(16.dp),
+        modifier = Modifier.padding(16.dp),
     ) {
       Icon(
           painter = ChessIcons.BlackBishop,

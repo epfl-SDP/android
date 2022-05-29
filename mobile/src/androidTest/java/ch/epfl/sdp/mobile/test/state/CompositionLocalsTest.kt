@@ -1,10 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import ch.epfl.sdp.mobile.state.LocalAuthenticationFacade
-import ch.epfl.sdp.mobile.state.LocalChessFacade
-import ch.epfl.sdp.mobile.state.LocalSocialFacade
-import ch.epfl.sdp.mobile.state.LocalSpeechFacade
+import ch.epfl.sdp.mobile.state.*
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
@@ -36,6 +33,13 @@ class CompositionLocalsTest {
   fun missingSpeechFacade_throwsException() {
     assertThrows(IllegalStateException::class.java) {
       rule.setContent { LocalSpeechFacade.current }
+    }
+  }
+
+  @Test
+  fun missingSettingsFacade_throwsException() {
+    assertThrows(IllegalStateException::class.java) {
+      rule.setContent { LocalSettingsFacade.current }
     }
   }
 }

@@ -45,7 +45,7 @@ class StatefulContestScreenTest {
       authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(auth = auth, store = store) {
+          rule.setContentWithAuthenticatedTestEnvironment(auth = auth, store = store) {
             StatefulTournamentScreen(currentUser, {}, {}, {})
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
@@ -68,7 +68,7 @@ class StatefulContestScreenTest {
       authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store = store, auth = auth) {
+          rule.setContentWithAuthenticatedTestEnvironment(store = store, auth = auth) {
             StatefulTournamentScreen(currentUser, {}, {}, {})
           }
       rule.onNodeWithText("Tournament 1").assertIsDisplayed()
@@ -102,7 +102,7 @@ class StatefulContestScreenTest {
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(
+          rule.setContentWithAuthenticatedTestEnvironment(
               assets = assets, store = store, auth = auth, timeProvider = time) {
             StatefulHome(user)
           }
@@ -129,7 +129,7 @@ class StatefulContestScreenTest {
       val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(
+          rule.setContentWithAuthenticatedTestEnvironment(
               store = store,
               auth = auth,
               timeProvider = time,
@@ -177,7 +177,8 @@ class StatefulContestScreenTest {
         }
       }
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store = store, timeProvider = SystemTimeProvider) {
+          rule.setContentWithAuthenticatedTestEnvironment(
+              store = store, timeProvider = SystemTimeProvider) {
             StatefulTournamentScreen(user, {}, {}, {})
           }
       rule.onNodeWithText(strings.tournamentsStartingTime(1.hours, SpanStyle()).text)
@@ -203,7 +204,8 @@ class StatefulContestScreenTest {
         }
       }
       val (_, _, strings) =
-          rule.setContentWithTestEnvironment(store = store, timeProvider = SystemTimeProvider) {
+          rule.setContentWithAuthenticatedTestEnvironment(
+              store = store, timeProvider = SystemTimeProvider) {
             StatefulTournamentScreen(user, {}, {}, {})
           }
       rule.onNodeWithText(strings.tournamentsStartingTime(1.days, SpanStyle()).text)
