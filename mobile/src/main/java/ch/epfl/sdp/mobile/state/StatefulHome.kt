@@ -128,6 +128,7 @@ fun StatefulHome(
         StatefulFollowingScreen(
             user = user,
             onShowProfileClick = onPersonItemClick,
+            onPlayClick = onChallengeItemClick,
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
         )

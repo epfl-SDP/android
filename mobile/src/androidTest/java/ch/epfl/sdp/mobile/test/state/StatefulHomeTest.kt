@@ -744,4 +744,29 @@ class StatefulHomeTest {
       rule.onNodeWithText(tournamentsFilterTitle).assertDoesNotExist() // On the contest list
     }
   }
+
+  @Test
+  fun given_social_when_clickOnPlay_then_should_startAGame() = runTest {
+    val opponentName = "B"
+    val auth = buildAuth { user("email@example.org", "password", "1") }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) {
+        document("1", ProfileDocument("1", name = "A"))
+        document("2", ProfileDocument("2", name = opponentName, followers = listOf("1")))
+      }
+    }
+    val authFacade = AuthenticationFacade(auth, store)
+
+    authFacade.signInWithEmail("email@example.org", "password")
+
+    val (_, _, strings) =
+        rule.setContentWithTestEnvironment(auth = auth, store = store) { StatefulHome(user) }
+
+    with(strings) {
+      rule.onNodeWithText(sectionSocial).performClick()
+      rule.onNodeWithText(socialPerformPlay).performClick()
+      rule.onNodeWithText(prepareGamePlay).performClick()
+      rule.onNodeWithText(opponentName).assertExists()
+    }
+  }
 }

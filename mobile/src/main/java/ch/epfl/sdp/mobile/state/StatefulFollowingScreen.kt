@@ -39,6 +39,7 @@ data class ProfileAdapter(
  *
  * @param user the current [AuthenticatedUser].
  * @param onShowProfileClick the callback called when we want to show the profile of a user.
+ * @param onPlayClick the callback called when we click on the play button
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
@@ -46,10 +47,13 @@ data class ProfileAdapter(
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
     onShowProfileClick: (ProfileAdapter) -> Unit,
+    onPlayClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(Actions(onShowProfileClick = onShowProfileClick))
+  val actions =
+      rememberUpdatedState(
+          Actions(onShowProfileClick = onShowProfileClick, onPlayClick = onPlayClick))
   val socialFacade = LocalSocialFacade.current
   val scope = rememberCoroutineScope()
 
@@ -68,14 +72,20 @@ fun StatefulFollowingScreen(
   )
 }
 
-/**
- * A class representing the different actions available on the social screen.
- *
- * @param onShowProfileClick a callback when a user is clicked to display their profile.
- */
+interface FollowingProfileActions {
+
+  /** Callback when a user is clicked to display their profile */
+  val onShowProfileClick: (ProfileAdapter) -> Unit
+
+  /** Callback function for a clicked on play */
+  val onPlayClick: (String) -> Unit
+}
+
+/** A class representing the different actions available on the social screen. */
 data class Actions(
-    val onShowProfileClick: (ProfileAdapter) -> Unit,
-)
+    override val onShowProfileClick: (ProfileAdapter) -> Unit,
+    override val onPlayClick: (String) -> Unit
+) : FollowingProfileActions
 
 /**
  * An implementation of the [SocialScreenState] that performs social requests.
@@ -138,6 +148,8 @@ class SnapshotSocialScreenState(
   }
 
   override fun onShowProfileClick(person: ProfileAdapter) = actions.onShowProfileClick(person)
+
+  override fun onPlayClick(opponent: ProfileAdapter) = actions.onPlayClick(opponent.uid)
 
   override fun onFollowClick(followed: ProfileAdapter) {
     scope.launch {

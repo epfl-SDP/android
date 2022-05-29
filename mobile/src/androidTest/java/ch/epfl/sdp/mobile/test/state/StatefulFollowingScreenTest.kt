@@ -69,7 +69,7 @@ class StatefulFollowingScreenTest {
           mockChessFacade,
           mockSpeechFacade,
           mockTournamentFacade,
-          mockSettingsFacade) { StatefulFollowingScreen(mockUser, {}) }
+          mockSettingsFacade) { StatefulFollowingScreen(mockUser, {}, {}) }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
@@ -80,7 +80,7 @@ class StatefulFollowingScreenTest {
       val name = "Fred"
 
       val (_, infra, strings, user) =
-          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
+          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
 
       infra
           .store
@@ -107,7 +107,7 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val (_, infra, strings) =
-          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
+          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
 
       infra
           .store
@@ -127,7 +127,7 @@ class StatefulFollowingScreenTest {
   fun focusedSearchField_isInSearchMode() = runTest {
     val (_, _, strings) =
         rule.setContentWithTestEnvironment {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performClick()
@@ -139,7 +139,7 @@ class StatefulFollowingScreenTest {
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
     val (_, _, strings) =
         rule.setContentWithTestEnvironment {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Body")
@@ -156,7 +156,7 @@ class StatefulFollowingScreenTest {
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
     val (_, infra, strings) =
         rule.setContentWithTestEnvironment {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
     infra
