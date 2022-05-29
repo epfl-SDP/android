@@ -33,6 +33,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFact
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.ui.home.FollowingSectionRobot
+import ch.epfl.sdp.mobile.test.ui.home.HomeSectionRobot
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -54,25 +55,25 @@ class StatefulHomeTest {
   @Test
   fun clickingSettingsTab_selectsSettingsSection() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToSettingsSection().assertIsDisplayed()
+    HomeSectionRobot(rule, strings).clickSettingsTab().assertIsDisplayed()
   }
 
   @Test
   fun clickSocialSection_selectsSocialSection() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToFollowingSection().assertIsDisplayed()
+    HomeSectionRobot(rule, strings).clickFollowingTab().assertIsDisplayed()
   }
 
   @Test
   fun clickPlaySection_selectsPlaySection() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToPlaySection().assertIsDisplayed()
+    HomeSectionRobot(rule, strings).clickPlayTab().assertIsDisplayed()
   }
 
   @Test
   fun given_statefulHome_when_clickingOnContestsSection_then_contestsScreenDisplayed() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
-    FollowingSectionRobot(rule, strings).switchToTournamentsSection().assertIsDisplayed()
+    HomeSectionRobot(rule, strings).clickTournamentsTab().assertIsDisplayed()
   }
 
   @Test
@@ -86,7 +87,7 @@ class StatefulHomeTest {
         .document()
         .set(ProfileDocument(name = "testName", followers = listOf(user.uid)))
 
-    FollowingSectionRobot(rule, strings).performClickProfile(name = "testName") {
+    FollowingSectionRobot(rule, strings).clickProfile(name = "testName") {
       assertIsDisplayed()
       assertHasName("testName")
     }
@@ -120,38 +121,38 @@ class StatefulHomeTest {
 
     user.follow(facades.social.profile("id", user).first() ?: throw IllegalStateException())
 
-    FollowingSectionRobot(rule, strings)
-        .switchToPlaySection()
-        .performNewGameOnline {
+    HomeSectionRobot(rule, strings)
+        .clickPlayTab()
+        .clickNewOnlineGame {
           assertIsDisplayed()
           selectOpponent("user2")
         }
-        .performPlay { assertIsDisplayed() }
+        .clickPlay()
+        .assertIsDisplayed()
   }
 
   @Test
   fun clickingOnPlayButtonFromPrepareGameScreen_withNoOpponentSelected_doesNothing() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
-    val prepareGameOnlineRobot =
-        FollowingSectionRobot(rule, strings).switchToPlaySection().performNewGameOnline()
+    val prepareOnlineGame = HomeSectionRobot(rule, strings).clickPlayTab().clickNewOnlineGame()
 
-    prepareGameOnlineRobot.performPlay { assertIsNotDisplayed() }
-    prepareGameOnlineRobot.assertIsDisplayed()
+    prepareOnlineGame.clickPlay { assertIsNotDisplayed() }
+    prepareOnlineGame.assertIsDisplayed()
   }
 
   @Test
-  fun cancelingPreparegameScreen_returnsToPlaySection() = runTest {
+  fun cancelingPrepareGameScreen_returnsToPlaySection() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
-    val playSectionRobot = FollowingSectionRobot(rule, strings).switchToPlaySection()
+    val playSection = HomeSectionRobot(rule, strings).clickPlayTab()
 
-    playSectionRobot.performNewGameOnline {
+    playSection.clickNewOnlineGame {
       assertIsDisplayed()
-      performCancel()
+      clickCancel()
     }
 
-    playSectionRobot.assertIsDisplayed()
+    playSection.assertIsDisplayed()
   }
 
   @Test
@@ -164,10 +165,10 @@ class StatefulHomeTest {
 
     user.follow(facade.social.profile("id").first() ?: throw IllegalStateException())
 
-    FollowingSectionRobot(rule, strings)
-        .switchToPlaySection()
-        .performNewGameOnline { selectOpponent("user2") }
-        .performPlay {
+    HomeSectionRobot(rule, strings)
+        .clickPlayTab()
+        .clickNewOnlineGame { selectOpponent("user2") }
+        .clickPlay {
           assertIsDisplayed()
           assertHasPlayer("user2")
         }
@@ -177,9 +178,7 @@ class StatefulHomeTest {
   fun given_statefulHome_when_creatingLocalGameFromUI_then_gameScreenOpens() = runTest {
     val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
 
-    FollowingSectionRobot(rule, strings).switchToPlaySection().performNewGameLocal {
-      assertIsDisplayed()
-    }
+    HomeSectionRobot(rule, strings).clickPlayTab().clickNewLocalGame().assertIsDisplayed()
   }
 
   @Test

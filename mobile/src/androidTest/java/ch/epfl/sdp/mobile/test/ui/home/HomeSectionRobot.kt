@@ -20,13 +20,19 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
  * @param rule the underlying [ComposeTestRule].
  * @param strings the [LocalizedStrings] for the composition.
  */
-abstract class HomeRobot(
+open class HomeSectionRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
 ) : AbstractRobot(rule, strings) {
 
   /** Asserts that this section is currently being displayed. */
-  abstract fun assertIsDisplayed()
+  open fun assertIsDisplayed() {
+    onNode(hasLocalizedText { sectionPlay } and isSelectable()).assertExists()
+    onNode(hasLocalizedText { sectionSocial } and isSelectable()).assertExists()
+    onNode(hasLocalizedText { sectionContests } and isSelectable()).assertExists()
+    onNode(hasLocalizedText { sectionPuzzles } and isSelectable()).assertExists()
+    onNode(hasLocalizedText { sectionSettings } and isSelectable()).assertExists()
+  }
 
   /**
    * Switches to the play section.
@@ -34,7 +40,7 @@ abstract class HomeRobot(
    * @param block the block to run with the [PlaySectionRobot].
    * @return the [PlaySectionRobot] that should be used.
    */
-  inline fun switchToPlaySection(
+  inline fun clickPlayTab(
       block: PlaySectionRobot.() -> Unit = {},
   ): PlaySectionRobot {
     onNodeWithLocalizedText { sectionPlay }.performClick()
@@ -47,7 +53,7 @@ abstract class HomeRobot(
    * @param block the block to run with the [FollowingSectionRobot].
    * @return the [FollowingSectionRobot] that should be used.
    */
-  inline fun switchToFollowingSection(
+  inline fun clickFollowingTab(
       block: FollowingSectionRobot.() -> Unit = {},
   ): FollowingSectionRobot {
     onNodeWithLocalizedText { sectionSocial }.performClick()
@@ -60,7 +66,7 @@ abstract class HomeRobot(
    * @param block the block to run with the [TournamentsSectionRobot].
    * @return the [TournamentsSectionRobot] that should be used.
    */
-  inline fun switchToTournamentsSection(
+  inline fun clickTournamentsTab(
       block: TournamentsSectionRobot.() -> Unit = {}
   ): TournamentsSectionRobot {
     onNodeWithLocalizedText { sectionContests }.performClick()
@@ -73,14 +79,13 @@ abstract class HomeRobot(
    * @param block the block to run with the [SettingsSectionRobot].
    * @return the [SettingsSectionRobot] that should be used.
    */
-  inline fun switchToSettingsSection(
+  inline fun clickSettingsTab(
       block: SettingsSectionRobot.() -> Unit = {},
   ): SettingsSectionRobot {
     onNodeWithLocalizedText { sectionSettings }.performClick()
     return switchTo(::SettingsSectionRobot, block)
   }
 }
-
 /**
  * A robot which can perform some actions on the play section of home.
  *
@@ -90,9 +95,10 @@ abstract class HomeRobot(
 class PlaySectionRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
-) : HomeRobot(rule, strings) {
+) : HomeSectionRobot(rule, strings) {
 
   override fun assertIsDisplayed() {
+    super.assertIsDisplayed()
     onNode(hasLocalizedText { sectionPlay } and isSelectable()).assertIsSelected()
   }
 
@@ -102,7 +108,7 @@ class PlaySectionRobot(
    * @param block the block to run with the [GameScreenRobot].
    * @return the [GameScreenRobot] that should be used.
    */
-  inline fun performNewGameLocal(
+  inline fun clickNewLocalGame(
       block: GameScreenRobot.() -> Unit = {},
   ): GameScreenRobot {
     onNodeWithLocalizedText { newGame }.performClick()
@@ -116,7 +122,7 @@ class PlaySectionRobot(
    * @param block the block to run with the [PrepareGameRobot].
    * @return the [PrepareGameRobot] that should be used.
    */
-  inline fun performNewGameOnline(
+  inline fun clickNewOnlineGame(
       block: PrepareGameRobot.() -> Unit = {},
   ): PrepareGameRobot {
     onNodeWithLocalizedText { newGame }.performClick()
@@ -134,9 +140,10 @@ class PlaySectionRobot(
 class FollowingSectionRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
-) : HomeRobot(rule, strings) {
+) : HomeSectionRobot(rule, strings) {
 
   override fun assertIsDisplayed() {
+    super.assertIsDisplayed()
     onNode(hasLocalizedText { sectionSocial } and isSelectable()).assertIsSelected()
   }
 
@@ -147,7 +154,7 @@ class FollowingSectionRobot(
    * @param block the block to run with the [ProfileRobot].
    * @return the [VisitedProfileRobot] that should be used.
    */
-  inline fun performClickProfile(
+  inline fun clickProfile(
       name: String,
       block: VisitedProfileRobot.() -> Unit = {},
   ): VisitedProfileRobot {
@@ -165,9 +172,10 @@ class FollowingSectionRobot(
 class TournamentsSectionRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
-) : HomeRobot(rule, strings) {
+) : HomeSectionRobot(rule, strings) {
 
   override fun assertIsDisplayed() {
+    super.assertIsDisplayed()
     onNode(hasLocalizedText { sectionContests } and isSelectable()).assertIsSelected()
   }
 }
@@ -181,9 +189,10 @@ class TournamentsSectionRobot(
 class SettingsSectionRobot(
     rule: ComposeTestRule,
     strings: LocalizedStrings,
-) : HomeRobot(rule, strings) {
+) : HomeSectionRobot(rule, strings) {
 
   override fun assertIsDisplayed() {
+    super.assertIsDisplayed()
     onNode(hasLocalizedText { sectionSettings } and isSelectable()).assertIsSelected()
   }
 

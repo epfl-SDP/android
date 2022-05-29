@@ -63,7 +63,7 @@ class StatefulPrepareGameScreenTest {
         }
 
     PrepareGameRobot(rule, strings).apply {
-      playAsBlack()
+      clickPlayAsBlack()
       assertBlackSelected()
     }
   }
@@ -81,8 +81,8 @@ class StatefulPrepareGameScreenTest {
         }
 
     PrepareGameRobot(rule, strings).apply {
-      playAsBlack()
-      playAsWhite()
+      clickPlayAsBlack()
+      clickPlayAsWhite()
       assertWhiteSelected()
     }
   }

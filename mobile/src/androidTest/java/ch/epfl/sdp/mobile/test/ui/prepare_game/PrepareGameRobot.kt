@@ -38,12 +38,12 @@ class PrepareGameRobot(
   }
 
   /** Presses the button to play as the black player. */
-  fun playAsBlack() {
+  fun clickPlayAsBlack() {
     onNodeWithLocalizedText { prepareGameBlackColor }.performClick()
   }
 
   /** Presses the button to play as the white player. */
-  fun playAsWhite() {
+  fun clickPlayAsWhite() {
     onNodeWithLocalizedText { prepareGameWhiteColor }.performClick()
   }
 
@@ -57,7 +57,7 @@ class PrepareGameRobot(
   }
 
   /** Presses the cancel action. */
-  fun performCancel() {
+  fun clickCancel() {
     onNodeWithLocalizedText { prepareGameCancel }.performClick()
   }
 
@@ -67,7 +67,7 @@ class PrepareGameRobot(
    * @param block the body of the [GameScreenRobot].
    * @return the [GameScreenRobot] which can be used.
    */
-  inline fun performPlay(block: GameScreenRobot.() -> Unit = {}): GameScreenRobot {
+  inline fun clickPlay(block: GameScreenRobot.() -> Unit = {}): GameScreenRobot {
     onNodeWithLocalizedText { prepareGamePlay }.performClick()
     return switchTo(::GameScreenRobot, block)
   }
