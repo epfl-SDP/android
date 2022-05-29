@@ -60,9 +60,9 @@ class AuthenticationApiAuthenticationScreenState(
       authenticate {
         val result =
             when (mode) {
-              AuthenticationScreenState.Mode.LogIn -> facade.signInWithEmail(email, password)
+              AuthenticationScreenState.Mode.LogIn -> facade.signInWithEmail(email.trim(), password)
               AuthenticationScreenState.Mode.Register ->
-                  facade.signUpWithEmail(email, name, password)
+                  facade.signUpWithEmail(email.trim(), name.trim(), password)
             }
         error =
             when (result) {
