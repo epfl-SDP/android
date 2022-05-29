@@ -110,6 +110,10 @@ fun StatefulHome(
     controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
   }
 
+  val onChallengeItemClick: (opponentId: String) -> Unit = { opponentId ->
+    controller.navigate("$PrepareGameRoute?opponentId=${opponentId}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -175,7 +179,7 @@ fun StatefulHome(
             onPuzzleClick = onPuzzleItemClick,
             onBack = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
-            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
+            onChallengeClick = onChallengeItemClick,
             contentPadding = paddingValues)
       }
       composable(PlayRoute) {
