@@ -187,7 +187,9 @@ class AuthenticationFacadeTest {
   @Test
   fun gettingProfileWithNullValuesAssignsDefaultValues() = runTest {
     val auth = buildAuth { user("email@example.org", "password") }
-    val store = buildStore { collection("users") { document("uid", ProfileDocument()) } }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("uid", ProfileDocument()) }
+    }
 
     val facade = AuthenticationFacade(auth, store)
     facade.signInWithEmail("email@example.org", "password")
@@ -195,7 +197,7 @@ class AuthenticationFacadeTest {
     val userAuthenticated = facade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     val following =
         store
-            .collection("users")
+            .collection(ProfileDocument.Collection)
             .asFlow<ProfileDocument>()
             .map { it.mapNotNull { doc -> doc?.toProfile(userAuthenticated) } }
             .first()

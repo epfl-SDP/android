@@ -108,7 +108,7 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
       Text(state.email, style = MaterialTheme.typography.subtitle2)
     }
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-      SettingsButton(onClick = state::onEditProfileImageClick)
+      SettingsButton(onClick = state::onEditLanguageClick)
       LogoutButton(onClick = state::onLogout)
     }
   }
@@ -162,7 +162,7 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.profileSettings)
+    Text(strings.settingsEditLanguage)
   }
 }
 

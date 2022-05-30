@@ -8,6 +8,7 @@ import androidx.compose.ui.test.SemanticsMatcher.Companion.keyIsDefined
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -37,10 +38,12 @@ class NavigationTest {
     val socialFacade = SocialFacade(SuspendingAuth, store)
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val tournamentFacade =
         TournamentFacade(SuspendingAuth, dataStoreFactory, store, FakeTimeProvider)
     rule.setContentWithLocalizedStrings {
-      ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+      ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
         Navigation()
       }
     }
@@ -58,9 +61,12 @@ class NavigationTest {
     val chessFacade = ChessFacade(SuspendingAuth, store, assets)
     val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(facade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
+          ProvideFacades(
+              facade, socialFacade, chessFacade, speechFacade, tournamentFacade, settings) {
             Navigation()
           }
         }
@@ -71,7 +77,7 @@ class NavigationTest {
 
   @Test
   fun authenticated_displaysHome() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     // Do we see the bottom navigation ?
     rule.onNodeWithText(strings.sectionSocial).assertExists()
@@ -81,7 +87,7 @@ class NavigationTest {
 
   @Test
   fun updatingUsername_preservesHomeSection() = runTest {
-    val (_, _, strings, user) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings, user) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     // Move to the profile section.
     rule.onNodeWithText(strings.sectionSettings).performClick()

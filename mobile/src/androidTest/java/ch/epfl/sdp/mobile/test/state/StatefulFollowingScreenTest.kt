@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.PuzzleId
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -57,6 +58,7 @@ class StatefulFollowingScreenTest {
     val mockChessFacade = mockk<ChessFacade>()
     val mockSpeechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
     val mockTournamentFacade = mockk<TournamentFacade>()
+    val mockSettingsFacade = mockk<SettingsFacade>()
 
     every { mockSocialFacade.search("", mockUser) } returns emptyFlow()
 
@@ -66,7 +68,8 @@ class StatefulFollowingScreenTest {
           mockSocialFacade,
           mockChessFacade,
           mockSpeechFacade,
-          mockTournamentFacade) { StatefulFollowingScreen(mockUser, {}) }
+          mockTournamentFacade,
+          mockSettingsFacade) { StatefulFollowingScreen(mockUser, {}) }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
@@ -77,16 +80,20 @@ class StatefulFollowingScreenTest {
       val name = "Fred"
 
       val (_, infra, strings, user) =
-          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
+          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}) }
 
-      infra.store.collection("users").document("other").set(ProfileDocument(name = name))
+      infra
+          .store
+          .collection(ProfileDocument.Collection)
+          .document("other")
+          .set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
       val profile =
           infra
               .store
-              .collection("users")
+              .collection(ProfileDocument.Collection)
               .document("other")
               .asFlow<ProfileDocument>()
               .filterNotNull()
@@ -100,9 +107,13 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val (_, infra, strings) =
-          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}) }
+          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}) }
 
-      infra.store.collection("users").document().set(ProfileDocument(name = name))
+      infra
+          .store
+          .collection(ProfileDocument.Collection)
+          .document()
+          .set(ProfileDocument(name = name))
 
       rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput(name)
       rule.onNodeWithText(strings.socialPerformFollow).performClick()
@@ -115,7 +126,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun focusedSearchField_isInSearchMode() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
@@ -127,7 +138,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
@@ -144,11 +155,15 @@ class StatefulFollowingScreenTest {
   @Test
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
     val (_, infra, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulFollowingScreen(user, onShowProfileClick = {})
         }
 
-    infra.store.collection("users").document().set(ProfileDocument(name = "Alexandre"))
+    infra
+        .store
+        .collection(ProfileDocument.Collection)
+        .document()
+        .set(ProfileDocument(name = "Alexandre"))
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
     rule.onNodeWithText("Alexandre").assertIsDisplayed()

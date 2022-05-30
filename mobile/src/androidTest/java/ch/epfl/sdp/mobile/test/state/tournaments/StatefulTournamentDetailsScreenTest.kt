@@ -18,7 +18,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.state.TestEnvironment
 import ch.epfl.sdp.mobile.test.state.performClickOnceVisible
-import ch.epfl.sdp.mobile.test.state.setContentWithTestEnvironment
+import ch.epfl.sdp.mobile.test.state.setContentWithAuthenticatedTestEnvironment
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.test.runTest
@@ -33,7 +33,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_statefulTournamentDetails_when_clickingBack_then_callsCallback() = runTest {
     val channel = Channel<Unit>(1)
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = TournamentReference(""),
@@ -55,7 +55,7 @@ class StatefulTournamentDetailsScreenTest {
         document(reference.uid, TournamentDocument(name = "Sample"))
       }
     }
-    rule.setContentWithTestEnvironment(store = store) {
+    rule.setContentWithAuthenticatedTestEnvironment(store = store) {
       StatefulTournamentDetailsScreen(
           user = user,
           reference = reference,
@@ -69,7 +69,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_notStartedTournament_when_enoughParticipants_then_showsStartBanner() = runTest {
     val reference = TournamentReference("1")
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -96,7 +96,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_notStartedTournament_when_notEnoughParticipants_then_showsStartBanner() = runTest {
     val reference = TournamentReference("1")
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -124,7 +124,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournament_when_allParticipantsJoined_then_showStartBanner() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
         document("3", ProfileDocument("3", "Player 3"))
@@ -132,7 +132,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -168,7 +168,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWithAllPlayerJoined_when_startTournament_then_showExactlyOnePool() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
         document("3", ProfileDocument("3", "Player 3"))
@@ -176,7 +176,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -207,14 +207,14 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWith2Players_when_goingThroughTournament_then_showsWinLossFinal() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -253,7 +253,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWith4Players_when_goingThroughTournament_then_showsWinLossFinal() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
         document("3", ProfileDocument("3", "Player 3"))
@@ -262,7 +262,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -311,14 +311,14 @@ class StatefulTournamentDetailsScreenTest {
   fun given_tournamentWithNoQualifiers_when_startingTournament_then_FinalsCreated() = runTest {
     val reference = TournamentReference("1")
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -349,7 +349,7 @@ class StatefulTournamentDetailsScreenTest {
   @Test
   fun given_tournament_when_stageFinals_then_MarkedAsDone() = runTest {
     val store = buildStore {
-      collection("users") {
+      collection(ProfileDocument.Collection) {
         document("1", ProfileDocument("1", "Player 1"))
         document("2", ProfileDocument("2", "Player 2"))
       }
@@ -372,7 +372,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentScreen(
               currentUser = user,
               onTournamentClick = {},
@@ -391,8 +391,8 @@ class StatefulTournamentDetailsScreenTest {
     val games: List<ChessDocument> =
         env.infrastructure
             .store
-            .collection("games")
-            .whereEquals("roundDepth", depth)
+            .collection(ChessDocument.Collection)
+            .whereEquals(ChessDocument.RoundDepth, depth)
             .get<ChessDocument>()
             .map {
               it.copy(
@@ -403,7 +403,11 @@ class StatefulTournamentDetailsScreenTest {
             }
 
     games.forEach { game ->
-      env.infrastructure.store.collection("games").document(game.uid ?: "").set(game)
+      env.infrastructure
+          .store
+          .collection(ChessDocument.Collection)
+          .document(game.uid ?: "")
+          .set(game)
     }
 
     return games

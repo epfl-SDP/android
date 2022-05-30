@@ -17,7 +17,7 @@ class StatefulCreateTournamentScreenTest {
   @Test
   fun given_statefulCreateTournamentScreen_when_displayingIt_then_itIsDisplayed() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
         }
 
@@ -35,7 +35,7 @@ class StatefulCreateTournamentScreenTest {
   @Test
   fun given_statefulCreateTournamentScreen_when_inputParameters_then_canClickCreate() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulCreateTournamentScreen(user = user, navigateToTournament = {}, cancelClick = {})
         }
 
@@ -54,7 +54,7 @@ class StatefulCreateTournamentScreenTest {
   fun given_statefulCreateTournamentScreen_when_inputParameters_then_correspondingTournamentCreated() =
       runTest {
     val (_, infra, strings, user) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulCreateTournamentScreen(
               user = user,
               navigateToTournament = {},
@@ -74,7 +74,7 @@ class StatefulCreateTournamentScreenTest {
         infra
             .store
             .collection(TournamentDocument.Collection)
-            .whereEquals("name", "Test name")
+            .whereEquals(TournamentDocument.Name, "Test name")
             .asFlow<TournamentDocument>()
             .first()
             .firstOrNull()
