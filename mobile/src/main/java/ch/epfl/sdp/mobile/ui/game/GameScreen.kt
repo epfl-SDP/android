@@ -32,6 +32,7 @@ import com.google.accompanist.flowlayout.FlowRow
  * @param state the [GameScreenState] that manage the composable contents
  * @param modifier the [Modifier] for the composable
  * @param contentPadding the [PaddingValues] for this composable.
+ * @param snackbarHostState the [SnackbarHostState] used to display the snackbar.
  */
 @Composable
 fun <Piece : ChessBoardState.Piece> GameScreen(
@@ -131,6 +132,7 @@ private val Message.text: String
  *
  * @param moves A list of [Move] that needs to be displayed
  * @param modifier modifier the [Modifier] for this composable.
+ * @param firstColor the color of the first play who performed a move. Useful for puzzles.
  */
 @Composable
 fun Moves(
