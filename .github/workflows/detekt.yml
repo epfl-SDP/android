@@ -1,0 +1,13 @@
+name: Run detekt
+
+on: [ push, pull_request ]
+  jobs:
+    detekt:
+      runs-on: ubuntu-latest
+      steps:
+        - name: "checkout"
+          uses: actions/checkout@v2
+        - name: "detekt"
+          uses: natiginfo/action-detekt-all@1.20.0
+          with:
+            args: --config detekt.yml
