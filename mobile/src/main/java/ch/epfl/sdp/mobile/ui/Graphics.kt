@@ -38,6 +38,10 @@ val PawniesIcons.PasswordShow
 val PawniesIcons.PasswordHide
   get() = Icons.Default.VisibilityOff
 
+val PawniesIcons.Delete
+  get() = Icons.Default.Delete
+
+
 /** An icon for the social section. */
 val PawniesIcons.SectionSocialSelected
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_friends_filled)
