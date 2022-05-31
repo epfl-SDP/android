@@ -80,7 +80,7 @@ class StatefulFollowingScreenTest {
       val name = "Fred"
 
       val (_, infra, strings, user) =
-          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
+          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
 
       infra
           .store
@@ -107,7 +107,7 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val (_, infra, strings) =
-          rule.setContentWithTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
+          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
 
       infra
           .store
@@ -126,7 +126,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun focusedSearchField_isInSearchMode() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
@@ -138,7 +138,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
@@ -155,7 +155,7 @@ class StatefulFollowingScreenTest {
   @Test
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
     val (_, infra, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 

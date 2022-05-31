@@ -77,7 +77,7 @@ class NavigationTest {
 
   @Test
   fun authenticated_displaysHome() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     // Do we see the bottom navigation ?
     rule.onNodeWithText(strings.sectionSocial).assertExists()
@@ -87,7 +87,7 @@ class NavigationTest {
 
   @Test
   fun updatingUsername_preservesHomeSection() = runTest {
-    val (_, _, strings, user) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings, user) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     // Move to the profile section.
     rule.onNodeWithText(strings.sectionSettings).performClick()

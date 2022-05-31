@@ -30,7 +30,7 @@ class StatefulPuzzleGameScreenTest {
                     "008Nz,6k1/2p2ppp/pnp5/B7/2P3PP/1P1bPPR1/r6r/3R2K1 b - - 1 29,d3e2 d1d8,600,101,85,298,backRankMate mate mateIn1 middlegame oneMove,https://lichess.org/HNU4zavC/black#58\n",
         )
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleGameScreen(
               user = user,
               puzzleId = "008Nz",
@@ -55,7 +55,7 @@ class StatefulPuzzleGameScreenTest {
                     "008Nz,6k1/2p2ppp/pnp5/B7/2P3PP/1P1bPPR1/r6r/3R2K1 b - - 1 29,d3e2 d1d8,600,101,85,298,backRankMate mate mateIn1 middlegame oneMove,https://lichess.org/HNU4zavC/black#58\n",
         )
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleGameScreen(
               user = user,
               puzzleId = "008Nz",
@@ -86,7 +86,7 @@ class StatefulPuzzleGameScreenTest {
         )
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleGameScreen(
               user = user,
               puzzleId = "008Nz",
@@ -122,7 +122,7 @@ class StatefulPuzzleGameScreenTest {
         )
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleGameScreen(
               user = user,
               puzzleId = "009tE",
@@ -166,7 +166,7 @@ class StatefulPuzzleGameScreenTest {
         )
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleGameScreen(
               user = user,
               puzzleId = "03SLJ",
@@ -192,7 +192,7 @@ class StatefulPuzzleGameScreenTest {
         )
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleGameScreen(
               user = user,
               puzzleId = "01c1h",
