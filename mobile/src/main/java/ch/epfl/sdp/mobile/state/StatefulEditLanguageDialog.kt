@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Implementation of the [EditLanguageDialogState] interface
+ * Implementation of the [EditLanguageDialogState] interface.
  *
  * @param scope the coroutine scope.
  * @param settingFacade the facade to access the settings

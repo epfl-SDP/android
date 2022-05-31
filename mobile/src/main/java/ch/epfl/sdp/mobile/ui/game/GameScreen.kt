@@ -27,10 +27,10 @@ import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 import com.google.accompanist.flowlayout.FlowRow
 
 /**
- * This screen display an ongoing game of chest
+ * This screen display an ongoing game of chest.
  *
- * @param state the [GameScreenState] that manage the composable contents
- * @param modifier the [Modifier] for the composable
+ * @param state the [GameScreenState] that manage the composable contents.
+ * @param modifier the [Modifier] for the composable.
  * @param contentPadding the [PaddingValues] for this composable.
  * @param snackbarHostState the [SnackbarHostState] used to display the snackbar.
  */

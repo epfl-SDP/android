@@ -284,7 +284,7 @@ class TournamentFacade(
           .map { list -> list.mapNotNull { it?.toEliminationMatch() } }
 
   /**
-   * Validates the parameters of a tournament
+   * Validates the parameters of a tournament.
    *
    * @param name The name of the tournament parameter.
    * @param bestOf The number of "best-of" rounds parameter.

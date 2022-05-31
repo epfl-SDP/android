@@ -4,9 +4,9 @@ import android.content.Context
 import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 
 /**
- * Represents the Android Assets Manager, which allows to load assets in different manners
+ * Represents the Android Assets Manager, which allows to load assets in different manners.
  *
- * @param context The Android [Context] used to load assets
+ * @param context The Android [Context] used to load assets.
  */
 class AndroidAssetManager(
     private val context: Context,

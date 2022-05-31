@@ -75,11 +75,15 @@ fun ProfileDocument?.toProfile(currentUser: AuthenticationUser): Profile {
  * A document which represents a game of chess between two users. All the game documents are stored
  * in the `/games/` collection.
  *
- * @param moves the list of moves played during the match in long algebraic notation
- * @param whiteId the UID of the white player
- * @param blackId The UID of the black player
- * @param lastUpdatedAt when the last update of the document happened
- * @param metadata additional information to a Chess document
+ * @property uid the unique identifier of the document.
+ * @property moves the list of moves played during the match in long algebraic notation
+ * @property whiteId the UID of the white player
+ * @property blackId The UID of the black player
+ * @property lastUpdatedAt when the last update of the document happened
+ * @property metadata additional information to a Chess document
+ * @property tournamentId the identifier of the linked tournament, if there's any.
+ * @property poolId the identifier of the linked pool, if there's any.
+ * @property roundDepth the depth of the round within the pool.
  */
 data class ChessDocument(
     @DocumentId val uid: String? = null,
@@ -147,8 +151,14 @@ data class ChessMetadata(
     val whiteName: String? = null
 ) {
   companion object {
+
+    /** Indicates that the white player won. */
     const val WhiteWon = "whiteWon"
+
+    /** Indicates that thee black player won. */
     const val BlackWon = "blackWon"
+
+    /** Indicates that there was a stalemate. */
     const val Stalemate = "stalemate"
   }
 }
@@ -214,14 +224,15 @@ data class TournamentDocument(
  * A document which represents a pool in a tournament of chess. All the pool documents are stored
  * inside their corresponding [TournamentDocument], in `tournaments/tournamentId/`.
  *
- * @param uid the unique identifier for this pool.
- * @param name the name of this pool.
- * @param tournamentId the unique identifier of the tournament in which the pool takes place.
- * @param minOpponentsForAnyPool the minimum number of opponents played by each player.
- * @param remainingBestOfCount the number of remaining matches to play in the current round.
- * @param tournamentBestOf the number of rounds to play between each opponent pair.
- * @param playerIds the [List] of unique identifier of users that have been placed in this pool.
- * @param playerNames the [List] of player names.
+ * @property uid the unique identifier for this pool.
+ * @property name the name of this pool.
+ * @property tournamentId the unique identifier of the tournament in which the pool takes place.
+ * @property minOpponentsForAnyPool the minimum number of opponents played by each player.
+ * @property remainingBestOfCount the number of remaining matches to play in the current round.
+ * @property tournamentBestOf the number of rounds to play between each opponent pair.
+ * @property tournamentAdminId the identifier of the tournament administrator.
+ * @property playerIds the [List] of unique identifier of users that have been placed in this pool.
+ * @property playerNames the [List] of player names.
  */
 data class PoolDocument(
     @DocumentId val uid: String? = null,

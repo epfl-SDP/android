@@ -18,7 +18,11 @@ sealed interface Action {
   val delta: Delta
 
   // Convenience operators to keep a destructuring-friendly syntax.
+
+  /** Returns the [Position] of this [Action]. */
   operator fun component1(): Position = from
+
+  /** Returns the [Delta] of this [Action]. */
   operator fun component2(): Delta = delta
 
   companion object {

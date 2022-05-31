@@ -21,7 +21,7 @@ interface Profile {
   /** True iff this profile is followed by the current user. */
   val followed: Boolean
 
-  /** The list of solved puzzle's ids by the [Profile] */
+  /** The list of solved puzzle's ids by the [Profile]. */
   val solvedPuzzles: List<PuzzleId>
 
   /**
@@ -50,10 +50,10 @@ interface Profile {
       /** A default color. */
       val Default = Orange
 
-      /** List of all colors */
+      /** List of all colors. */
       val values = listOf(Green200, Green500, Orange, Purple)
     }
   }
 }
-/** Represents a puzzle's id */
+/** Represents a puzzle's id. */
 typealias PuzzleId = String

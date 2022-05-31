@@ -37,7 +37,7 @@ private fun Modifier.borderBottom(
 }
 
 /**
- * Composes the profile tabs [PastGames and Puzzles]
+ * Composes the profile tabs [PastGames and Puzzles].
  * @param title primary text of the tab item.
  * @param subtitle secondary text of the tab item.
  * @param onClick callback when the tab is clicked
@@ -77,25 +77,32 @@ fun ProfileTabItem(
 }
 
 /**
- * Interface of the ProfileTabBar state
- * @class Tab Enumerate types of Tabs
- * @property currentTab Currently selected Tab
- * @property pastGamesCount past games count
- * @property puzzlesCount puzzles count
+ * Interface of the ProfileTabBar state.
+ * @class Tab Enumerate types of Tabs.
+ * @property currentTab Currently selected Tab.
+ * @property pastGamesCount past games count.
+ * @property puzzlesCount puzzles count.
  */
 interface ProfileTabBarState {
 
+  /** The tabs in a profile. */
   enum class Tab {
     PastGames,
     Puzzles,
   }
+
+  /** The currently selected tab. */
   var currentTab: Tab
+
+  /** The number o past games. */
   val pastGamesCount: Int
+
+  /** The number of puzzles. */
   val puzzlesCount: Int
 }
 
 /**
- * Implementation of the ProfileTabBarState
+ * Implementation of the ProfileTabBarState.
  * @param pastGamesCount count of games.
  * @param puzzlesCount count of puzzles done.
  */
@@ -109,7 +116,7 @@ private class ProfileTabBarStateImpl(
 }
 
 /**
- * Function used to remember the state of the ProfileTabBar
+ * Function used to remember the state of the ProfileTabBar.
  * @param pastGamesCount count of games.
  * @param puzzlesCount count of puzzles done.
  */
@@ -124,11 +131,11 @@ fun rememberProfileTabBarState(
 }
 
 /**
- * Composes a ProfileTabBar from puzzles and past games tab items
- * @param state state of the profile tab
+ * Composes a ProfileTabBar from puzzles and past games tab items.
+ * @param state state of the profile tab.
  * @param modifier the [Modifier] for this composable.
- * @param backgroundColor of the tab bar
- * @param elevation elevation dp of the tab bar
+ * @param backgroundColor of the tab bar.
+ * @param elevation elevation dp of the tab bar.
  */
 @Composable
 fun ProfileTabBar(
