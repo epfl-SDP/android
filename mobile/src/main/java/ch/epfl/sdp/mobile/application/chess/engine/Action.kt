@@ -64,9 +64,9 @@ sealed interface Action {
   /**
    * An [Action] which represents the act of promoting a pawn to a piece with a certain rank.
    *
-   * @param from the start position.
-   * @param delta the applied delta.
-   * @param rank the chosen [Rank].
+   * @property from the start position.
+   * @property delta the applied delta.
+   * @property rank the chosen [Rank].
    */
   data class Promote(
       override val from: Position,

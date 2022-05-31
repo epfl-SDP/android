@@ -29,7 +29,7 @@ interface Profile {
    * may contain arbitrary [String], but some default values are provided in [Color.Companion].
    *
    * @constructor creates a new [Color].
-   * @param hex the string representation of the color.
+   * @property hex the string representation of the color.
    */
   data class Color(val hex: String) {
 

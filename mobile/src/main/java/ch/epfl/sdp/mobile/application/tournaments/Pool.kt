@@ -11,7 +11,7 @@ interface Pool {
    * A class representing [Player] within the pool.
    *
    * @property uid the unique identifier of the player.
-   * @param name the name of the player.
+   * @property name the name of the player.
    */
   data class Player(val uid: String, val name: String)
 

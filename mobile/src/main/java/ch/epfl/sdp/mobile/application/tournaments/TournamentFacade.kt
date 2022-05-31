@@ -88,8 +88,8 @@ class TournamentFacade(
     /**
      * A scope which allows edition to the [TournamentFilters].
      *
-     * @param facade the [TournamentFilters] in which the filters are managed.
-     * @param preferences the [MutablePreferences] which are currently edited.
+     * @property facade the [TournamentFilters] in which the filters are managed.
+     * @property preferences the [MutablePreferences] which are currently edited.
      */
     class UpdateScope(
         private val facade: TournamentFacade,
