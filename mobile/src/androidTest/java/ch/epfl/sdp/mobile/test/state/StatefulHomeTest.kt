@@ -646,20 +646,15 @@ class StatefulHomeTest {
 
   @Test
   fun given_social_when_clickOnPlay_then_should_startAGame() = runTest {
+    val (_, infra, strings, user) =
+        rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
+
     val opponentName = "B"
-    val auth = buildAuth { user("email@example.org", "password", "1") }
-    val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document("1", ProfileDocument("1", name = "A"))
-        document("2", ProfileDocument("2", name = opponentName, followers = listOf("1")))
-      }
-    }
-    val authFacade = AuthenticationFacade(auth, store)
-
-    authFacade.signInWithEmail("email@example.org", "password")
-
-    val (_, _, strings) =
-        rule.setContentWithTestEnvironment(auth = auth, store = store) { StatefulHome(user) }
+    infra
+        .store
+        .collection(ProfileDocument.Collection)
+        .document()
+        .set(ProfileDocument(name = opponentName, followers = listOf(user.uid)))
 
     with(strings) {
       rule.onNodeWithText(sectionSocial).performClick()
