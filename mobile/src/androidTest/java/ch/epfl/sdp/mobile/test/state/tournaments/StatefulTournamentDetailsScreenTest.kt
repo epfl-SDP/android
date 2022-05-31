@@ -18,7 +18,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.state.TestEnvironment
 import ch.epfl.sdp.mobile.test.state.performClickOnceVisible
-import ch.epfl.sdp.mobile.test.state.setContentWithTestEnvironment
+import ch.epfl.sdp.mobile.test.state.setContentWithAuthenticatedTestEnvironment
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.test.runTest
@@ -33,7 +33,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_statefulTournamentDetails_when_clickingBack_then_callsCallback() = runTest {
     val channel = Channel<Unit>(1)
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = TournamentReference(""),
@@ -55,7 +55,7 @@ class StatefulTournamentDetailsScreenTest {
         document(reference.uid, TournamentDocument(name = "Sample"))
       }
     }
-    rule.setContentWithTestEnvironment(store = store) {
+    rule.setContentWithAuthenticatedTestEnvironment(store = store) {
       StatefulTournamentDetailsScreen(
           user = user,
           reference = reference,
@@ -69,7 +69,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_notStartedTournament_when_enoughParticipants_then_showsStartBanner() = runTest {
     val reference = TournamentReference("1")
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -96,7 +96,7 @@ class StatefulTournamentDetailsScreenTest {
   fun given_notStartedTournament_when_notEnoughParticipants_then_showsStartBanner() = runTest {
     val reference = TournamentReference("1")
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -132,7 +132,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -176,7 +176,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -214,7 +214,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -262,7 +262,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -318,7 +318,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentDetailsScreen(
               user = user,
               reference = reference,
@@ -372,7 +372,7 @@ class StatefulTournamentDetailsScreenTest {
     }
 
     val env =
-        rule.setContentWithTestEnvironment(store = store) {
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulTournamentScreen(
               currentUser = user,
               onTournamentClick = {},
