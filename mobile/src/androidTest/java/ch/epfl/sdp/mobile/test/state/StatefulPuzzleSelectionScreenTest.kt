@@ -33,7 +33,7 @@ class StatefulPuzzleSelectionScreenTest {
         )
 
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment(assets = assets) {
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulPuzzleSelectionScreen(
               user = user,
               onPuzzleItemClick = {},
