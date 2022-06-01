@@ -20,7 +20,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.checkFinish
 /** An object which contains some convenience parser combinators for algebraic notation. */
 object UCINotationCombinators {
 
-  /** A [Parser] which returns the [Rank] of a piece for promotion */
+  /** A [Parser] which returns the [Rank] of a piece for promotion. */
   private val promoteRank =
       combine(
           StringCombinators.char('q').map { Rank.Queen },

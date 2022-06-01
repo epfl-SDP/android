@@ -354,6 +354,7 @@ internal constructor(
 /**
  * Holder to a callback to be invoked during the drawing operations.
  *
+ * @property result the underlying [DrawResult].
  * @see DrawResult
  */
 class CellsDrawResult internal constructor(val result: DrawResult)

@@ -7,6 +7,13 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.get
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 
+/**
+ * A [Pool] which uses a [PoolDocument] to populate its properties.
+ *
+ * @property document the underlying [PoolDocument].
+ * @property user the currently authenticated user.
+ * @property store the current [Store].
+ */
 class PoolDocumentPool(
     private val document: PoolDocument,
     private val user: AuthenticatedUser,

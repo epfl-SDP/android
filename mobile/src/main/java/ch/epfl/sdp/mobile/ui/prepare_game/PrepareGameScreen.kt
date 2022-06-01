@@ -10,10 +10,10 @@ import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
- * Composable that implements a complete PrepareGame screen
- * @param state current state of the screen
- * @param modifier [Modifier] for this composable
- * @param key a function which uniquely identifies the list items
+ * Composable that implements a complete PrepareGame screen.
+ * @param state current state of the screen.
+ * @param modifier [Modifier] for this composable.
+ * @param key a function which uniquely identifies the list items.
  * @param P the type of the [Person].
  */
 @Composable

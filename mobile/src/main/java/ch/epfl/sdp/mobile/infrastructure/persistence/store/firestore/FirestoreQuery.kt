@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 /**
  * An implementation of a [Query] which uses a Firestore query under-the-hood.
  *
- * @param reference the [ActualQuery].
+ * @property reference the [ActualQuery].
  */
 class FirestoreQuery(
     private val reference: ActualQuery,

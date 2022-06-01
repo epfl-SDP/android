@@ -27,7 +27,7 @@ object FenNotationCombinators {
   private const val NothingSymbol = '-'
   private const val RowSeparatorSymbol = '/'
 
-  /** Maps FEN letters to [Rank]s for promotion */
+  /** Maps FEN letters to [Rank]s for promotion. */
   private val LettersToRank =
       mapOf(
           'k' to Rank.King,
@@ -37,7 +37,7 @@ object FenNotationCombinators {
           'n' to Rank.Knight,
           'p' to Rank.Pawn)
 
-  /** Represents either a Piece or a number of Empty squares on a board row */
+  /** Represents either a Piece or a number of Empty squares on a board row. */
   private sealed interface Square {
     val width: Int
     data class Piece(val rank: Rank, val color: Color) : Square {
@@ -48,7 +48,7 @@ object FenNotationCombinators {
     }
   }
 
-  /** A [Parser] which consumes a piece in FEN and returns the corresponding [Square.Piece] */
+  /** A [Parser] which consumes a piece in FEN and returns the corresponding [Square.Piece]. */
   private fun piece(): Parser<String, Square.Piece> =
       char().filter { it.lowercaseChar() in LettersToRank.keys }.map {
         val rank = requireNotNull(LettersToRank[it.lowercaseChar()])
@@ -58,23 +58,23 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes digit in FEN representing empty squares and returns the corresponding
-   * [Square.Empty]
+   * [Square.Empty].
    */
   private fun empty(): Parser<String, Square.Empty> =
       digit().filter { it in 1..Board.Size }.map { Square.Empty(it) }
 
   /**
    * A [Parser] which consumes either a piece or a digit in FEN and returns the corresponding
-   * [Square]
+   * [Square].
    */
   private fun square(): Parser<String, Square> = piece().or(empty())
 
-  /** A [Parser] which consumes a FEN row delimiter */
+  /** A [Parser] which consumes a FEN row delimiter. */
   private fun delimiter(): Parser<String, Unit> = char(RowSeparatorSymbol).map {}.orElse {}
 
   /**
    * A [Parser] which consumes an entire FEN row representation, and returns the corresponding
-   * [List] of [Square]s
+   * [List] of [Square]s.
    */
   private fun lineSquares(): Parser<String, List<Square>> =
       square()
@@ -83,12 +83,12 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes a whole board representation in FEN and returns the corresponding
-   * [List] of [List]s of [Square]s
+   * [List] of [List]s of [Square]s.
    */
   private fun boardSquares(): Parser<String, List<List<Square>>> = lineSquares().repeat()
 
   /**
-   * A [Parser] which consumes a board representation in FEN and returns the corresponding [Board]
+   * A [Parser] which consumes a board representation in FEN and returns the corresponding [Board].
    */
   fun board(): Parser<String, Board<Piece<Color>>> =
       boardSquares().map { lines ->
@@ -108,7 +108,7 @@ object FenNotationCombinators {
         }
       }
 
-  /** A [Parser] which consumes either a w or b indicating the next playing color */
+  /** A [Parser] which consumes either a w or b indicating the next playing color. */
   val activeColor = char('w').map { White } or char('b').map { Black }
 
   /**
@@ -121,7 +121,7 @@ object FenNotationCombinators {
       char().filter { it.lowercaseChar() == value }
 
   /**
-   * A [Parser] which consumes a "-" in FEN notation and returns the corresponding [CastlingRights]
+   * A [Parser] which consumes a "-" in FEN notation and returns the corresponding [CastlingRights].
    */
   private val noCastlingRights =
       charLower(NothingSymbol).map {
@@ -136,7 +136,7 @@ object FenNotationCombinators {
   /**
    * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
    * [Pair] of rights for white, the first component indicating the kingside rights and the second
-   * one representing the queenside rights
+   * one representing the queenside rights.
    */
   private val castlingWhite =
       char('K').flatMap { char('Q').map { Pair(first = true, second = true) } } or
@@ -146,7 +146,7 @@ object FenNotationCombinators {
   /**
    * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
    * [Pair] of rights for black, the first component indicating the kingside rights and the second
-   * one representing the queenside rights
+   * one representing the queenside rights.
    */
   private val castlingBlack =
       char('k').flatMap { char('q').map { Pair(first = true, second = true) } } or
@@ -155,7 +155,7 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes up to four characters in FEN notation and returns a corresponding
-   * [CastlingRights] for when both white and black have at least one side allowed to castle
+   * [CastlingRights] for when both white and black have at least one side allowed to castle.
    */
   private val bothCastling =
       castlingWhite.flatMap { white ->
@@ -171,7 +171,7 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
-   * [Pair] of rights for when only white has some castling rights
+   * [Pair] of rights for when only white has some castling rights.
    */
   private val justCastlingWhite =
       castlingWhite.map {
@@ -185,7 +185,7 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes up to two characters in FEN notation and returns a corresponding
-   * [Pair] of rights for when only black has some castling rights
+   * [Pair] of rights for when only black has some castling rights.
    */
   private val justCastlingBlack =
       castlingBlack.map {
@@ -199,7 +199,7 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes castling rights in FEN notation and returns the corresponding
-   * [CastlingRights]
+   * [CastlingRights].
    */
   val castlingRights =
       combine(
@@ -211,7 +211,7 @@ object FenNotationCombinators {
 
   /**
    * A [Parser] which consumes a either a nothing symbol or a position representing an en passant
-   * move, if allowed
+   * move, if allowed.
    */
   val enPassant = char(NothingSymbol).map { null } or position.map { it }
 }
