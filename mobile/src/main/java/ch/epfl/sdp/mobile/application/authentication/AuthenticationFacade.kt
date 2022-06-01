@@ -57,7 +57,7 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
   suspend fun signInWithEmail(
       email: String,
       password: String,
-  ): AuthenticationResult = authenticate { auth.signInWithEmail(email, password) }
+  ): AuthenticationResult = authenticate { auth.signInWithEmail(email.trim(), password.trim()) }
 
   /**
    * Attempts to sign up and create an account with the provided email and password.
@@ -71,12 +71,12 @@ class AuthenticationFacade(private val auth: Auth, private val store: Store) {
       name: String,
       password: String,
   ): AuthenticationResult = authenticate {
-    val result = auth.signUpWithEmail(email, password)
+    val result = auth.signUpWithEmail(email.trim(), password.trim())
     if (result is Success && result.user != null) {
       store
           .collection(ProfileDocument.Collection)
           .document(result.user.uid)
-          .set(ProfileDocument(name = name))
+          .set(ProfileDocument(name = name.trim()))
     }
     result
   }
