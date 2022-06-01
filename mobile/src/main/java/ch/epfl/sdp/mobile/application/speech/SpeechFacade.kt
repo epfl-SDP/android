@@ -148,7 +148,7 @@ class SpeechFacade(
 
     if (textToSpeechSettings().first().enabled) {
       tts.speak(text)
-      soundPlayer.playChessSound()
+      //soundPlayer.playChessSound()
     }
   }
 }
