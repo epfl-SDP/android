@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -55,6 +56,8 @@ fun <P : Person> PrepareGameDialog(
               text = strings.prepareGameChooseColor,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
           )
           ColorChoiceBar(
               colorChoice = state.colorChoice,
@@ -65,6 +68,8 @@ fun <P : Person> PrepareGameDialog(
               text = strings.prepareGameChooseOpponent,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
           )
         }
       }
