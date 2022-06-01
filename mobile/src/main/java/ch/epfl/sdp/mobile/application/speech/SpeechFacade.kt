@@ -1,7 +1,5 @@
 package ch.epfl.sdp.mobile.application.speech
 
-import android.content.Context
-import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
 import ch.epfl.sdp.mobile.infrastructure.sound.SoundPlayer
@@ -27,10 +25,10 @@ import kotlinx.coroutines.sync.withLock
  * @param soundPlayer the [SoundPlayer] used to play chess sounds by this [SpeechFacade].
  */
 class SpeechFacade(
-  private val speechFactory: SpeechRecognizerFactory,
-  private val textToSpeechFactory: TextToSpeechFactory,
-  private val soundPlayer: SoundPlayer,
-  dataStoreFactory: DataStoreFactory,
+    private val speechFactory: SpeechRecognizerFactory,
+    private val textToSpeechFactory: TextToSpeechFactory,
+    private val soundPlayer: SoundPlayer,
+    dataStoreFactory: DataStoreFactory,
 ) {
 
   /** The result of a call to [SpeechFacade.recognize]. */
