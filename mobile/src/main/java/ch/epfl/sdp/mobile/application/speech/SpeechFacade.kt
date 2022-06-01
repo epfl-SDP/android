@@ -1,7 +1,10 @@
 package ch.epfl.sdp.mobile.application.speech
 
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
+import ch.epfl.sdp.mobile.infrastructure.sound.SoundPlayer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeech
@@ -20,12 +23,14 @@ import kotlinx.coroutines.sync.withLock
  * @param speechFactory the [SpeechRecognizerFactory] which is used internally by this
  * [SpeechFacade].
  * @param textToSpeechFactory the [TextToSpeechFactory] which is used internally by thi
- * [SpeechFacade]
+ * [SpeechFacade].
+ * @param soundPlayer the [SoundPlayer] used to play chess sounds by this [SpeechFacade].
  */
 class SpeechFacade(
-    private val speechFactory: SpeechRecognizerFactory,
-    private val textToSpeechFactory: TextToSpeechFactory,
-    dataStoreFactory: DataStoreFactory,
+  private val speechFactory: SpeechRecognizerFactory,
+  private val textToSpeechFactory: TextToSpeechFactory,
+  private val soundPlayer: SoundPlayer,
+  dataStoreFactory: DataStoreFactory,
 ) {
 
   /** The result of a call to [SpeechFacade.recognize]. */
@@ -145,6 +150,7 @@ class SpeechFacade(
 
     if (textToSpeechSettings().first().enabled) {
       tts.speak(text)
+      soundPlayer.playChessSound()
     }
   }
 }
