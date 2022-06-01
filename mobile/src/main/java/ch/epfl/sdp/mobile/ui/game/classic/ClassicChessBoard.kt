@@ -39,7 +39,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-/** The width (and height) in number of cells of a ChessBoard */
+/** The width (and height) in number of cells of a ChessBoard. */
 const val ChessBoardCells = 8
 
 /**
@@ -278,7 +278,7 @@ fun ChessBoardState.Rank.icon(color: ChessBoardState.Color): Painter =
           }
     }
 
-/** Return the associated content description [String] for [ChessBoardState.Color] */
+/** Return the associated content description [String] for [ChessBoardState.Color]. */
 fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String {
   return when (this) {
     Black -> strings.boardColorBlack
@@ -286,7 +286,7 @@ fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String 
   }
 }
 
-/** Return the associated content description [String] for [ChessBoardState.Rank] */
+/** Return the associated content description [String] for [ChessBoardState.Rank]. */
 fun ChessBoardState.Rank.contentDescription(strings: LocalizedStrings): String {
   return when (this) {
     King -> strings.boardPieceKing

@@ -9,7 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.Combinators.repeatAtLeast
 import ch.epfl.sdp.mobile.application.chess.parser.Parser
 import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
 
-/** An object which contains some convenience parser combinators for any notation */
+/** An object which contains some convenience parser combinators for any notation. */
 object CommonNotationCombinators {
   /** A [Parser] which returns the column in a position. */
   val column = StringCombinators.char().filter { it in 'a'..'h' }.map { it - 'a' }
@@ -21,11 +21,11 @@ object CommonNotationCombinators {
   val position = this.computePosition(column, row)
 
   /**
-   * Compute the [position] notation given a [column] and a [row]
+   * Compute the [position] notation given a [column] and a [row].
    *
-   * @param column The [Parser] for the column
-   * @param row The [Parser] for the row
-   * @return A [Parser] for the [Position]
+   * @param column The [Parser] for the column.
+   * @param row The [Parser] for the row.
+   * @return A [Parser] for the [Position].
    */
   fun computePosition(
       column: Parser<String, Int>,
@@ -34,10 +34,10 @@ object CommonNotationCombinators {
     return column.flatMap { x -> row.map { y -> Position(x, y) } }.filter { it.inBounds }
   }
 
-  /** A [Parser] which returns a number of spaces */
+  /** A [Parser] which returns a number of spaces. */
   val spaces = StringCombinators.char(' ').repeatAtLeast(count = 1)
 
-  /** A [Parser] which consumes a number of digits representing an integer number */
+  /** A [Parser] which consumes a number of digits representing an integer number. */
   val integer =
       StringCombinators.digit().repeatAtLeast(count = 1).map {
         it.fold(0) { acc, digit -> acc * 10 + digit }

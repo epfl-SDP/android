@@ -70,7 +70,7 @@ interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
   val poolSize: PoolSize?
 
   /**
-   * Called when the pool size choice is clicked
+   * Called when the pool size choice is clicked.
    *
    * @param poolSize the value which is clicked.
    */
@@ -83,7 +83,7 @@ interface CreateDialogState<PoolSize : Choice, EliminationRound : Choice> {
   val eliminationRound: EliminationRound?
 
   /**
-   * Called when the elimination choice is clicked
+   * Called when the elimination choice is clicked.
    *
    * @param eliminationRound the value which is clicked.
    */

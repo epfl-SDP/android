@@ -61,7 +61,7 @@ fun StatefulCreateTournamentScreen(
 }
 
 /**
- * An implementation of the [CreateDialogState]
+ * An implementation of the [CreateDialogState].
  *
  * @property user The current [AuthenticatedUser].
  * @property actions The actions to perform for navigating when interacting with the dialog's
@@ -155,11 +155,11 @@ class ActualCreateTournamentScreenState(
 }
 
 /**
- * A data class that contains [CreateDialog] actions
+ * A data class that contains [CreateDialog] actions.
  *
  * @property navigateToTournament the action to perform to navigate to a certain tournament after
- * clicking the create button
- * @property cancelClick the action to perform when clicking the cancel buttons
+ * clicking the create button.
+ * @property cancelClick the action to perform when clicking the cancel buttons.
  */
 data class CreateTournamentDialogActions(
     val navigateToTournament: (reference: TournamentReference) -> Unit,
@@ -167,10 +167,10 @@ data class CreateTournamentDialogActions(
 )
 
 /**
- * Represents a [Choice] with underlying integer values
+ * Represents a [Choice] with underlying integer values.
  *
- * @property name the name of the choice
- * @property value the underlying [Int] value
+ * @property name the name of the choice.
+ * @property value the underlying [Int] value.
  */
 data class IntChoice(
     override val name: String,

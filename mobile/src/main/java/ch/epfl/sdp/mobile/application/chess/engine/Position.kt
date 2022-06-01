@@ -35,7 +35,10 @@ value class Position private constructor(private val backing: Int) {
   val y: Int
     get() = unpackShort2(backing).toInt()
 
+  /** Returns the [x] coordinate. */
   operator fun component1(): Int = x
+
+  /** Returns the [y] coordinate. */
   operator fun component2(): Int = y
 
   /**

@@ -4,7 +4,7 @@ package ch.epfl.sdp.mobile.infrastructure.persistence.store
  * A [FieldPath] represents the path of a field within a document. Each field is uniquely identified
  * by a non-empty path.
  *
- * @param segments the segments of the path within this document.
+ * @property segments the segments of the path within this document.
  */
 data class FieldPath(val segments: List<String>) {
 

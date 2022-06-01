@@ -9,31 +9,28 @@ import ch.epfl.sdp.mobile.application.chess.engine.implementation.emptyBoard
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
 
-/**
- * Represents a complete [Puzzle] TODO: Will definitely change in the "Functional Puzzle Game"
- * feature
- */
+/** Represents a complete [Puzzle]. */
 interface Puzzle {
-  /** The uid of the [Puzzle] */
+  /** The uid of the [Puzzle]. */
   val uid: String
 
-  /** The [BoardSnapshot] of the [Puzzle] */
+  /** The [BoardSnapshot] of the [Puzzle]. */
   val boardSnapshot: BoardSnapshot
 
   /**
    * The list of [Action] to be played by the "computer" and the player. The first action is the
-   * last moved played before the player starts the [Puzzle]
+   * last moved played before the player starts the [Puzzle].
    */
   val puzzleMoves: List<Action>
 
-  /** The elo/rank (difficulty) of the [Puzzle] */
+  /** The elo/rank (difficulty) of the [Puzzle]. */
   val elo: Int
 }
 
 /**
- * Creates the base [Game] from the [Puzzle]'s information
+ * Creates the base [Game] from the [Puzzle]'s information.
  *
- * @return The corresponding base [Game]
+ * @return The corresponding base [Game].
  */
 fun Puzzle.baseGame(): Game {
   val baseGame = buildGame(nextPlayer = boardSnapshot.playing, board = boardSnapshot.board)

@@ -15,7 +15,7 @@ import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 import ch.epfl.sdp.mobile.ui.prepare_game.SelectableItem
 
 /**
- * Component for display a Dialog to edit the applicationLanguage
+ * Component for display a Dialog to edit the applicationLanguage.
  *
  * @param state the [EditLanguageDialogState] as an argument.
  * @param modifier the [Modifier] for this composable.
@@ -55,11 +55,11 @@ fun EditLanguageDialog(
 }
 
 /**
- * Component to list the language options
+ * Component to list the language options.
  *
- * @param languages the map which consists the languages
- * @param selectedLanguage the language that is currently selected
- * @param onItemClick the callback function if lanugage is selected
+ * @param languages the map which consists the languages.
+ * @param selectedLanguage the language that is currently selected.
+ * @param onItemClick the callback function if language is selected.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable

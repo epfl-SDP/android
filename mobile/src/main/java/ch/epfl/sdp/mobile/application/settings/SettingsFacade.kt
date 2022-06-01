@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
- * Represents the facade for the user to modify the global settings
+ * Represents the facade for the user to modify the global settings.
  *
- * @param dataStoreFactory a reference to the data store
+ * @param dataStoreFactory a reference to the data store.
  */
 class SettingsFacade(
     private val dataStoreFactory: DataStoreFactory,

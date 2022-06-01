@@ -20,7 +20,7 @@ enum class HomeSection(
     val icon: @Composable (selected: Boolean) -> Unit,
     val title: LocalizedStrings.() -> String,
 ) {
-  /** The section to play a chess game */
+  /** The section to play a chess game. */
   Play(
       icon = {
         if (it) Icon(PawniesIcons.SectionPlaySelected, null)
@@ -47,7 +47,7 @@ enum class HomeSection(
       title = { sectionContests },
   ),
 
-  /** The section to play a chess puzzle game */
+  /** The section to play a chess puzzle game. */
   Puzzles(
       icon = {
         if (it) Icon(PawniesIcons.SectionPuzzlesSelected, null)

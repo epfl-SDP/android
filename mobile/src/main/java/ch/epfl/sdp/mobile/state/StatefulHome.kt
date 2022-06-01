@@ -46,7 +46,7 @@ private const val PuzzleSelectionRoute = "puzzles"
 /** The route associated to a puzzle game. */
 private const val PuzzleGameRoute = "puzzle_game"
 
-/** The route associated to new game screen */
+/** The route associated to new game screen. */
 private const val GameRoute = "match"
 
 /** The default identifier for a game. */
@@ -55,7 +55,7 @@ private const val GameDefaultId = ""
 /** The default identifier for a puzzle. */
 private const val PuzzleGameDefaultId = ""
 
-/** The route associated to new game button in play screen */
+/** The route associated to new game button in play screen. */
 private const val PrepareGameRoute = "prepare_game"
 
 /** The route associated to the ar tab. */
@@ -70,7 +70,7 @@ private const val TournamentDetailsRoute = "tournament"
 /** The default identifier for a tournament. */
 private const val TournamentDefaultId = ""
 
-/** The route associated to new contest button in play screen */
+/** The route associated to new contest button in play screen. */
 private const val CreateTournamentRoute = "create_tournament"
 
 /** The route associated with the tournaments filters screen. */

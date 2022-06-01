@@ -61,9 +61,9 @@ class StatefulProfileScreen(
 /** An interface representing the different actions available on the profile and settings screen. */
 interface ProfileActions {
 
-  /* Callback function fro a clicked match */
+  /** Callback function fro a clicked match. */
   val onMatchClick: (ChessMatchAdapter) -> Unit
 
-  /* Callback function called when a puzzle is clicked on.*/
+  /** Callback function called when a puzzle is clicked on. */
   val onPuzzleClick: (PuzzleInfoAdapter) -> Unit
 }

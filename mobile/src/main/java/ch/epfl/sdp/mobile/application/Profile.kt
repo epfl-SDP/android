@@ -21,7 +21,7 @@ interface Profile {
   /** True iff this profile is followed by the current user. */
   val followed: Boolean
 
-  /** The list of solved puzzle's ids by the [Profile] */
+  /** The list of solved puzzle's ids by the [Profile]. */
   val solvedPuzzles: List<PuzzleId>
 
   /**
@@ -29,7 +29,7 @@ interface Profile {
    * may contain arbitrary [String], but some default values are provided in [Color.Companion].
    *
    * @constructor creates a new [Color].
-   * @param hex the string representation of the color.
+   * @property hex the string representation of the color.
    */
   data class Color(val hex: String) {
 
@@ -50,10 +50,10 @@ interface Profile {
       /** A default color. */
       val Default = Orange
 
-      /** List of all colors */
+      /** List of all colors. */
       val values = listOf(Green200, Green500, Orange, Purple)
     }
   }
 }
-/** Represents a puzzle's id */
+/** Represents a puzzle's id. */
 typealias PuzzleId = String

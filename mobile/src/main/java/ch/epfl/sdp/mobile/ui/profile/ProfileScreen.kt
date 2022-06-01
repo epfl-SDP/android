@@ -171,10 +171,10 @@ fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 
 /**
  * A back button composable for the visited profile screen the that gets back to the previous screen
- * when actioned
+ * when actioned.
  *
- * @param onClick call back methode to action the back button
- * @param modifier a Modifier for this composable
+ * @param onClick call back methode to action the back button.
+ * @param modifier a Modifier for this composable.
  */
 @Composable
 private fun BackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {

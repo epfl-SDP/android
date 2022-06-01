@@ -100,8 +100,13 @@ class PlayerIdPoolInfo(
  * @param match the [EliminationMatch] that is wrapped.
  */
 class EliminationMatchAdapter(match: EliminationMatch) : TournamentMatch {
+
+  /** The unique identifier of the match. */
   val id = match.id
+
+  /** The depth of the match. */
   val depth = match.depth
+
   override val firstPlayerName = match.whiteName
   override val secondPlayerName = match.blackName
   override val result =
