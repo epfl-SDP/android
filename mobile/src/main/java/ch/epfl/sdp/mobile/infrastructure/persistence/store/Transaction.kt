@@ -72,8 +72,9 @@ inline fun <reified T : Any> Transaction<DocumentReference>.set(
 /**
  * Retrieves the [DocumentSnapshot] for the provided [DocumentReference].
  *
- * @param reference the [DocumentReference] to fetch.
  * @param T the type of the document.
+ * @receiver the [Transaction] on which we get the document.
+ * @param reference the [DocumentReference] to fetch.
  * @return the [T] which was fetched.
  */
 inline fun <reified T : Any> Transaction<DocumentReference>.get(

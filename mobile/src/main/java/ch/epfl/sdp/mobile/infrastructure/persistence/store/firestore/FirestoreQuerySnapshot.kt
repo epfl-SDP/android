@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 /**
  * An implementation of [QuerySnapshot] which uses an [ActualQuerySnapshot] under-the-hood.
  *
- * @param actual the actual [ActualQuerySnapshot].
+ * @property actual the actual [ActualQuerySnapshot].
  */
 class FirestoreQuerySnapshot(
     private val actual: ActualQuerySnapshot,

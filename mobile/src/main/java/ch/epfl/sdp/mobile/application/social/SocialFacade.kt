@@ -51,7 +51,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       }
 
   /**
-   * Searches user by exact match on name
+   * Searches user by exact match on name.
    *
    * @param text search criteria.
    * @param user the [AuthenticationUser] that is performing the search.

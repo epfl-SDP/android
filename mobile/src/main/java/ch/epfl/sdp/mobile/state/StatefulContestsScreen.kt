@@ -24,9 +24,14 @@ import kotlinx.coroutines.launch
  * @param tournament the [Tournament] to transform into a [ContestInfo].
  * @param currentUser the current [AuthenticatedUser].
  */
-data class TournamentAdapter(val tournament: Tournament, val currentUser: AuthenticatedUser) :
-    ContestInfo {
+data class TournamentAdapter(
+    val tournament: Tournament,
+    val currentUser: AuthenticatedUser,
+) : ContestInfo {
+
+  /** The unique identifier for the underlying [Tournament]. */
   val uid = tournament.reference.uid
+
   override val name: String = tournament.name
   override val badge: BadgeType? =
       when {

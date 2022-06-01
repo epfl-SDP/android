@@ -22,10 +22,10 @@ import ch.epfl.sdp.mobile.ui.*
 import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.*
 
 /**
- * Composable for choosing a [ColorChoice]
- * @param colorChoice default or currently chosen color
- * @param onSelectColor call back when a color is selected
- * @param modifier [Modifier] for this composable
+ * Composable for choosing a [ColorChoice].
+ * @param colorChoice default or currently chosen color.
+ * @param onSelectColor call back when a color is selected.
+ * @param modifier [Modifier] for this composable.
  */
 @Composable
 fun ColorChoiceBar(
@@ -109,24 +109,41 @@ fun ColorChoiceTabItem(
 }
 
 /**
- * Interface for colors used to customize colors of the [ColorChoiceTabItem]
+ * Interface for colors used to customize colors of the [ColorChoiceTabItem].
  * @property background(selected) returns color of background depending on state of
- * [ColorChoiceTabItem]
+ * [ColorChoiceTabItem].
  * @property content(selected) returns color of content depending on selection state of
- * [ColorChoiceTabItem]
+ * [ColorChoiceTabItem].
  * @property border(selected) returns color of border depending on selection state of
- * [ColorChoiceTabItem]
+ * [ColorChoiceTabItem].
  */
 interface ColorChoiceColors {
+
+  /**
+   * The color of the background.
+   *
+   * @param selected true iff the color choice is currently selected.
+   */
   @Composable fun background(selected: Boolean): State<Color>
 
+  /**
+   * The color of the content.
+   *
+   * @param selected true iff the color choice is currently selected.
+   */
   @Composable fun content(selected: Boolean): State<Color>
 
+  /**
+   * The color of the border.
+   *
+   * @param selected true iff the color choice is currently selected.
+   */
   @Composable fun border(selected: Boolean): State<Color>
 }
 
-/** Default implementation of [ColorChoiceColors] */
+/** Default implementation of [ColorChoiceColors]. */
 private object DefaultColorChoiceColors : ColorChoiceColors {
+
   @Composable
   override fun background(selected: Boolean): State<Color> {
     return rememberUpdatedState(if (selected) PawniesColors.Green800 else PawniesColors.Green100)
@@ -136,6 +153,7 @@ private object DefaultColorChoiceColors : ColorChoiceColors {
   override fun content(selected: Boolean): State<Color> {
     return rememberUpdatedState(if (selected) PawniesColors.Orange200 else PawniesColors.Green800)
   }
+
   @Composable
   override fun border(selected: Boolean): State<Color> {
     return derivedStateOf { PawniesColors.Orange200 }
@@ -143,11 +161,11 @@ private object DefaultColorChoiceColors : ColorChoiceColors {
 }
 
 /**
- * Modifier extension function used to decorate border of a [ColorChoiceTabItem] when it's selected
- * @param width width of the border
- * @param color color of the border
- * @param shape shape of the dashed border
- * @param pattern frequency/pattern of the dashed border
+ * Modifier extension function used to decorate border of a [ColorChoiceTabItem] when it's selected.
+ * @param width width of the border.
+ * @param color color of the border.
+ * @param shape shape of the dashed border.
+ * @param pattern frequency/pattern of the dashed border.
  */
 private fun Modifier.dashedBorder(
     width: Dp,
