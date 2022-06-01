@@ -1,0 +1,16 @@
+comments:
+  active: true
+  excludes:
+    - "**/test**"
+    - "**/androidTest/**"
+    # Individual files.
+    - "**/Colors.kt"
+    - "**/LocalizedStrings.kt"
+  EndOfSentenceFormat:
+    active: true
+  UndocumentedPublicClass:
+    active: true
+  UndocumentedPublicFunction:
+    active: true
+  UndocumentedPublicProperty:
+    active: true

@@ -16,7 +16,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 
 /**
- * The [StatefulPuzzleGameScreen] to be used for the Navigation
+ * The [StatefulPuzzleGameScreen] to be used for the Navigation.
  *
  * @param user the currently logged-in user.
  * @param puzzleId the identifier for the puzzle.

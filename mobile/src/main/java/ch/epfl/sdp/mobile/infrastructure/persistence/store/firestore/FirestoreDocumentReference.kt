@@ -16,7 +16,7 @@ import kotlinx.coroutines.tasks.await
  * An implementation of [DocumentReference] which uses a Firestore document reference
  * under-the-hood.
  *
- * @param actual the [ActualDocumentReference].
+ * @property actual the [ActualDocumentReference].
  */
 class FirestoreDocumentReference(
     val actual: ActualDocumentReference,

@@ -40,3 +40,9 @@ This project uses Jetpack Compose and is written in Kotlin. The main packages ar
 - `ch.epfl.sdp.mobile.application` contains the domain facades and business logic;
 - `ch.epfl.sdp.mobile.ui` contains all the stateless user interface. This is where all your stateless `@Composable` functions will go; and
 - `ch.epfl.sdp.mobile.state` contains the viewmodels which bind the stateless user interface to our application logic. `@Composable` functions which implement the viewmodels should go there.
+
+## Assets sources
+This section gathers different assets' sources used in our project :
+
+- Chess puzzles: <https://database.lichess.org/#puzzles>
+- 3D models : <https://free3d.com/3d-model/chessboard-716865.html>

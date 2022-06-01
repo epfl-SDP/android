@@ -21,6 +21,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
@@ -38,7 +39,7 @@ class StatefulPrepareGameScreenTest {
   @Test
   fun defaultScreen_isDisplayed() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -47,14 +48,13 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
+    PrepareGameRobot(rule, strings).assertIsDisplayed()
   }
 
   @Test
   fun switchColorToBlack_works() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -63,14 +63,16 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
+    PrepareGameRobot(rule, strings).apply {
+      clickPlayAsBlack()
+      assertBlackSelected()
+    }
   }
 
   @Test
   fun switchColorBackToWhite_works() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -79,9 +81,11 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
-    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
+    PrepareGameRobot(rule, strings).apply {
+      clickPlayAsBlack()
+      clickPlayAsWhite()
+      assertWhiteSelected()
+    }
   }
 
   @Test
