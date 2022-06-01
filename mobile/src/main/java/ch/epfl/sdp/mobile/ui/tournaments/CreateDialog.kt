@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType.Companion.Number
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -135,11 +136,14 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
               text = strings.tournamentsCreateTitle,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(horizontal = 16.dp),
-          )
+              maxLines = 1,
+              overflow = Ellipsis)
           OutlinedTextField(
               value = state.name,
               onValueChange = { state.name = it },
-              placeholder = { Text(strings.tournamentsCreateNameHint) },
+              placeholder = {
+                Text(strings.tournamentsCreateNameHint, maxLines = 1, overflow = Ellipsis)
+              },
               shape = RoundedCornerShape(4.dp),
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
               maxLines = 1,
@@ -158,13 +162,14 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
                 style = MaterialTheme.typography.subtitle1,
                 color = PawniesColors.Green500,
                 modifier = Modifier.weight(1f, fill = true),
-            )
+                maxLines = 1,
+                overflow = Ellipsis)
             for (choice in state.bestOfChoices) {
               key(choice) {
                 DialogPill(
                     selected = choice == state.bestOf,
                     onClick = { state.onBestOfClick(choice) },
-                ) { Text(choice.toString()) }
+                ) { Text(choice.toString(), maxLines = 1, overflow = Ellipsis) }
               }
             }
           }
@@ -175,11 +180,17 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
               text = strings.tournamentsCreatePlayers,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(horizontal = 16.dp),
-          )
+              maxLines = 1,
+              overflow = Ellipsis)
           OutlinedTextField(
               value = state.maximumPlayerCount,
               onValueChange = { state.maximumPlayerCount = it },
-              placeholder = { Text(strings.tournamentsCreateMaximumPlayerHint) },
+              placeholder = {
+                Text(
+                    strings.tournamentsCreateMaximumPlayerHint,
+                    maxLines = 1,
+                    overflow = Ellipsis)
+              },
               shape = RoundedCornerShape(4.dp),
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
               maxLines = 1,
@@ -200,7 +211,7 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
               onItemClick = state::onEliminationRoundClick,
               contentPadding = PaddingValues(horizontal = 16.dp),
               key = eliminationRoundKey,
-          ) { Text(it.name) }
+          ) { Text(it.name, maxLines = 1, overflow = Ellipsis) }
         }
       },
   )
