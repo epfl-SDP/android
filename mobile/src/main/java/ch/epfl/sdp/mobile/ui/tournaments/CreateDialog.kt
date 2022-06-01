@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType.Companion.Number
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -186,10 +185,7 @@ fun <PoolSize : Choice, EliminationRound : Choice> CreateDialog(
               value = state.maximumPlayerCount,
               onValueChange = { state.maximumPlayerCount = it },
               placeholder = {
-                Text(
-                    strings.tournamentsCreateMaximumPlayerHint,
-                    maxLines = 1,
-                    overflow = Ellipsis)
+                Text(strings.tournamentsCreateMaximumPlayerHint, maxLines = 1, overflow = Ellipsis)
               },
               shape = RoundedCornerShape(4.dp),
               modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),

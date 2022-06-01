@@ -105,7 +105,13 @@ private fun NewContestButton(
     modifier: Modifier = Modifier,
 ) {
   ExtendedFloatingActionButton(
-      text = { Text(LocalLocalizedStrings.current.newContest, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+      text = {
+        Text(
+            LocalLocalizedStrings.current.newContest,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+      },
       icon = { Icon(PawniesIcons.Add, null) },
       backgroundColor = MaterialTheme.colors.primary,
       onClick = onClick,
