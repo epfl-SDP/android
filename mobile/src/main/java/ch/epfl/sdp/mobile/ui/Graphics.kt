@@ -41,6 +41,7 @@ val PawniesIcons.PasswordShow
 val PawniesIcons.PasswordHide
   get() = Icons.Default.VisibilityOff
 
+/** An icon to unfollow follower. */
 val PawniesIcons.Delete
   get() = Icons.Default.Delete
 
