@@ -94,7 +94,7 @@ object German : LocalizedStrings {
   override val profileEditImageIcon = "Profilbild bearbeiten icon"
   override val profileEditNameIcon = "Profilname bearbeiten icon"
 
-  override val socialFollowingTitle = "Following"
+  override val socialFollowingTitle = "Folge ich"
   override val socialPerformPlay = "Spielen".uppercase()
   override val socialPerformFollow = "Folgen".uppercase()
   override val socialPerformUnfollow = "Followed".uppercase()
@@ -186,7 +186,7 @@ object German : LocalizedStrings {
   override val tournamentsCreateTitle = "Erstelle Turnier"
   override val tournamentsCreateNameHint = "Name"
   override val tournamentsCreateRules = "Regeln"
-  override val tournamentsCreateBestOf = "Best of :"
+  override val tournamentsCreateBestOf = "Beste von :"
   override val tournamentsCreatePlayers = "Spieler"
   override val tournamentsCreateMaximumPlayerHint = "Maximale Spielerzahl"
   override val tournamentsCreatePoolSize = "Pool grösse :"
