@@ -85,6 +85,7 @@ fun ActualPuzzleGameScreenState(
  * @param movesInfo the underlying [MovesInfoState].
  * @param puzzleInfo the underlying [PuzzleInfoState].
  * @param speechRecognizer the underlying [SpeechRecognizerState].
+ * @param textToSpeechState the underlying [TextToSpeechState].
  */
 class ActualPuzzleGameScreenState
 constructor(

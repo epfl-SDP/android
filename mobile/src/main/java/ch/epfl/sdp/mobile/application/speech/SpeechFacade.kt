@@ -19,8 +19,10 @@ import kotlinx.coroutines.sync.withLock
  *
  * @param speechFactory the [SpeechRecognizerFactory] which is used internally by this
  * [SpeechFacade].
- * @param textToSpeechFactory the [TextToSpeechFactory] which is used internally by thi
- * [SpeechFacade]
+ * @param textToSpeechFactory the [TextToSpeechFactory] which is used internally by this
+ * [SpeechFacade].
+ * @param dataStoreFactory the [DataStoreFactory] which is used to persist user
+ * parameters/preferences of the speech facade.
  */
 class SpeechFacade(
     private val speechFactory: SpeechRecognizerFactory,

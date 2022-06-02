@@ -29,6 +29,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
  * @param onBackClick a callback called when the close icon is pressed.
  * @param onArClick a callback called when the AR icon is pressed.
  * @param onListenClick a callback called when the listening icon is pressed.
+ * @param onTextToSpeechClick a callback called when text to speech icon is clicked.
  * @param listening true if the listening indicator should be displayed.
  * @param enabledTextToSpeech true if the text to speech is enabled
  * @param modifier the [Modifier] for this composable.

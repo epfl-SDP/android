@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/** Delegating class of text to speech. */
+class DelegatingTextToSpeechState
 /**
  * Delegating class of text to speech.
  * @param gameDelegate [GameDelegate] game delegate.
@@ -21,7 +23,6 @@ import kotlinx.coroutines.launch
  * @property settings persisted settings for the Text to Speech.
  * @param scope [CoroutineScope] scope under which suspending functions are executed.
  */
-class DelegatingTextToSpeechState
 constructor(
     private val gameDelegate: GameDelegate,
     private val facade: SpeechFacade,
