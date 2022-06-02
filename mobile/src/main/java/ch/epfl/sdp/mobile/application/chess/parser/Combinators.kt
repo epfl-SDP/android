@@ -120,12 +120,12 @@ object Combinators {
       repeat().filter { it.size >= count }
 
   /**
-   * Return a [Parser] which doesn't contains any null value
+   * Return a [Parser] which doesn't contains any null value.
    *
    * @param I the type of the input.
    * @param O the type of the output.
-   * @receiver the filtered [Parser]
-   * @return a [Parser] without null value
+   * @receiver the filtered [Parser].
+   * @return a [Parser] without null value.
    */
   fun <I, O> Parser<I, O?>.filterNotNull(): Parser<I, O> =
       filter { it != null }.map { checkNotNull(it) }

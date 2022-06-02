@@ -87,7 +87,7 @@ class AuthenticatedUser(
   }
 
   /**
-   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user
+   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user.
    *
    * @param puzzle the [Puzzle] to mark as solved.
    */

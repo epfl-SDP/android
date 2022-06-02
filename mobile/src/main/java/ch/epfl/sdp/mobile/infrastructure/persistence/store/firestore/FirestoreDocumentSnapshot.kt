@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 /**
  * An implementation of [DocumentSnapshot] which uses an [ActualDocumentSnapshot] under-the-hood.
  *
- * @param actual the actual [ActualDocumentSnapshot].
+ * @property actual the actual [ActualDocumentSnapshot].
  */
 class FirestoreDocumentSnapshot(
     private val actual: ActualDocumentSnapshot,

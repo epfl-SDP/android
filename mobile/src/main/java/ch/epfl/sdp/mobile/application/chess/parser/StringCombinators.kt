@@ -26,9 +26,9 @@ object StringCombinators {
   fun digit(): Parser<String, Int> = char().filter { it in '0'..'9' }.map { it - '0' }
 
   /**
-   * Parses the first [Token] of a [String]
+   * Parses the first [Token] of a [String].
    *
-   * @param delimiter the delimiter between each token
+   * @param delimiter the delimiter between each token.
    */
   fun token(delimiter: Char = ' '): Parser<String, Token> =
       Parser<String, String> {
@@ -53,10 +53,10 @@ object StringCombinators {
       token(delimiter).filter { it == value }
 
   /**
-   * Parse the first [Token] of a [String], and try to find the corresponding [DictKey] homophone
+   * Parse the first [Token] of a [String], and try to find the corresponding [DictKey] homophone.
    *
-   * @param DictKey Key type of dictionary
-   * @param dictionary where to look the search the homophone
+   * @param DictKey Key type of dictionary.
+   * @param dictionary where to look the search the homophone.
    * @param delimiter the delimiter between each token.
    */
   fun <DictKey> convertToken(
