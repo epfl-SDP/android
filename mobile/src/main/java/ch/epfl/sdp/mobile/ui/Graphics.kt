@@ -42,7 +42,6 @@ val PawniesIcons.PasswordHide
 val PawniesIcons.Delete
   get() = Icons.Default.Delete
 
-
 /** An icon for the social section. */
 val PawniesIcons.SectionSocialSelected
   @Composable get() = painterResource(id = R.drawable.ic_tab_icons_friends_filled)

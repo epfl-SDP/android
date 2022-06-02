@@ -106,7 +106,6 @@ object German : LocalizedStrings {
   override val socialCloseVisitedProfile = "Schliessen"
   override val socialUnfollowIcon = "Unfollow"
 
-
   override val sectionAr: String = "AR"
   override val sectionSocial = "Spieler"
   override val sectionSettings = "Einstellungen"

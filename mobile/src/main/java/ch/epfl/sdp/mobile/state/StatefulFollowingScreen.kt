@@ -153,9 +153,7 @@ class SnapshotSocialScreenState(
   }
 
   override fun onUnfollowClick(follower: ProfileAdapter) {
-    scope.launch {
-      user.unfollow(follower.profile)
-    }
+    scope.launch { user.unfollow(follower.profile) }
   }
 }
 

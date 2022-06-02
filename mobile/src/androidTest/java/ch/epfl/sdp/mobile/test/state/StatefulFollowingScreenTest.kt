@@ -1,19 +1,9 @@
 package ch.epfl.sdp.mobile.test.state
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.Profile
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.application.ProfileDocument
@@ -36,7 +26,6 @@ import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFact
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
@@ -209,37 +198,30 @@ class StatefulFollowingScreenTest {
     user.follow(FakeProfile("2"))
 
     rule.onNodeWithText("Blaublau").performTouchInput(TouchInjectionScope::swipeRight)
-    rule.awaitIdle()
     rule.onNodeWithContentDescription(strings.socialUnfollowIcon).performClick()
-
-   // val doc =
-   //     infra
-   //         .store
-   //         .collection(ProfileDocument.Collection)
-   //         .document("2")
-   //         .asFlow<ProfileDocument>()
-   //         .filter { !(it?.followers ?: listOf(user.uid)).contains(user.uid) }
-   //         .first()
-    // assertThat(doc?.followers).doesNotContain("2")
 
     rule.onNodeWithText("Blaublau").assertDoesNotExist()
   }
 
   @Test
-  fun demo() {
-    var clicked by mutableStateOf(false)
-    var clickedSecond by mutableStateOf(false)
-    rule.setContent {
-      Row(Modifier.size(40.dp, 20.dp)) {
-        Box(Modifier.size(20.dp).clickable { clicked = true }.testTag("Hello")) {
-          Box(Modifier.matchParentSize())
-        }
-        Box(Modifier.size(20.dp)) {
-          Box(Modifier.matchParentSize().clickable { clickedSecond = true}.testTag("Hello2"))
-        }
+  fun given_userHasFollower_when_swipeRightAndLeft_then_nothingHappens() = runTest {
+    val store = buildStore {
+      collection(ProfileDocument.Collection) {
+        document("1", ProfileDocument("1", name = "Rapunzel"))
+        document("2", ProfileDocument("2", name = "Blaublau"))
       }
     }
-    rule.onNodeWithTag("Hello").performClick()
-    assertThat(clicked).isTrue()
+
+    val (_, infra, strings, user) =
+        rule.setContentWithAuthenticatedTestEnvironment(store = store) {
+          StatefulFollowingScreen(user, onShowProfileClick = {})
+        }
+
+    user.follow(FakeProfile("2"))
+
+    rule.onNodeWithText("Blaublau").performTouchInput(TouchInjectionScope::swipeRight)
+    rule.onNodeWithText("Blaublau").performTouchInput(TouchInjectionScope::swipeLeft)
+
+    rule.onNodeWithText("Blaublau").assertExists()
   }
 }

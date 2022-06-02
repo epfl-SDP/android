@@ -1,11 +1,11 @@
 package ch.epfl.sdp.mobile.ui.social
 
+import SwipeToUnfollow
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -149,24 +149,23 @@ fun <P : Person> FollowList(
         items = players,
         key = key,
     ) { friend ->
-      PersonItem(
-          modifier = Modifier.animateItemPlacement(),
-          person = friend,
-          trailingAction = {
-            OutlinedButton(
-                onClick = { /*TODO*/},
-                shape = RoundedCornerShape(24.dp),
-            ) {
-              Text(
-                  modifier = Modifier.padding(horizontal = 8.dp),
-                  text = strings.socialPerformPlay,
-              )
-            }
-          },
-        swipeable = true,
-        onUnfollow = { onUnfollowClick(friend) },
-        onShowProfileCLick = {onShowProfileClick(friend)}
-      )
+      SwipeToUnfollow(onUnfollowClick = { onUnfollowClick(friend) }) {
+        PersonItem(
+            modifier = Modifier.animateItemPlacement(),
+            person = friend,
+            trailingAction = {
+              OutlinedButton(
+                  onClick = { /*TODO*/},
+                  shape = RoundedCornerShape(24.dp),
+              ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = strings.socialPerformPlay,
+                )
+              }
+            },
+            onShowProfileCLick = { onShowProfileClick(friend) })
+      }
     }
   }
 }
@@ -243,8 +242,7 @@ fun <P : Person> SearchResultList(
                 onClick = { onFollowClick(player) },
             )
           },
-        onShowProfileCLick = { onShowProfileClick(player) }
-      )
+          onShowProfileCLick = { onShowProfileClick(player) })
     }
   }
 }

@@ -93,7 +93,7 @@ interface LocalizedStrings {
   val socialSearchEmptySubtitle: String
   val socialSearchClearContentDescription: String
   val socialCloseVisitedProfile: String
-  val socialUnfollowIcon:String
+  val socialUnfollowIcon: String
 
   val sectionAr: String
   val sectionSocial: String
