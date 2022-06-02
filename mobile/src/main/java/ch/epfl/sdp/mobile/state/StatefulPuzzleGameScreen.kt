@@ -39,7 +39,7 @@ fun StatefulPuzzleGameScreen(
   val speechFacade = LocalSpeechFacade.current
 
   val scope = rememberCoroutineScope()
-  val puzzle = chessFacade.puzzle(uid = puzzleId) ?: Puzzle()
+  val puzzle = remember(chessFacade) { chessFacade.puzzle(uid = puzzleId) }.collectAsState(Puzzle()).value ?: Puzzle()
   val currentUser = rememberUpdatedState(user)
   val currentActions = rememberUpdatedState(actions)
 

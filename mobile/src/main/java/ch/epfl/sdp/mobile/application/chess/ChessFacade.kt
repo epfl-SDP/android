@@ -1,9 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess
 
-import ch.epfl.sdp.mobile.application.*
+import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.BlackWon
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.Stalemate
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.WhiteWon
+import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Action
@@ -15,11 +17,14 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
 import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
 import java.io.StringReader
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 /**
@@ -34,6 +39,7 @@ class ChessFacade(
     private val auth: Auth,
     private val store: Store,
     private val assets: AssetManager,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
   /** Chess matches side of chess facade. */
@@ -135,30 +141,33 @@ class ChessFacade(
    *
    * @return the fetched list of all [Puzzle]s.
    */
-  private fun allPuzzles(): List<Puzzle> {
-    return sequence {
-          val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
-          while (true) {
-            val line = reader.readMap() ?: return@sequence
-            yield(line)
-          }
-        }
-        .map {
-          val puzzleId = it[csvPuzzleId] ?: return@map null
-          val fen = parseFen(it[csvFen] ?: "") ?: return@map null
-          val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
-          val rating = it[csvRating]?.toIntOrNull() ?: return@map null
+  private fun allPuzzles(): Flow<List<Puzzle>> =
+      flow {
+            emit(
+                sequence {
+                      val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
+                      while (true) {
+                        val line = reader.readMap() ?: return@sequence
+                        yield(line)
+                      }
+                    }
+                    .map {
+                      val puzzleId = it[csvPuzzleId] ?: return@map null
+                      val fen = parseFen(it[csvFen] ?: "") ?: return@map null
+                      val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
+                      val rating = it[csvRating]?.toIntOrNull() ?: return@map null
 
-          SnapshotPuzzle(
-              uid = puzzleId,
-              boardSnapshot = fen,
-              puzzleMoves = moves,
-              elo = rating,
-          )
-        }
-        .filterNotNull()
-        .toList()
-  }
+                      SnapshotPuzzle(
+                          uid = puzzleId,
+                          boardSnapshot = fen,
+                          puzzleMoves = moves,
+                          elo = rating,
+                      )
+                    }
+                    .filterNotNull()
+                    .toList())
+          }
+          .flowOn(ioDispatcher)
 
   /**
    * Gets a certain [Puzzle] by his uid.
@@ -167,8 +176,8 @@ class ChessFacade(
    *
    * @return The specified [Puzzle], if it exists.
    */
-  fun puzzle(uid: String): Puzzle? {
-    return allPuzzles().firstOrNull { it.uid == uid }
+  fun puzzle(uid: String): Flow<Puzzle?> {
+    return allPuzzles().map { list -> list.firstOrNull { it.uid == uid } }
   }
 
   /**
@@ -178,8 +187,8 @@ class ChessFacade(
    *
    * @return The list of solved [Puzzle]s.
    */
-  fun solvedPuzzles(profile: Profile): List<Puzzle> {
-    return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
+  fun solvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
+    return allPuzzles().map { list -> list.filter { profile.solvedPuzzles.contains(it.uid) }}
   }
 
   /**
@@ -189,8 +198,8 @@ class ChessFacade(
    *
    * @return The list of unsolved [Puzzle]s.
    */
-  fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
-    return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
+  fun unsolvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
+    return allPuzzles().map { list -> list.filterNot { profile.solvedPuzzles.contains(it.uid) }}
   }
 }
 
