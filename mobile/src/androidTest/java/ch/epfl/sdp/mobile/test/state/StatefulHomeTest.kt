@@ -643,4 +643,24 @@ class StatefulHomeTest {
       rule.onNodeWithText(tournamentsFilterTitle).assertDoesNotExist() // On the contest list
     }
   }
+
+  @Test
+  fun given_social_when_clickOnPlay_then_should_startAGame() = runTest {
+    val (_, infra, strings, user) =
+        rule.setContentWithAuthenticatedTestEnvironment { StatefulHome(user) }
+
+    val opponentName = "B"
+    infra
+        .store
+        .collection(ProfileDocument.Collection)
+        .document()
+        .set(ProfileDocument(name = opponentName, followers = listOf(user.uid)))
+
+    with(strings) {
+      rule.onNodeWithText(sectionSocial).performClick()
+      rule.onNodeWithText(socialPerformPlay).performClick()
+      rule.onNodeWithText(prepareGamePlay).performClick()
+      rule.onNodeWithText(opponentName).assertExists()
+    }
+  }
 }
