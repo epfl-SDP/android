@@ -24,6 +24,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -54,7 +55,9 @@ class StatefulProfileScreenTest {
       val authFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+      val speechFacade =
+          SpeechFacade(
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
       val settings = SettingsFacade(dataStoreFactory)
 
@@ -88,7 +91,9 @@ class StatefulProfileScreenTest {
     val authFacade = AuthenticationFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
     val socialFacade = SocialFacade(auth, store)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 

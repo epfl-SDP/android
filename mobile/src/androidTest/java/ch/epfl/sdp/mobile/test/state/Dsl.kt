@@ -21,6 +21,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.DataStoreFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
+import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeechFactory
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.ProvideLocalizedStrings
 import ch.epfl.sdp.mobile.test.application.awaitAuthenticatedUser
@@ -30,6 +31,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
@@ -138,13 +140,14 @@ private fun createTestEnvironment(
     auth: Auth,
     assets: AssetManager,
     recognizer: SpeechRecognizerFactory,
+    synthesizer: TextToSpeechFactory = FakeTextToSpeechFactory,
     dataStoreFactory: DataStoreFactory,
     timeProvider: TimeProvider,
 ): TestEnvironment {
   val authenticationFacade = AuthenticationFacade(auth, store)
   val socialFacade = SocialFacade(auth, store)
   val chessFacade = ChessFacade(auth, store, assets)
-  val speechFacade = SpeechFacade(recognizer)
+  val speechFacade = SpeechFacade(recognizer, synthesizer, dataStoreFactory)
   val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
   val settingsFacade = SettingsFacade(dataStoreFactory)
   return ActualTestEnvironment(

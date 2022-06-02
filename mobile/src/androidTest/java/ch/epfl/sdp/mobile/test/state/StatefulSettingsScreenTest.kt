@@ -26,6 +26,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import ch.epfl.sdp.mobile.test.ui.profile.SettingsRobot
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
@@ -59,7 +60,9 @@ class StatefulSettingsScreenTest {
       val authFacade = AuthenticationFacade(auth, store)
       val socialFacade = SocialFacade(auth, store)
       val chessFacade = ChessFacade(auth, store, assets)
-      val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+      val speechFacade =
+          SpeechFacade(
+              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
       val settings = SettingsFacade(dataStoreFactory)
 
@@ -101,7 +104,9 @@ class StatefulSettingsScreenTest {
     val authFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
