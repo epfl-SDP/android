@@ -53,10 +53,24 @@ fun StatefulGameScreen(
   val match = remember(chessFacade, id, user) { chessFacade.match(id, user) }
 
   val snackbarHostState = remember { SnackbarHostState() }
+
+  val currentStrings = rememberUpdatedState(LocalLocalizedStrings.current)
+  val currentActions = rememberUpdatedState(actions)
+
   val gameScreenState =
-      remember(actions, user, match, audioPermissionState, speechFacade, snackbarHostState, scope) {
+      remember(
+          currentActions,
+          currentStrings,
+          user,
+          match,
+          audioPermissionState,
+          speechFacade,
+          snackbarHostState,
+          scope,
+      ) {
         ActualGameScreenState(
-            actions = actions,
+            actions = currentActions,
+            strings = currentStrings,
             user = user,
             match = match,
             permission = audioPermissionState,
