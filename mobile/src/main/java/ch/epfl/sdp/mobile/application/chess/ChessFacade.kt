@@ -188,7 +188,7 @@ class ChessFacade(
    * @return The list of solved [Puzzle]s.
    */
   fun solvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
-    return allPuzzles().map { list -> list.filter { profile.solvedPuzzles.contains(it.uid) }}
+    return allPuzzles().map { list -> list.filter { profile.solvedPuzzles.contains(it.uid) } }
   }
 
   /**
@@ -199,7 +199,7 @@ class ChessFacade(
    * @return The list of unsolved [Puzzle]s.
    */
   fun unsolvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
-    return allPuzzles().map { list -> list.filterNot { profile.solvedPuzzles.contains(it.uid) }}
+    return allPuzzles().map { list -> list.filterNot { profile.solvedPuzzles.contains(it.uid) } }
   }
 }
 

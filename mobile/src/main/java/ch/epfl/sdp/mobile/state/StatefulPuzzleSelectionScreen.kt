@@ -55,10 +55,10 @@ fun StatefulPuzzleSelectionScreen(
 }
 
 private class SnapshotPuzzleSelectionScreenState(
-  onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
-  user: AuthenticatedUser,
-  facade: ChessFacade,
-  scope: CoroutineScope,
+    onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
+    user: AuthenticatedUser,
+    facade: ChessFacade,
+    scope: CoroutineScope,
 ) : PuzzleSelectionScreenState<PuzzleInfoAdapter> {
 
   val onPuzzleClickAction by onPuzzleClickAction
@@ -71,7 +71,10 @@ private class SnapshotPuzzleSelectionScreenState(
 
   init {
     scope.launch {
-      facade.unsolvedPuzzles(user).onEach { flow -> puzzles = flow.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }}.collect()
+      facade
+          .unsolvedPuzzles(user)
+          .onEach { flow -> puzzles = flow.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
+          .collect()
     }
   }
 }
