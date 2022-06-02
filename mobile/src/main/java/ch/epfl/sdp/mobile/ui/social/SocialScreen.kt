@@ -126,7 +126,7 @@ fun <P : Person> SocialScreen(
 fun <P : Person> FollowList(
     players: List<P>,
     onShowProfileClick: (P) -> Unit,
-    onPlayClick: (person: P) -> Unit,
+    onPlayClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     key: ((P) -> Any)? = null,
