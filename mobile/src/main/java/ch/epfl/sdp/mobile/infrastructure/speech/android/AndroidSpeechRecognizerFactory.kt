@@ -18,9 +18,9 @@ private const val DefaultResultsCount = 10
 /**
  * An implementation of a [SpeechRecognizerFactory] which is backed by [NativeSpeechRecognizer]s.
  *
- * @param context the [Context] which will be used to create the speech recognizers.
- * @param language the default language to use.
- * @param resultsCount the maximum results count for each result set.
+ * @property context the [Context] which will be used to create the speech recognizers.
+ * @property language the default language to use.
+ * @property resultsCount the maximum results count for each result set.
  */
 class AndroidSpeechRecognizerFactory(
     private val context: Context,

@@ -6,7 +6,7 @@ import ch.epfl.sdp.mobile.state.game.ActualChessBoardState
 import ch.epfl.sdp.mobile.ui.game.ar.ArChessBoardScreen
 
 /**
- * A composable that make [ArChessBoardScreen] stateful
+ * A composable that make [ArChessBoardScreen] stateful.
  *
  * @param id the identifier for the match.
  * @param modifier the [Modifier] for the composable.

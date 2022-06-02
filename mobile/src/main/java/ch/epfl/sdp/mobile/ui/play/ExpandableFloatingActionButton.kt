@@ -29,7 +29,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Beige050
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green100
 import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 
-/** The state of an [ExpandableFloatingActionButton] */
+/** The state of an [ExpandableFloatingActionButton]. */
 interface ExpandableFloatingActionButtonState {
 
   /** True iff the button should be currently expanded. */
