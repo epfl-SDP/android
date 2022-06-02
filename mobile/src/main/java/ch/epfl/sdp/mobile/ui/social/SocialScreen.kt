@@ -158,7 +158,7 @@ fun <P : Person> FollowList(
             person = friend,
             trailingAction = {
               OutlinedButton(
-                  onClick = { /*TODO*/},
+                  onClick = { onPlayClick(friend) },
                   shape = RoundedCornerShape(24.dp),
               ) {
                 Text(

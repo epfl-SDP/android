@@ -196,7 +196,7 @@ class StatefulFollowingScreenTest {
 
     val (_, infra, strings, user) =
         rule.setContentWithAuthenticatedTestEnvironment(store = store) {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, {})
         }
 
     user.follow(FakeProfile("2"))
@@ -218,7 +218,7 @@ class StatefulFollowingScreenTest {
 
     val (_, infra, strings, user) =
         rule.setContentWithAuthenticatedTestEnvironment(store = store) {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, {})
         }
 
     user.follow(FakeProfile("2"))
