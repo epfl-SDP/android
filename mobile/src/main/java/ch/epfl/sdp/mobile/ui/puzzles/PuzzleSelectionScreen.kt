@@ -25,11 +25,11 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
 
 /**
- * Composable that composes the PlayScreen expanded to include history of matches
- * @param state the [PuzzleSelectionScreenState] to manage composable content
+ * Composable that composes the PlayScreen expanded to include history of matches.
+ * @param state the [PuzzleSelectionScreenState] to manage composable content.
  * @param modifier the [Modifier] for this composable.
- * @param key the key to uniquely identify a [PuzzleInfo] list item
- * @param contentPadding The [PaddingValues] to apply to the content
+ * @param key the key to uniquely identify a [PuzzleInfo] list item.
+ * @param contentPadding The [PaddingValues] to apply to the content.
  */
 @Composable
 fun PuzzleSelectionScreen(
@@ -78,9 +78,9 @@ fun PuzzleSelectionScreen(
 }
 
 /**
- * Displays a [PuzzleSelectionScreen]'s list item
+ * Displays a [PuzzleSelectionScreen]'s list item.
  *
- * @param puzzleInfo The information about the puzzle to display
+ * @param puzzleInfo The information about the puzzle to display.
  * @param onClick Action to execute when clicked on puzzle item in list
  * @param modifier the [Modifier] for this composable.
  */

@@ -17,33 +17,33 @@ import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode
 @Stable
 interface SocialScreenState<P : Person> {
 
-  /** Indicate if displayed screen is the Following or the Searching screen */
+  /** Indicate if displayed screen is the Following or the Searching screen. */
   enum class Mode {
 
-    /** The user can scroll a list containing the followed player */
+    /** The user can scroll a list containing the followed player. */
     Following,
 
-    /** The user is searching in the search bar */
+    /** The user is searching in the search bar. */
     Searching,
   }
 
-  /** The [List] of followers that need to be displayed */
+  /** The [List] of followers that need to be displayed. */
   val following: List<P>
 
-  /** The [List] of search results that getting displayed if search is activated */
+  /** The [List] of search results that getting displayed if search is activated. */
   val searchResult: List<P>
 
-  /** The current [Mode] */
+  /** The current [Mode]. */
   val mode: Mode
 
-  /** The current user input in the search bar */
+  /** The current user input in the search bar. */
   var input: String
 
-  /** Flow for interaction on search field */
+  /** Flow for interaction on search field. */
   val searchFieldInteraction: MutableInteractionSource
 
   /**
-   * Callback function to open profile of person
+   * Callback function to open profile of person.
    * @param person the type of the [Person] which open the Profile.
    */
   fun onShowProfileClick(person: P)

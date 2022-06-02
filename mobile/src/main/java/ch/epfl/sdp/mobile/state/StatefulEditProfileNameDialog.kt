@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Implementation of the [EditProfileNameDialogState] interface
+ * Implementation of the [EditProfileNameDialogState] interface.
  *
  * @param user the current [AuthenticatedUser].
  * @param scope the coroutine scope.

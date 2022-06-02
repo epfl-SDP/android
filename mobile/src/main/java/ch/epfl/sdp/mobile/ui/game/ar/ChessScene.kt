@@ -216,9 +216,9 @@ class ChessScene<Piece : ChessBoardState.Piece>(
     var targetPosition = pathIt.next()
 
     /**
-     * Update the target position and start to move the next position
+     * Update the target position and start to move the next position.
      *
-     * @param newPosition the new target position
+     * @param newPosition the new target position.
      */
     fun changeTarget(newPosition: ArPosition) {
       targetPosition = newPosition
@@ -246,7 +246,12 @@ class ChessScene<Piece : ChessBoardState.Piece>(
   }
 
   companion object {
-    // This value cannot be computed, it's chosen by guess
+
+    /**
+     * The size of the board border.
+     *
+     * This value cannot be computed, it's chosen by guessing.
+     */
     const val BoardBorderSize = 2.2f
   }
 }
@@ -274,7 +279,7 @@ private fun toArPosition(
   return ArPosition(x = transform(position.x), y = boardHeight, z = transform(position.y))
 }
 
-/** Transform a [Rank] into the corresponding model's path */
+/** Transform a [Rank] into the corresponding model's path. */
 private val Rank.arModelPath: String
   get() =
       when (this) {
@@ -286,7 +291,7 @@ private val Rank.arModelPath: String
         Rook -> ChessModels.Rook
       }
 
-/** Convert the [Color] into a color that can be used by the AR renderer */
+/** Convert the [Color] into a color that can be used by the AR renderer. */
 private val Color.colorVector: ArColor
   get() =
       when (this) {

@@ -6,10 +6,10 @@ import ch.epfl.sdp.mobile.application.chess.Puzzle
 /** An interface that represents the user interface information about the puzzle. */
 @Stable
 interface PuzzleInfoState {
-  /** The [Puzzle] that is loaded */
+  /** The [Puzzle] that is loaded. */
   val puzzleInfo: PuzzleInfo
 
-  /** The state of the puzzle */
+  /** The state of the puzzle. */
   val puzzleState: PuzzleState
 
   /** The current move number. Includes the bot's moves. */
@@ -18,7 +18,7 @@ interface PuzzleInfoState {
   /** The number of expected moves in the puzzle. Includes the bot's moves. */
   val expectedMoves: Int
 
-  /** Represents the three possible states for a puzzle */
+  /** Represents the three possible states for a puzzle. */
   enum class PuzzleState {
     Solving,
     Failed,

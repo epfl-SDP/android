@@ -21,12 +21,15 @@ import kotlinx.coroutines.launch
 /**
  * A class that turns a provided [Profile] into a [Person].
  *
- * @param profile the [Profile] to turn into a [Person].
+ * @property profile the [Profile] to turn into a [Person].
  */
 data class ProfileAdapter(
     val profile: Profile,
 ) : Person {
+
+  /** The unique identifier of the underlying [Profile]. */
   val uid = profile.uid
+
   override val backgroundColor = profile.backgroundColor.toColor()
   override val name = profile.name
   override val emoji = profile.emoji

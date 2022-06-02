@@ -10,7 +10,7 @@ import kotlinx.coroutines.tasks.await
 /**
  * An implementation of [Store] which uses Firestore under-the-hood.
  *
- * @param firestore the actual [FirebaseFirestore] instance.
+ * @property firestore the actual [FirebaseFirestore] instance.
  */
 class FirestoreStore(
     private val firestore: FirebaseFirestore,

@@ -6,11 +6,11 @@ import ch.epfl.sdp.mobile.application.chess.engine.Action
 object VoiceInput {
 
   /**
-   * Parses a [List] of possible matching voice input into a [Action]
+   * Parses a [List] of possible matching voice input into a [Action].
    *
-   * @param input the [List] of candidate voice input
+   * @param input the [List] of candidate voice input.
    * @return Null if none of the input can be transformed into an [Action] return null, otherwise
-   * the parsed [Action]
+   * the parsed [Action].
    */
   fun parseInput(input: List<String>): Action? {
     // TODO : parse until action found

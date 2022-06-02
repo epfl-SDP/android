@@ -14,16 +14,16 @@ import ch.epfl.sdp.mobile.ui.social.Person
 @Stable
 interface ProfileScreenState<C : ChessMatch, P : PuzzleInfo> : Person {
 
-  /** Number of past games */
+  /** Number of past games. */
   val pastGamesCount: Int
 
-  /** List of chess matches */
+  /** List of chess matches. */
   val matches: List<C>
 
-  /** Number of solved puzzles */
+  /** Number of solved puzzles. */
   val solvedPuzzlesCount: Int
 
-  /** List of solved puzzles */
+  /** List of solved puzzles. */
   val puzzles: List<P>
 
   /**

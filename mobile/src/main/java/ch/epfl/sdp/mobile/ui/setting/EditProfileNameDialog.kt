@@ -12,7 +12,7 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
 /**
- * Component for display a Dialog to edit the profile name
+ * Component for display a Dialog to edit the profile name.
  *
  * @param state the [EditProfileNameDialogState] as an argument.
  * @param modifier the [Modifier] for this composable.
