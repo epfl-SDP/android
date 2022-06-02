@@ -73,7 +73,7 @@ private class SnapshotPuzzleSelectionScreenState(
     scope.launch {
       facade
           .unsolvedPuzzles(user)
-          .onEach { flow -> puzzles = flow.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
+          .onEach { list -> puzzles = list.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
           .collect()
     }
   }

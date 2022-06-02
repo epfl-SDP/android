@@ -139,7 +139,7 @@ class ChessFacade(
    * As of now, the puzzles come from the Lichess.org Open Database
    * (https://database.lichess.org/#puzzles).
    *
-   * @return the fetched list of all [Puzzle]s.
+   * @return a [Flow] of the fetched list of all [Puzzle]s.
    */
   private fun allPuzzles(): Flow<List<Puzzle>> = flow {
     emit(
@@ -174,7 +174,7 @@ class ChessFacade(
    *
    * @param uid The uid of the [Puzzle] to get.
    *
-   * @return The specified [Puzzle], if it exists.
+   * @return a [Flow] of the specified [Puzzle], if it exists.
    */
   fun puzzle(uid: String): Flow<Puzzle?> {
     return allPuzzles().map { list -> list.firstOrNull { it.uid == uid } }
@@ -185,7 +185,7 @@ class ChessFacade(
    *
    * @param profile the [Profile] in question.
    *
-   * @return The list of solved [Puzzle]s.
+   * @return a [Flow] of the list of solved [Puzzle]s.
    */
   fun solvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
     return allPuzzles().map { list -> list.filter { profile.solvedPuzzles.contains(it.uid) } }
@@ -196,7 +196,7 @@ class ChessFacade(
    *
    * @param profile the [Profile] in question.
    *
-   * @return The list of unsolved [Puzzle]s.
+   * @return a [Flow] of the list of unsolved [Puzzle]s.
    */
   fun unsolvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
     return allPuzzles().map { list -> list.filterNot { profile.solvedPuzzles.contains(it.uid) } }
