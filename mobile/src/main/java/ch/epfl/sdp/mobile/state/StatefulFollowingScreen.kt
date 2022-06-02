@@ -75,6 +75,10 @@ fun StatefulFollowingScreen(
   )
 }
 
+/**
+ * An interface representing the different actions available on the profile that we see on the
+ * social screen.
+ */
 interface FollowingProfileActions {
 
   /** Callback when a user is clicked to display their profile. */
