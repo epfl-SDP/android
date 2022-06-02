@@ -43,7 +43,7 @@ class AuthenticatedUser(
     fun backgroundColor(color: Color?) = scope.set(ProfileDocument.BackgroundColor, color?.hex)
 
     /** Updates the profile name with [name]. */
-    fun name(name: String) = scope.set(ProfileDocument.Name, name)
+    fun name(name: String) = scope.set(ProfileDocument.Name, name.trim())
   }
 
   /**
