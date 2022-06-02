@@ -68,6 +68,7 @@ private class SnapshotPuzzleSelectionScreenState(
   }
 
   override var puzzles by mutableStateOf(emptyList<PuzzleInfoAdapter>())
+    private set
 
   init {
     scope.launch {

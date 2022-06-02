@@ -57,7 +57,7 @@ class StatefulProfileScreen(
     scope.launch {
       chessFacade
           .solvedPuzzles(user)
-          .onEach { flow -> puzzles = flow.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
+          .onEach { list -> puzzles = list.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
           .collect()
     }
   }
