@@ -129,7 +129,7 @@ class SpeechFacade(
     }
   }
 
-  /** Returns a single [Flow<TextToSpeechSetting]. */
+  /** Returns a single [Flow] of [TextToSpeechSettings]. */
   fun textToSpeechSettings(): Flow<TextToSpeechSettings> =
       dataStore.data.map { prefs ->
         val enabled = prefs[keyTextToSpeechEnabled] ?: true

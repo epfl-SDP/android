@@ -23,10 +23,11 @@ import kotlinx.coroutines.CoroutineScope
  * Creates a new [ActualPuzzleGameScreenState].
  *
  * @param currentActions the [State] of actions to perform when navigating.
+ * @param currentStrings the [State] of currently used strings.
  * @param currentUser the currently authenticated user.
  * @param puzzle the [Puzzle] to display.
  * @param permission the [PermissionState] for the microphone permission.
- * @param speechFacade the [SpeechFacade] to acecess speech recognition facilities.
+ * @param speechFacade the [SpeechFacade] to access speech recognition facilities.
  * @param snackbarHostState the [SnackbarHostState] to display some info.
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */

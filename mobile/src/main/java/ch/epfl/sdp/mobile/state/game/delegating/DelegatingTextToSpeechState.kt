@@ -13,16 +13,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-/** Delegating class of text to speech. */
-class DelegatingTextToSpeechState
 /**
  * Delegating class of text to speech.
  * @param gameDelegate [GameDelegate] game delegate.
  * @param facade [SpeechFacade] currently used speech facade.
- * @param strings [LocalizedStrings] provided strings.
- * @property settings persisted settings for the Text to Speech.
+ * @param strings [LocalizedStrings] currently provided strings.
  * @param scope [CoroutineScope] scope under which suspending functions are executed.
  */
+class DelegatingTextToSpeechState
 constructor(
     private val gameDelegate: GameDelegate,
     private val facade: SpeechFacade,
@@ -32,6 +30,7 @@ constructor(
 
   private val strings by strings
 
+  /** Settings persisted settings for the Text to Speech. */
   private var settings by mutableStateOf(SpeechFacade.TextToSpeechSettings(true, facade))
 
   // Fetch stored settings

@@ -806,15 +806,12 @@ class StatefulGameScreenTest {
 
   @Test
   fun given_enabled_volume_button_when_clicked_then_disable() = runTest {
-    val user = mockk<AuthenticatedUser>()
-    every { user.uid } returns "userId1"
-    every { user.name } returns "userName1"
 
     val env =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulGameScreen(
-              user = user,
-              id = "gameId",
+            user = user,
+            id = "gameId",
               actions = StatefulGameScreenActions(onBack = {}, onShowAr = {}))
         }
 

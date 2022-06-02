@@ -89,6 +89,7 @@ fun ActualGameScreenState(
  * @param movesInfo the underlying [MovesInfoState].
  * @param playersInfo the underlying [PlayersInfoState].
  * @param speechRecognizer the underlying [SpeechRecognizerState].
+ * @param textToSpeech the underlying [TextToSpeechState].
  */
 class ActualGameScreenState
 constructor(
