@@ -3,6 +3,8 @@ package ch.epfl.sdp.mobile.ui
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.SkipNext
+import androidx.compose.material.icons.outlined.VolumeOff
+import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
@@ -117,6 +119,14 @@ val PawniesIcons.TournamentsNextStep
 /** An icon to log out. */
 val PawniesIcons.Logout
   get() = Icons.Default.Logout
+
+/** An icon for enabled text to speech. */
+val PawniesIcons.TTsOn
+  get() = Icons.Outlined.VolumeUp
+
+/** An icon for disabled text to speech. */
+val PawniesIcons.TTsOff
+  get() = Icons.Outlined.VolumeOff
 
 /** An icon to open some settings. */
 val PawniesIcons.Settings

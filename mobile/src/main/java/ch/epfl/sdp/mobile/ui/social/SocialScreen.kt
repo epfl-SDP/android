@@ -81,6 +81,7 @@ fun <P : Person> SocialScreen(
                 FollowList(
                     players = state.following,
                     onShowProfileClick = state::onShowProfileClick,
+                    onPlayClick = state::onPlayClick,
                     onUnfollowClick = state::onUnfollowClick,
                     lazyListState = followingLazyListState,
                     key = key,
@@ -115,6 +116,7 @@ fun <P : Person> SocialScreen(
  * @param P the type of the [Person].
  * @param players A list of [Person] that need to be displayed.
  * @param onShowProfileClick Callback function for click on Item.
+ * @param onPlayClick Callback function for click on the play button
  * @param modifier modifier the [Modifier] for the composable.
  * @param lazyListState the [LazyListState] for the list of items.
  * @param key a function which uniquely identifies the list items.
@@ -126,6 +128,7 @@ fun <P : Person> FollowList(
     players: List<P>,
     onShowProfileClick: (P) -> Unit,
     onUnfollowClick: (P) -> Unit,
+    onPlayClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     key: ((P) -> Any)? = null,

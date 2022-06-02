@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.ui.social
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreen
 import ch.epfl.sdp.mobile.ui.social.SocialScreenState.Mode
 
 /**
@@ -46,6 +47,13 @@ interface SocialScreenState<P : Person> {
    * @param person the type of the [Person] which open the Profile.
    */
   fun onShowProfileClick(person: P)
+
+  /**
+   * Callback function to open the [PrepareGameScreen] dialog.
+   *
+   * @param opponent the person that we want to play against
+   */
+  fun onPlayClick(opponent: P)
 
   /**
    * A callback invoked when the user follows another user.

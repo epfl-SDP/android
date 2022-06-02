@@ -41,7 +41,6 @@ class StatefulContestScreenTest {
         }
       }
       val authFacade = AuthenticationFacade(auth, store)
-
       authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val (_, _, strings) =
@@ -64,7 +63,6 @@ class StatefulContestScreenTest {
         }
       }
       val authFacade = AuthenticationFacade(auth, store)
-
       authFacade.signInWithEmail("email@example.org", "password")
       val currentUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
       val (_, _, strings) =

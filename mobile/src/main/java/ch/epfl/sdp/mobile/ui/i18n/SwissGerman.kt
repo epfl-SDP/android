@@ -41,6 +41,13 @@ object SwissGerman : LocalizedStrings {
   override val boardPiecePawn = "Puur"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
   override val boardContentDescription = "Schachbrätt"
+  // TODO: Translate to Swiss German
+  override val boardMove = English.boardMove
+  override val boardPromoted = English.boardPromoted
+  override val boardPosition = English.boardPosition
+  // TODO: Translate to Swiss German
+  override val gameTTsOnContentDescription = English.gameTTsOnContentDescription
+  override val gameTTsOffContentDescription = English.gameTTsOffContentDescription
 
   override val gameBack = "Zrug"
   override val gameShowAr = "Start AR Modus"
