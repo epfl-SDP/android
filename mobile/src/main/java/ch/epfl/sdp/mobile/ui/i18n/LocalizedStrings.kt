@@ -67,7 +67,12 @@ interface LocalizedStrings {
   val boardPiecePawn: String
   val boardPieceContentDescription: (color: String, rank: String) -> String
   val boardContentDescription: String
+  val boardMove: (piece: String, from: String, to: String) -> String
+  val boardPromoted: (piece: String, from: String, to: String, rank: String) -> String
+  val boardPosition: (x: Int, y: Int) -> String
 
+  val gameTTsOnContentDescription: String
+  val gameTTsOffContentDescription: String
   val gameBack: String
   val gameShowAr: String
   val gameMicOffContentDescription: String

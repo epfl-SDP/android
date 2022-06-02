@@ -44,13 +44,23 @@ fun StatefulPuzzleGameScreen(
           ?: Puzzle()
   val currentUser = rememberUpdatedState(user)
   val currentActions = rememberUpdatedState(actions)
+  val currentStrings = rememberUpdatedState(LocalLocalizedStrings.current)
 
   val snackbarHostState = remember { SnackbarHostState() }
 
   val puzzleGameScreenState =
-      remember(currentActions, currentUser, puzzle, audioPermissionState, speechFacade, scope) {
+      remember(
+          currentActions,
+          currentStrings,
+          currentUser,
+          puzzle,
+          audioPermissionState,
+          speechFacade,
+          scope,
+      ) {
         ActualPuzzleGameScreenState(
             currentActions = currentActions,
+            currentStrings = currentStrings,
             currentUser = currentUser,
             puzzle = puzzle,
             permission = audioPermissionState,

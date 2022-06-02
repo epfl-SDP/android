@@ -17,7 +17,9 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -56,7 +58,9 @@ class StatefulFollowingScreenTest {
     val mockSocialFacade = mockk<SocialFacade>()
     val mockAuthenticationFacade = mockk<AuthenticationFacade>()
     val mockChessFacade = mockk<ChessFacade>()
-    val mockSpeechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
+    val mockSpeechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val mockTournamentFacade = mockk<TournamentFacade>()
     val mockSettingsFacade = mockk<SettingsFacade>()
 
@@ -69,7 +73,7 @@ class StatefulFollowingScreenTest {
           mockChessFacade,
           mockSpeechFacade,
           mockTournamentFacade,
-          mockSettingsFacade) { StatefulFollowingScreen(mockUser, {}) }
+          mockSettingsFacade) { StatefulFollowingScreen(mockUser, {}, {}) }
     }
     rule.onNodeWithText("Hans Peter").assertExists()
   }
@@ -80,7 +84,7 @@ class StatefulFollowingScreenTest {
       val name = "Fred"
 
       val (_, infra, strings, user) =
-          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}) }
+          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
 
       infra
           .store
@@ -107,7 +111,7 @@ class StatefulFollowingScreenTest {
     runTest {
       val name = "Fred"
       val (_, infra, strings) =
-          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}) }
+          rule.setContentWithAuthenticatedTestEnvironment { StatefulFollowingScreen(user, {}, {}) }
 
       infra
           .store
@@ -127,7 +131,7 @@ class StatefulFollowingScreenTest {
   fun focusedSearchField_isInSearchMode() = runTest {
     val (_, _, strings) =
         rule.setContentWithAuthenticatedTestEnvironment {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performClick()
@@ -139,7 +143,7 @@ class StatefulFollowingScreenTest {
   fun unfocusedSearchField_withText_isInSearchMode() = runTest {
     val (_, _, strings) =
         rule.setContentWithAuthenticatedTestEnvironment {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Body")
@@ -156,7 +160,7 @@ class StatefulFollowingScreenTest {
   fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
     val (_, infra, strings) =
         rule.setContentWithAuthenticatedTestEnvironment {
-          StatefulFollowingScreen(user, onShowProfileClick = {})
+          StatefulFollowingScreen(user, onShowProfileClick = {}, onPlayClick = {})
         }
 
     infra

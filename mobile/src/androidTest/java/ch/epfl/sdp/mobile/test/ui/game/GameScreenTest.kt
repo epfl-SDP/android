@@ -22,6 +22,8 @@ class GameScreenTest {
       MovableChessBoardState<Piece> by ChessBoardTest.SinglePieceSnapshotChessBoardState() {
 
     override var currentError: SpeechRecognizerError = None
+    override val textToSpeechEnabled = false
+    override fun onTextToSpeechToggle() {}
 
     override val moves: List<Move>
       get() =
