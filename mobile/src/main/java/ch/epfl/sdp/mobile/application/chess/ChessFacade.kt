@@ -141,33 +141,33 @@ class ChessFacade(
    *
    * @return the fetched list of all [Puzzle]s.
    */
-  private fun allPuzzles(): Flow<List<Puzzle>> =
-      flow {
-            emit(
-                sequence {
-                      val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
-                      while (true) {
-                        val line = reader.readMap() ?: return@sequence
-                        yield(line)
-                      }
-                    }
-                    .map {
-                      val puzzleId = it[csvPuzzleId] ?: return@map null
-                      val fen = parseFen(it[csvFen] ?: "") ?: return@map null
-                      val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
-                      val rating = it[csvRating]?.toIntOrNull() ?: return@map null
+  private fun allPuzzles(): Flow<List<Puzzle>> = flow {
+    emit(
+        sequence {
+              val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
+              while (true) {
+                val line = reader.readMap() ?: return@sequence
+                yield(line)
+              }
+            }
+            .map {
+              val puzzleId = it[csvPuzzleId] ?: return@map null
+              val fen = parseFen(it[csvFen] ?: "") ?: return@map null
+              val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
+              val rating = it[csvRating]?.toIntOrNull() ?: return@map null
 
-                      SnapshotPuzzle(
-                          uid = puzzleId,
-                          boardSnapshot = fen,
-                          puzzleMoves = moves,
-                          elo = rating,
-                      )
-                    }
-                    .filterNotNull()
-                    .toList())
-          }
-          .flowOn(ioDispatcher)
+              SnapshotPuzzle(
+                  uid = puzzleId,
+                  boardSnapshot = fen,
+                  puzzleMoves = moves,
+                  elo = rating,
+              )
+            }
+            .filterNotNull()
+            .toList())
+  }
+  // TODO: Change dispatchers when upgrading Compose 1.2
+  // .flowOn(ioDispatcher)
 
   /**
    * Gets a certain [Puzzle] by his uid.
