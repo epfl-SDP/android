@@ -78,14 +78,16 @@ class SpeechFacade(
     cont.invokeOnCancellation { cleanup() }
   }
 
+  /** Companion object that stores the data store key for text to speech parameters. */
   object DataStoreKeys {
+    /** Key used in data store for text to speech enabling setting. */
     const val TextToSpeechEnabled = "textToSpeech_enabled"
   }
 
   /** The [DataStore] instance in which the preferences are stored. */
   private val dataStore: DataStore<Preferences>
 
-  /** Parameter key holding the enabled value of the text to speech */
+  /** Parameter key holding the enabled value of the text to speech. */
   private val keyTextToSpeechEnabled: Key<Boolean>
 
   init {
@@ -95,37 +97,37 @@ class SpeechFacade(
   }
 
   /**
-   * Class representing settings of the text to speech
-   * @param enabled true if the text to speech is enabled, false otherwise
-   * @param facade [SpeechFacade] currently provided speech facade
+   * Class representing settings of the text to speech.
+   * @param enabled true if the text to speech is enabled, false otherwise.
+   * @param facade [SpeechFacade] currently provided speech facade.
    */
   class TextToSpeechSettings(val enabled: Boolean, private val facade: SpeechFacade) {
 
     /**
-     * Updates the datastore
-     * @param scope [UpdateScope] scope under which the update is done
+     * Updates the datastore.
+     * @param scope [UpdateScope] scope under which the update is done.
      */
     suspend fun update(scope: UpdateScope.() -> Unit) =
         facade.dataStore.edit { scope(UpdateScope(facade, it)) }
 
     /**
-     * Class that represents the scope under which the preferences are updated/set
-     * @param facade [SpeechFacade] current facade
-     * @param preferences [MutablePreferences] preferences to be updated/set
+     * Class that represents the scope under which the preferences are updated/set.
+     * @param facade [SpeechFacade] current facade.
+     * @param preferences [MutablePreferences] preferences to be updated/set.
      */
     class UpdateScope(
         private val facade: SpeechFacade,
         private val preferences: MutablePreferences,
     ) {
       /**
-       * Associates the value of enables to its key in the datastore
-       * @param value values to be associated
+       * Associates the value of enables to its key in the datastore.
+       * @param value values to be associated.
        */
       fun enabled(value: Boolean) = preferences.set(facade.keyTextToSpeechEnabled, value)
     }
   }
 
-  /** Returns a single [Flow<TextToSpeechSetting] */
+  /** Returns a single [Flow<TextToSpeechSetting]. */
   fun textToSpeechSettings(): Flow<TextToSpeechSettings> =
       dataStore.data.map { prefs ->
         val enabled = prefs[keyTextToSpeechEnabled] ?: true
@@ -135,6 +137,10 @@ class SpeechFacade(
   private var textToSpeech: TextToSpeech? = null
   private val mutex = Mutex()
 
+  /**
+   * Synthesizes the given text.
+   * @param text to synthesize.
+   */
   suspend fun synthesize(text: String) {
     val tts =
         mutex.withLock {

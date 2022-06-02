@@ -14,12 +14,12 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * Delegating class of the text to speech that
- * @param gameDelegate [GameDelegate] game delegate
- * @param facade [SpeechFacade] currently used speech facade
- * @param strings [LocalizedStrings] provided strings
- * @property settings persisted settings for the Text to Speech
- * @param scope [CoroutineScope] scope under which suspending functions are executed
+ * Delegating class of text to speech.
+ * @param gameDelegate [GameDelegate] game delegate.
+ * @param facade [SpeechFacade] currently used speech facade.
+ * @param strings [LocalizedStrings] provided strings.
+ * @property settings persisted settings for the Text to Speech.
+ * @param scope [CoroutineScope] scope under which suspending functions are executed.
  */
 class DelegatingTextToSpeechState
 constructor(
@@ -40,7 +40,7 @@ constructor(
 
   /**
    * Creates a flow that synthesizes actions performed on the board by observing the game in the
-   * game delegates
+   * game delegates.
    */
   private suspend fun synthesizeMoveFlow(): Flow<*> {
     return snapshotFlow { gameDelegate.game }
@@ -62,9 +62,9 @@ constructor(
   }
 
   /**
-   * Converts a given action to text
-   * @param action [Action] action performed on board
-   * @param board [Board] the previous game board before action
+   * Converts a given action to text.
+   * @param action [Action] action performed on board.
+   * @param board [Board] the previous game board before action.
    */
   private fun toText(action: Action, board: Board<Piece<Color>>): String {
     return when (action) {
@@ -74,9 +74,9 @@ constructor(
   }
 
   /**
-   * Forms text to be synthesized for Move action
-   * @param move [Action.Move] the move action
-   * @param board [Board] the previous game board before promotion
+   * Forms text to be synthesized for Move action.
+   * @param move [Action.Move] the move action.
+   * @param board [Board] the previous game board before promotion.
    */
   private fun moveToText(move: Action.Move, board: Board<Piece<Color>>): String {
     val from = strings.boardPosition(move.from.x, move.from.y)
@@ -88,9 +88,9 @@ constructor(
   }
 
   /**
-   * Forms text to be synthesized for Promotion action
-   * @param promotion [Action.Promote] the promotion action
-   * @param board [Board] the previous game board before promotion
+   * Forms text to be synthesized for Promotion action.
+   * @param promotion [Action.Promote] the promotion action.
+   * @param board [Board] the previous game board before promotion.
    */
   private fun promoteToText(promotion: Action.Promote, board: Board<Piece<Color>>): String {
     val from = strings.boardPosition(promotion.from.x, promotion.from.y)

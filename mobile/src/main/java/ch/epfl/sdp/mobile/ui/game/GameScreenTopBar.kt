@@ -149,10 +149,10 @@ private class ListeningButtonColors(
 }
 
 /**
- * Text to speech toggle button composable
- * @param onClick callback for the ico
- * @param enabled indicates if the text to speech is enabled
- * @param modifier [Modifier] for this composable
+ * Text to speech toggle button composable.
+ * @param onClick callback for the icon.
+ * @param enabled indicates if the text to speech is enabled.
+ * @param modifier [Modifier] for this composable.
  */
 @Composable
 private fun TextToSpeechToggleButton(

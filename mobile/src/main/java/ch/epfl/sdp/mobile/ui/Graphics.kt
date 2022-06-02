@@ -117,9 +117,11 @@ val PawniesIcons.TournamentsNextStep
 val PawniesIcons.Logout
   get() = Icons.Default.Logout
 
+/** An icon for enabled text to speech. */
 val PawniesIcons.TTsOn
   get() = Icons.Outlined.VolumeUp
 
+/** An icon for disabled text to speech. */
 val PawniesIcons.TTsOff
   get() = Icons.Outlined.VolumeOff
 
