@@ -12,6 +12,7 @@ import ch.epfl.sdp.mobile.state.game.core.PuzzleGameDelegate
 import ch.epfl.sdp.mobile.state.game.delegating.*
 import ch.epfl.sdp.mobile.state.game.delegating.DelegatingChessBoardState.Piece
 import ch.epfl.sdp.mobile.ui.game.*
+import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreenState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfoState
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -22,15 +23,17 @@ import kotlinx.coroutines.CoroutineScope
  * Creates a new [ActualPuzzleGameScreenState].
  *
  * @param currentActions the [State] of actions to perform when navigating.
+ * @param currentStrings the [State] of currently used strings.
  * @param currentUser the currently authenticated user.
  * @param puzzle the [Puzzle] to display.
  * @param permission the [PermissionState] for the microphone permission.
- * @param speechFacade the [SpeechFacade] to acecess speech recognition facilities.
+ * @param speechFacade the [SpeechFacade] to access speech recognition facilities.
  * @param snackbarHostState the [SnackbarHostState] to display some info.
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
 fun ActualPuzzleGameScreenState(
     currentActions: State<StatefulGameScreenActions>,
+    currentStrings: State<LocalizedStrings>,
     currentUser: State<AuthenticatedUser>,
     puzzle: Puzzle,
     permission: PermissionState,
@@ -61,6 +64,7 @@ fun ActualPuzzleGameScreenState(
           snackbarHostState,
           scope,
       )
+  val textToSpeech = DelegatingTextToSpeechState(chessBoard, speechFacade, currentStrings, scope)
   return ActualPuzzleGameScreenState(
       currentActions = currentActions,
       moveableChessBoard = moveableChessBoard,
@@ -68,6 +72,7 @@ fun ActualPuzzleGameScreenState(
       movesInfo = moves,
       puzzleInfo = puzzleInfo,
       speechRecognizer = speechRecognizer,
+      textToSpeechState = textToSpeech,
   )
 }
 
@@ -81,6 +86,7 @@ fun ActualPuzzleGameScreenState(
  * @param movesInfo the underlying [MovesInfoState].
  * @param puzzleInfo the underlying [PuzzleInfoState].
  * @param speechRecognizer the underlying [SpeechRecognizerState].
+ * @param textToSpeechState the underlying [TextToSpeechState].
  */
 class ActualPuzzleGameScreenState
 constructor(
@@ -90,13 +96,15 @@ constructor(
     movesInfo: MovesInfoState,
     puzzleInfo: PuzzleInfoState,
     speechRecognizer: SpeechRecognizerState,
+    textToSpeechState: TextToSpeechState,
 ) :
     PuzzleGameScreenState<Piece>,
     MovableChessBoardState<Piece> by moveableChessBoard,
     PromotionState by promotionState,
     MovesInfoState by movesInfo,
     PuzzleInfoState by puzzleInfo,
-    SpeechRecognizerState by speechRecognizer {
+    SpeechRecognizerState by speechRecognizer,
+    TextToSpeechState by textToSpeechState {
 
   override fun onBackClick() = currentActions.value.onBack()
 }

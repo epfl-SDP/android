@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.test.state
 
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.mutableStateOf
 import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
@@ -10,10 +11,13 @@ import ch.epfl.sdp.mobile.state.StatefulGameScreenActions
 import ch.epfl.sdp.mobile.state.game.ActualGameScreenState
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import ch.epfl.sdp.mobile.ui.game.ChessBoardState
+import ch.epfl.sdp.mobile.ui.i18n.English
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
@@ -40,7 +44,9 @@ class ClassicChessBoardStateTest {
       }
     }
     val facade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(UnknownCommandSpeechRecognizerFactory)
+    val speechFacade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
     val user = mockk<AuthenticatedUser>()
     every { user.uid } returns "id1"
 
@@ -49,10 +55,11 @@ class ClassicChessBoardStateTest {
 
     val match = facade.createMatch(user, user)
 
-    val actions = StatefulGameScreenActions(onBack = {}, onShowAr = {})
+    val actions = mutableStateOf(StatefulGameScreenActions(onBack = {}, onShowAr = {}))
     val state =
         ActualGameScreenState(
             actions = actions,
+            strings = mutableStateOf(English),
             user = user,
             match = match,
             permission = GrantedPermissionState,
