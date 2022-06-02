@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState.Color
 
 /** Represents the basic info of a [Puzzle] to display it in a list. */
 interface PuzzleInfo {
+
   /** The [Puzzle]'s uid. */
   val uid: String
 

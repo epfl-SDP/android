@@ -4,6 +4,7 @@ import ch.epfl.sdp.mobile.ui.i18n.Language
 
 /** State interface of the [EditLanguageDialog]. */
 interface EditLanguageDialogState {
+
   /** Language which will be changed. */
   var selectedLanguage: Language
 

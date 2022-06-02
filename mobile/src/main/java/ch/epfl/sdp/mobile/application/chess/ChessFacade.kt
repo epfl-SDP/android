@@ -26,17 +26,15 @@ import kotlinx.coroutines.flow.*
  * An interface which represents all the endpoints and available features for online chess
  * interactions for a user of the Pawnies application.
  *
- * @param auth the [Auth] instance which will be used to handle authentication.
- * @param store the [Store] which is used to manage documents.
- * @param assets the [AssetManager] which is used to load assets.
+ * @property auth the [Auth] instance which will be used to handle authentication.
+ * @property store the [Store] which is used to manage documents.
+ * @property assets the [AssetManager] which is used to load assets.
  */
 class ChessFacade(
     private val auth: Auth,
     private val store: Store,
     private val assets: AssetManager,
 ) {
-
-  /** Chess matches side of chess facade. */
 
   /**
    * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store].
@@ -205,8 +203,8 @@ private data class SnapshotPuzzle(
 /**
  * A class representing a [Game] between two online players viewed by a user.
  *
- * @param store the [Store] which is used to manage documents.
- * @param user the [Profile] currently viewing the game.
+ * @property store the [Store] which is used to manage documents.
+ * @property user the [Profile] currently viewing the game.
  */
 private data class StoreMatch(
     override val id: String,
@@ -242,6 +240,7 @@ private data class StoreMatch(
       documentFlow.map { it?.whiteId }.flatMapLatest {
         it?.let(this@StoreMatch::profile) ?: flowOf(null)
       }
+
   override val black =
       documentFlow.map { it?.blackId }.flatMapLatest {
         it?.let(this@StoreMatch::profile) ?: flowOf(null)

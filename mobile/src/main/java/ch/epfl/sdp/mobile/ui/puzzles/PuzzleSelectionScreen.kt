@@ -26,6 +26,7 @@ import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
 
 /**
  * Composable that composes the PlayScreen expanded to include history of matches.
+ *
  * @param state the [PuzzleSelectionScreenState] to manage composable content.
  * @param modifier the [Modifier] for this composable.
  * @param key the key to uniquely identify a [PuzzleInfo] list item.

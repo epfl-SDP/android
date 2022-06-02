@@ -3,9 +3,9 @@ package ch.epfl.sdp.mobile.application.chess.engine.implementation
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 
 /**
- * An class representing a board of pieces.
+ * A class representing a board of pieces.
  *
- * @param cells the backing [IntArray] with each individual piece.
+ * @property cells the backing [IntArray] with each individual piece.
  */
 @JvmInline
 value class MutableBoard private constructor(@PublishedApi internal val cells: IntArray) {

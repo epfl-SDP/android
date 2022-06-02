@@ -16,7 +16,7 @@ import kotlin.math.sign
 /**
  * A class representing the difference between two [Position].
  *
- * @param backing the backing field for the inline class.
+ * @property backing the backing field for the inline class.
  */
 @JvmInline
 value class Delta private constructor(private val backing: Int) {

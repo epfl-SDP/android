@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
 
 /** Represents a complete [Puzzle]. */
 interface Puzzle {
+
   /** The uid of the [Puzzle]. */
   val uid: String
 

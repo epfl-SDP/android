@@ -10,13 +10,18 @@ import kotlinx.coroutines.flow.map
 /**
  * Represents the facade for the user to modify the global settings.
  *
- * @param dataStoreFactory a reference to the data store.
+ * @property dataStoreFactory a reference to the data store.
  */
 class SettingsFacade(
     private val dataStoreFactory: DataStoreFactory,
 ) {
 
-  private val Language = "language"
+  /** The datastore keys for the [SettingsFacade]. */
+  companion object DatastoreKeys {
+
+    /** The ley for the language key in the settings datastore. */
+    private const val Language = "language"
+  }
 
   /** The [DataStore] instance in which the preferences are stored. */
   private val dataStore: DataStore<Preferences>

@@ -16,10 +16,10 @@ import kotlinx.coroutines.flow.map
 /**
  * An interface which represents all the endpoints and available features for tournaments.
  *
- * @param auth the [Auth] instance which will be used to handle authentication.
- * @param dataStoreFactory the [DataStoreFactory] which will be used to access the preferences.
- * @param store the [Store] which is used to manage documents.
- * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * @property auth the [Auth] instance which will be used to handle authentication.
+ * @property dataStoreFactory the [DataStoreFactory] which will be used to access the preferences.
+ * @property store the [Store] which is used to manage documents.
+ * @property timeProvider the [TimeProvider] used to calculate the duration of creation of the
  * tournament.
  */
 class TournamentFacade(
@@ -209,8 +209,8 @@ class TournamentFacade(
               bestOf = bestOf,
               poolSize = poolSize,
               eliminationRounds = eliminationRounds,
-          ))
-
+          ),
+      )
       return TournamentReference(uid = document.id)
     } else {
       return null

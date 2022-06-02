@@ -5,9 +5,9 @@ import ch.epfl.sdp.mobile.application.chess.engine.Delta
 import ch.epfl.sdp.mobile.application.chess.engine.Position
 
 /**
- * An implementation of [Rank] which attacks and moves towards a [List] of possible directions.
+ * An implementation of [Rules] which attacks and moves towards a [List] of possible directions.
  *
- * @param directions the [List] of possible directions.
+ * @property directions the [List] of possible directions.
  */
 abstract class AttackTowardsRules(private val directions: List<Delta>) : Rules {
 

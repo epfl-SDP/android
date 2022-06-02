@@ -19,8 +19,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 /**
  * The different navigation actions which may be performed by the [StatefulGameScreen].
  *
- * @param onBack the action to perform when going back.
- * @param onShowAr the action to perform when AR should be started for the match.
+ * @property onBack the action to perform when going back.
+ * @property onShowAr the action to perform when AR should be started for the match.
  */
 data class StatefulGameScreenActions(
     val onBack: () -> Unit,

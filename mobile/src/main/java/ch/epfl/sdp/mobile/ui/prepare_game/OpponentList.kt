@@ -20,6 +20,7 @@ import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
  * Composable that represents a list of potential opponents, with one potentially selected.
+ *
  * @param P the type of the [Person].
  * @param opponents The list of [Person]s to display as opponents.
  * @param selectedOpponent A potentially selected opponent to display differently in the opponent
@@ -63,13 +64,13 @@ fun <P : Person> OpponentList(
 
 /**
  * Composable that represents an opponent in [OpponentList].
+ *
  * @param P the type of the [Person].
  * @param person Person representing the opponent.
  * @param onClick button action.
  * @param modifier [Modifier] for this composable.
  * @param selected indicates if the opponent is selected.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun <P : Person> Opponent(
     person: P,
@@ -95,12 +96,12 @@ private fun <P : Person> Opponent(
 
 /**
  * Composable that represents a selectable item.
+ *
  * @param onClick button action.
  * @param selected indicates if the opponent is selected.
  * @param modifier [Modifier] for this composable.
  * @param content the content to display in the item.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectableItem(
     onClick: () -> Unit,
@@ -127,6 +128,7 @@ fun SelectableItem(
 
 /**
  * Returns color of the button given its selection state.
+ *
  * @param selected True if the button is selected False otherwise.
  */
 @Composable

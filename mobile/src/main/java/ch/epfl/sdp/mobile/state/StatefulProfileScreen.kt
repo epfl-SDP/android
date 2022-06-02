@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
  *
  * @param user the given [Profile].
  * @param actions the [ProfileActions] which are available on the screen.
- * @param chessFacade the [ChessFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property chessFacade the [ChessFacade] used to perform some requests.
+ * @parpropertyam scope the [CoroutineScope] on which requests are performed.
  */
 class StatefulProfileScreen(
     user: Profile,

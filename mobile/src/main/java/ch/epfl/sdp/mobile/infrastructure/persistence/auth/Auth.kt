@@ -14,7 +14,7 @@ interface Auth {
     /**
      * Indicates that there was a success during authentication.
      *
-     * @param user the [User] that is currently set.
+     * @property user the [User] that is currently set.
      */
     data class Success(val user: User?) : AuthenticationResult
 

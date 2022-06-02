@@ -78,6 +78,7 @@ fun ProfileTabItem(
 
 /**
  * Interface of the ProfileTabBar state.
+ *
  * @class Tab Enumerate types of Tabs.
  * @property currentTab Currently selected Tab.
  * @property pastGamesCount past games count.
@@ -103,6 +104,7 @@ interface ProfileTabBarState {
 
 /**
  * Implementation of the ProfileTabBarState.
+ *
  * @param pastGamesCount count of games.
  * @param puzzlesCount count of puzzles done.
  */
@@ -117,6 +119,7 @@ private class ProfileTabBarStateImpl(
 
 /**
  * Function used to remember the state of the ProfileTabBar.
+ *
  * @param pastGamesCount count of games.
  * @param puzzlesCount count of puzzles done.
  */
@@ -132,6 +135,7 @@ fun rememberProfileTabBarState(
 
 /**
  * Composes a ProfileTabBar from puzzles and past games tab items.
+ *
  * @param state state of the profile tab.
  * @param modifier the [Modifier] for this composable.
  * @param backgroundColor of the tab bar.

@@ -139,13 +139,13 @@ private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
 /**
  * Intermediate State to simplify the data handling.
  *
- * @param id the identifier of a match.
- * @param movesCount the number of moves played.
- * @param whiteId the identifier of the white player.
- * @param blackId the identifier of th black player.
- * @param whiteName the name of the white player.
- * @param blackName the name of the black player.
- * @param matchResult the result of the match, given the user color.
+ * @property id the identifier of a match.
+ * @property movesCount the number of moves played.
+ * @property whiteId the identifier of the white player.
+ * @property blackId the identifier of th black player.
+ * @property whiteName the name of the white player.
+ * @property blackName the name of the black player.
+ * @property matchResult the result of the match, given the user color.
  */
 data class MatchInfo(
     val id: String?,
@@ -185,6 +185,7 @@ fun fetchForUser(
 /**
  * Extract the data from the sub.flows of black and white and combine all the information in
  * [MatchInfo].
+ *
  * @param match a [Match] to extract the information.
  */
 private fun info(match: Match): Flow<MatchInfo> {
@@ -218,9 +219,9 @@ private fun info(match: Match): Flow<MatchInfo> {
  * @param onOnlineGameClickAction The State for the callable lambda to navigate to the
  * `PrepareGameScreen` screen.
  * @param onMatchClickAction The State for the callback function to navigate to match on click.
- * @param user authenticated user.
- * @param chessFacade [ChessFacade] to fetch the matches.
- * @param scope for coroutines.
+ * @property user authenticated user.
+ * @property chessFacade [ChessFacade] to fetch the matches.
+ * @property scope for coroutines.
  */
 private class PlayScreenStateImpl(
     onLocalGameClickAction: State<(match: Match) -> Unit>,
@@ -260,6 +261,7 @@ private class PlayScreenStateImpl(
 
 /**
  * Helper function for createChessMatch.
+ *
  * @param match [MatchInfo] intermediate datatype.
  * @param user the user in question.
  */

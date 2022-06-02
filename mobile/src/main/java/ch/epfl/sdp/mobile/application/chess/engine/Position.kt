@@ -10,7 +10,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.utils.unpackShort2
  * of the board, and the x axis increases towards the right while the y axis increases towards the
  * bottom.
  *
- * @param backing the backing field for the inline class.
+ * @property backing the backing field for the inline class.
  */
 @JvmInline
 value class Position private constructor(private val backing: Int) {

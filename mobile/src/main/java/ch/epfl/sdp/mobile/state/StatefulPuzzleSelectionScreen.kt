@@ -68,10 +68,10 @@ private class SnapshotPuzzleSelectionScreen(
 /**
  * Represents the basic info of a [Puzzle] to display it in a list.
  *
- * @param uid The [Puzzle]'s uid.
- * @param playerColor The [Color] of the player in the [Puzzle].
- * @param elo The elo/rank (difficulty) of the puzzle.
- * @param icon The icon [Composable] to display next to the [Puzzle] description.
+ * @property uid The [Puzzle]'s uid.
+ * @property playerColor The [Color] of the player in the [Puzzle].
+ * @property elo The elo/rank (difficulty) of the puzzle.
+ * @property icon The icon [Composable] to display next to the [Puzzle] description.
  */
 data class PuzzleInfoAdapter(
     override val uid: String,
