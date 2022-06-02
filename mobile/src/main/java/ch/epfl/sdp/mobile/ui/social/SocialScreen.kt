@@ -81,6 +81,7 @@ fun <P : Person> SocialScreen(
                 FollowList(
                     players = state.following,
                     onShowProfileClick = state::onShowProfileClick,
+                    onUnfollowClick = state::onUnfollowClick,
                     lazyListState = followingLazyListState,
                     key = key,
                     modifier = Modifier.fillMaxSize(),
@@ -124,6 +125,7 @@ fun <P : Person> SocialScreen(
 fun <P : Person> FollowList(
     players: List<P>,
     onShowProfileClick: (P) -> Unit,
+    onUnfollowClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     key: ((P) -> Any)? = null,
@@ -148,7 +150,7 @@ fun <P : Person> FollowList(
         key = key,
     ) { friend ->
       PersonItem(
-          modifier = Modifier.clickable { onShowProfileClick(friend) }.animateItemPlacement(),
+          modifier = Modifier.animateItemPlacement(),
           person = friend,
           trailingAction = {
             OutlinedButton(
@@ -161,6 +163,9 @@ fun <P : Person> FollowList(
               )
             }
           },
+        swipeable = true,
+        onUnfollow = { onUnfollowClick(friend) },
+        onShowProfileCLick = {onShowProfileClick(friend)}
       )
     }
   }
@@ -231,13 +236,14 @@ fun <P : Person> SearchResultList(
     ) { player ->
       PersonItem(
           person = player,
-          modifier = modifier.clickable { onShowProfileClick(player) }.animateItemPlacement(),
+          modifier = modifier.animateItemPlacement(),
           trailingAction = {
             FollowButton(
                 following = player.followed,
                 onClick = { onFollowClick(player) },
             )
           },
+        onShowProfileCLick = { onShowProfileClick(player) }
       )
     }
   }

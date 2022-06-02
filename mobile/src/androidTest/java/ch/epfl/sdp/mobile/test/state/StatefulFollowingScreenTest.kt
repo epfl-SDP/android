@@ -168,4 +168,21 @@ class StatefulFollowingScreenTest {
     rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
     rule.onNodeWithText("Alexandre").assertIsDisplayed()
   }
+
+  @Test
+  fun searchingPlayerByNamePrefix_displaysPlayerName() = runTest {
+    val (_, infra, strings) =
+      rule.setContentWithAuthenticatedTestEnvironment {
+        StatefulFollowingScreen(user, onShowProfileClick = {})
+      }
+
+    infra
+      .store
+      .collection(ProfileDocument.Collection)
+      .document()
+      .set(ProfileDocument(name = "Alexandre"))
+
+    rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
+    rule.onNodeWithText("Alexandre").assertIsDisplayed()
+  }
 }

@@ -42,6 +42,9 @@ private enum class SwipeToDeleteState {
 @Composable
 fun PersonItem(
     person: Person,
+    swipeable: Boolean = false,
+    onShowProfileCLick: () -> Unit,
+    onUnfollow: () -> Unit = {},
     modifier: Modifier = Modifier,
     trailingAction: @Composable () -> Unit = {}
 ) {
@@ -54,18 +57,24 @@ fun PersonItem(
               SwipeToDeleteState.Open) // Maps anchor points (in px) to states
 
   Box(
-      modifier.swipeable(state = state, anchors = anchors, orientation = Orientation.Horizontal),
+      modifier.swipeable(
+          state = state,
+          anchors = anchors,
+          orientation = Orientation.Horizontal,
+          enabled = swipeable),
   ) {
     UnfollowBackground(
-        onClick = {},
-        enabled = true,
+        onClick = onUnfollow,
         modifier = Modifier.matchParentSize(),
     )
     Box(
-        modifier = Modifier.offset { Offset(x = state.offset.value, y = 0f).round() },
+        modifier =
+            Modifier.offset {
+              Offset(x = state.offset.value, y = 0f).round()
+            },
     ) {
       ListItem(
-          modifier = Modifier.background(Beige050),
+          modifier = Modifier.background(Beige050).clickable { onShowProfileCLick() },
           icon = {
             Box(
                 modifier =
@@ -99,11 +108,10 @@ fun PersonItem(
 private fun UnfollowBackground(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
 ) {
   val background = MaterialTheme.colors.error.copy(alpha = 0.2f)
   Box(
-      modifier.clickable(enabled = enabled) { onClick() }.background(background),
+      modifier.clickable { onClick() }.background(background),
       Alignment.CenterStart,
   ) {
     Icon(
