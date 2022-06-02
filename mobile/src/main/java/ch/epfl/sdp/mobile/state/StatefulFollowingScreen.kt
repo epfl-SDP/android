@@ -77,10 +77,10 @@ fun StatefulFollowingScreen(
 
 interface FollowingProfileActions {
 
-  /** Callback when a user is clicked to display their profile */
+  /** Callback when a user is clicked to display their profile. */
   val onShowProfileClick: (ProfileAdapter) -> Unit
 
-  /** Callback function for a clicked on play */
+  /** Callback function for a clicked on play. */
   val onPlayClick: (String) -> Unit
 }
 

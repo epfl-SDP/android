@@ -49,7 +49,7 @@ interface SocialScreenState<P : Person> {
   fun onShowProfileClick(person: P)
 
   /**
-   * Callback function to open the [PrepareGameScreen] dialog
+   * Callback function to open the [PrepareGameScreen] dialog.
    *
    * @param opponent the person that we want to play against
    */
