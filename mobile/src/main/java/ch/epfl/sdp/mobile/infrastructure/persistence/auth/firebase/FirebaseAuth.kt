@@ -17,7 +17,7 @@ import kotlinx.coroutines.tasks.await
 /**
  * An implementation of the [Auth] API which encapsulates an [ActualFirebaseAuth] and adapts it.
  *
- * @param actual the [ActualFirebaseAuth].
+ * @property actual the [ActualFirebaseAuth].
  */
 class FirebaseAuth(private val actual: ActualFirebaseAuth) : Auth {
 

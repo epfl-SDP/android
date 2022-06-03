@@ -10,10 +10,10 @@ import ch.epfl.sdp.mobile.application.chess.engine.rules.Effect
 /**
  * An implementation of [ActionScope] which populates a list of [Action] and [Effect].
  *
- * @param actions the populated list of actions.
- * @param from the position for which the actions are queried.
- * @param board the initial [MutableBoard].
- * @param history the sequence of past board positions.
+ * @property actions the populated list of actions.
+ * @property from the position for which the actions are queried.
+ * @property board the initial [MutableBoard].
+ * @property history the sequence of past board positions.
  * @param attacked the currently [Attacked] positions.
  */
 class MutableBoardActionScope(

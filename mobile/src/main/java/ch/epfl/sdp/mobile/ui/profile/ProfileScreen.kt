@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.profile
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,7 +26,6 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
     state: VisitedProfileScreenState<C, P>,

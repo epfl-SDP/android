@@ -16,7 +16,7 @@ private const val DefaultDatastoreFileName = "preferences"
 /**
  * An implementation of a [DataStoreFactory] which is based on the AndroidX library.
  *
- * @param context the underlying [Context].
+ * @property context the underlying [Context].
  * @param toDatastore a function which maps the [Context] and the [KProperty] to the actual
  * [AndroidXDataStore] instance. This behavior is provided as a function to allow for mocking.
  */

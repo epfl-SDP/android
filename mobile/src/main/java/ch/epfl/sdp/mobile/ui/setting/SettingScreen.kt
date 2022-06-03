@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.ui.setting
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,7 +34,6 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
     state: SettingScreenState<C, P>,

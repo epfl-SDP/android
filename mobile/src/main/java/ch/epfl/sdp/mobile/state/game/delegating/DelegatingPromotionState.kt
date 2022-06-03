@@ -14,7 +14,7 @@ import ch.epfl.sdp.mobile.ui.game.PromotionState
  * An implementation of [MutableGameDelegate] which uses a [MutableGameDelegate] to perform
  * promotion actions.
  *
- * @param delegate the underlying [MutableGameDelegate].
+ * @property delegate the underlying [MutableGameDelegate].
  */
 class DelegatingPromotionState(private val delegate: MutableGameDelegate) : PromotionState {
 

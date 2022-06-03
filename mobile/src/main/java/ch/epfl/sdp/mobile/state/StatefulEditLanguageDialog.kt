@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 /**
  * Implementation of the [EditLanguageDialogState] interface.
  *
- * @param scope the coroutine scope.
- * @param settingFacade the facade to access the settings
+ * @property scope the coroutine scope.
+ * @property settingFacade the facade to access the settings
  * @param onCloseAction the callback called after we click on Cancel or Save Button.
  */
 class EditLanguageDialogStateImpl(

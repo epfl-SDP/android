@@ -23,6 +23,7 @@ import ch.epfl.sdp.mobile.ui.prepare_game.PrepareGameScreenState.*
 
 /**
  * Composable for choosing a [ColorChoice].
+ *
  * @param colorChoice default or currently chosen color.
  * @param onSelectColor call back when a color is selected.
  * @param modifier [Modifier] for this composable.
@@ -162,6 +163,7 @@ private object DefaultColorChoiceColors : ColorChoiceColors {
 
 /**
  * Modifier extension function used to decorate border of a [ColorChoiceTabItem] when it's selected.
+ *
  * @param width width of the border.
  * @param color color of the border.
  * @param shape shape of the dashed border.

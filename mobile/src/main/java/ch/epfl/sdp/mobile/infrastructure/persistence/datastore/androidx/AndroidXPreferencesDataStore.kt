@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 /**
  * An implementation of a [DataStore] which uses an [ActualDataStore].
  *
- * @param actual the underlying [ActualDataStore].
+ * @property actual the underlying [ActualDataStore].
  */
 class AndroidXPreferencesDataStore(
     private val actual: ActualDataStore<ActualPreferences>,

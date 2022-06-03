@@ -15,10 +15,11 @@ import kotlinx.coroutines.launch
 
 /**
  * Delegating class of text to speech.
- * @param gameDelegate [GameDelegate] game delegate.
- * @param facade [SpeechFacade] currently used speech facade.
+ *
+ * @property gameDelegate [GameDelegate] game delegate.
+ * @property facade [SpeechFacade] currently used speech facade.
  * @param strings [LocalizedStrings] currently provided strings.
- * @param scope [CoroutineScope] scope under which suspending functions are executed.
+ * @property scope [CoroutineScope] scope under which suspending functions are executed.
  */
 class DelegatingTextToSpeechState
 constructor(

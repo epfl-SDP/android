@@ -4,6 +4,7 @@ import ch.epfl.sdp.mobile.application.Profile.Color
 
 /** State interface of the [EditProfileImageDialog]. */
 interface EditProfileImageDialogState {
+
   /** Background Color which will be changed. */
   var backgroundColor: Color
 
