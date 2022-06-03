@@ -7,6 +7,7 @@ import ch.epfl.sdp.mobile.infrastructure.sound.SoundPlayer
 
 /**
  * A class providing the ability to play a chess sound.
+ *
  * @param context the current [Context] of the application.
  * @param mediaPlayer the [MediaPlayer] used to play sounds.
  */

@@ -18,6 +18,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import com.google.common.truth.Truth.assertThat
@@ -60,7 +61,10 @@ class StatefulFollowingScreenTest {
     val mockChessFacade = mockk<ChessFacade>()
     val mockSpeechFacade =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val mockTournamentFacade = mockk<TournamentFacade>()
     val mockSettingsFacade = mockk<SettingsFacade>()
 
