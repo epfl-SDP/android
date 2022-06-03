@@ -207,4 +207,48 @@ class AuthenticationFacadeTest {
     assertThat(profile.emoji).isEqualTo("😎")
     assertThat(profile.backgroundColor).isEqualTo(Color.Default)
   }
+
+  @Test
+  fun given_newUser_when_signUpWithNonTrimmedEmail_then_registerAsTrimmed() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    facade.signUpWithEmail("sdp@email.org", "SDP", "password")
+    assertThat(facade.signUpWithEmail(" sdp@email.org ", "SDP", "password"))
+        .isEqualTo(FailureExistingAccount)
+  }
+
+  @Test
+  fun given_newUser_when_signUpWithNonTrimmedName_then_registerAsTrimmed() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    facade.signUpWithEmail("sdp@email.org", " SDP ", "password")
+    val user = facade.awaitAuthenticatedUser()
+    assertThat(user.name).isEqualTo("SDP")
+  }
+
+  @Test
+  fun given_newUser_when_signInWithNonTrimmedEmail_then_registerAsTrimmed() = runTest {
+    val auth = buildAuth { user("sdp@email.org", "password") }
+    val store = buildStore {
+      collection(ProfileDocument.Collection) { document("uid", ProfileDocument()) }
+    }
+
+    val facade = AuthenticationFacade(auth, store)
+    assertThat(facade.signInWithEmail(" sdp@email.org ", "password"))
+        .isEqualTo(AuthenticationResult.Success)
+  }
+
+  @Test
+  fun given_authenticatedUser_when_updateWithNonTrimmedName_then_updateAsTrimmed() = runTest {
+    val auth = emptyAuth()
+    val store = emptyStore()
+    val facade = AuthenticationFacade(auth, store)
+    facade.signUpWithEmail("sdp@email.org", "SDP", "password")
+    val user = facade.awaitAuthenticatedUser()
+    assertThat(user.update { name(" Pawnies ") }).isTrue()
+    val updatedUser = facade.awaitAuthenticatedUser()
+    assertThat(updatedUser.name).isEqualTo("Pawnies")
+  }
 }

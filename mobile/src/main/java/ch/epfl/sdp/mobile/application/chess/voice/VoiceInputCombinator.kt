@@ -21,7 +21,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators.token
 import ch.epfl.sdp.mobile.application.speech.ChessSpeechEnglishDictionary
 import ch.epfl.sdp.mobile.application.speech.ChessSpeechFilterRules.rulesSet
 
-/** An object that parse a "perfect" voice input into engine notation */
+/** An object that parse a "perfect" voice input into engine notation. */
 object VoiceInputCombinator {
   /**
    * A [Parser] which returns the [Rank] of a piece, and defaults to [Rank.Pawn] if no matching rank
@@ -56,12 +56,14 @@ object VoiceInputCombinator {
             }
           }
 
+  /** A parser which parses a column. */
   val column =
       convertToken(ChessSpeechEnglishDictionary.letters)
           .filter { it in 'a'..'h' }
           .filterNotNull()
           .map { it - 'a' }
 
+  /** A parser which parses a row number. */
   val row =
       convertToken(ChessSpeechEnglishDictionary.numbers)
           .filter { it in '0'..'9' }
@@ -69,12 +71,13 @@ object VoiceInputCombinator {
           .map { 8 - (it - '0') }
           .filter { it in 0 until Board.Size }
 
+  /** A [Parser] which parses a position. */
   val position =
       combine(
           CommonNotationCombinators.position,
           CommonNotationCombinators.computePosition(column, row))
 
-  /** A [Parser] which indicate the action between 2 position */
+  /** A [Parser] which indicate the action between 2 position. */
   private val actionSeparator = token("to")
 
   /** A [Parser] for a [Move] action. */

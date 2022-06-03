@@ -28,7 +28,7 @@ interface PoolResults {
 /**
  * An implementation of a [PoolResults] which use a list of [ChessDocument].
  *
- * @param documents the [ChessDocument] which are used to compute the results.
+ * @property documents the [ChessDocument] which are used to compute the results.
  */
 private class ChessDocumentListPoolResults(
     private val documents: List<ChessDocument>,

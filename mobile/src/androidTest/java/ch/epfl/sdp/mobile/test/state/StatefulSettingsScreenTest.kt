@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
+import ch.epfl.sdp.mobile.infrastructure.persistence.store.arrayUnion
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulSettingsScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
@@ -23,9 +24,11 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
+import ch.epfl.sdp.mobile.test.ui.profile.SettingsRobot
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import io.mockk.*
@@ -60,7 +63,10 @@ class StatefulSettingsScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory,
+              FakeTextToSpeechFactory,
+              FakeSoundPlayer,
+              emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
       val settings = SettingsFacade(dataStoreFactory)
 
@@ -104,7 +110,10 @@ class StatefulSettingsScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -124,16 +133,10 @@ class StatefulSettingsScreenTest {
   @Test
   fun given_statefulSettingsScreen_when_profileHasSolvedPuzzles_then_theyAreDisplayedOnScreen() =
       runTest {
-    val id = "1"
     val (assets, puzzleIds) = twoPuzzleAssets()
-    val store = buildStore {
-      collection(ProfileDocument.Collection) {
-        document(id, ProfileDocument(id, solvedPuzzles = listOf(puzzleIds[1])))
-      }
-    }
 
-    val env =
-        rule.setContentWithTestEnvironment(userId = id, store = store, assets = assets) {
+    val (_, infra, strings, user) =
+        rule.setContentWithAuthenticatedTestEnvironment(assets = assets) {
           StatefulSettingsScreen(
               user = user,
               onMatchClick = {},
@@ -143,15 +146,22 @@ class StatefulSettingsScreenTest {
               onEditLanguageClick = {})
         }
 
-    rule.onNodeWithText(env.strings.profilePuzzle).performClick()
-    rule.onNodeWithText(puzzleIds[1], substring = true).assertExists()
-    rule.onNodeWithText(puzzleIds[0], substring = true).assertDoesNotExist()
+    infra.store.collection(ProfileDocument.Collection).document(user.uid).update {
+      arrayUnion(ProfileDocument.SolvedPuzzles, puzzleIds[1])
+    }
+
+    SettingsRobot(rule, strings).apply {
+      assertHasPuzzle(puzzleIds[1])
+      assertDoesNotHavePuzzle(puzzleIds[0])
+    }
   }
 
   @Test
   fun given_statefulSettingsScreen_when_logoutButtonClicked_then_disconnectsUser() = runTest {
     val env =
-        rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}, {}, {}) }
+        rule.setContentWithAuthenticatedTestEnvironment {
+          StatefulSettingsScreen(user, {}, {}, {}, {}, {})
+        }
     rule.onNodeWithText(env.strings.settingLogout).assertExists().performClick()
     assertThat(env.facades.auth.currentUser.first()).isEqualTo(NotAuthenticatedUser)
   }

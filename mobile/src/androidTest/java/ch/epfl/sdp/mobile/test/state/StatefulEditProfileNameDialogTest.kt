@@ -13,7 +13,7 @@ class StatefulEditProfileNameDialogTest {
 
   @Test
   fun given_userIsLoggedIn_when_editProfileName_then_nameShouldBeUpdated() = runTest {
-    val (_, _, strings, user) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings, user) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()
@@ -24,7 +24,7 @@ class StatefulEditProfileNameDialogTest {
 
   @Test
   fun given_userIsLoggedIn_when_editProfileName_then_cancelWithoutSave() = runTest {
-    val (_, _, strings, user) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings, user) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditNameIcon).performClick()

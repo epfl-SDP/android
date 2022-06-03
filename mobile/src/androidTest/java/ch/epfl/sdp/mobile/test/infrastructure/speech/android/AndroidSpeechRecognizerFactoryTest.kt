@@ -16,12 +16,12 @@ class AndroidSpeechRecognizerFactoryTest {
     val context = mockk<Context>()
     val factory = AndroidSpeechRecognizerFactory(context)
     val recognizer = mockk<SpeechRecognizer>()
-    mockkStatic(SpeechRecognizer::class)
+    mockkStatic(SpeechRecognizer::class) {
+      every { SpeechRecognizer.createSpeechRecognizer(context) } returns recognizer
 
-    every { SpeechRecognizer.createSpeechRecognizer(context) } returns recognizer
+      factory.createSpeechRecognizer()
 
-    factory.createSpeechRecognizer()
-
-    verify { SpeechRecognizer.createSpeechRecognizer(context) }
+      verify { SpeechRecognizer.createSpeechRecognizer(context) }
+    }
   }
 }

@@ -12,8 +12,8 @@ import kotlin.coroutines.suspendCoroutine
 import kotlin.properties.Delegates.notNull
 
 /**
- * A factory that produces android built-in implementation of the text to speech
- * @param context [Context] context of the application
+ * A factory that produces android built-in implementation of the text to speech.
+ * @param context [Context] context of the application.
  */
 class AndroidTextToSpeechFactory(
     private val context: Context,
@@ -33,8 +33,8 @@ class AndroidTextToSpeechFactory(
 }
 
 /**
- * An adaptation from the android text to speech to Pawnies [TextToSpeech]
- * @param androidTextToSpeech [NativeTextToSpeech] instance of the native android text to peech
+ * An adaptation from the android text to speech to Pawnies [TextToSpeech].
+ * @param androidTextToSpeech [NativeTextToSpeech] instance of the native android text to speech.
  */
 class AndroidTextToSpeech(
     private val androidTextToSpeech: NativeTextToSpeech,

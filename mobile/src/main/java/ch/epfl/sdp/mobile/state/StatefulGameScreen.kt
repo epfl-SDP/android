@@ -28,7 +28,7 @@ data class StatefulGameScreenActions(
 )
 
 /**
- * The [StatefulGameScreen] to be used for the Navigation
+ * The [StatefulGameScreen] to be used for the Navigation.
  *
  * @param user the currently logged-in user.
  * @param id the identifier for the match.
@@ -119,7 +119,7 @@ fun StatefulPromoteDialog(
 
 /**
  * A composable which displays a snackbar to show the [SpeechRecognizerState.currentError] when it's
- * modified
+ * modified.
  *
  * @param state the [SpeechRecognizerState] which backs this dialog.
  * @param snackbarHostState the [SnackbarHostState] used to display some results.

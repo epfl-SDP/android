@@ -12,7 +12,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -25,11 +27,11 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
 
 /**
- * Composable that composes the PlayScreen expanded to include history of matches
- * @param state the [PuzzleSelectionScreenState] to manage composable content
+ * Composable that composes the PlayScreen expanded to include history of matches.
+ * @param state the [PuzzleSelectionScreenState] to manage composable content.
  * @param modifier the [Modifier] for this composable.
- * @param key the key to uniquely identify a [PuzzleInfo] list item
- * @param contentPadding The [PaddingValues] to apply to the content
+ * @param key the key to uniquely identify a [PuzzleInfo] list item.
+ * @param contentPadding The [PaddingValues] to apply to the content.
  */
 @Composable
 fun PuzzleSelectionScreen(
@@ -41,11 +43,14 @@ fun PuzzleSelectionScreen(
 
   val strings = LocalLocalizedStrings.current
   val lazyListState = rememberLazyListState()
-  val targetShadow =
+  val targetShadow by remember {
+    derivedStateOf {
       if (lazyListState.firstVisibleItemIndex >= 1 ||
           lazyListState.firstVisibleItemScrollOffset > 0)
           4.dp
       else 0.dp
+    }
+  }
   val shadow by animateDpAsState(targetShadow)
 
   Scaffold(
@@ -78,9 +83,9 @@ fun PuzzleSelectionScreen(
 }
 
 /**
- * Displays a [PuzzleSelectionScreen]'s list item
+ * Displays a [PuzzleSelectionScreen]'s list item.
  *
- * @param puzzleInfo The information about the puzzle to display
+ * @param puzzleInfo The information about the puzzle to display.
  * @param onClick Action to execute when clicked on puzzle item in list
  * @param modifier the [Modifier] for this composable.
  */

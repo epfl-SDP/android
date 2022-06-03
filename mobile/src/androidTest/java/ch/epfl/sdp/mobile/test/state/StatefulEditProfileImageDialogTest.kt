@@ -14,7 +14,7 @@ class StatefulEditProfileImageDialogTest {
 
   @Test
   fun given_userIsLoggedIn_when_editProfileImage_then_imageShouldBeUpdated() = runTest {
-    val (_, _, strings) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     rule.onNodeWithText(strings.sectionSettings).performClick()
     rule.onNodeWithContentDescription(strings.profileEditImageIcon).performClick()
@@ -25,7 +25,7 @@ class StatefulEditProfileImageDialogTest {
 
   @Test
   fun given_userIsLoggedIn_when_editProfileImage_then_cancelWithoutSave() = runTest {
-    val (_, _, strings, user) = rule.setContentWithTestEnvironment { Navigation() }
+    val (_, _, strings, user) = rule.setContentWithAuthenticatedTestEnvironment { Navigation() }
 
     user.update { emoji(Emojis[0]) }
 

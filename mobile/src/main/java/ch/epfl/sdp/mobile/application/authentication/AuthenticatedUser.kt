@@ -43,7 +43,7 @@ class AuthenticatedUser(
     fun backgroundColor(color: Color?) = scope.set(ProfileDocument.BackgroundColor, color?.hex)
 
     /** Updates the profile name with [name]. */
-    fun name(name: String) = scope.set(ProfileDocument.Name, name)
+    fun name(name: String) = scope.set(ProfileDocument.Name, name.trim())
   }
 
   /**
@@ -87,7 +87,7 @@ class AuthenticatedUser(
   }
 
   /**
-   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user
+   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user.
    *
    * @param puzzle the [Puzzle] to mark as solved.
    */

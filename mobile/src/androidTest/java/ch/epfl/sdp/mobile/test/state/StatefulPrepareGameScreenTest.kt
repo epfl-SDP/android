@@ -19,9 +19,11 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
+import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.filterIsInstance
@@ -38,7 +40,7 @@ class StatefulPrepareGameScreenTest {
   @Test
   fun defaultScreen_isDisplayed() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -47,14 +49,13 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
+    PrepareGameRobot(rule, strings).assertIsDisplayed()
   }
 
   @Test
   fun switchColorToBlack_works() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -63,14 +64,16 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
+    PrepareGameRobot(rule, strings).apply {
+      clickPlayAsBlack()
+      assertBlackSelected()
+    }
   }
 
   @Test
   fun switchColorBackToWhite_works() = runTest {
     val (_, _, strings) =
-        rule.setContentWithTestEnvironment {
+        rule.setContentWithAuthenticatedTestEnvironment {
           StatefulPrepareGameScreen(
               user = user,
               navigateToGame = {},
@@ -79,9 +82,11 @@ class StatefulPrepareGameScreenTest {
           )
         }
 
-    rule.onNodeWithText(strings.prepareGameChooseColor).assertExists()
-    rule.onNodeWithText(strings.prepareGameBlackColor).assertExists().performClick()
-    rule.onNodeWithText(strings.prepareGameWhiteColor).assertExists().performClick()
+    PrepareGameRobot(rule, strings).apply {
+      clickPlayAsBlack()
+      clickPlayAsWhite()
+      assertWhiteSelected()
+    }
   }
 
   @Test
@@ -99,7 +104,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -134,7 +142,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -175,7 +186,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -217,7 +231,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -254,7 +271,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -300,7 +320,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -345,7 +368,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
@@ -389,7 +415,10 @@ class StatefulPrepareGameScreenTest {
     val chess = ChessFacade(auth, store, assets)
     val speech =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 

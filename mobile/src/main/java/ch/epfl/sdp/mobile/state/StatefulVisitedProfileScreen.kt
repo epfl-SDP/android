@@ -66,14 +66,14 @@ class FetchedUserProfileScreenState(
 }
 
 /**
- * A stateful composable to visit the profile page of other players
+ * A stateful composable to visit the profile page of other players.
  *
  * @param user the currently authenticated user.
  * @param uid of the player.
  * @param onMatchClick callback function called when a match is clicked on.
  * @param onPuzzleClick callback function called when a puzzle is clicked on.
  * @param onChallengeClick callback if challenge button clicked
- * @param onBack callback to go to the previous screen
+ * @param onBack callback to go to the previous screen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
  */
@@ -120,11 +120,11 @@ private object EmptyProfile : Profile {
 }
 
 /**
- * Available set of actions for the visited profile screen
- * @property onMatchClick callback for match action
- * @property onPuzzleClick callback for puzzle action
- * @property onChallengeClickAction callback for game challenge action
- * @property onBack call back used to go to previous screen
+ * Available set of actions for the visited profile screen.
+ * @property onMatchClick callback for match action.
+ * @property onPuzzleClick callback for puzzle action.
+ * @property onChallengeClickAction callback for game challenge action.
+ * @property onBack call back used to go to previous screen.
  */
 data class VisitedProfileActions(
     override val onMatchClick: (ChessMatchAdapter) -> Unit,

@@ -14,7 +14,9 @@ class AuthenticatedUserProfileScreenStateTest {
   @Test
   fun correctBehaviour_takesTheUsernameCorrectly() = runTest {
     val env =
-        rule.setContentWithTestEnvironment { StatefulSettingsScreen(user, {}, {}, {}, {}, {}) }
+        rule.setContentWithAuthenticatedTestEnvironment {
+          StatefulSettingsScreen(user, {}, {}, {}, {}, {})
+        }
     rule.onNodeWithText(env.user.name).assertExists()
   }
 }

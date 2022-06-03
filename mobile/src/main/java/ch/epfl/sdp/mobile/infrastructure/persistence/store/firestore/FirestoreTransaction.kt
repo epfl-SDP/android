@@ -8,6 +8,11 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Transaction as ActualTransaction
 import kotlin.reflect.KClass
 
+/**
+ * An implementation of a [Transaction] which uses a Firestore [ActualTransaction] under-the-hood.
+ *
+ * @property actual the backing [ActualTransaction].
+ */
 class FirestoreTransaction(
     private val actual: ActualTransaction,
 ) : Transaction<FirestoreDocumentReference> {

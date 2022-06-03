@@ -29,6 +29,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
  * @param onBackClick a callback called when the close icon is pressed.
  * @param onArClick a callback called when the AR icon is pressed.
  * @param onListenClick a callback called when the listening icon is pressed.
+ * @param onTextToSpeechClick a callback called when text to speech icon is clicked.
  * @param listening true if the listening indicator should be displayed.
  * @param enabledTextToSpeech true if the text to speech is enabled
  * @param modifier the [Modifier] for this composable.
@@ -149,10 +150,10 @@ private class ListeningButtonColors(
 }
 
 /**
- * Text to speech toggle button composable
- * @param onClick callback for the ico
- * @param enabled indicates if the text to speech is enabled
- * @param modifier [Modifier] for this composable
+ * Text to speech toggle button composable.
+ * @param onClick callback for the icon.
+ * @param enabled indicates if the text to speech is enabled.
+ * @param modifier [Modifier] for this composable.
  */
 @Composable
 private fun TextToSpeechToggleButton(

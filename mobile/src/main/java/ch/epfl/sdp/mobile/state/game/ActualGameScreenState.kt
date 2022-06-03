@@ -21,11 +21,12 @@ import kotlinx.coroutines.CoroutineScope
 /**
  * Creates a new [ActualGameScreenState].
  *
- * @param actions the actions to perform when navigating.
+ * @param actions the state of actions to perform when navigating.
+ * @param strings the state of currently used strings.
  * @param user the currently authenticated user.
  * @param match the match to display.
  * @param permission the [PermissionState] for the microphone permission.
- * @param speechFacade the [SpeechFacade] to acecess speech recognition facilities.
+ * @param speechFacade the [SpeechFacade] to access speech recognition facilities.
  * @param snackbarHostState the [SnackbarHostState] to display some info.
  * @param scope a [CoroutineScope] keeping track of the state lifecycle.
  */
@@ -88,6 +89,7 @@ fun ActualGameScreenState(
  * @param movesInfo the underlying [MovesInfoState].
  * @param playersInfo the underlying [PlayersInfoState].
  * @param speechRecognizer the underlying [SpeechRecognizerState].
+ * @param textToSpeech the underlying [TextToSpeechState].
  */
 class ActualGameScreenState
 constructor(
