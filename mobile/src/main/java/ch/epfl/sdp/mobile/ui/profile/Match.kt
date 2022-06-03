@@ -17,7 +17,7 @@ import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
 import ch.epfl.sdp.mobile.ui.social.*
 
 /**
- * Composes a Match log using a match [adversary], [subtitle] and an [icon].
+ * Displays a Match.
  *
  * @param match the [ChessMatch] to compose.
  * @param icon match icon.

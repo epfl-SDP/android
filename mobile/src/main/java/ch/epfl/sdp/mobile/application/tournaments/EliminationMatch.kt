@@ -6,11 +6,11 @@ import ch.epfl.sdp.mobile.application.ChessMetadata
 /**
  * A data class representing an elimination match.
  *
- * @param id the identifier of this match.
- * @param depth the depth of this match.
- * @param whiteName the name of the white player.
- * @param blackName the name of the black player.
- * @param status the [Status] of the match.
+ * @property id the identifier of this match.
+ * @property depth the depth of this match.
+ * @property whiteName the name of the white player.
+ * @property blackName the name of the black player.
+ * @property status the [Status] of the match.
  */
 data class EliminationMatch(
     val id: String,

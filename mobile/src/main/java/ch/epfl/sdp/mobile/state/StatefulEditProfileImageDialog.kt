@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 /**
  * Implementation of the [EditProfileImageDialogState] interface.
  *
- * @param user the current [AuthenticatedUser].
- * @param scope the coroutine scope.
+ * @property user the current [AuthenticatedUser].
+ * @property scope the coroutine scope.
  * @param onCloseAction the callback called if dialog need to be closed.
  */
 class EditProfileImageDialogStateImpl(

@@ -1,7 +1,6 @@
 package ch.epfl.sdp.mobile.state.game.delegating
 
 import ch.epfl.sdp.mobile.application.chess.engine.*
-import ch.epfl.sdp.mobile.application.chess.engine.Action
 import ch.epfl.sdp.mobile.application.chess.engine.Color as EngineColor
 import ch.epfl.sdp.mobile.application.chess.engine.Piece as EnginePiece
 import ch.epfl.sdp.mobile.application.chess.engine.Position as EnginePosition
@@ -14,7 +13,7 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
  * An implementation of [ChessBoardState] which uses a [GameDelegate] to extract the chess board
  * information.
  *
- * @param delegate the underlying [GameDelegate].
+ * @property delegate the underlying [GameDelegate].
  */
 class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoardState<Piece> {
 
@@ -58,20 +57,9 @@ class DelegatingChessBoardState(private val delegate: GameDelegate) : ChessBoard
           lastAction.let {
             val lastPosition = it.from.plus(it.delta)
             lastPosition.toPosition()
-          })
+          },
+      )
     }
-
-  /** Returns the available actions [from] a position [to] another. */
-  fun availableActions(
-      from: ChessBoardState.Position,
-      to: ChessBoardState.Position,
-  ): List<Action> {
-    return delegate
-        .game
-        .actions(EnginePosition(from.x, from.y))
-        .filter { it.from + it.delta == EnginePosition(to.x, to.y) }
-        .toList()
-  }
 
   /**
    * An implementation of [Piece] which uses an [EnginePiece] internally.

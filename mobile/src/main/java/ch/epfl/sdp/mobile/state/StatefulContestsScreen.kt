@@ -21,8 +21,8 @@ import kotlinx.coroutines.launch
 /**
  * A class that turns a [Tournament] into a [ContestInfo].
  *
- * @param tournament the [Tournament] to transform into a [ContestInfo].
- * @param currentUser the current [AuthenticatedUser].
+ * @property tournament the [Tournament] to transform into a [ContestInfo].
+ * @property currentUser the current [AuthenticatedUser].
  */
 data class TournamentAdapter(
     val tournament: Tournament,
@@ -53,9 +53,9 @@ data class TournamentAdapter(
  * requests.
  *
  * @param actions the [TournamentActions] which are available on the screen.
- * @param currentUser the current [AuthenticatedUser] of the application.
- * @param tournamentFacade the [TournamentFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property currentUser the current [AuthenticatedUser] of the application.
+ * @property tournamentFacade the [TournamentFacade] used to perform some requests.
+ * @property scope the [CoroutineScope] on which requests are performed.
  */
 class TournamentScreenState(
     actions: State<TournamentActions>,
@@ -121,9 +121,9 @@ fun StatefulTournamentScreen(
 /**
  * A class representing the different actions available on the tournament screen.
  *
- * @param onTournamentClick callback called when a tournament item is clicked on.
- * @param onNewContestClick callback called when the new contest button is clicked on.
- * @param onFilterClick callback called when the filter action is pressed.
+ * @property onTournamentClick callback called when a tournament item is clicked on.
+ * @property onNewContestClick callback called when the new contest button is clicked on.
+ * @property onFilterClick callback called when the filter action is pressed.
  */
 data class TournamentActions(
     val onTournamentClick: (TournamentReference) -> Unit,

@@ -7,7 +7,12 @@ import ch.epfl.sdp.mobile.application.chess.engine.Position
 /** A rank implementation for kings. */
 object KingRules : AttackRules(Directions.Lines + Directions.Diagonals) {
 
-  /** Castles the king towards the right or the left. */
+  /**
+   * Castles the king towards the right or the left.
+   *
+   * @param kingPosition the current [Position] of the king.
+   * @param rookPosition the current [Position] of the rook.
+   */
   private fun ActionScope.castling(kingPosition: Position, rookPosition: Position) {
     val king = get(kingPosition)
     val rook = get(rookPosition)

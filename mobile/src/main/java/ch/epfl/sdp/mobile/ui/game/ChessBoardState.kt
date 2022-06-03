@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 
 /**
  * An interface which represents the state of a [ClassicChessBoard] composable. It display the

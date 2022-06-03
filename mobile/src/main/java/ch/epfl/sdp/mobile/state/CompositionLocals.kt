@@ -31,7 +31,7 @@ val LocalTournamentFacade =
 val LocalSettingsFacade = compositionLocalOf<SettingsFacade> { error("Missing Settings Facade.") }
 
 /**
- * Provides the given Faces through different [androidx.compose.runtime.CompositionLocal] values
+ * Provides the given Facades through different [androidx.compose.runtime.CompositionLocal] values
  * available throughout the hierarchy.
  *
  * @param authentication the [AuthenticationFacade] that will be provided.

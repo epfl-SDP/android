@@ -7,7 +7,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.Key
  * An implementation of [Key] which uses an [ActualKey] under-the-hood.
  *
  * @param T the type of the value in the [Key].
- * @param actual the actual backing key.
+ * @property actual the actual backing key.
  */
 data class AndroidXKey<T>(val actual: ActualKey<T>) : Key<T>
 

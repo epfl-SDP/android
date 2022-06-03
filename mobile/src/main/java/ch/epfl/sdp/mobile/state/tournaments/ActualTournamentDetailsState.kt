@@ -41,8 +41,8 @@ object EmptyPoolResults : PoolResults {
  * A class representing a [PoolMember] uniquely identified by an identifier.
  *
  * @param id the unique identifier of the pool member.
- * @param name the name of the pool member.
- * @param results a function to retrieve the pool results.
+ * @property name the name of the pool member.
+ * @property results a function to retrieve the pool results.
  */
 class PlayerIdPoolMember(
     val id: String,
@@ -56,9 +56,9 @@ class PlayerIdPoolMember(
 /**
  * A class representing some [PoolInfo] which uses some [PlayerIdPoolMember]s.
  *
- * @param pool the underlying [Pool].
- * @param scope the [CoroutineScope] used to move to the next round.
- * @param results a function to retrieve the pool results.
+ * @property pool the underlying [Pool].
+ * @property scope the [CoroutineScope] used to move to the next round.
+ * @property results a function to retrieve the pool results.
  */
 class PlayerIdPoolInfo(
     private val pool: Pool,
@@ -122,8 +122,8 @@ class EliminationMatchAdapter(match: EliminationMatch) : TournamentMatch {
  * An implementation of [TournamentsFinalsRound] which uses a [Status.Round] and a list of all the
  * matches.
  *
- * @param tournament the [Tournament] that is being used.
- * @param scope the [CoroutineScope] used to launch the next rounds.
+ * @property tournament the [Tournament] that is being used.
+ * @property scope the [CoroutineScope] used to launch the next rounds.
  * @param round the [Status.Round].
  * @param allMatches the [EliminationMatch]es to display.
  */
@@ -147,10 +147,10 @@ class EliminationMatchAdapterTournamentsFinalsRound(
  * [Tournament], and delegate some responsibility to it.
  *
  * @param actions the [TournamentDetailsActions] to be called.
- * @param user the [AuthenticatedUser] which is currently connected.
- * @param facade the [TournamentFacade] which provides access to tournament information.
- * @param reference the [TournamentReference] of the tournament we're loading.
- * @param scope the [CoroutineScope] on which the tournament is loaded.
+ * @property user the [AuthenticatedUser] which is currently connected.
+ * @property facade the [TournamentFacade] which provides access to tournament information.
+ * @property reference the [TournamentReference] of the tournament we're loading.
+ * @property scope the [CoroutineScope] on which the tournament is loaded.
  */
 class ActualTournamentDetailsState(
     actions: State<TournamentDetailsActions>,

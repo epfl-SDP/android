@@ -16,9 +16,9 @@ object VoiceInput {
     // TODO : parse until action found
     val parsedResult =
         input.firstNotNullOfOrNull { s ->
-          // NOTE (Chau) : I let this log here in purpose. This allow use to refine our custom
-          // [ChesSpeechEnglishDictionary]. If your command is not recognize and you think that we
-          // need to add this in our dictionary, you can reported here
+          // NOTE (Chau) : I let this log here in purpose. This allow us to refine our custom
+          // [ChesSpeechEnglishDictionary]. If your command is not recognized and you think that we
+          // need to add this in our dictionary, you can report it here :
           // https://github.com/epfl-SDP/android/issues/308
           println("DEBUGGING : SPEECH PARSING $s")
 

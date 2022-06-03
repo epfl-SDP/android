@@ -47,7 +47,7 @@ fun StatefulFiltersDialogScreen(
  * facade.
  *
  * @param navigateBack the callback when the user wants to go back.
- * @param scope the [CoroutineScope] to be used for asynchronous work.
+ * @property scope the [CoroutineScope] to be used for asynchronous work.
  * @param facade the underlying [TournamentFacade].
  */
 private class ActualFiltersDialogState(
