@@ -14,6 +14,7 @@ import ch.epfl.sdp.mobile.ui.puzzles.PuzzleGameScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.flow.map
 
 /**
  * The [StatefulPuzzleGameScreen] to be used for the Navigation.
@@ -39,7 +40,11 @@ fun StatefulPuzzleGameScreen(
   val speechFacade = LocalSpeechFacade.current
 
   val scope = rememberCoroutineScope()
-  val puzzle = chessFacade.puzzle(uid = puzzleId) ?: Puzzle()
+
+  val puzzle by
+      remember(chessFacade) { chessFacade.puzzle(uid = puzzleId).map { it ?: Puzzle() } }
+          .collectAsState(Puzzle())
+
   val currentUser = rememberUpdatedState(user)
   val currentActions = rememberUpdatedState(actions)
   val currentStrings = rememberUpdatedState(LocalLocalizedStrings.current)

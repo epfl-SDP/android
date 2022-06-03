@@ -45,11 +45,11 @@ fun Puzzle.baseGame(): Game {
 /** Creates an empty [Puzzle]. */
 fun Puzzle(): Puzzle =
     object : Puzzle {
-      override val uid = "Error"
+      override val uid = ""
       override val boardSnapshot =
           BoardSnapshot(
               board = emptyBoard(),
-              playing = Color.White,
+              playing = Color.Black,
               castlingRights =
                   FenNotation.CastlingRights(
                       kingSideWhite = false,
