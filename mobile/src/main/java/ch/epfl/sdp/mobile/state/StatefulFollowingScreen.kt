@@ -101,9 +101,9 @@ data class Actions(
  * by converting it to a [Profile]
  *
  * @param actions the [Actions] which are available on the screen.
- * @param user the current [AuthenticatedUser].
- * @param socialFacade the [SocialFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property user the current [AuthenticatedUser].
+ * @property socialFacade the [SocialFacade] used to perform some requests.
+ * @property scope the [CoroutineScope] on which requests are performed.
  */
 class SnapshotSocialScreenState(
     actions: State<Actions>,

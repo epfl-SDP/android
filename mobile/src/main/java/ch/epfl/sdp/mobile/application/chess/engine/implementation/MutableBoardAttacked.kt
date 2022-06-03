@@ -9,7 +9,7 @@ import ch.epfl.sdp.mobile.application.chess.engine.rules.Attacked
  * An implementation of [Attacked] which computes all the attacks performed by the player of color
  * [Color] on the given [MutableBoard].
  *
- * @param board the [MutableBoard] for which the attacks are computed.
+ * @property board the [MutableBoard] for which the attacks are computed.
  * @param player the [Color] of the attacking player.
  */
 class MutableBoardAttacked(

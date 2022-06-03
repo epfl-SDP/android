@@ -378,7 +378,6 @@ private fun <P : PoolMember> DetailsPools(
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this tab.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun <M : TournamentMatch> DetailsFinals(
     banner: Banner?,

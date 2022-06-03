@@ -8,9 +8,9 @@ import ch.epfl.sdp.mobile.application.chess.engine.rules.perform
  * An implementation of a [Game] which uses a [MutableBoard] under-the-hood to compute the available
  * moves.
  *
- * @param previous the previous [MutableBoardGame], if there's any.
- * @param mutableBoard the [MutableBoard] representing the current position.
- * @param nextPlayer the [Color] of the next player to play.
+ * @property previous the previous [MutableBoardGame], if there's any.
+ * @property mutableBoard the [MutableBoard] representing the current position.
+ * @property nextPlayer the [Color] of the next player to play.
  */
 data class MutableBoardGame(
     override val previous: Pair<MutableBoardGame, Action>?,

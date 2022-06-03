@@ -6,6 +6,7 @@ import ch.epfl.sdp.mobile.application.chess.Puzzle
 /** An interface that represents the user interface information about the puzzle. */
 @Stable
 interface PuzzleInfoState {
+
   /** The [Puzzle] that is loaded. */
   val puzzleInfo: PuzzleInfo
 

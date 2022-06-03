@@ -117,7 +117,7 @@ private fun Player(
   }
 }
 
-/** Retrieves the text associated with a [GameScreenState.Message]. */
+/** Retrieves the text associated with a [Message]. */
 private val Message.text: String
   @Composable
   get() =

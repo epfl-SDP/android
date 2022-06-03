@@ -19,10 +19,10 @@ import kotlinx.coroutines.launch
 /**
  * An implementation of [MutableGameDelegate] which implements [Puzzle] mechanics.
  *
- * @param user the [State] of the current [AuthenticatedUser].
- * @param puzzle the underlying [Puzzle].
- * @param delegate the [DelegatingPuzzleInfoState] that provides the puzzle's state info.
- * @param scope the [CoroutineScope] used to read and write the match updates.
+ * @property user the [State] of the current [AuthenticatedUser].
+ * @property puzzle the underlying [Puzzle].
+ * @property delegate the [DelegatingPuzzleInfoState] that provides the puzzle's state info.
+ * @property scope the [CoroutineScope] used to read and write the match updates.
  */
 class PuzzleGameDelegate(
     private val user: State<AuthenticatedUser>,

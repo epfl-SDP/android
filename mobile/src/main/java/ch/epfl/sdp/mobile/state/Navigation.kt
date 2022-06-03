@@ -53,7 +53,7 @@ private sealed interface UserState {
   /**
    * The user is authenticated, and the root navigation should be displayed.
    *
-   * @param user the [AuthenticationUser] information.
+   * @property user the [AuthenticationUser] information.
    */
   data class Authenticated(val user: AuthenticatedUser) : UserState {
     override val key = "Authenticated"

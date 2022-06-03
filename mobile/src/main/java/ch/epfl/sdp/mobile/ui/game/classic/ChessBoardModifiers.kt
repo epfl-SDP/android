@@ -94,7 +94,7 @@ fun Modifier.grid(
 }
 
 /**
- * A [Modifier] which draws a [Set] of [ChessBoardState.Position].
+ * A [Modifier] which draws a [Set] of [Position].
  *
  * @param positions the positions to draw on the component.
  * @param color the [Color] of the circles.
@@ -155,7 +155,7 @@ fun Modifier.lastMove(
 private const val SelectionDurationMillis = DefaultDurationMillis * 4
 
 /**
- * A [Modifier] which draws an animated dashed border for the provide [ChessBoardState.Position].
+ * A [Modifier] which draws an animated dashed border for the provide [Position].
  *
  * @param position the position that should be drawn.
  * @param color the [Color] of the animated border.
@@ -205,9 +205,7 @@ fun Modifier.selection(
 /** A [text] which will be displayed within a cell, using a certain [alignment]. */
 private data class Letter(val text: String, val alignment: Alignment)
 
-/**
- * A [Map] of [ChessBoardState.Position] to [String] that should be displayed in this specific cell.
- */
+/** A [Map] of [Position] to [String] that should be displayed in this specific cell. */
 private val PositionsToLetters = buildMap {
   for ((index, row) in (0..7).reversed().withIndex()) {
     this[Position(-1, index)] = Letter((row + 1).toString(), BiasAlignment(0.5f, 0f))
@@ -273,7 +271,7 @@ fun Modifier.letters(
 }
 
 /**
- * A [Modifier] which draws each cell passed as a [ChessBoardState.Position] with a cache.
+ * A [Modifier] which draws each cell passed as a [Position] with a cache.
  *
  * @param positions the [Set] of position which should be drawn.
  * @param cells the number of cells which should be displayed per side.
