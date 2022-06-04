@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -31,7 +30,6 @@ import ch.epfl.sdp.mobile.ui.*
  * @param modifier the [Modifier] for this composable.
  * @param interactionSource the [MutableInteractionSource] for this composable.
  */
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchField(
     value: String,

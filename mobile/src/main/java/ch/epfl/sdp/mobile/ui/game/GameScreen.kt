@@ -60,7 +60,9 @@ fun <Piece : ChessBoardState.Piece> GameScreen(
             onBackClick = state::onBackClick,
             onArClick = state::onArClick,
             onListenClick = state::onListenClick,
+            onTextToSpeechClick = state::onTextToSpeechToggle,
             listening = state.listening,
+            enabledTextToSpeech = state.textToSpeechEnabled,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },
@@ -120,7 +122,7 @@ private fun Player(
   }
 }
 
-/** Retrieves the text associated with a [GameScreenState.Message]. */
+/** Retrieves the text associated with a [Message]. */
 private val Message.text: String
   @Composable
   get() =

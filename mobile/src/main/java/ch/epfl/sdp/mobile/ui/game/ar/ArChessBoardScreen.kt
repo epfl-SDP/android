@@ -65,7 +65,7 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
  * If not already in the scene, the board will be added. Update the board anchor with the given one
  * and change the displayed position
  *
- * @param arSceneView The view where the scene will be displayed
+ * // @param arSceneView The view where the scene will be displayed
  * @param boardNode The node that will be added into the view
  * @param anchor The (new) board's anchor position
  */

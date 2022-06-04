@@ -34,7 +34,7 @@ object French : LocalizedStrings {
       "Un utilisateur avec cette adresse e-mail existe déjà"
   override val authenticateOr = "ou"
 
-  override val arContentDescription: String = "ArComposable"
+  override val arContentDescription: String = "ComposableRA"
 
   override val boardColorBlack = "noir"
   override val boardColorWhite = "blanc"
@@ -44,11 +44,18 @@ object French : LocalizedStrings {
   override val boardPieceBishop = "fou"
   override val boardPieceKnight = "cavalier"
   override val boardPiecePawn = "pion"
-  override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
+  override val boardPieceContentDescription = { color: String, rank: String -> "$rank $color" }
   override val boardContentDescription = "échiquier"
+  // TODO: Translate to French
+  override val boardMove = English.boardMove
+  override val boardPromoted = English.boardPromoted
+  override val boardPosition = English.boardPosition
+  // TODO: Translate to French
+  override val gameTTsOnContentDescription = English.gameTTsOnContentDescription
+  override val gameTTsOffContentDescription = English.gameTTsOffContentDescription
 
   override val gameBack = "Retour"
-  override val gameShowAr = "Activer le mode AR"
+  override val gameShowAr = "Activer le mode RA"
   override val gameMicOffContentDescription = "Microphone désactivé"
   override val gameMicOnContentDescription = "Microphone activé"
   override val gameListening = "Écoute"
@@ -60,7 +67,7 @@ object French : LocalizedStrings {
   override val gamePromoteConfirm = "Ok".uppercase()
 
   override val gameSnackBarIllegalAction: String = "Action illégale, veuillez réessayer"
-  override val gameSnackBarInternalFailure = "Défaut interne"
+  override val gameSnackBarInternalFailure = "Erreur interne"
   override val gameSnackBarUnknownCommand: String = "Commande inconnue, veuillez réessayer"
 
   override val profileMatchTitle = { opponent: String -> "Contre $opponent" }
@@ -91,7 +98,7 @@ object French : LocalizedStrings {
   override val profileEditImageIcon = "Icône de modification de l'image de profil"
   override val profileEditNameIcon = "Icône de modification du nom d'utilisateur"
 
-  override val socialFollowingTitle = "Following"
+  override val socialFollowingTitle = "Abonnements"
   override val socialPerformPlay = "Jouer".uppercase()
   override val socialPerformFollow = "Suivre".uppercase()
   override val socialPerformUnfollow = "Suivi".uppercase()
@@ -102,17 +109,17 @@ object French : LocalizedStrings {
   override val socialSearchClearContentDescription = "Effacer le champ de recherche"
   override val socialCloseVisitedProfile = "Fermer"
 
-  override val sectionAr: String = "AR"
+  override val sectionAr: String = "RA"
   override val sectionSocial = "Joueurs"
   override val sectionSettings = "Paramètres"
   override val sectionPlay = "Jouer"
   override val sectionPuzzles = "Puzzles"
   override val sectionContests = "Tournois"
 
-  override val newGame = "Nouveau partie".uppercase()
+  override val newGame = "Nouvelle partie".uppercase()
   override val newContest = "Nouveau Tournois".uppercase()
 
-  override val prepareGameChooseColor = "Choisis votre couleur :"
+  override val prepareGameChooseColor = "Choisis ta couleur :"
   override val prepareGameChooseOpponent = "Choisis un adversaire :"
   override val prepareGameChooseGame = "Choisis un adversaire :"
   override val prepareGameWhiteColor = "Blanc".uppercase()
@@ -126,22 +133,22 @@ object French : LocalizedStrings {
 
   override val playOnlineGames = "Partie en ligne"
 
-  override val puzzlePlayingAs = { color: String -> "Jouer comme $color" }
+  override val puzzlePlayingAs = { color: String -> "Jouer $color" }
   override val puzzleUnsolvedPuzzles = "Puzzles non résolus"
   override val puzzleListContentDescription = "Liste de puzzles"
   override val puzzlesTitle = "Puzzles"
   override val puzzleSolving = { color: String -> "Trouves le meilleur coup pour $color" }
-  override val puzzleFailed = "Tu as échoué ! Essayes encore !"
+  override val puzzleFailed = "Tu as échoué ! Essaye encore !"
   override val puzzleSolved = "Tu as gagné ! Félicitations !"
   override val puzzleNumber = { id: String -> "Puzzle: #$id" }
-  override val puzzleRating = { rating: String -> "Rating: $rating" }
+  override val puzzleRating = { rating: String -> "Classement: $rating" }
 
   override val tournamentsBadgeJoin = "Rejoindre"
   override val tournamentsBadgeParticipant = "Participant"
   override val tournamentsBadgeAdmin = "Admin"
   override val tournamentsTableScore = "Score"
   override val tournamentsPoolStillOpen = "Encore ouvert"
-  override val tournamentsPoolRound = { current: Int, total: Int -> "Round $current / $total" }
+  override val tournamentsPoolRound = { current: Int, total: Int -> "Tour $current / $total" }
   override val tournamentsPoolStartNextRound = "Commencer le prochain tour".uppercase()
   override val tournamentsDetailsFinals = "Finales".uppercase()
   override val tournamentsDetailsPools = "Poules".uppercase()
@@ -183,18 +190,18 @@ object French : LocalizedStrings {
   override val tournamentsCreateTitle = "Créer un tournoi"
   override val tournamentsCreateNameHint = "Nom"
   override val tournamentsCreateRules = "Règles"
-  override val tournamentsCreateBestOf = "Best of :"
+  override val tournamentsCreateBestOf = "Meilleur de :"
   override val tournamentsCreatePlayers = "Joueurs"
   override val tournamentsCreateMaximumPlayerHint = "Nombre maximum de joueurs"
   override val tournamentsCreatePoolSize = "Taille du poule :"
-  override val tournamentsCreateDirectElimination = "Direct elim. :"
+  override val tournamentsCreateDirectElimination = "Elim. directe :"
   override val tournamentsCreateActionCancel = "Annuler".uppercase()
   override val tournamentsCreateActionCreate = "Créer".uppercase()
 
   override val tournamentsCreateQualifierSize0 = "Aucune qualification"
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
-  override val tournamentsCreateElimDepthFinal = "Final"
+  override val tournamentsCreateElimDepthFinal = "Finale"
 
   override val tournamentsFilterTitle = "Afficher seulement".uppercase()
   override val tournamentsFilterOnlyDone = "Pas terminé".uppercase()

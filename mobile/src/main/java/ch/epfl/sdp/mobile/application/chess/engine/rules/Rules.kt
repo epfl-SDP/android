@@ -46,8 +46,8 @@ interface Rules {
  * An implementation of [AttackScope] which delegates all the attacks to an [ActionScope], moving
  * the pieces on attacked positions.
  *
- * @param from the start [Position].
- * @param actionScope the [ActionScope] to which the moves are delegated.
+ * @property from the start [Position].
+ * @property actionScope the [ActionScope] to which the moves are delegated.
  */
 private class AttackScopeAdapter(
     private val from: Position,
@@ -159,7 +159,7 @@ typealias Effect = EffectScope.() -> Unit
 /**
  * An implementation of [EffectScope] which uses a [MutableBoard].
  *
- * @param board the underlying [MutableBoard].
+ * @property board the underlying [MutableBoard].
  */
 private class EffectScopeImpl(private val board: MutableBoard) : EffectScope {
   override fun insert(position: Position, piece: MutableBoardPiece) {
@@ -183,10 +183,10 @@ fun MutableBoard.perform(effect: Effect) = effect(EffectScopeImpl(this))
 /** A scope which is used to declare an effect to be performed. */
 interface EffectScope {
 
-  /** Insets the given [Piece] at the provided [Position]. */
+  /** Insets the given [MutableBoardPiece] at the provided [Position]. */
   fun insert(position: Position, piece: MutableBoardPiece)
 
-  /** Removes the [Piece] at the given [Position] and returns it. */
+  /** Removes the [MutableBoardPiece] at the given [Position] and returns it. */
   fun remove(from: Position): MutableBoardPiece
 }
 

@@ -15,6 +15,10 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleInfo
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreenState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 /**
  * The [StatefulPuzzleSelectionScreen] to be used for the Navigation.
@@ -36,10 +40,11 @@ fun StatefulPuzzleSelectionScreen(
   val scope = rememberCoroutineScope()
   val state =
       remember(user, chess, scope) {
-        SnapshotPuzzleSelectionScreen(
+        SnapshotPuzzleSelectionScreenState(
             onPuzzleClickAction = onGameItemClickAction,
             user = user,
             facade = chess,
+            scope = scope,
         )
       }
   PuzzleSelectionScreen(
@@ -49,10 +54,11 @@ fun StatefulPuzzleSelectionScreen(
   )
 }
 
-private class SnapshotPuzzleSelectionScreen(
+private class SnapshotPuzzleSelectionScreenState(
     onPuzzleClickAction: State<(puzzle: PuzzleInfo) -> Unit>,
     user: AuthenticatedUser,
     facade: ChessFacade,
+    scope: CoroutineScope,
 ) : PuzzleSelectionScreenState<PuzzleInfoAdapter> {
 
   val onPuzzleClickAction by onPuzzleClickAction
@@ -61,17 +67,26 @@ private class SnapshotPuzzleSelectionScreen(
     onPuzzleClickAction(puzzle)
   }
 
-  override val puzzles =
-      facade.unsolvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
+  override var puzzles by mutableStateOf(emptyList<PuzzleInfoAdapter>())
+    private set
+
+  init {
+    scope.launch {
+      facade
+          .unsolvedPuzzles(user)
+          .onEach { list -> puzzles = list.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
+          .collect()
+    }
+  }
 }
 
 /**
  * Represents the basic info of a [Puzzle] to display it in a list.
  *
- * @param uid The [Puzzle]'s uid.
- * @param playerColor The [Color] of the player in the [Puzzle].
- * @param elo The elo/rank (difficulty) of the puzzle.
- * @param icon The icon [Composable] to display next to the [Puzzle] description.
+ * @property uid The [Puzzle]'s uid.
+ * @property playerColor The [Color] of the player in the [Puzzle].
+ * @property elo The elo/rank (difficulty) of the puzzle.
+ * @property icon The icon [Composable] to display next to the [Puzzle] description.
  */
 data class PuzzleInfoAdapter(
     override val uid: String,

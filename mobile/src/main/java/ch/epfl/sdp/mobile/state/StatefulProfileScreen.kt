@@ -10,6 +10,8 @@ import ch.epfl.sdp.mobile.ui.profile.ProfileScreenState
 import ch.epfl.sdp.mobile.ui.social.ChessMatch
 import ch.epfl.sdp.mobile.ui.social.Person
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /**
@@ -18,8 +20,8 @@ import kotlinx.coroutines.launch
  *
  * @param user the given [Profile].
  * @param actions the [ProfileActions] which are available on the screen.
- * @param chessFacade the [ChessFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property chessFacade the [ChessFacade] used to perform some requests.
+ * @parpropertyam scope the [CoroutineScope] on which requests are performed.
  */
 class StatefulProfileScreen(
     user: Profile,
@@ -53,7 +55,10 @@ class StatefulProfileScreen(
     }
 
     scope.launch {
-      puzzles = chessFacade.solvedPuzzles(user).map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo }
+      chessFacade
+          .solvedPuzzles(user)
+          .onEach { list -> puzzles = list.map { it.toPuzzleInfoAdapter() }.sortedBy { it.elo } }
+          .collect()
     }
   }
 }

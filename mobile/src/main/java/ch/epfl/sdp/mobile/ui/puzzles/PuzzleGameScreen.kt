@@ -58,10 +58,12 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
+            onTextToSpeechClick = state::onTextToSpeechToggle,
             onBackClick = state::onBackClick,
             onArClick = {},
             onListenClick = state::onListenClick,
             listening = state.listening,
+            enabledTextToSpeech = state.textToSpeechEnabled,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },

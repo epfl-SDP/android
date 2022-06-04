@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.map
 /**
  * Indicates that an [AuthenticatedUser] is currently authenticated.
  *
- * @param auth the used [Auth] for authentication queries.
- * @param store the used [Store].
- * @param user the current [User].
+ * @property auth the used [Auth] for authentication queries.
+ * @property store the used [Store].
+ * @property user the current [User].
  * @param document the user's [ProfileDocument].
  */
 class AuthenticatedUser(
@@ -32,7 +32,7 @@ class AuthenticatedUser(
   /**
    * A scope which wraps a [DocumentEditScope] to allow editions to a user profile.
    *
-   * @param scope the wrapped [DocumentEditScope].
+   * @property scope the wrapped [DocumentEditScope].
    */
   class UpdateScope(private val scope: DocumentEditScope) {
 
@@ -43,7 +43,7 @@ class AuthenticatedUser(
     fun backgroundColor(color: Color?) = scope.set(ProfileDocument.BackgroundColor, color?.hex)
 
     /** Updates the profile name with [name]. */
-    fun name(name: String) = scope.set(ProfileDocument.Name, name)
+    fun name(name: String) = scope.set(ProfileDocument.Name, name.trim())
   }
 
   /**

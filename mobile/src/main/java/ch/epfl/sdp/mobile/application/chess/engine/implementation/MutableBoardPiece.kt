@@ -7,7 +7,11 @@ import ch.epfl.sdp.mobile.application.chess.engine.PieceIdentifier
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
 import ch.epfl.sdp.mobile.application.chess.engine.Rank.*
 
-/** A [MutableBoardPiece] which will be present on a [MutableBoard]. */
+/**
+ * A [MutableBoardPiece] which will be present on a [MutableBoard].
+ *
+ * @property packed the primitive representation of this piece.
+ */
 @JvmInline
 value class MutableBoardPiece private constructor(private val packed: Int) {
 

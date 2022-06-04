@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 /** Represents a [Game] between two online players. */
 interface Match {
+
   /** The id of the [Match]. */
   val id: String?
 

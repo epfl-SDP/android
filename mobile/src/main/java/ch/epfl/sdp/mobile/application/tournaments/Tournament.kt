@@ -33,7 +33,7 @@ interface Tournament {
     /**
      * Indicates that the tournament has not been started yet.
      *
-     * @param enoughParticipants true iff there would be enough players to play all the matches.
+     * @property enoughParticipants true iff there would be enough players to play all the matches.
      */
     data class NotStarted(val enoughParticipants: Boolean) : Status
 
@@ -43,16 +43,16 @@ interface Tournament {
     /**
      * Indicates that we are in a direct elimination phase, with a [List] of current [Round].
      *
-     * @param rounds the [List] of all the [Round].
+     * @property rounds the [List] of all the [Round].
      */
     data class DirectElimination(val rounds: List<Round>) : Status
 
     /**
      * An elimination round.
      *
-     * @param name the name of the elimination round.
-     * @param depth the depth of the elimination round.
-     * @param moveToNextRoundEnabled true iff moving to the next round is possible on this round.
+     * @property name the name of the elimination round.
+     * @property depth the depth of the elimination round.
+     * @property moveToNextRoundEnabled true iff moving to the next round is possible on this round.
      */
     data class Round(
         val name: String,

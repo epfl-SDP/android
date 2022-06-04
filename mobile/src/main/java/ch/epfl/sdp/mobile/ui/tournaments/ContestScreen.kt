@@ -25,10 +25,7 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
  * @param contentPadding the [PaddingValues] for this screen.
  * @param C the type of the [ContestInfo].
  */
-@OptIn(
-    ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class,
-)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <C : ContestInfo> ContestScreen(
     state: ContestScreenState<C>,

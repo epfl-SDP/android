@@ -12,9 +12,9 @@ import ch.epfl.sdp.mobile.ui.game.MovableChessBoardState
 
 /**
  * An abstract implementation of [MovableChessBoardState] which delegates the updates of the game to
- * its [GameChessBoardState].
+ * its [GameDelegate].
  *
- * @param delegate the [GameChessBoardState] delegate.
+ * @param delegate the [GameDelegate] delegate.
  */
 abstract class AbstractMovableChessBoardState(
     private val delegate: GameDelegate,
@@ -41,7 +41,7 @@ abstract class AbstractMovableChessBoardState(
       return delegate
           .game
           .actions(Position(position.x, position.y))
-          .mapNotNull { it.from + it.delta }
+          .map { it.from + it.delta }
           .map { it.toPosition() }
           .toSet()
     }

@@ -1,9 +1,11 @@
 package ch.epfl.sdp.mobile.application.chess
 
-import ch.epfl.sdp.mobile.application.*
+import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.BlackWon
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.Stalemate
 import ch.epfl.sdp.mobile.application.ChessMetadata.Companion.WhiteWon
+import ch.epfl.sdp.mobile.application.Profile
+import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.NotAuthenticatedUser
 import ch.epfl.sdp.mobile.application.chess.engine.Action
@@ -15,28 +17,30 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotation
 import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.parseFen
 import ch.epfl.sdp.mobile.application.chess.notation.UCINotation.parseActions
 import ch.epfl.sdp.mobile.application.chess.notation.mapToGame
+import ch.epfl.sdp.mobile.application.toProfile
 import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import com.opencsv.CSVReaderHeaderAware
 import java.io.StringReader
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 /**
  * An interface which represents all the endpoints and available features for online chess
  * interactions for a user of the Pawnies application.
  *
- * @param auth the [Auth] instance which will be used to handle authentication.
- * @param store the [Store] which is used to manage documents.
- * @param assets the [AssetManager] which is used to load assets.
+ * @property auth the [Auth] instance which will be used to handle authentication.
+ * @property store the [Store] which is used to manage documents.
+ * @property assets the [AssetManager] which is used to load assets.
  */
 class ChessFacade(
     private val auth: Auth,
     private val store: Store,
     private val assets: AssetManager,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-
-  /** Chess matches side of chess facade. */
 
   /**
    * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store].
@@ -133,42 +137,45 @@ class ChessFacade(
    * As of now, the puzzles come from the Lichess.org Open Database
    * (https://database.lichess.org/#puzzles).
    *
-   * @return the fetched list of all [Puzzle]s.
+   * @return a [Flow] of the fetched list of all [Puzzle]s.
    */
-  private fun allPuzzles(): List<Puzzle> {
-    return sequence {
-          val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
-          while (true) {
-            val line = reader.readMap() ?: return@sequence
-            yield(line)
-          }
-        }
-        .map {
-          val puzzleId = it[csvPuzzleId] ?: return@map null
-          val fen = parseFen(it[csvFen] ?: "") ?: return@map null
-          val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
-          val rating = it[csvRating]?.toIntOrNull() ?: return@map null
+  private fun allPuzzles(): Flow<List<Puzzle>> = flow {
+    emit(
+        sequence {
+              val reader = CSVReaderHeaderAware(StringReader(assets.readText(csvPath)))
+              while (true) {
+                val line = reader.readMap() ?: return@sequence
+                yield(line)
+              }
+            }
+            .map {
+              val puzzleId = it[csvPuzzleId] ?: return@map null
+              val fen = parseFen(it[csvFen] ?: "") ?: return@map null
+              val moves = parseActions(it[csvMoves] ?: "") ?: return@map null
+              val rating = it[csvRating]?.toIntOrNull() ?: return@map null
 
-          SnapshotPuzzle(
-              uid = puzzleId,
-              boardSnapshot = fen,
-              puzzleMoves = moves,
-              elo = rating,
-          )
-        }
-        .filterNotNull()
-        .toList()
+              SnapshotPuzzle(
+                  uid = puzzleId,
+                  boardSnapshot = fen,
+                  puzzleMoves = moves,
+                  elo = rating,
+              )
+            }
+            .filterNotNull()
+            .toList())
   }
+  // TODO: Change dispatchers when upgrading Compose 1.2
+  // .flowOn(ioDispatcher)
 
   /**
    * Gets a certain [Puzzle] by his uid.
    *
    * @param uid The uid of the [Puzzle] to get.
    *
-   * @return The specified [Puzzle], if it exists.
+   * @return a [Flow] of the specified [Puzzle], if it exists.
    */
-  fun puzzle(uid: String): Puzzle? {
-    return allPuzzles().firstOrNull { it.uid == uid }
+  fun puzzle(uid: String): Flow<Puzzle?> {
+    return allPuzzles().map { list -> list.firstOrNull { it.uid == uid } }
   }
 
   /**
@@ -176,10 +183,10 @@ class ChessFacade(
    *
    * @param profile the [Profile] in question.
    *
-   * @return The list of solved [Puzzle]s.
+   * @return a [Flow] of the list of solved [Puzzle]s.
    */
-  fun solvedPuzzles(profile: Profile): List<Puzzle> {
-    return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
+  fun solvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
+    return allPuzzles().map { list -> list.filter { profile.solvedPuzzles.contains(it.uid) } }
   }
 
   /**
@@ -187,10 +194,10 @@ class ChessFacade(
    *
    * @param profile the [Profile] in question.
    *
-   * @return The list of unsolved [Puzzle]s.
+   * @return a [Flow] of the list of unsolved [Puzzle]s.
    */
-  fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
-    return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
+  fun unsolvedPuzzles(profile: Profile): Flow<List<Puzzle>> {
+    return allPuzzles().map { list -> list.filterNot { profile.solvedPuzzles.contains(it.uid) } }
   }
 }
 
@@ -205,8 +212,8 @@ private data class SnapshotPuzzle(
 /**
  * A class representing a [Game] between two online players viewed by a user.
  *
- * @param store the [Store] which is used to manage documents.
- * @param user the [Profile] currently viewing the game.
+ * @property store the [Store] which is used to manage documents.
+ * @property user the [Profile] currently viewing the game.
  */
 private data class StoreMatch(
     override val id: String,
@@ -242,6 +249,7 @@ private data class StoreMatch(
       documentFlow.map { it?.whiteId }.flatMapLatest {
         it?.let(this@StoreMatch::profile) ?: flowOf(null)
       }
+
   override val black =
       documentFlow.map { it?.blackId }.flatMapLatest {
         it?.let(this@StoreMatch::profile) ?: flowOf(null)

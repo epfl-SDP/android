@@ -19,8 +19,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 /**
  * The different navigation actions which may be performed by the [StatefulGameScreen].
  *
- * @param onBack the action to perform when going back.
- * @param onShowAr the action to perform when AR should be started for the match.
+ * @property onBack the action to perform when going back.
+ * @property onShowAr the action to perform when AR should be started for the match.
  */
 data class StatefulGameScreenActions(
     val onBack: () -> Unit,
@@ -53,10 +53,24 @@ fun StatefulGameScreen(
   val match = remember(chessFacade, id, user) { chessFacade.match(id, user) }
 
   val snackbarHostState = remember { SnackbarHostState() }
+
+  val currentStrings = rememberUpdatedState(LocalLocalizedStrings.current)
+  val currentActions = rememberUpdatedState(actions)
+
   val gameScreenState =
-      remember(actions, user, match, audioPermissionState, speechFacade, snackbarHostState, scope) {
+      remember(
+          currentActions,
+          currentStrings,
+          user,
+          match,
+          audioPermissionState,
+          speechFacade,
+          snackbarHostState,
+          scope,
+      ) {
         ActualGameScreenState(
-            actions = actions,
+            actions = currentActions,
+            strings = currentStrings,
             user = user,
             match = match,
             permission = audioPermissionState,
