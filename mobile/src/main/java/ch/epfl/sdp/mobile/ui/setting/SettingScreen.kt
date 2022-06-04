@@ -187,6 +187,10 @@ private fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Logout, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.settingLogout)
+    Text(
+        strings.settingLogout,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
   }
 }
