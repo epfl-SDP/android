@@ -3,6 +3,7 @@
 package ch.epfl.sdp.mobile.test.state
 
 import android.Manifest.permission.RECORD_AUDIO
+import android.media.MediaPlayer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -57,6 +58,17 @@ import org.junit.Test
 class StatefulGameScreenTest {
 
   @get:Rule val rule = createComposeRule()
+
+  /**
+   * A class mocking a [MediaPlayer] with a callback called in its start function.
+   *
+   * @param startCallback the callback called in the start function of the [MediaPlayer].
+   */
+  class FakeMediaPlayer(private val startCallback: () -> Unit) : MediaPlayer() {
+    override fun start() {
+      startCallback()
+    }
+  }
 
   /**
    * Returns a [ChessBoardRobot] with a store containing a player and an emptyGame with the player

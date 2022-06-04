@@ -1,7 +1,9 @@
 package ch.epfl.sdp.mobile.test.application
 
+import android.content.Context
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
+import ch.epfl.sdp.mobile.infrastructure.sound.android.AndroidSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
@@ -9,7 +11,9 @@ import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
+import ch.epfl.sdp.mobile.test.state.StatefulGameScreenTest
 import com.google.common.truth.Truth.assertThat
+import io.mockk.mockk
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -62,5 +66,21 @@ class SpeechFacadeTest {
             FakeSoundPlayer,
             emptyDataStoreFactory())
     assertThat(facade.synthesize("Pawnies")).isEqualTo(Unit)
+  }
+
+  @Test
+  fun given_speechFacade_when_synthesizing_then_playSoundCalled() = runTest {
+    var called = false
+    val mediaPlayer = StatefulGameScreenTest.FakeMediaPlayer(startCallback = { called = true })
+    val context = mockk<Context>()
+    val soundPlayer = AndroidSoundPlayer(context = context, mediaPlayer = mediaPlayer)
+    val facade =
+        SpeechFacade(
+            UnknownCommandSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            soundPlayer,
+            emptyDataStoreFactory())
+    facade.synthesize("Pawnies")
+    assertThat(called).isTrue()
   }
 }
