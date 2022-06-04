@@ -110,6 +110,10 @@ fun StatefulHome(
     controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
   }
 
+  val onChallengeItemClick: (opponentId: String) -> Unit = { opponentId ->
+    controller.navigate("$PrepareGameRoute?opponentId=${opponentId}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
@@ -124,6 +128,7 @@ fun StatefulHome(
         StatefulFollowingScreen(
             user = user,
             onShowProfileClick = onPersonItemClick,
+            onPlayClick = onChallengeItemClick,
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
         )
@@ -175,7 +180,7 @@ fun StatefulHome(
             onPuzzleClick = onPuzzleItemClick,
             onBack = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
-            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
+            onChallengeClick = onChallengeItemClick,
             contentPadding = paddingValues)
       }
       composable(PlayRoute) {
