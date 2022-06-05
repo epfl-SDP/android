@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.R.drawable
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -75,6 +76,7 @@ fun AuthenticationScreen(
               onValueChange = { state.name = it },
               label = { Text(strings.authenticateNameHint) },
               modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+              singleLine = true,
           )
         }
         PasswordTextField(
@@ -82,6 +84,7 @@ fun AuthenticationScreen(
             onValueChange = { state.password = it },
             label = { Text(strings.authenticatePasswordHint) },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+            singleLine = true,
         )
       }
       val errorText = state.error ?: ""
@@ -90,6 +93,8 @@ fun AuthenticationScreen(
             text = errorText,
             color = MaterialTheme.colors.error,
             style = MaterialTheme.typography.caption,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
       }
       Column(
@@ -102,7 +107,12 @@ fun AuthenticationScreen(
             onClick = state::onAuthenticate,
             modifier = Modifier.fillMaxWidth().height(48.dp),
         )
-        Text(strings.authenticateOr, style = MaterialTheme.typography.subtitle1)
+        Text(
+            strings.authenticateOr,
+            style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
         ToggleButton(
             transition = transition,
             onClick = state::toggleMode,
@@ -132,7 +142,11 @@ private fun AuthenticateButton(
             LogIn -> LocalLocalizedStrings.current.authenticatePerformLogIn
             Register -> LocalLocalizedStrings.current.authenticatePerformRegister
           }
-      Text(text)
+      Text(
+          text,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+      )
     }
   }
 }
@@ -154,7 +168,11 @@ private fun ToggleButton(
             LogIn -> LocalLocalizedStrings.current.authenticateSwitchToRegister
             Register -> LocalLocalizedStrings.current.authenticateSwitchToLogIn
           }
-      Text(text)
+      Text(
+          text,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+      )
     }
   }
 }

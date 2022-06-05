@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.style.TextOverflow
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.tournaments.ContestInfo.Status
@@ -51,7 +52,8 @@ fun Contest(
             text = title,
             color = PawniesColors.Green200,
             style = MaterialTheme.typography.subtitle2,
-        )
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
       },
       trailing = {
         val badge = contestInfo.badge
