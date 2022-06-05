@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.FadeEnterTransition
@@ -86,7 +87,7 @@ fun FollowButton(
           horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         Icon(icon, null)
-        Text(text)
+        Text(text, maxLines = 1, overflow = TextOverflow.Ellipsis)
       }
     }
   }

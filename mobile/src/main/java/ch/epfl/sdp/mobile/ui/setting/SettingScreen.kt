@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Edit
@@ -103,7 +104,11 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
               modifier = Modifier.size(24.dp))
         }
       }
-      Text(state.email, style = MaterialTheme.typography.subtitle2)
+      Text(
+          state.email,
+          style = MaterialTheme.typography.subtitle2,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis)
     }
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
       SettingsButton(onClick = state::onEditLanguageClick)
@@ -160,7 +165,7 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.settingsEditLanguage)
+    Text(strings.settingsEditLanguage, maxLines = 1, overflow = TextOverflow.Ellipsis)
   }
 }
 
@@ -180,6 +185,10 @@ private fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Logout, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.settingLogout)
+    Text(
+        strings.settingLogout,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
   }
 }

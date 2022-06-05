@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Close
@@ -79,7 +80,11 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileHeader(
     BackButton(state::onBack, Modifier.align(Alignment.Start))
     ProfilePicture(state)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      Text(state.name, style = MaterialTheme.typography.h5)
+      Text(
+          state.name,
+          style = MaterialTheme.typography.h5,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis)
     }
 
     Row(
@@ -134,9 +139,9 @@ fun <C : ChessMatch, P : PuzzleInfo> UnfollowButton(
       modifier = modifier) {
     Spacer(modifier = Modifier.width(8.dp))
     if (state.follows) {
-      Text(strings.profileUnfollow)
+      Text(strings.profileUnfollow, maxLines = 1, overflow = TextOverflow.Ellipsis)
     } else {
-      Text(strings.profileFollow)
+      Text(strings.profileFollow, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
   }
 }
@@ -158,7 +163,7 @@ fun ChallengeButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       colors = ButtonDefaults.buttonColors(MaterialTheme.colors.onSurface),
       modifier = modifier) {
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.profileChallenge.uppercase())
+    Text(strings.profileChallenge.uppercase(), maxLines = 1, overflow = TextOverflow.Ellipsis)
   }
 }
 

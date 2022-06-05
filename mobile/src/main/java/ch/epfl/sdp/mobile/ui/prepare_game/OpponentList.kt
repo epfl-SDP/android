@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.social.Person
 
@@ -90,7 +91,10 @@ private fun <P : Person> Opponent(
     Text(
         person.name,
         color = MaterialTheme.colors.primaryVariant,
-        style = MaterialTheme.typography.subtitle1)
+        style = MaterialTheme.typography.subtitle1,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
   }
 }
 
