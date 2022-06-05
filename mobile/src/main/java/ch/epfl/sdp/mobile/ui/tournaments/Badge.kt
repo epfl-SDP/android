@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
@@ -86,10 +87,17 @@ private fun BadgeContent(
     Join ->
         Row(modifier, spacedBy(8.dp), CenterVertically) {
           Icon(PawniesIcons.Add, null)
-          Text(strings.tournamentsBadgeJoin)
+          Text(strings.tournamentsBadgeJoin, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-    Participant -> Text(strings.tournamentsBadgeParticipant, modifier)
-    Admin -> Text(strings.tournamentsBadgeAdmin, modifier)
+    Participant ->
+        Text(
+            strings.tournamentsBadgeParticipant,
+            modifier,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
+    Admin ->
+        Text(
+            strings.tournamentsBadgeAdmin, modifier, maxLines = 1, overflow = TextOverflow.Ellipsis)
   }
 }
 

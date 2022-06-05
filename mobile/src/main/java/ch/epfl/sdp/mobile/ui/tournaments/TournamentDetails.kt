@@ -458,6 +458,8 @@ private fun DetailsSectionHeader(
       style = MaterialTheme.typography.h6,
       color = PawniesColors.Green200,
       modifier = modifier.padding(16.dp),
+      maxLines = 1,
+      overflow = Ellipsis,
   )
 }
 
@@ -482,8 +484,16 @@ private fun DetailsMatch(
   ProvideTextStyle(MaterialTheme.typography.subtitle1) {
     Row(modifier.padding(16.dp), SpaceBetween, CenterVertically) {
       Column(Modifier, spacedBy(4.dp)) {
-        Text(first.uppercase())
-        Text(second.uppercase())
+        Text(
+            text = first.uppercase(),
+            maxLines = 1,
+            overflow = Ellipsis,
+        )
+        Text(
+            text = second.uppercase(),
+            maxLines = 1,
+            overflow = Ellipsis,
+        )
       }
       val strings = LocalLocalizedStrings.current
       AnimatedContent(result) {
@@ -492,17 +502,37 @@ private fun DetailsMatch(
               OutlinedButton(
                   onClick = onWatchClick,
                   shape = CircleShape,
-              ) { Text(strings.tournamentsDetailsWatch) }
+              ) { Text(strings.tournamentsDetailsWatch, maxLines = 1, overflow = Ellipsis) }
           Result.Draw -> Text(strings.tournamentsDetailsMatchDrawn, color = PawniesColors.Green200)
           Result.FirstWon ->
               Column(Modifier, spacedBy(4.dp), End) {
-                Text(strings.tournamentsDetailsMatchWon, color = PawniesColors.Green200)
-                Text(strings.tournamentsDetailsMatchLost, color = PawniesColors.Orange200)
+                Text(
+                    strings.tournamentsDetailsMatchWon,
+                    color = PawniesColors.Green200,
+                    maxLines = 1,
+                    overflow = Ellipsis,
+                )
+                Text(
+                    strings.tournamentsDetailsMatchLost,
+                    color = PawniesColors.Orange200,
+                    maxLines = 1,
+                    overflow = Ellipsis,
+                )
               }
           Result.SecondWon ->
               Column(Modifier, spacedBy(4.dp), End) {
-                Text(strings.tournamentsDetailsMatchLost, color = PawniesColors.Orange200)
-                Text(strings.tournamentsDetailsMatchWon, color = PawniesColors.Green200)
+                Text(
+                    strings.tournamentsDetailsMatchLost,
+                    color = PawniesColors.Orange200,
+                    maxLines = 1,
+                    overflow = Ellipsis,
+                )
+                Text(
+                    strings.tournamentsDetailsMatchWon,
+                    color = PawniesColors.Green200,
+                    maxLines = 1,
+                    overflow = Ellipsis,
+                )
               }
         }
       }
