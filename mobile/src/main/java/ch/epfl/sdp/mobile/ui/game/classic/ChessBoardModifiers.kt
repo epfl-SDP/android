@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.PathEffect.Companion.dashPathEffect
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -271,17 +272,17 @@ fun Modifier.letters(
 }
 
 /**
- * A [Modifier] which draws each cell passed as a [Position] with a cache.
+ * A [Modifier] which draws each cell passed as a [Position].
  *
  * @param positions the [Set] of position which should be drawn.
  * @param cells the number of cells which should be displayed per side.
- * @param onBuildDrawCache the block in which caching and drawing is performed.
+ * @param onDraw the block in which drawing is performed.
  */
 private fun Modifier.cells(
     positions: Set<Position>,
     cells: Int = ChessBoardCells,
-    onBuildDrawCache: CellsCacheDrawScope.() -> CellsDrawResult,
-) = drawWithCache { onBuildDrawCache(CellsCacheDrawScope(this, positions, cells)).result }
+    onDraw: CellsContentDrawScope.() -> CellsDrawResult,
+) = drawWithContent { onDraw(CellsContentDrawScope(this, positions, cells)) }
 
 /**
  * Handles to a drawing environments which enables caching based on the resolved size.
@@ -292,9 +293,9 @@ private fun Modifier.cells(
  *
  * @see CacheDrawScope
  */
-class CellsCacheDrawScope
+class CellsContentDrawScope
 internal constructor(
-    private val scope: CacheDrawScope,
+    private val scope: ContentDrawScope,
     private val positions: Set<Position>,
     private val cells: Int,
 ) : Density by scope {
@@ -332,27 +333,32 @@ internal constructor(
    *
    * @param block the block of drawing commands.
    */
-  fun onDrawBehind(block: DrawScope.(Position) -> Unit) =
-      CellsDrawResult(scope.onDrawBehind { drawPositions(block) })
+  fun onDrawBehind(block: DrawScope.(Position) -> Unit): CellsDrawResult {
+    with(scope) {
+      drawPositions(block)
+      drawContent()
+    }
+    return CellsDrawResult
+  }
 
   /**
    * Issues drawing commands to be executed after the layout content is drawn.
    *
    * @param block the block of drawing commands.
    */
-  fun onDrawInFront(block: DrawScope.(Position) -> Unit): CellsDrawResult =
-      CellsDrawResult(
-          scope.onDrawWithContent {
-            drawContent()
-            drawPositions(block)
-          },
-      )
+  fun onDrawInFront(block: DrawScope.(Position) -> Unit): CellsDrawResult {
+    with(scope) {
+      drawContent()
+      drawPositions(block)
+    }
+    return CellsDrawResult
+  }
 }
 
 /**
- * Holder to a callback to be invoked during the drawing operations.
+ * An object which guarantees that a drawing method of [CellsContentDrawScope] will be properly
+ * called.
  *
- * @property result the underlying [DrawResult].
  * @see DrawResult
  */
-class CellsDrawResult internal constructor(val result: DrawResult)
+object CellsDrawResult
