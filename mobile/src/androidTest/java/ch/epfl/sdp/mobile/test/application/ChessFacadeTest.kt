@@ -24,7 +24,6 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -117,14 +116,14 @@ class ChessFacadeTest {
         )
 
     val authFacade = AuthenticationFacade(auth, store)
-    val chessFacade = ChessFacade(auth, store, assets, UnconfinedTestDispatcher())
+    val chessFacade = ChessFacade(auth, store, assets)
     authFacade.signUpWithEmail("email@example.org", "user", "password")
     authFacade.signInWithEmail("email@example.org", "password")
 
     val user = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
 
-    val unsolvedPuzzles = chessFacade.unsolvedPuzzles(user).first()
-    val solvedPuzzles = chessFacade.solvedPuzzles(user).first()
+    val unsolvedPuzzles = chessFacade.unsolvedPuzzles(user)
+    val solvedPuzzles = chessFacade.solvedPuzzles(user)
 
     assertThat(unsolvedPuzzles.size).isEqualTo(1)
     assertThat(solvedPuzzles).isEmpty()
@@ -136,8 +135,8 @@ class ChessFacadeTest {
     val newUser = authFacade.currentUser.filterIsInstance<AuthenticatedUser>().first()
     assertThat(newUser.solvedPuzzles.size).isEqualTo(1)
 
-    val newUnsolvedPuzzles = chessFacade.unsolvedPuzzles(newUser).first()
-    val newSolvedPuzzles = chessFacade.solvedPuzzles(newUser).first()
+    val newUnsolvedPuzzles = chessFacade.unsolvedPuzzles(newUser)
+    val newSolvedPuzzles = chessFacade.solvedPuzzles(newUser)
 
     assertThat(newSolvedPuzzles.size).isEqualTo(1)
     assertThat(newUnsolvedPuzzles).isEmpty()
