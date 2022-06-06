@@ -1,13 +1,14 @@
 package ch.epfl.sdp.mobile.ui.profile
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,8 +36,9 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
-  val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
-  val elevation by animateDpAsState(targetElevation)
+  val targetElevation by remember {
+    derivedStateOf { if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp }
+  }
 
   UserScreen(
       header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp).fillMaxWidth()) },
@@ -44,7 +46,7 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
         ProfileTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
-            elevation = elevation,
+            elevation = targetElevation,
         )
       },
       tabBarState = tabBarState,

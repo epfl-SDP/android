@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.setting
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,7 +8,9 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -43,8 +44,9 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
-  val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
-  val elevation by animateDpAsState(targetElevation)
+  val targetElevation by remember {
+    derivedStateOf { if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp }
+  }
   UserScreen(
       header = {
         SettingHeader(
@@ -56,7 +58,7 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
         ProfileTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
-            elevation = elevation,
+            elevation = targetElevation,
         )
       },
       tabBarState = tabBarState,
