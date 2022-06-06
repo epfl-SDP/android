@@ -21,7 +21,6 @@ import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
-import ch.epfl.sdp.mobile.test.performClickOnceVisible
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
