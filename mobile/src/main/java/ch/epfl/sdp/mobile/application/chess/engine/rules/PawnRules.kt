@@ -89,8 +89,18 @@ object PawnRules : Rules {
     }
   }
 
+  /**
+   * The row at which a pawn must be located for it to be allowed to perform an en-passant take.
+   *
+   * @param color the color of the pawn.
+   * @return the row index.
+   */
+  private fun enPassantRow(color: Color): Int =
+      startRow(color.other()) + direction(color.other()).y * 2
+
   /** Takes the adversary pawns en-passant. */
   private fun ActionScope.enPassant(color: Color, position: Position) {
+    if (position.y != enPassantRow(color)) return
     for (sideDelta in listOf(CardinalPoints.E, CardinalPoints.W)) {
       val target = position + direction(color) + sideDelta
       val adversaryPosition = position + sideDelta
