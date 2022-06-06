@@ -30,7 +30,7 @@ abstract class AbstractRobot(
    * idempotent.
    * @return the value which was found.
    */
-  fun <R> waitUntilSuccess(timeout: Duration = 1.seconds, block: () -> R): R {
+  fun <R> waitUntilSuccess(timeout: Duration = 60.seconds, block: () -> R): R {
     waitUntil(timeout.inWholeMilliseconds) {
       try {
         block()

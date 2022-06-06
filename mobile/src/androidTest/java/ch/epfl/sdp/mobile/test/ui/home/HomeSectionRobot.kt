@@ -1,10 +1,7 @@
 package ch.epfl.sdp.mobile.test.ui.home
 
-import androidx.compose.ui.test.assertIsSelected
-import androidx.compose.ui.test.isSelectable
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import ch.epfl.sdp.mobile.test.ui.AbstractRobot
 import ch.epfl.sdp.mobile.test.ui.game.GameScreenRobot
 import ch.epfl.sdp.mobile.test.ui.prepare_game.PrepareGameRobot
@@ -160,6 +157,24 @@ class FollowingSectionRobot(
   ): VisitedProfileRobot {
     waitUntilSuccess { onNodeWithText(name, ignoreCase = true).performClick() }
     return switchTo(::VisitedProfileRobot, block)
+  }
+
+  /**
+   * Inputs the given [text] in the search field.
+   *
+   * @param text the text which is searched.
+   */
+  fun inputSearch(text: String) {
+    onNodeWithLocalizedText { socialSearchBarPlaceHolder }.performTextReplacement(text)
+  }
+
+  /**
+   * Asserts that the profile with the given user name is displayed.
+   *
+   * @param name the name of the user whose name is checked.
+   */
+  fun assertProfileIsDisplayed(name: String) {
+    waitUntilSuccess { onNodeWithText(name, ignoreCase = true) }.assertIsDisplayed()
   }
 }
 

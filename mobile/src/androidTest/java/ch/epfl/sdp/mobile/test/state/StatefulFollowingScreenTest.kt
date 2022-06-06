@@ -15,12 +15,12 @@ import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
-import ch.epfl.sdp.mobile.state.DebounceDuration
 import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulFollowingScreen
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
+import ch.epfl.sdp.mobile.test.ui.home.FollowingSectionRobot
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
@@ -170,14 +170,9 @@ class StatefulFollowingScreenTest {
         .document()
         .set(ProfileDocument(name = "Alexandre"))
 
-    rule.onNodeWithText(strings.socialSearchBarPlaceHolder).performTextInput("Alex")
-    rule.waitUntil(timeoutMillis = 2 * DebounceDuration.inWholeMilliseconds) {
-      try {
-        rule.onNodeWithText("Alexandre").assertIsDisplayed()
-        true
-      } catch (_: Throwable) {
-        false
-      }
+    FollowingSectionRobot(rule, strings).apply {
+      inputSearch("Alex")
+      assertProfileIsDisplayed("Alexandre")
     }
   }
 }
