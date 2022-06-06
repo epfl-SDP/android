@@ -103,6 +103,7 @@ object PawnRules : Rules {
     if (position.y != enPassantRow(color)) return
     for (sideDelta in listOf(CardinalPoints.E, CardinalPoints.W)) {
       val target = position + direction(color) + sideDelta
+      if (!get(target).isNone) continue
       val adversaryPosition = position + sideDelta
       val adversary = get(adversaryPosition)
       if (adversary.isNone || adversary.color == color || adversary.rank != Pawn) continue
