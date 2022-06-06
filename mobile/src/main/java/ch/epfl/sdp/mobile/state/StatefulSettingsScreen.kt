@@ -108,7 +108,13 @@ fun StatefulSettingsScreen(
             currentonEditLanguageClick,
         )
       }
-  SettingsScreen(state, modifier, contentPadding)
+  SettingsScreen(
+      state = state,
+      modifier = modifier,
+      contentPadding = contentPadding,
+      matchKey = { it.uid },
+      puzzleKey = { it.uid },
+  )
 }
 
 /** Class of available callback actions in the settings screen. */

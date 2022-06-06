@@ -31,6 +31,8 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * [ChessMatch] is clicked.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
+ * @param matchKey the key for each match item.
+ * @param puzzleKey the key for each puzzle item.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,6 +47,8 @@ fun <C : ChessMatch, P : PuzzleInfo> UserScreen(
     lazyColumnState: LazyListState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    matchKey: ((C) -> Any)? = null,
+    puzzleKey: ((P) -> Any)? = null,
 ) {
 
   LazyColumn(
@@ -58,10 +62,25 @@ fun <C : ChessMatch, P : PuzzleInfo> UserScreen(
     stickyHeader { profileTabBar() }
     when (tabBarState.currentTab) {
       ProfileTabBarState.Tab.PastGames ->
-          items(matches) { match -> Match(match, ChessIcons.WhiteKing, { onMatchClick(match) }) }
+          items(
+              items = matches,
+              key = matchKey,
+          ) { match ->
+            Match(
+                onClick = { onMatchClick(match) },
+                match = match,
+                icon = ChessIcons.WhiteKing,
+            )
+          }
       ProfileTabBarState.Tab.Puzzles ->
-          items(puzzles) { puzzle ->
-            PuzzleListInfo(puzzleInfo = puzzle, onClick = { onPuzzleClick(puzzle) })
+          items(
+              items = puzzles,
+              key = puzzleKey,
+          ) { puzzle ->
+            PuzzleListInfo(
+                puzzleInfo = puzzle,
+                onClick = { onPuzzleClick(puzzle) },
+            )
           }
     }
   }

@@ -27,12 +27,16 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
+ * @param matchKey the key for each match item.
+ * @param puzzleKey the key for each puzzle item.
  */
 @Composable
 fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
     state: VisitedProfileScreenState<C, P>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    matchKey: ((C) -> Any)? = null,
+    puzzleKey: ((P) -> Any)? = null,
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
@@ -56,7 +60,10 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
       onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       contentPadding = contentPadding,
-      modifier = modifier)
+      modifier = modifier,
+      matchKey = matchKey,
+      puzzleKey = puzzleKey,
+  )
 }
 
 /**
