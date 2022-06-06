@@ -58,9 +58,9 @@ fun Puzzle(): Puzzle =
                       queenSideBlack = false,
                   ),
               enPassant = null,
-              halfMoveClock = -1,
-              fullMoveClock = -1,
+              halfMoveClock = 0,
+              fullMoveClock = 0,
           )
       override val puzzleMoves = emptyList<Action>()
-      override val elo = -1
+      override val elo = 0
     }
