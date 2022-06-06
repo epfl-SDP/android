@@ -26,9 +26,9 @@ import kotlinx.coroutines.flow.*
  * An interface which represents all the endpoints and available features for online chess
  * interactions for a user of the Pawnies application.
  *
- * @param auth the [Auth] instance which will be used to handle authentication.
- * @param store the [Store] which is used to manage documents.
- * @param assets the [AssetManager] which is used to load assets.
+ * @property auth the [Auth] instance which will be used to handle authentication.
+ * @property store the [Store] which is used to manage documents.
+ * @property assets the [AssetManager] which is used to load assets.
  */
 class ChessFacade(
     private val auth: Auth,
@@ -36,17 +36,15 @@ class ChessFacade(
     private val assets: AssetManager,
 ) {
 
-  /** Chess matches side of chess facade */
-
   /**
-   * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store]
+   * Creates a "local" [Match] for the [AuthenticatedUser] and stores it in the [Store].
    *
-   * @param user The [AuthenticatedUser] that wants to create the [Match]
+   * @param user The [AuthenticatedUser] that wants to create the [Match].
    *
-   * @return The created [Match] before storing it in the [Store]
+   * @return The created [Match] before storing it in the [Store].
    */
   suspend fun createLocalMatch(user: AuthenticatedUser): Match {
-    val document = store.collection("games").document()
+    val document = store.collection(ChessDocument.Collection).document()
     document.set(
         ChessDocument(
             whiteId = user.uid, blackId = user.uid, lastUpdatedAt = System.currentTimeMillis()))
@@ -54,15 +52,16 @@ class ChessFacade(
   }
 
   /**
-   * Creates a [Match] between two [Profile]s and stores it in the [Store]
+   * Creates a [Match] between two [Profile]s and stores it in the [Store].
    *
-   * @param white The [Profile] of the player that will play white
-   * @param black The [Profile] of the player that will play black
+   * @param white The [Profile] of the player that will play white.
+   * @param black The [Profile] of the player that will play black.
+   * @param user the [Profile] currently viewing the game.
    *
-   * @return The created [Match] before storing it in the [Store]
+   * @return The created [Match] before storing it in the [Store].
    */
   suspend fun createMatch(white: Profile, black: Profile, user: Profile? = null): Match {
-    val document = store.collection("games").document()
+    val document = store.collection(ChessDocument.Collection).document()
     document.set(
         ChessDocument(
             whiteId = white.uid, blackId = black.uid, lastUpdatedAt = System.currentTimeMillis()))
@@ -73,6 +72,9 @@ class ChessFacade(
    * Returns the [Match] associated to the given identifier.
    *
    * @param id the unique identifier for this [Match].
+   * @param user the [Profile] currently viewing the game.
+   *
+   * @return the [Match] associated to the given identifier.
    */
   fun match(id: String, user: Profile? = null): Match {
     return StoreMatch(id, store, user)
@@ -80,27 +82,43 @@ class ChessFacade(
 
   /**
    * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
-   * player (or even himself)
+   * player (or even himself).
    *
-   * @param profile The [Profile] whose [Match]s will be fetched
+   * @param profile The [Profile] whose [Match]s will be fetched.
    *
-   * @return The [Flow] of [List] of [Match]s for the [Profile]
+   * @return The [Flow] of [List] of [Match]s for the [Profile].
    */
   fun matches(profile: Profile): Flow<List<Match>> {
-    val gamesAsWhite = getMatchesForPlayer(colorField = "whiteId", profile)
-    val gamesAsBlack = getMatchesForPlayer(colorField = "blackId", profile)
+    val gamesAsWhite = getMatchesForPlayer(colorField = ChessDocument.WhiteId, profile)
+    val gamesAsBlack = getMatchesForPlayer(colorField = ChessDocument.BlackId, profile)
 
     return combine(gamesAsWhite, gamesAsBlack) { (a, b) -> a.union(b).sortedBy { it.id } }
   }
 
+  /**
+   * Fetches a [Flow] of [List] of [Match]s that a certain [Profile] has going on with any other
+   * player (or even himself) while playing with the given [colorField].
+   *
+   * @param colorField the color the [user] played as.
+   * @param user The [Profile] whose [Match]s will be fetched.
+   *
+   * @return The [Flow] of [List] of [Match]s for the [Profile].
+   */
   private fun getMatchesForPlayer(colorField: String, user: Profile): Flow<List<Match>> {
     return store
-        .collection("games")
+        .collection(ChessDocument.Collection)
         .whereEquals(colorField, user.uid)
         .asMatchListFlow(user)
         .onStart { emit(emptyList()) }
   }
 
+  /**
+   * Converts a [Query] to a [Flow] of [List] of [Match]s of the given [user].
+   *
+   * @param user The [Profile] whose [Match]s will be converted.
+   *
+   * @return The [Flow] of [List] of [Match]s for the [Profile].
+   */
   private fun Query.asMatchListFlow(user: Profile? = null): Flow<List<Match>> {
     return this.asFlow<ChessDocument>().map {
       it.filterNotNull().mapNotNull(ChessDocument::uid).map { uid -> StoreMatch(uid, store, user) }
@@ -108,10 +126,12 @@ class ChessFacade(
   }
 
   /**
-   * Fetches the list of all [Puzzle]s from their source
+   * Fetches the list of all [Puzzle]s from their source.
    *
    * As of now, the puzzles come from the Lichess.org Open Database
-   * (https://database.lichess.org/#puzzles)
+   * (https://database.lichess.org/#puzzles).
+   *
+   * @return the fetched list of all [Puzzle]s.
    */
   private fun allPuzzles(): List<Puzzle> {
     return sequence {
@@ -139,39 +159,40 @@ class ChessFacade(
   }
 
   /**
-   * Gets a certain [Puzzle] by his uid
+   * Gets a certain [Puzzle] by his uid.
    *
-   * @param uid The uid of the [Puzzle] to get
+   * @param uid The uid of the [Puzzle] to get.
    *
-   * @return The specified [Puzzle], if it exists
+   * @return The specified [Puzzle], if it exists.
    */
   fun puzzle(uid: String): Puzzle? {
     return allPuzzles().firstOrNull { it.uid == uid }
   }
 
   /**
-   * Fetches the list of solved [Puzzle]s for a certain [Profile]
+   * Fetches the list of solved [Puzzle]s for a certain [Profile].
    *
-   * @param profile the [Profile] in question
+   * @param profile the [Profile] in question.
    *
-   * @returns The list of solved [Puzzle]s
+   * @return The list of solved [Puzzle]s.
    */
   fun solvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filter { profile.solvedPuzzles.contains(it.uid) }
   }
 
   /**
-   * Fetches the list of unsolved [Puzzle]s for a certain [Profile]
+   * Fetches the list of unsolved [Puzzle]s for a certain [Profile].
    *
-   * @param profile the [Profile] in question
+   * @param profile the [Profile] in question.
    *
-   * @returns The list of unsolved [Puzzle]s
+   * @return The list of unsolved [Puzzle]s.
    */
   fun unsolvedPuzzles(profile: Profile): List<Puzzle> {
     return allPuzzles().filterNot { profile.solvedPuzzles.contains(it.uid) }
   }
 }
 
+/** A class representing a chess [Puzzle]. */
 private data class SnapshotPuzzle(
     override val uid: String,
     override val boardSnapshot: FenNotation.BoardSnapshot,
@@ -179,22 +200,39 @@ private data class SnapshotPuzzle(
     override val elo: Int,
 ) : Puzzle
 
+/**
+ * A class representing a [Game] between two online players viewed by a user.
+ *
+ * @property store the [Store] which is used to manage documents.
+ * @property user the [Profile] currently viewing the game.
+ */
 private data class StoreMatch(
     override val id: String,
     private val store: Store,
     private val user: Profile?
 ) : Match {
 
+  /**
+   * Retrieves the [Profile] of the given uid.
+   *
+   * @param uid the uid to retrieve its profile.
+   *
+   * @return a flow of the [Profile] of the given uid.
+   */
   fun profile(
       uid: String,
   ): Flow<Profile?> {
 
-    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
-      doc?.toProfile(NotAuthenticatedUser)
-    }
+    return store
+        .collection(ProfileDocument.Collection)
+        .document(uid)
+        .asFlow<ProfileDocument>()
+        .map { doc -> doc?.toProfile(NotAuthenticatedUser) }
   }
 
-  private val documentFlow = store.collection("games").document(id).asFlow<ChessDocument>()
+  /** A flow of the [ChessDocument] of the [id]. */
+  private val documentFlow =
+      store.collection(ChessDocument.Collection).document(id).asFlow<ChessDocument>()
 
   override val game = documentFlow.map { it?.moves ?: emptyList() }.mapToGame()
 
@@ -202,16 +240,17 @@ private data class StoreMatch(
       documentFlow.map { it?.whiteId }.flatMapLatest {
         it?.let(this@StoreMatch::profile) ?: flowOf(null)
       }
+
   override val black =
       documentFlow.map { it?.blackId }.flatMapLatest {
         it?.let(this@StoreMatch::profile) ?: flowOf(null)
       }
 
   override suspend fun update(game: Game) {
-    val document = store.collection("games").document(id).get<ChessDocument>()
+    val document = store.collection(ChessDocument.Collection).document(id).get<ChessDocument>()
 
-    store.collection("games").document(id).update {
-      this[FieldPath(listOf("metadata", "status"))] =
+    store.collection(ChessDocument.Collection).document(id).update {
+      this[FieldPath(listOf(ChessDocument.Metadata, ChessDocument.Status))] =
           when (val step = game.nextStep) {
             NextStep.Stalemate -> Stalemate
             is NextStep.MovePiece -> null
@@ -219,15 +258,15 @@ private data class StoreMatch(
           }
 
       if (document?.blackId == user?.uid) {
-        this[FieldPath(listOf("metadata", "blackName"))] = user?.name
+        this[FieldPath(listOf(ChessDocument.Metadata, ChessDocument.BlackName))] = user?.name
       }
 
       if (document?.whiteId == user?.uid) {
-        this[FieldPath(listOf("metadata", "whiteName"))] = user?.name
+        this[FieldPath(listOf(ChessDocument.Metadata, ChessDocument.WhiteName))] = user?.name
       }
 
-      this["moves"] = game.toAlgebraicNotation()
-      this["lastUpdatedAt"] = System.currentTimeMillis()
+      this[ChessDocument.Moves] = game.toAlgebraicNotation()
+      this[ChessDocument.LastUpdatedAt] = System.currentTimeMillis()
     }
   }
 }

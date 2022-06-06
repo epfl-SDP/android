@@ -24,7 +24,13 @@ interface BoardBuilder<Piece : Any> {
   operator fun set(position: Position, value: Piece)
 }
 
+/**
+ * A class representing a builder for a [Board].
+ *
+ * @param Piece the type of the pieces contained in this board.
+ */
 private class BoardBuilderImpl<Piece : Any> : BoardBuilder<Piece> {
+  /** A mutable map of the [Board]'s [Piece]s and their corresponding [Position]. */
   val cells = mutableMapOf<Position, Piece>()
   override operator fun set(position: Position, value: Piece) = cells.set(position, value)
 }
@@ -47,6 +53,7 @@ fun <Piece : Any> buildBoard(
  * An implementation of a [Board] which is backed by a persistent collection.
  *
  * @param Piece the type of the pieces contained in this board.
+ * @property cells the map of the positions and their pieces.
  */
 private data class PersistentBoard<Piece : Any>
 constructor(

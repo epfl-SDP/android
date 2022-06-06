@@ -4,6 +4,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
 /** Localized strings for the English language. */
 object English : LocalizedStrings {
@@ -39,7 +42,16 @@ object English : LocalizedStrings {
   override val boardPiecePawn = "pawn"
   override val boardPieceContentDescription = { color: String, rank: String -> "$color $rank" }
   override val boardContentDescription = "chessboard"
+  override val boardMove = { piece: String, from: String, to: String ->
+    "Moved $piece from $from to $to"
+  }
+  override val boardPromoted = { piece: String, from: String, to: String, rank: String ->
+    "Promoted $piece from $from at $to to $rank"
+  }
+  override val boardPosition = { x: Int, y: Int -> "${'A' + x} ${8 - y} " }
 
+  override val gameTTsOnContentDescription = "TTS on"
+  override val gameTTsOffContentDescription = "TTS off"
   override val gameBack = "Back"
   override val gameShowAr = "Start AR mode"
   override val gameMicOffContentDescription = "Microphone off"
@@ -71,10 +83,11 @@ object English : LocalizedStrings {
   override val settingProfileNameLabel = "Profile Name"
   override val settingProfileImageLabel = "Profile Image"
   override val settingLogout: String = "Logout"
+  override val settingLanguageLabel = "Language"
+  override val settingsEditLanguage = "Edit Language"
 
   override val profilePastGames = "Past Games".uppercase()
   override val profilePuzzle = "Puzzles".uppercase()
-  override val profileSettings = "Settings"
   override val profileFollow = "Follow"
   override val profileUnfollow = "Unfollow"
   override val profileChallenge = "Challenge"
@@ -90,6 +103,7 @@ object English : LocalizedStrings {
   override val socialSearchEmptySubtitle =
       "Find any player using their name, follow them, or invite them to play or see their match history"
   override val socialSearchClearContentDescription = "Clear search field"
+  override val socialCloseVisitedProfile = "Close"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Players"
@@ -121,7 +135,7 @@ object English : LocalizedStrings {
   override val puzzlesTitle = "Puzzles"
   override val puzzleSolving = { color: String -> "Find the best move for $color" }
   override val puzzleFailed = "You've failed! Try again!"
-  override val puzzleSolved = "You've solved the puzzle! Congrats!"
+  override val puzzleSolved = "You won! Congrats!"
   override val puzzleNumber = { id: String -> "Puzzle: #$id" }
   override val puzzleRating = { rating: String -> "Rating: $rating" }
 
@@ -164,7 +178,7 @@ object English : LocalizedStrings {
   override val tournamentsStartingTime = { duration: Duration, style: SpanStyle ->
     buildAnnotatedString {
       append("Started ")
-      withStyle(style) { append(duration.absoluteValue.toString()) }
+      withStyle(style) { append(duration.absoluteValue.toEnglishString()) }
       append(" ago")
     }
   }
@@ -184,4 +198,26 @@ object English : LocalizedStrings {
   override val tournamentsCreateQualifierSizeN = { size: Int -> size.toString() }
   override val tournamentsCreateElimDemomN = { denominator: Int -> "1 / $denominator" }
   override val tournamentsCreateElimDepthFinal = "Final"
+
+  override val tournamentsFilterTitle = "Show only".uppercase()
+  override val tournamentsFilterOnlyDone = "Ongoing".uppercase()
+  override val tournamentsFilterOnlyParticipating = "Participating".uppercase()
+  override val tournamentsFilterOnlyAdministrating = "Administrating".uppercase()
+  override val tournamentsFilterBackContentDescription = "Back"
+}
+
+/**
+ * Converts a [Duration] to an English string by rounding it to the closest unit of time (seconds
+ * minimum).
+ */
+private fun Duration.toEnglishString(): String {
+  if (this >= 1.days) {
+    return "${this.inWholeDays} days"
+  } else if (this >= 1.hours) {
+    return "${this.inWholeHours} hours"
+  } else if (this >= 1.minutes) {
+    return "${this.inWholeMinutes} minutes"
+  }
+
+  return "${this.inWholeSeconds} seconds"
 }

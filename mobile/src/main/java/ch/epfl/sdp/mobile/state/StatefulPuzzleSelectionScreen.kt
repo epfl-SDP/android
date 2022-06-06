@@ -17,7 +17,7 @@ import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreen
 import ch.epfl.sdp.mobile.ui.puzzles.PuzzleSelectionScreenState
 
 /**
- * The [StatefulPuzzleSelectionScreen] to be used for the Navigation
+ * The [StatefulPuzzleSelectionScreen] to be used for the Navigation.
  *
  * @param user the currently logged-in user.
  * @param onPuzzleItemClick An action triggered when clicking on an item in the puzzle list
@@ -66,12 +66,12 @@ private class SnapshotPuzzleSelectionScreen(
 }
 
 /**
- * Represents the basic info of a [Puzzle] to display it in a list
+ * Represents the basic info of a [Puzzle] to display it in a list.
  *
- * @param uid The [Puzzle]'s uid
- * @param playerColor The [Color] of the player in the [Puzzle]
- * @param elo The elo/rank (difficulty) of the puzzle
- * @param icon The icon [Composable] to display next to the [Puzzle] description
+ * @property uid The [Puzzle]'s uid.
+ * @property playerColor The [Color] of the player in the [Puzzle].
+ * @property elo The elo/rank (difficulty) of the puzzle.
+ * @property icon The icon [Composable] to display next to the [Puzzle] description.
  */
 data class PuzzleInfoAdapter(
     override val uid: String,
@@ -80,7 +80,7 @@ data class PuzzleInfoAdapter(
     override val icon: @Composable () -> Unit
 ) : PuzzleInfo
 
-/** Transforms a [Puzzle] to a corresponding [PuzzleInfoAdapter] */
+/** Transforms a [Puzzle] to a corresponding [PuzzleInfoAdapter]. */
 fun Puzzle.toPuzzleInfoAdapter(): PuzzleInfoAdapter {
   // Inverted colors to FEN since first UCI moves describes "computer" move
   val playerColor = this.boardSnapshot.playing.other().toColor()

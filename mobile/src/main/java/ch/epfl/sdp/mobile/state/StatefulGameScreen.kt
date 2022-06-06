@@ -19,8 +19,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 /**
  * The different navigation actions which may be performed by the [StatefulGameScreen].
  *
- * @param onBack the action to perform when going back.
- * @param onShowAr the action to perform when AR should be started for the match.
+ * @property onBack the action to perform when going back.
+ * @property onShowAr the action to perform when AR should be started for the match.
  */
 data class StatefulGameScreenActions(
     val onBack: () -> Unit,
@@ -28,7 +28,7 @@ data class StatefulGameScreenActions(
 )
 
 /**
- * The [StatefulGameScreen] to be used for the Navigation
+ * The [StatefulGameScreen] to be used for the Navigation.
  *
  * @param user the currently logged-in user.
  * @param id the identifier for the match.
@@ -53,10 +53,24 @@ fun StatefulGameScreen(
   val match = remember(chessFacade, id, user) { chessFacade.match(id, user) }
 
   val snackbarHostState = remember { SnackbarHostState() }
+
+  val currentStrings = rememberUpdatedState(LocalLocalizedStrings.current)
+  val currentActions = rememberUpdatedState(actions)
+
   val gameScreenState =
-      remember(actions, user, match, audioPermissionState, speechFacade, snackbarHostState, scope) {
+      remember(
+          currentActions,
+          currentStrings,
+          user,
+          match,
+          audioPermissionState,
+          speechFacade,
+          snackbarHostState,
+          scope,
+      ) {
         ActualGameScreenState(
-            actions = actions,
+            actions = currentActions,
+            strings = currentStrings,
             user = user,
             match = match,
             permission = audioPermissionState,
@@ -105,7 +119,7 @@ fun StatefulPromoteDialog(
 
 /**
  * A composable which displays a snackbar to show the [SpeechRecognizerState.currentError] when it's
- * modified
+ * modified.
  *
  * @param state the [SpeechRecognizerState] which backs this dialog.
  * @param snackbarHostState the [SnackbarHostState] used to display some results.

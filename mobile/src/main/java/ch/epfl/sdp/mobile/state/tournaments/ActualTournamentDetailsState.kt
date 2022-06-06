@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.tournaments.Tournament.Status.Pools
 import ch.epfl.sdp.mobile.ui.tournaments.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.*
 import ch.epfl.sdp.mobile.ui.tournaments.TournamentDetailsState.PoolBanner.*
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
@@ -19,10 +20,11 @@ import kotlinx.coroutines.launch
 object EmptyTournament : Tournament {
   override val reference = TournamentReference("")
   override val name = ""
+  override val durationCreated = 0.milliseconds
   override val isAdmin = false
   override val isParticipant = false
   override val status = Status.Unknown
-  override suspend fun start(): Boolean = false
+  override suspend fun start() = Unit
   override suspend fun startDirectElimination() = Unit
   override suspend fun startNextRound() = Unit
 }
@@ -39,8 +41,8 @@ object EmptyPoolResults : PoolResults {
  * A class representing a [PoolMember] uniquely identified by an identifier.
  *
  * @param id the unique identifier of the pool member.
- * @param name the name of the pool member.
- * @param results a function to retrieve the pool results.
+ * @property name the name of the pool member.
+ * @property results a function to retrieve the pool results.
  */
 class PlayerIdPoolMember(
     val id: String,
@@ -54,9 +56,9 @@ class PlayerIdPoolMember(
 /**
  * A class representing some [PoolInfo] which uses some [PlayerIdPoolMember]s.
  *
- * @param pool the underlying [Pool].
- * @param scope the [CoroutineScope] used to move to the next round.
- * @param results a function to retrieve the pool results.
+ * @property pool the underlying [Pool].
+ * @property scope the [CoroutineScope] used to move to the next round.
+ * @property results a function to retrieve the pool results.
  */
 class PlayerIdPoolInfo(
     private val pool: Pool,
@@ -98,8 +100,13 @@ class PlayerIdPoolInfo(
  * @param match the [EliminationMatch] that is wrapped.
  */
 class EliminationMatchAdapter(match: EliminationMatch) : TournamentMatch {
+
+  /** The unique identifier of the match. */
   val id = match.id
+
+  /** The depth of the match. */
   val depth = match.depth
+
   override val firstPlayerName = match.whiteName
   override val secondPlayerName = match.blackName
   override val result =
@@ -115,8 +122,8 @@ class EliminationMatchAdapter(match: EliminationMatch) : TournamentMatch {
  * An implementation of [TournamentsFinalsRound] which uses a [Status.Round] and a list of all the
  * matches.
  *
- * @param tournament the [Tournament] that is being used.
- * @param scope the [CoroutineScope] used to launch the next rounds.
+ * @property tournament the [Tournament] that is being used.
+ * @property scope the [CoroutineScope] used to launch the next rounds.
  * @param round the [Status.Round].
  * @param allMatches the [EliminationMatch]es to display.
  */
@@ -140,10 +147,10 @@ class EliminationMatchAdapterTournamentsFinalsRound(
  * [Tournament], and delegate some responsibility to it.
  *
  * @param actions the [TournamentDetailsActions] to be called.
- * @param user the [AuthenticatedUser] which is currently connected.
- * @param facade the [TournamentFacade] which provides access to tournament information.
- * @param reference the [TournamentReference] of the tournament we're loading.
- * @param scope the [CoroutineScope] on which the tournament is loaded.
+ * @property user the [AuthenticatedUser] which is currently connected.
+ * @property facade the [TournamentFacade] which provides access to tournament information.
+ * @property reference the [TournamentReference] of the tournament we're loading.
+ * @property scope the [CoroutineScope] on which the tournament is loaded.
  */
 class ActualTournamentDetailsState(
     actions: State<TournamentDetailsActions>,

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
@@ -57,10 +58,12 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
       scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
       topBar = {
         GameScreenTopBar(
+            onTextToSpeechClick = state::onTextToSpeechToggle,
             onBackClick = state::onBackClick,
             onArClick = {},
             onListenClick = state::onListenClick,
             listening = state.listening,
+            enabledTextToSpeech = state.textToSpeechEnabled,
             modifier = Modifier.fillMaxWidth().confetti(confettiState) { Offset(center.x, 0f) },
         )
       },
@@ -74,12 +77,24 @@ fun <Piece : ChessBoardState.Piece> PuzzleGameScreen(
                     .padding(start = 32.dp, end = 32.dp, top = 48.dp, bottom = 48.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-          Text(strings.puzzlesTitle.uppercase(), style = typo.h6)
+          Text(
+              strings.puzzlesTitle.uppercase(),
+              style = typo.h6,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis)
           PuzzleDirective(color = state.puzzleInfo.playerColor, puzzleState = state.puzzleState)
           ProvideTextStyle(typo.subtitle1) { ClassicChessBoard(state) }
           Column(modifier = Modifier.padding(top = 16.dp)) {
-            Text(strings.puzzleNumber(state.puzzleInfo.uid), style = typo.subtitle2)
-            Text(strings.puzzleRating(state.puzzleInfo.elo.toString()), style = typo.subtitle2)
+            Text(
+                strings.puzzleNumber(state.puzzleInfo.uid),
+                style = typo.subtitle2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
+            Text(
+                strings.puzzleRating(state.puzzleInfo.elo.toString()),
+                style = typo.subtitle2,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
           }
           Moves(state.moves, Modifier.fillMaxWidth(), firstColor = firstColor)
         }
@@ -116,13 +131,15 @@ private fun PuzzleDirective(
               strings.puzzleFailed,
               color = colors.secondary,
               style = MaterialTheme.typography.subtitle1,
-          )
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis)
       PuzzleState.Solved ->
           Text(
               strings.puzzleSolved,
               color = colors.primaryVariant,
               style = MaterialTheme.typography.subtitle1,
-          )
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis)
     }
   }
 }

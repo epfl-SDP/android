@@ -7,6 +7,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -15,8 +16,11 @@ import ch.epfl.sdp.mobile.state.StatefulAuthenticationScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.buildAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import ch.epfl.sdp.mobile.test.state.setContentWithLocalizedStrings
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreen
 import ch.epfl.sdp.mobile.ui.authentication.AuthenticationScreenState
@@ -64,18 +68,26 @@ class AuthenticationScreenTest {
   fun given_authenticationSignUpScreen_when_badPasswordIsInserted_then_aFailureBadPasswordMessageAppears() {
     val auth = emptyAuth()
     val store = emptyStore()
+    val dataStoreFactory = emptyDataStoreFactory()
     val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
@@ -88,19 +100,27 @@ class AuthenticationScreenTest {
   @Test
   fun given_authenticationSignUpScreen_when_invalidEmailIsInserted_then_aFailureInvalidEmailFormatMessageAppears() {
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
     val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
@@ -113,19 +133,27 @@ class AuthenticationScreenTest {
   @Test
   fun given_authenticationSignUpScreen_when_signUpWithExistingEmailOccurs_then_aFailureExistingAccountMessageAppears() {
     val auth = buildAuth { user("fouad.mahmoud@epfl.ch", "password") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
     val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings)
@@ -138,19 +166,27 @@ class AuthenticationScreenTest {
   @Test
   fun given_authenticationSignInScreen_when_incorrectUserPasswordIsInserted_then_aFailureIncorrectPasswordMessageAppears() {
     val auth = buildAuth { user("fouad.mahmoud@epfl.ch", "password") }
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
     val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings).switchToLogIn()
@@ -163,19 +199,27 @@ class AuthenticationScreenTest {
   @Test
   fun given_authenticationSignInScreen_when_unregisteredEmailIsTyped_then_aFailureInvalidUserMessageAppears() {
     val auth = emptyAuth()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = emptyStore()
     val assets = emptyAssets()
     val authenticationFacade = AuthenticationFacade(auth, store)
     val socialFacade = SocialFacade(auth, store)
     val chessFacade = ChessFacade(auth, store, assets)
-    val speechFacade = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournamentFacade = TournamentFacade(auth, store)
+    val speechFacade =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
+
     val strings =
         rule.setContentWithLocalizedStrings {
           ProvideFacades(
-              authenticationFacade, socialFacade, chessFacade, speechFacade, tournamentFacade) {
-            StatefulAuthenticationScreen()
-          }
+              authenticationFacade,
+              socialFacade,
+              chessFacade,
+              speechFacade,
+              tournamentFacade,
+              settings) { StatefulAuthenticationScreen() }
         }
     rule.onRoot().performTouchInput { swipeUp() }
     val robot = SignUpRobot(rule, strings).switchToLogIn()

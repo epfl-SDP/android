@@ -12,12 +12,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * A composable that makes a [PrepareGameScreen] stateful
- * @param user authenticated user
- * @param opponentId the id of the opponent if it exists
- * @param navigateToGame The action to take for navigating to a created game
- * @param cancelClick The action to take when clicking on the dialog's cancel button
- * @param modifier [Modifier] for this composable
+ * A composable that makes a [PrepareGameScreen] stateful.
+ *
+ * @param user authenticated user.
+ * @param opponentId the id of the opponent if it exists.
+ * @param navigateToGame The action to take for navigating to a created game.
+ * @param cancelClick The action to take when clicking on the dialog's cancel button.
+ * @param modifier [Modifier] for this composable.
  */
 @Composable
 fun StatefulPrepareGameScreen(
@@ -48,14 +49,14 @@ fun StatefulPrepareGameScreen(
 }
 
 /**
- * An implementation of the [PrepareGameScreenState]
+ * An implementation of the [PrepareGameScreenState].
  *
- * @param user The current [AuthenticatedUser]
- * @param selected the item which is selected
- * @param navigateToGame The action to take for navigating to a created game
- * @param cancelClick The action to take when clicking on the dialog's cancel button
- * @param chessFacade The chess facade to act on the store
- * @param scope The [Composable]'s [CoroutineScope]
+ * @property user The current [AuthenticatedUser].
+ * @param selected the item which is selected.
+ * @property navigateToGame The action to take for navigating to a created game.
+ * @property cancelClick The action to take when clicking on the dialog's cancel button.
+ * @property chessFacade The chess facade to act on the store.
+ * @property scope The [Composable]'s [CoroutineScope].
  */
 class SnapshotPrepareGameScreenState(
     val user: AuthenticatedUser,

@@ -14,6 +14,8 @@ import com.google.ar.sceneform.rendering.RenderableInstance
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.material.setBaseColor
+import io.github.sceneview.material.setMetallicFactor
+import io.github.sceneview.material.setRoughnessFactor
 import io.github.sceneview.math.Position as ArPosition
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.model.GLBLoader
@@ -31,18 +33,24 @@ import kotlinx.coroutines.flow.onEach
  * - The board as the root node
  * - A number of chess pieces depending on the game state
  *
- * @param context The context used to load the 3d models
- * @param scope A scope that is used to launch the model loading
- * @param startingBoard The board that contains the displayed game state
+ * The assets used in this scene are from : https://free3d.com/3d-model/chessboard-716865.html
+ *
+ * @param Piece the type of the pieces in the scene.
+ * @property context The context used to load the 3d models
+ * @property scope A scope that is used to launch the model loading
+ * @param startingBoard the initial positions of the pieces.
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
     private val context: Context,
-    scope: CoroutineScope,
+    private val scope: CoroutineScope,
     startingBoard: Map<Position, Piece>,
 ) {
 
   /** The [ArModelNode] which acts as the root of the [ArModelNode] hierarchy. */
   val boardNode = ArModelNode(placementMode = PlacementMode.PLANE_HORIZONTAL)
+
+  /** A mutable map that tracks the pieces currently displayed in the scene. */
+  private val currentPieces: MutableMap<Piece, ModelNode> = mutableMapOf()
 
   /** A conflated [Channel] which associates the position of the pieces to their values. */
   private val currentPositionChannel =
@@ -50,55 +58,20 @@ class ChessScene<Piece : ChessBoardState.Piece>(
 
   init {
     scope.launch {
-
-      // Load Board
       val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
+
+      // Board Bounding box
       val boundingBox = boardRenderableInstance.filamentAsset?.boundingBox ?: return@launch
+
       val pieceRenderable = loadPieceRenderable()
 
       currentPositionChannel
           .consumeAsFlow()
-          .onEach { positions ->
-
-            // FIXME : Removing all nodes will increase the computational resources a lot.
-            //    We shouldn't destroy a node to re-set it after. Each time that a board change, for
-            //    each piece, we will create all the loader needed to create asserts. Furthermore,
-            //    this implementation don't allow use to add animation on models
-            //    Solution, we save the map of id and rank for each piece.
-            //    - If the id is missing delete the corresponding node.
-            //    - If the receive rank didn't match, set the model to the new corresponding rank
-            //    (Note: Maybe we can check the model path to check if the rank is correct)
-            // Remove all current children.
-            boardNode.children.forEach {
-              val child = boardNode.removeChild(it)
-              child.destroy()
-            }
-
-            // Add all the pieces at the appropriate position.
-            for ((position, piece) in positions) {
-              val arPosition = toArPosition(position, boundingBox)
-              with(ModelNode(position = arPosition)) {
-                val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
-                // Rotate the black pieces to face the right direction.
-                if (piece.color == Black) {
-                  modelRotation = Rotation(0f, 180f, 0f)
-                }
-                renderable.material.filamentMaterialInstance.setBaseColor(piece.color.colorVector)
-                boardNode.addChild(this)
-              }
-            }
+          .onEach { positionsToPieces ->
+            updateBoard(positionsToPieces, pieceRenderable, boundingBox)
           }
           .collect()
     }
-  }
-
-  /**
-   * Use by [ArChessBoardScreen] to update the pieces' position on the board
-   *
-   * @param pieces The new piece position
-   */
-  fun update(pieces: Map<Position, Piece>) {
-    currentPositionChannel.trySend(pieces)
   }
 
   /**
@@ -108,12 +81,13 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param node the [ArModelNode] to be prepared.
    * @return the [RenderableInstance] which can be used to manipulate the loaded model.
    */
-  private suspend fun prepareBoardRenderableInstance(node: ArModelNode): RenderableInstance? =
-      node.loadModel(
-          context = context,
-          glbFileLocation = ChessModels.Board,
-          autoScale = true,
-      )
+  private suspend fun prepareBoardRenderableInstance(node: ArModelNode): RenderableInstance? {
+    return node.loadModel(
+        context = context,
+        glbFileLocation = ChessModels.Board,
+        autoScale = true,
+    )
+  }
 
   /**
    * Loads all the [Renderable] for any [Rank] and makes them available as a higher-order function.
@@ -123,6 +97,7 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    */
   private suspend fun loadPieceRenderable(): (Rank) -> Renderable = coroutineScope {
     val loaded = mutableMapOf<Rank, Renderable>()
+
     for (rank in Rank.values()) {
       launch { loaded[rank] = loadPieceRenderable(rank) }
     }
@@ -136,17 +111,148 @@ class ChessScene<Piece : ChessBoardState.Piece>(
    * @param rank the [Rank] of the piece to fetch.
    * @return the [Renderable] to be displayed.
    */
-  private suspend fun loadPieceRenderable(
-      rank: Rank,
-  ): Renderable = requireNotNull(GLBLoader.loadModel(context, rank.arModelPath))
+  private suspend fun loadPieceRenderable(rank: Rank): Renderable =
+      requireNotNull(GLBLoader.loadModel(context, rank.arModelPath))
 
-  /** Scale the whole scene with the given [value] */
+  /**
+   * Creates the renderable of the given [Piece] and adds it to [boardNode] as a child.
+   *
+   * @param position the position of the piece on the board.
+   * @param boundingBox the bounding box of [boardNode].
+   * @param pieceRenderable the function that loads a renderable given a [Rank].
+   * @param piece the piece that needs to be placed on the board.
+   */
+  private fun addPiece(
+      position: Position,
+      boundingBox: Box,
+      pieceRenderable: (Rank) -> Renderable,
+      piece: Piece
+  ) {
+    val arPosition = toArPosition(position, boundingBox)
+    with(ModelNode(position = arPosition)) {
+      val renderable = setModel(pieceRenderable(piece.rank)) ?: return@with
+
+      val mat = renderable.material.filamentMaterialInstance
+
+      // Rotate the black pieces to face the right direction.
+      if (piece.color == Black) {
+        modelRotation = Rotation(0f, 180f, 0f)
+      }
+
+      // Set material parameters
+      mat.setBaseColor(piece.color.colorVector)
+      mat.setMetallicFactor(0f)
+      mat.setRoughnessFactor(0.1f)
+
+      boardNode.addChild(this)
+      currentPieces[piece] = this
+    }
+  }
+
+  /** Scales the whole scene with the given [value]. */
   internal fun scale(value: Float) {
     boardNode.scale(value)
   }
 
+  /**
+   * Updates the board with the given pieces.
+   *
+   * @param pieces the new pieces on the board.
+   */
+  private fun updateBoard(
+      pieces: Map<Position, Piece>,
+      pieceRenderable: (Rank) -> Renderable,
+      boundingBox: Box
+  ) {
+
+    val piecesToPositions = pieces.entries.associate { (k, v) -> v to k }
+    val inserted = pieces.values - currentPieces.keys
+    val removed = currentPieces.keys - pieces.values
+    val updated = currentPieces.keys - removed
+
+    // Remove all the removed pieces.
+    for (piece in removed) {
+      val node = currentPieces[piece] ?: continue
+      boardNode.removeChild(node)
+      node.destroy()
+      currentPieces -= piece
+    }
+
+    // Move all the updated pieces.
+    for (piece in updated) {
+      val position = piecesToPositions[piece] ?: continue
+      val node = currentPieces[piece] ?: continue
+      val arPosition = toArPosition(position, boundingBox)
+      move(node, arPosition)
+    }
+
+    // Insert missing pieces.
+    for (piece in inserted) {
+      val position = piecesToPositions[piece] ?: continue
+      addPiece(position, boundingBox, pieceRenderable, piece)
+    }
+  }
+
+  /**
+   * A custom method that performs smooth displacement of objects following a list of points.
+   *
+   * @param node The model to move
+   * @param position the final position
+   * @param height the max height of the animation
+   * @param speed of the smooth animation
+   */
+  private fun move(node: ModelNode, position: ArPosition, height: Float = 2f, speed: Float = 10f) {
+
+    // If the position is the same, don't move
+    if (node.position == position) return
+
+    // List of points
+    val pathIt =
+        listOf(
+                ArPosition(node.position.x, height, node.position.z),
+                ArPosition(position.x, height, position.z),
+                position)
+            .iterator()
+
+    var targetPosition = pathIt.next()
+
+    /**
+     * Update the target position and start to move the next position.
+     *
+     * @param newPosition the new target position.
+     */
+    fun changeTarget(newPosition: ArPosition) {
+      targetPosition = newPosition
+      node.smooth(targetPosition)
+    }
+
+    // start to move to the 1st position
+    node.smooth(targetPosition, speed = speed)
+
+    // Add a callback
+    node.onFrame.add { _, _ ->
+      if (node.position == targetPosition && pathIt.hasNext()) {
+        changeTarget(pathIt.next())
+      }
+    }
+  }
+
+  /**
+   * Used by [ArChessBoardScreen] to update the pieces' positions on the board.
+   *
+   * @param pieces a map of the pieces and their new positions.
+   */
+  fun update(pieces: Map<Position, Piece>) {
+    currentPositionChannel.trySend(pieces)
+  }
+
   companion object {
-    // This value cannot be computed, it's chosen by guess
+
+    /**
+     * The size of the board border.
+     *
+     * This value cannot be computed, it's chosen by guessing.
+     */
     const val BoardBorderSize = 2.2f
   }
 }
@@ -174,7 +280,7 @@ private fun toArPosition(
   return ArPosition(x = transform(position.x), y = boardHeight, z = transform(position.y))
 }
 
-/** Transform a [Rank] into the corresponding model's path */
+/** Transform a [Rank] into the corresponding model's path. */
 private val Rank.arModelPath: String
   get() =
       when (this) {
@@ -186,7 +292,7 @@ private val Rank.arModelPath: String
         Rook -> ChessModels.Rook
       }
 
-/** Convert the [Color] into a color that can be used by the AR renderer */
+/** Convert the [Color] into a color that can be used by the AR renderer. */
 private val Color.colorVector: ArColor
   get() =
       when (this) {

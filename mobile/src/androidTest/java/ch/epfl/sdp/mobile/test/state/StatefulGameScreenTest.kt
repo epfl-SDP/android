@@ -15,6 +15,7 @@ import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
 import ch.epfl.sdp.mobile.application.chess.engine.Rank
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -28,9 +29,12 @@ import ch.epfl.sdp.mobile.test.application.chess.engine.Games.UntilPromotion
 import ch.epfl.sdp.mobile.test.application.chess.engine.Games.promote
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.*
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import ch.epfl.sdp.mobile.test.ui.game.ChessBoardRobot
 import ch.epfl.sdp.mobile.test.ui.game.click
 import ch.epfl.sdp.mobile.test.ui.game.drag
@@ -44,6 +48,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -67,9 +72,10 @@ class StatefulGameScreenTest {
   ): ChessBoardRobot {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") {
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
         document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId1"))
       }
     }
@@ -77,8 +83,9 @@ class StatefulGameScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(recognizer)
-    val tournament = TournamentFacade(auth, store)
+    val speech = SpeechFacade(recognizer, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -86,7 +93,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech, tournament) {
+          ProvideFacades(authApi, social, chess, speech, tournament, settings) {
             StatefulGameScreen(user1, "gameId", actions, audioPermissionState = audioPermission)
           }
         }
@@ -548,16 +555,22 @@ class StatefulGameScreenTest {
   fun playingGameWithNoWhiteId_isUnsuccessful() {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") { document("gameId", ChessDocument(whiteId = null, blackId = "userId1")) }
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
+        document("gameId", ChessDocument(whiteId = null, blackId = "userId1"))
+      }
     }
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val speech =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -567,7 +580,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech, tournament) {
+          ProvideFacades(authApi, social, chess, speech, tournament, settings) {
             StatefulGameScreen(user1, "gameId", actions)
           }
         }
@@ -587,16 +600,22 @@ class StatefulGameScreenTest {
   fun playingGameWithNoBlackId_isUnsuccessful() {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") { document("gameId", ChessDocument(whiteId = "userId1", blackId = null)) }
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
+        document("gameId", ChessDocument(whiteId = "userId1", blackId = null))
+      }
     }
 
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournament = TournamentFacade(auth, store)
+    val speech =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournament = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
 
     val user1 = mockk<AuthenticatedUser>()
     every { user1.uid } returns "userId1"
@@ -606,7 +625,7 @@ class StatefulGameScreenTest {
 
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech, tournament) {
+          ProvideFacades(authApi, social, chess, speech, tournament, settings) {
             StatefulGameScreen(user1, "gameId", actions)
           }
         }
@@ -783,6 +802,24 @@ class StatefulGameScreenTest {
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.performClick()
     robot.onNodeWithLocalizedText { gameListening }.performClick()
     robot.onNodeWithLocalizedContentDescription { gameMicOffContentDescription }.assertExists()
+  }
+
+  @Test
+  fun given_enabled_volume_button_when_clicked_then_disable() = runTest {
+    val env =
+        rule.setContentWithAuthenticatedTestEnvironment {
+          StatefulGameScreen(
+              user = user,
+              id = "gameId",
+              actions = StatefulGameScreenActions(onBack = {}, onShowAr = {}))
+        }
+
+    assertThat(env.facades.speech.textToSpeechSettings().first().enabled).isTrue()
+    rule.onNodeWithContentDescription(env.strings.gameTTsOnContentDescription)
+        .assertExists()
+        .performClick()
+    rule.onNodeWithContentDescription(env.strings.gameTTsOffContentDescription).assertExists()
+    assertThat(env.facades.speech.textToSpeechSettings().first().enabled).isFalse()
   }
 }
 

@@ -11,6 +11,15 @@ import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
 import ch.epfl.sdp.mobile.state.LocalTournamentFacade
 import ch.epfl.sdp.mobile.ui.tournaments.*
 
+/**
+ * A stateful screen which displays the details of a tournament.
+ *
+ * @param user the currently authenticated user.
+ * @param reference the [TournamentReference] to the tournament which should be displayed.
+ * @param actions the actions which may be performed by the user.
+ * @param modifier the [Modifier] for this composable.
+ * @param contentPadding some [PaddingValues] to apply around the content.
+ */
 @Composable
 fun StatefulTournamentDetailsScreen(
     user: AuthenticatedUser,

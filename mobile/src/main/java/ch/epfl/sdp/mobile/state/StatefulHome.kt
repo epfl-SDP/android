@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticatedUser
 import ch.epfl.sdp.mobile.application.tournaments.TournamentReference
+import ch.epfl.sdp.mobile.state.tournaments.StatefulFiltersDialogScreen
 import ch.epfl.sdp.mobile.state.tournaments.StatefulTournamentDetailsScreen
 import ch.epfl.sdp.mobile.state.tournaments.TournamentDetailsActions
 import ch.epfl.sdp.mobile.ui.home.HomeScaffold
@@ -29,6 +31,9 @@ private const val SettingEditProfileNameRoute = "profile-name/edit"
 /** The route associated to the profile image editing button on the setting screen. */
 private const val SettingEditProfileImageRoute = "profile-image/edit"
 
+/** The route associated to the language editing button on the setting screen. */
+private const val SettingEditLanguageRoute = "language/edit"
+
 /** The route associated to the play tab. */
 private const val ProfileRoute = "profile"
 
@@ -41,7 +46,7 @@ private const val PuzzleSelectionRoute = "puzzles"
 /** The route associated to a puzzle game. */
 private const val PuzzleGameRoute = "puzzle_game"
 
-/** The route associated to new game screen */
+/** The route associated to new game screen. */
 private const val GameRoute = "match"
 
 /** The default identifier for a game. */
@@ -50,7 +55,7 @@ private const val GameDefaultId = ""
 /** The default identifier for a puzzle. */
 private const val PuzzleGameDefaultId = ""
 
-/** The route associated to new game button in play screen */
+/** The route associated to new game button in play screen. */
 private const val PrepareGameRoute = "prepare_game"
 
 /** The route associated to the ar tab. */
@@ -65,8 +70,11 @@ private const val TournamentDetailsRoute = "tournament"
 /** The default identifier for a tournament. */
 private const val TournamentDefaultId = ""
 
-/** The route associated to new contest button in play screen */
+/** The route associated to new contest button in play screen. */
 private const val CreateTournamentRoute = "create_tournament"
+
+/** The route associated with the tournaments filters screen. */
+private const val TournamentFiltersRoute = "tournament_filters"
 
 /**
  * A stateful composable, which is used at the root of the navigation when the user is
@@ -76,7 +84,7 @@ private const val CreateTournamentRoute = "create_tournament"
  * @param modifier the [Modifier] for this composable.
  * @param controller the [NavHostController] used to control the current destination.
  */
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun StatefulHome(
     user: AuthenticatedUser,
@@ -102,10 +110,14 @@ fun StatefulHome(
     controller.navigate("$TournamentDetailsRoute/${tournament.uid}")
   }
 
+  val onChallengeItemClick: (opponentId: String) -> Unit = { opponentId ->
+    controller.navigate("$PrepareGameRoute?opponentId=${opponentId}")
+  }
+
   HomeScaffold(
       section = section,
       onSectionChange = { controller.navigate(it.toRoute()) },
-      hiddenBar = hideBar(entry?.destination?.route),
+      hiddenBar = entry?.destination?.route?.let(::hideBar) ?: false,
       modifier = modifier,
   ) { paddingValues ->
     NavHost(
@@ -116,6 +128,7 @@ fun StatefulHome(
         StatefulFollowingScreen(
             user = user,
             onShowProfileClick = onPersonItemClick,
+            onPlayClick = onChallengeItemClick,
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
         )
@@ -125,8 +138,18 @@ fun StatefulHome(
             currentUser = user,
             onTournamentClick = openTournament,
             onNewContestClickAction = { controller.navigate(CreateTournamentRoute) },
+            onFilterClick = { controller.navigate(TournamentFiltersRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues,
+        )
+      }
+      dialog(
+          route = TournamentFiltersRoute,
+          dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
+      ) {
+        StatefulFiltersDialogScreen(
+            navigateBack = { controller.popBackStack() },
+            modifier = Modifier.fillMaxSize(),
         )
       }
       composable(SettingsRoute) {
@@ -136,6 +159,7 @@ fun StatefulHome(
             onPuzzleClick = onPuzzleItemClick,
             onEditProfileNameClick = { controller.navigate(SettingEditProfileNameRoute) },
             onEditProfileImageClick = { controller.navigate(SettingEditProfileImageRoute) },
+            onEditLanguageClick = { controller.navigate(SettingEditLanguageRoute) },
             modifier = Modifier.fillMaxSize(),
             contentPadding = paddingValues)
       }
@@ -145,14 +169,18 @@ fun StatefulHome(
       dialog(SettingEditProfileImageRoute) {
         StatefulEditProfileImageDialog(user = user, onClose = { controller.popBackStack() })
       }
+      dialog(SettingEditLanguageRoute) {
+        StatefulEditLanguageDialog(onClose = { controller.popBackStack() })
+      }
       composable("$ProfileRoute/{uid}") { backStackEntry ->
         StatefulVisitedProfileScreen(
             user = user,
             uid = backStackEntry.arguments?.getString("uid") ?: "",
             onMatchClick = onGameItemClick,
             onPuzzleClick = onPuzzleItemClick,
+            onBack = { controller.popBackStack() },
             modifier = Modifier.fillMaxSize(),
-            onChallengeClick = { controller.navigate("$PrepareGameRoute?opponentId=$it") },
+            onChallengeClick = onChallengeItemClick,
             contentPadding = paddingValues)
       }
       composable(PlayRoute) {
@@ -263,5 +291,7 @@ private fun HomeSection.toRoute(): String =
       HomeSection.Contests -> ContestsRoute
     }
 
-private fun hideBar(route: String?): Boolean =
-    route?.let { it.startsWith(GameRoute) || it.startsWith(TournamentDetailsRoute) } ?: false
+/** Returns true iff the navigation bar should be hidden for the provided [route]. */
+private fun hideBar(
+    route: String,
+): Boolean = setOf(GameRoute, TournamentDetailsRoute, PuzzleGameRoute).any { route.startsWith(it) }

@@ -9,7 +9,7 @@ import com.google.firebase.firestore.CollectionReference as ActualCollectionRefe
  * An implementation of [CollectionReference] which uses a Firestore collection reference
  * under-the-hood.
  *
- * @param reference the [ActualCollectionReference].
+ * @property reference the [ActualCollectionReference].
  */
 class FirestoreCollectionReference(
     private val reference: ActualCollectionReference,

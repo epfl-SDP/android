@@ -16,7 +16,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 
 /**
- * The [StatefulPuzzleGameScreen] to be used for the Navigation
+ * The [StatefulPuzzleGameScreen] to be used for the Navigation.
  *
  * @param user the currently logged-in user.
  * @param puzzleId the identifier for the puzzle.
@@ -42,13 +42,23 @@ fun StatefulPuzzleGameScreen(
   val puzzle = chessFacade.puzzle(uid = puzzleId) ?: Puzzle()
   val currentUser = rememberUpdatedState(user)
   val currentActions = rememberUpdatedState(actions)
+  val currentStrings = rememberUpdatedState(LocalLocalizedStrings.current)
 
   val snackbarHostState = remember { SnackbarHostState() }
 
   val puzzleGameScreenState =
-      remember(currentActions, currentUser, puzzle, audioPermissionState, speechFacade, scope) {
+      remember(
+          currentActions,
+          currentStrings,
+          currentUser,
+          puzzle,
+          audioPermissionState,
+          speechFacade,
+          scope,
+      ) {
         ActualPuzzleGameScreenState(
             currentActions = currentActions,
+            currentStrings = currentStrings,
             currentUser = currentUser,
             puzzle = puzzle,
             permission = audioPermissionState,

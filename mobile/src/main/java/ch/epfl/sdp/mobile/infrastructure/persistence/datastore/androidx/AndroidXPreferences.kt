@@ -8,7 +8,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.Preferences
 /**
  * An implementation of [Preferences] which uses some [ActualPreferences].
  *
- * @param actual the underlying [AndroidXPreferences].
+ * @property actual the underlying [AndroidXPreferences].
  */
 class AndroidXPreferences(val actual: ActualPreferences) : Preferences {
 

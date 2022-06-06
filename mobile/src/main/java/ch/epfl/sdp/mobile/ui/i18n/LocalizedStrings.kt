@@ -40,7 +40,6 @@ interface LocalizedStrings {
   val profileTieInfo: (Int) -> String
   val profilePastGames: String
   val profilePuzzle: String
-  val profileSettings: String
   val profileFollow: String
   val profileUnfollow: String
   val profileChallenge: String
@@ -55,6 +54,8 @@ interface LocalizedStrings {
   val settingProfileNameLabel: String
   val settingProfileImageLabel: String
   val settingLogout: String
+  val settingLanguageLabel: String
+  val settingsEditLanguage: String
 
   val boardColorBlack: String
   val boardColorWhite: String
@@ -66,7 +67,12 @@ interface LocalizedStrings {
   val boardPiecePawn: String
   val boardPieceContentDescription: (color: String, rank: String) -> String
   val boardContentDescription: String
+  val boardMove: (piece: String, from: String, to: String) -> String
+  val boardPromoted: (piece: String, from: String, to: String, rank: String) -> String
+  val boardPosition: (x: Int, y: Int) -> String
 
+  val gameTTsOnContentDescription: String
+  val gameTTsOffContentDescription: String
   val gameBack: String
   val gameShowAr: String
   val gameMicOffContentDescription: String
@@ -91,6 +97,7 @@ interface LocalizedStrings {
   val socialSearchEmptyTitle: String
   val socialSearchEmptySubtitle: String
   val socialSearchClearContentDescription: String
+  val socialCloseVisitedProfile: String
 
   val sectionAr: String
   val sectionSocial: String
@@ -173,4 +180,10 @@ interface LocalizedStrings {
   val tournamentsCreateQualifierSizeN: (size: Int) -> String
   val tournamentsCreateElimDemomN: (denominator: Int) -> String
   val tournamentsCreateElimDepthFinal: String
+
+  val tournamentsFilterTitle: String
+  val tournamentsFilterOnlyDone: String
+  val tournamentsFilterOnlyParticipating: String
+  val tournamentsFilterOnlyAdministrating: String
+  val tournamentsFilterBackContentDescription: String
 }

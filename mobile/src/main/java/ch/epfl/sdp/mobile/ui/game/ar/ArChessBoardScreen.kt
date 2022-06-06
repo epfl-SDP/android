@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.ui.game.ar
 
+import android.content.Context
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
@@ -11,12 +12,16 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
 import com.google.ar.core.Anchor
 import com.gorisse.thomas.lifecycle.lifecycleScope
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.arcore.LightEstimationMode
+import io.github.sceneview.ar.node.ArModelNode
+import kotlinx.coroutines.CoroutineScope
 
 private const val BoardScale = 0.2f
 
 /**
- * Composable used to display a AR chess board
+ * Composable used to display a AR chess board.
  *
+ * @param Piece the type of the pieces which are present in a board.
  * @param state The state of the game, it's used to track the modification on the game
  * @param modifier modifier the [Modifier] for this composable.
  */
@@ -40,19 +45,15 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
       factory = { context ->
 
         // Create the view
-        val arSceneView = ArSceneView(context)
+        val arSceneView =
+            ArSceneView(context).apply { lightEstimationMode = LightEstimationMode.SPECTACULAR }
 
         chessScene =
-            ChessScene(context, view.lifecycleScope, state.pieces).apply {
-              // Scale the whole scene to the desired size
-              scale(BoardScale)
-            }
-
-        // Place the chess board on the taped position
-        arSceneView.onTouchAr =
-            { hitResult, _ ->
-              anchorOrMoveBoard(arSceneView, chessScene, hitResult.createAnchor())
-            }
+            createChessScene(
+                context = context,
+                arSceneView = arSceneView,
+                startingBoard = state.pieces,
+                lifecycleScope = view.lifecycleScope)
 
         arSceneView
       },
@@ -64,23 +65,62 @@ fun <Piece : ChessBoardState.Piece> ArChessBoardScreen(
  * If not already in the scene, the board will be added. Update the board anchor with the given one
  * and change the displayed position
  *
- * @param arSceneView The view where the scene will be displayed
- * @param chessScene The scene that contains the boards node
+ * // @param arSceneView The view where the scene will be displayed
+ * @param boardNode The node that will be added into the view
  * @param anchor The (new) board's anchor position
  */
-private fun <Piece : ChessBoardState.Piece> anchorOrMoveBoard(
-    arSceneView: ArSceneView,
-    chessScene: ChessScene<Piece>?,
+private fun anchorOrMoveBoard(
+    // arSceneView: ArSceneView,
+    boardNode: ArModelNode,
     anchor: Anchor
 ) {
 
-  val currentChessScene = chessScene ?: return
+  // FIXME : Workaround see line 117
 
-  currentChessScene.let {
-    // Add only one instance of the node
-    if (!arSceneView.children.contains(it.boardNode)) {
-      arSceneView.addChild(it.boardNode)
-    }
-    it.boardNode.anchor = anchor
+  // Add only one instance of the node
+  /*if (!arSceneView.children.contains(boardNode)) {
+    arSceneView.addChild(boardNode)
+  }*/
+
+  if (!boardNode.isVisible) boardNode.isVisible = true
+
+  boardNode.anchor = anchor
+}
+
+/**
+ * Create an instance of [ChessScene] and setup the onTouch callback.
+ *
+ * @param Piece the type of the pieces which are present in a board.
+ * @param context The context of the view.
+ * @param arSceneView the linked [ArSceneView] where the piece will be display.
+ * @param startingBoard the board configuration of the beginning.
+ * @param lifecycleScope the lifecycle of the view.
+ *
+ * @return An instance of [ChessScene].
+ */
+private fun <Piece : ChessBoardState.Piece> createChessScene(
+    context: Context,
+    arSceneView: ArSceneView,
+    startingBoard: Map<ChessBoardState.Position, Piece>,
+    lifecycleScope: CoroutineScope
+): ChessScene<Piece> {
+  return ChessScene(context, lifecycleScope, startingBoard).apply {
+
+    // Scale the board
+    this.scale(BoardScale)
+
+    // Place the chess board on the tapped position.
+    arSceneView.onTouchAr =
+        { hitResult, _ ->
+          anchorOrMoveBoard(/*arSceneView,*/ this.boardNode, hitResult.createAnchor())
+        }
+
+    /**
+     * FIXME : Workaround : A strange bug make the animation fail when we add the child via a
+     * function. To solve this quickly, we add the board when is loaded and set it to invisible. We
+     * reset the visibility when the user tap on the screen
+     */
+    arSceneView.addChild(this.boardNode)
+    this.boardNode.isVisible = false
   }
 }

@@ -18,7 +18,11 @@ sealed interface Action {
   val delta: Delta
 
   // Convenience operators to keep a destructuring-friendly syntax.
+
+  /** Returns the [Position] of this [Action]. */
   operator fun component1(): Position = from
+
+  /** Returns the [Delta] of this [Action]. */
   operator fun component2(): Delta = delta
 
   companion object {
@@ -52,17 +56,17 @@ sealed interface Action {
   /**
    * An [Action] which represents the act of moving a piece on the board.
    *
-   * @param from the start position.
-   * @param delta the applied delta.
+   * @property from the start position.
+   * @property delta the applied delta.
    */
   data class Move(override val from: Position, override val delta: Delta) : Action
 
   /**
    * An [Action] which represents the act of promoting a pawn to a piece with a certain rank.
    *
-   * @param from the start position.
-   * @param delta the applied delta.
-   * @param rank the chosen [Rank].
+   * @property from the start position.
+   * @property delta the applied delta.
+   * @property rank the chosen [Rank].
    */
   data class Promote(
       override val from: Position,

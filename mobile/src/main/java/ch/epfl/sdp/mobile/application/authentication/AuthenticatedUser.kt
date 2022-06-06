@@ -11,10 +11,17 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.store.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-/** Indicates that an [AuthenticatedUser] is currently authenticated. */
+/**
+ * Indicates that an [AuthenticatedUser] is currently authenticated.
+ *
+ * @property auth the used [Auth] for authentication queries.
+ * @property store the used [Store].
+ * @property user the current [User].
+ * @param document the user's [ProfileDocument].
+ */
 class AuthenticatedUser(
     private val auth: Auth,
-    private val firestore: Store,
+    private val store: Store,
     private val user: User,
     document: ProfileDocument?,
 ) : AuthenticationUser, Profile by document.toProfile(user.uid) {
@@ -25,18 +32,18 @@ class AuthenticatedUser(
   /**
    * A scope which wraps a [DocumentEditScope] to allow editions to a user profile.
    *
-   * @param scope the wrapped [DocumentEditScope].
+   * @property scope the wrapped [DocumentEditScope].
    */
   class UpdateScope(private val scope: DocumentEditScope) {
 
     /** Updates the profile emoji with [emoji]. */
-    fun emoji(emoji: String): Unit = scope.set("emoji", emoji)
+    fun emoji(emoji: String): Unit = scope.set(ProfileDocument.Emoji, emoji)
 
     /** Updates the profile color with [color]. */
-    fun backgroundColor(color: Color?) = scope.set("backgroundColor", color?.hex)
+    fun backgroundColor(color: Color?) = scope.set(ProfileDocument.BackgroundColor, color?.hex)
 
     /** Updates the profile name with [name]. */
-    fun name(name: String) = scope.set("name", name)
+    fun name(name: String) = scope.set(ProfileDocument.Name, name.trim())
   }
 
   /**
@@ -47,7 +54,9 @@ class AuthenticatedUser(
    */
   suspend fun update(block: UpdateScope.() -> Unit): Boolean {
     return try {
-      firestore.collection("users").document(user.uid).update { UpdateScope(this).also(block) }
+      store.collection(ProfileDocument.Collection).document(user.uid).update {
+        UpdateScope(this).also(block)
+      }
       true
     } catch (exception: Throwable) {
       false
@@ -60,8 +69,8 @@ class AuthenticatedUser(
    * @param followed the [Profile] to follow.
    */
   suspend fun follow(followed: Profile) {
-    firestore.collection("users").document(followed.uid).update {
-      arrayUnion("followers", user.uid)
+    store.collection(ProfileDocument.Collection).document(followed.uid).update {
+      arrayUnion(ProfileDocument.Followers, user.uid)
     }
   }
 
@@ -72,19 +81,19 @@ class AuthenticatedUser(
    * @param unfollowed the [Profile] to unfollow.
    */
   suspend fun unfollow(unfollowed: Profile) {
-    firestore.collection("users").document(unfollowed.uid).update {
-      arrayRemove("followers", user.uid)
+    store.collection(ProfileDocument.Collection).document(unfollowed.uid).update {
+      arrayRemove(ProfileDocument.Followers, user.uid)
     }
   }
 
   /**
-   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user
+   * Solves the given [Puzzle] by updating the list of solved puzzles for the current user.
    *
    * @param puzzle the [Puzzle] to mark as solved.
    */
   suspend fun solvePuzzle(puzzle: Puzzle) {
-    firestore.collection("users").document(this.uid).update {
-      arrayUnion("solvedPuzzles", puzzle.uid)
+    store.collection(ProfileDocument.Collection).document(this.uid).update {
+      arrayUnion(ProfileDocument.SolvedPuzzles, puzzle.uid)
     }
   }
 
@@ -98,10 +107,10 @@ class AuthenticatedUser(
    * all users' list of followers.
    */
   val following: Flow<List<Profile>> =
-      firestore
-          .collection("users")
-          .whereArrayContains("followers", user.uid)
-          .orderBy("name")
+      store
+          .collection(ProfileDocument.Collection)
+          .whereArrayContains(ProfileDocument.Followers, user.uid)
+          .orderBy(ProfileDocument.Name)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(this) } }
 }

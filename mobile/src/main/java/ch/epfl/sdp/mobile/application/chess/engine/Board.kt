@@ -1,5 +1,7 @@
 package ch.epfl.sdp.mobile.application.chess.engine
 
+import ch.epfl.sdp.mobile.application.chess.engine.implementation.MutableBoard
+
 /**
  * A [Board] contains a bunch of [Piece] positioned in a certain way.
  *
@@ -19,6 +21,6 @@ interface Board<out Piece : Any> : Iterable<Pair<Position, Piece>> {
   companion object {
 
     /** The size of a [Board]. */
-    const val Size = 8
+    const val Size = MutableBoard.Size
   }
 }

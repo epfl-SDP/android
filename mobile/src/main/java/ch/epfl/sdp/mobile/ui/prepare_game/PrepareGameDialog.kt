@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -18,11 +19,11 @@ import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
  * A composable representing a [Dialog] for choosing a configuration of parameters when creating a
- * new online game
+ * new online game.
  *
- * @param state the [PrepareGameScreenState] that manage the composable contents
- * @param modifier the [Modifier] for the composable
- * @param key a function which uniquely identifies the list items
+ * @param state the [PrepareGameScreenState] that manage the composable contents.
+ * @param modifier the [Modifier] for the composable.
+ * @param key a function which uniquely identifies the list items.
  * @param P the type of the [Person].
  */
 @Composable
@@ -55,6 +56,8 @@ fun <P : Person> PrepareGameDialog(
               text = strings.prepareGameChooseColor,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
           )
           ColorChoiceBar(
               colorChoice = state.colorChoice,
@@ -65,6 +68,8 @@ fun <P : Person> PrepareGameDialog(
               text = strings.prepareGameChooseOpponent,
               style = MaterialTheme.typography.subtitle1,
               modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
           )
         }
       }

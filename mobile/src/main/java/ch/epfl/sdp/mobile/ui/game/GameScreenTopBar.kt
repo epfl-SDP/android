@@ -29,7 +29,9 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
  * @param onBackClick a callback called when the close icon is pressed.
  * @param onArClick a callback called when the AR icon is pressed.
  * @param onListenClick a callback called when the listening icon is pressed.
+ * @param onTextToSpeechClick a callback called when text to speech icon is clicked.
  * @param listening true if the listening indicator should be displayed.
+ * @param enabledTextToSpeech true if the text to speech is enabled
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -37,7 +39,9 @@ fun GameScreenTopBar(
     onBackClick: () -> Unit,
     onArClick: () -> Unit,
     onListenClick: () -> Unit,
+    onTextToSpeechClick: () -> Unit,
     listening: Boolean,
+    enabledTextToSpeech: Boolean,
     modifier: Modifier = Modifier,
 ) {
   TopAppBar(
@@ -46,10 +50,12 @@ fun GameScreenTopBar(
       elevation = 0.dp,
       navigationIcon = {
         IconButton(onBackClick) {
-          Icon(Icons.Branded.GameClose, LocalLocalizedStrings.current.gameBack)
+          Icon(Icons.Branded.Close, LocalLocalizedStrings.current.gameBack)
         }
       },
       actions = {
+        TextToSpeechToggleButton(onClick = onTextToSpeechClick, enabled = enabledTextToSpeech)
+        Spacer(Modifier.width(8.dp))
         ArButton(onClick = onArClick)
         Spacer(Modifier.width(8.dp))
         ListeningButton(onClick = onListenClick, selected = listening)
@@ -140,5 +146,57 @@ private class ListeningButtonColors(
   @Composable
   override fun contentColor(enabled: Boolean): State<Color> {
     return animateColorAsState(if (listening) Green100 else Green800)
+  }
+}
+
+/**
+ * Text to speech toggle button composable.
+ * @param onClick callback for the icon.
+ * @param enabled indicates if the text to speech is enabled.
+ * @param modifier [Modifier] for this composable.
+ */
+@Composable
+private fun TextToSpeechToggleButton(
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier
+) {
+  val enabledState = rememberUpdatedState(enabled)
+  val colors = remember(enabledState) { TextToSpeechButtonColors(enabledState) }
+  OutlinedButton(
+      onClick = onClick,
+      shape = CircleShape,
+      modifier = modifier.height(48.dp).widthIn(min = 48.dp),
+      contentPadding = PaddingValues(),
+      colors = colors,
+      border = BorderStroke(Dp.Hairline, Green100),
+  ) {
+    if (enabled) {
+      Icon(PawniesIcons.TTsOn, LocalLocalizedStrings.current.gameTTsOnContentDescription)
+    } else {
+      Icon(PawniesIcons.TTsOff, LocalLocalizedStrings.current.gameTTsOffContentDescription)
+    }
+  }
+}
+
+/**
+ * The [ButtonColors] for the text to speech toggle button.
+ *
+ * @param enabled the current toggle [State] of the button.
+ */
+private class TextToSpeechButtonColors(
+    enabled: State<Boolean>,
+) : ButtonColors {
+
+  private val enabled by enabled
+
+  @Composable
+  override fun backgroundColor(enabled: Boolean): State<Color> {
+    return animateColorAsState(if (this.enabled) Beige050 else Green800)
+  }
+
+  @Composable
+  override fun contentColor(enabled: Boolean): State<Color> {
+    return animateColorAsState(if (this.enabled) Green800 else Green100)
   }
 }

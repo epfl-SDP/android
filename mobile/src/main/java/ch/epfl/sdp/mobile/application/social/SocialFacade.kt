@@ -16,8 +16,8 @@ import kotlinx.coroutines.flow.map
  * An interface which represents all the endpoints and available features for social interaction for
  * a user of the Pawnies application.
  *
- * @param auth the [Auth] instance which will be used to handle authentication.
- * @param store the [Store] which is used to manage documents.
+ * @property auth the [Auth] instance which will be used to handle authentication.
+ * @property store the [Store] which is used to manage documents.
  */
 class SocialFacade(private val auth: Auth, private val store: Store) {
 
@@ -51,7 +51,7 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       }
 
   /**
-   * Searches user by exact match on name
+   * Searches user by exact match on name.
    *
    * @param text search criteria.
    * @param user the [AuthenticationUser] that is performing the search.
@@ -61,10 +61,10 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       user: AuthenticationUser = NotAuthenticatedUser,
   ): Flow<List<Profile>> =
       store
-          .collection("users")
-          .orderBy("name")
-          .whereGreaterThan("name", text, inclusive = true)
-          .whereLessThan("name", text.upperSearchBound(), inclusive = true)
+          .collection(ProfileDocument.Collection)
+          .orderBy(ProfileDocument.Name)
+          .whereGreaterThan(ProfileDocument.Name, text, inclusive = true)
+          .whereLessThan(ProfileDocument.Name, text.upperSearchBound(), inclusive = true)
           .limit(MaxSearchResultCount)
           .asFlow<ProfileDocument>()
           .map { it.mapNotNull { doc -> doc?.toProfile(user) } }
@@ -80,8 +80,10 @@ class SocialFacade(private val auth: Auth, private val store: Store) {
       uid: String,
       user: AuthenticationUser = NotAuthenticatedUser,
   ): Flow<Profile?> {
-    return store.collection("users").document(uid).asFlow<ProfileDocument>().map { doc ->
-      doc?.toProfile(user)
-    }
+    return store
+        .collection(ProfileDocument.Collection)
+        .document(uid)
+        .asFlow<ProfileDocument>()
+        .map { doc -> doc?.toProfile(user) }
   }
 }

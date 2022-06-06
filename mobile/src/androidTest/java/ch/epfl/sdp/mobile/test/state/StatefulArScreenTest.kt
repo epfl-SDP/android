@@ -9,6 +9,7 @@ import ch.epfl.sdp.mobile.application.ChessDocument
 import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.application.authentication.AuthenticationFacade
 import ch.epfl.sdp.mobile.application.chess.ChessFacade
+import ch.epfl.sdp.mobile.application.settings.SettingsFacade
 import ch.epfl.sdp.mobile.application.social.SocialFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.tournaments.TournamentFacade
@@ -17,9 +18,12 @@ import ch.epfl.sdp.mobile.state.ProvideFacades
 import ch.epfl.sdp.mobile.state.StatefulArScreen
 import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
+import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
+import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
+import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import org.junit.Rule
 
 class StatefulArScreenTest {
@@ -34,9 +38,10 @@ class StatefulArScreenTest {
   fun given_allFacades_when_initStatefulArScreen_then_screenHasDescription() = withCanceledIntents {
     val auth = emptyAuth()
     val assets = emptyAssets()
+    val dataStoreFactory = emptyDataStoreFactory()
     val store = buildStore {
-      collection("users") { document("userId1", ProfileDocument()) }
-      collection("games") {
+      collection(ProfileDocument.Collection) { document("userId1", ProfileDocument()) }
+      collection(ChessDocument.Collection) {
         document("gameId", ChessDocument(whiteId = "userId1", blackId = "userId1"))
       }
     }
@@ -44,12 +49,16 @@ class StatefulArScreenTest {
     val authApi = AuthenticationFacade(auth, store)
     val social = SocialFacade(auth, store)
     val chess = ChessFacade(auth, store, assets)
-    val speech = SpeechFacade(FailingSpeechRecognizerFactory)
-    val tournaments = TournamentFacade(auth, store)
-
+    val speech =
+        SpeechFacade(
+            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+    val tournaments = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
+    val settings = SettingsFacade(dataStoreFactory)
     val strings =
         rule.setContentWithLocalizedStrings {
-          ProvideFacades(authApi, social, chess, speech, tournaments) { StatefulArScreen("gameId") }
+          ProvideFacades(authApi, social, chess, speech, tournaments, settings) {
+            StatefulArScreen("gameId")
+          }
         }
 
     rule.onNodeWithContentDescription(strings.arContentDescription).assertExists()

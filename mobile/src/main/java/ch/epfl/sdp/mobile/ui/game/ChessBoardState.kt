@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 
 /**
  * An interface which represents the state of a [ClassicChessBoard] composable. It display the
@@ -55,6 +56,6 @@ interface ChessBoardState<out Piece : ChessBoardState.Piece> {
   /** Returns the position of the [Rank.King] currently in check, if there's any. */
   val checkPosition: Position?
 
-  /** Return the [Position] of the game's last action */
+  /** Return the [Position] of the game's last action. */
   val lastMove: Set<Position>
 }

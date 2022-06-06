@@ -17,12 +17,15 @@ interface SettingScreenState<C : ChessMatch, P : PuzzleInfo> : ProfileScreenStat
   /** The email address of the logged-in user. */
   val email: String
 
-  /** On edit profile image button clicked */
+  /** On edit profile image button clicked. */
   fun onEditProfileImageClick()
 
-  /** On edit profile name button clicked */
+  /** On edit profile name button clicked. */
   fun onEditProfileNameClick()
 
-  /** On logout button clicked */
+  /** On edit language button clicked. */
+  fun onEditLanguageClick()
+
+  /** On logout button clicked. */
   fun onLogout()
 }

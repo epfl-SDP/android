@@ -5,6 +5,8 @@
 
 🎨 [Figma mockups](https://www.figma.com/file/JGLgtpIJcPW7z4YKD4nLeH/Android) 🎨
 
+🎬 [See a demo on YouTube](https://youtu.be/PIcgDgCp8y0) 🎬
+
 ## Team
 
 | Name                 | Email |
@@ -31,3 +33,18 @@ As this project uses Google Firebase, you will also need to provide your own `go
 This file can be generated from the Firebase Console (Pawnies Project -> Project Settings -> Your apps -> SDK setup and configuration -> google-services.json).
 
 It must be placed at `./mobile/google-services.json`
+
+## Architecture and organization overview
+
+This project uses Jetpack Compose and is written in Kotlin. The main packages are organized as follows :
+
+- `ch.epfl.sdp.mobile.infrastructure` features the repositories and their implementations;
+- `ch.epfl.sdp.mobile.application` contains the domain facades and business logic;
+- `ch.epfl.sdp.mobile.ui` contains all the stateless user interface. This is where all your stateless `@Composable` functions will go; and
+- `ch.epfl.sdp.mobile.state` contains the viewmodels which bind the stateless user interface to our application logic. `@Composable` functions which implement the viewmodels should go there.
+
+## Assets sources
+This section gathers different assets' sources used in our project :
+
+- Chess puzzles: <https://database.lichess.org/#puzzles>
+- 3D models : <https://free3d.com/3d-model/chessboard-716865.html>

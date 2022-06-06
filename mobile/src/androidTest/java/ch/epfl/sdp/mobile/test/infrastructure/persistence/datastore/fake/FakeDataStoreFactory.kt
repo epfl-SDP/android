@@ -6,7 +6,7 @@ import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.DataStoreFactory
  * A fake implementation of [DataStoreFactory] which always returns the same underlying instance of
  * [FakePreferencesDataStore].
  */
-object FakeDataStoreFactory : DataStoreFactory {
+class FakeDataStoreFactory : DataStoreFactory {
 
   /** The underlying [FakePreferencesDataStore]. */
   private val preferences = FakePreferencesDataStore()

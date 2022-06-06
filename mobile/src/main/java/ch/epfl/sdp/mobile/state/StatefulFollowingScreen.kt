@@ -22,12 +22,15 @@ import kotlinx.coroutines.launch
 /**
  * A class that turns a provided [Profile] into a [Person].
  *
- * @param profile the [Profile] to turn into a [Person].
+ * @property profile the [Profile] to turn into a [Person].
  */
 data class ProfileAdapter(
     val profile: Profile,
 ) : Person {
+
+  /** The unique identifier of the underlying [Profile]. */
   val uid = profile.uid
+
   override val backgroundColor = profile.backgroundColor.toColor()
   override val name = profile.name
   override val emoji = profile.emoji
@@ -40,6 +43,7 @@ data class ProfileAdapter(
  *
  * @param user the current [AuthenticatedUser].
  * @param onShowProfileClick the callback called when we want to show the profile of a user.
+ * @param onPlayClick the callback called when we click on the play button
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this composable.
  */
@@ -47,10 +51,13 @@ data class ProfileAdapter(
 fun StatefulFollowingScreen(
     user: AuthenticatedUser,
     onShowProfileClick: (ProfileAdapter) -> Unit,
+    onPlayClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
-  val actions = rememberUpdatedState(Actions(onShowProfileClick = onShowProfileClick))
+  val actions =
+      rememberUpdatedState(
+          Actions(onShowProfileClick = onShowProfileClick, onPlayClick = onPlayClick))
   val socialFacade = LocalSocialFacade.current
   val scope = rememberCoroutineScope()
 
@@ -70,13 +77,23 @@ fun StatefulFollowingScreen(
 }
 
 /**
- * A class representing the different actions available on the social screen.
- *
- * @param onShowProfileClick a callback when a user is clicked to display their profile.
+ * An interface representing the different actions available on the profile that we see on the
+ * social screen.
  */
+interface FollowingProfileActions {
+
+  /** Callback when a user is clicked to display their profile. */
+  val onShowProfileClick: (ProfileAdapter) -> Unit
+
+  /** Callback function for a clicked on play. */
+  val onPlayClick: (String) -> Unit
+}
+
+/** A class representing the different actions available on the social screen. */
 data class Actions(
-    val onShowProfileClick: (ProfileAdapter) -> Unit,
-)
+    override val onShowProfileClick: (ProfileAdapter) -> Unit,
+    override val onPlayClick: (String) -> Unit
+) : FollowingProfileActions
 
 /**
  * An implementation of the [SocialScreenState] that performs social requests.
@@ -85,9 +102,9 @@ data class Actions(
  * by converting it to a [Profile]
  *
  * @param actions the [Actions] which are available on the screen.
- * @param user the current [AuthenticatedUser].
- * @param socialFacade the [SocialFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property user the current [AuthenticatedUser].
+ * @property socialFacade the [SocialFacade] used to perform some requests.
+ * @property scope the [CoroutineScope] on which requests are performed.
  */
 class SnapshotSocialScreenState(
     actions: State<Actions>,
@@ -140,6 +157,8 @@ class SnapshotSocialScreenState(
   }
 
   override fun onShowProfileClick(person: ProfileAdapter) = actions.onShowProfileClick(person)
+
+  override fun onPlayClick(opponent: ProfileAdapter) = actions.onPlayClick(opponent.uid)
 
   override fun onFollowClick(followed: ProfileAdapter) {
     scope.launch {

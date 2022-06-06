@@ -1,5 +1,6 @@
 package ch.epfl.sdp.mobile.test.infrastructure.persistence.store.fake
 
+import ch.epfl.sdp.mobile.application.ProfileDocument
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.asFlow
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.set
@@ -16,7 +17,8 @@ import org.junit.Test
 class FakeDocumentDocumentIdTest {
 
   /** Returns a document reference with the given [name] from the [Store]. */
-  private fun Store.doc(name: String = "doc") = collection("users").document(name)
+  private fun Store.doc(name: String = "doc") =
+      collection(ProfileDocument.Collection).document(name)
 
   /** Returns a [Flow] to which [filterNotNull] and [first] are consecutively applied. */
   private suspend fun <T : Any> Flow<T?>.firstNotNull() = filterNotNull().first()
@@ -57,11 +59,13 @@ class FakeDocumentDocumentIdTest {
   @Test
   fun documentWithNoId_isGenerated() = runTest {
     val store =
-        emptyStore().apply { collection("users").document().set(mapOf("name" to "matthieu")) }
+        emptyStore().apply {
+          collection(ProfileDocument.Collection).document().set(mapOf("name" to "matthieu"))
+        }
     assertThat(
             store
-                .collection("users")
-                .whereEquals("name", "matthieu")
+                .collection(ProfileDocument.Collection)
+                .whereEquals(ProfileDocument.Name, "matthieu")
                 .asFlow<DocumentWithAnnotation>()
                 .firstNotNull())
         .hasSize(1)

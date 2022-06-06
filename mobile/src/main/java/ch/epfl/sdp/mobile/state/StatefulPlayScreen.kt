@@ -20,13 +20,13 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * A stateful implementation of the [PlayScreen]
- * @param user the Authenticated user
- * @param onGameItemClick callback function to navigate to game on click
- * @param navigateToPrepareGame Callable lambda to navigate to [PrepareGameScreen] screen
- * @param navigateToLocalGame Callable lambda to navigate to a certain local game screen
+ * A stateful implementation of the [PlayScreen].
+ * @param user the Authenticated user.
+ * @param onGameItemClick callback function to navigate to game on click.
+ * @param navigateToPrepareGame Callable lambda to navigate to the `PrepareGameScreen` screen.
+ * @param navigateToLocalGame Callable lambda to navigate to a certain local game screen.
  * @param modifier the [Modifier] for this composable.
- * @param contentPadding The [PaddingValues] to apply to the [PlayScreen]
+ * @param contentPadding The [PaddingValues] to apply to the [PlayScreen].
  */
 @Composable
 fun StatefulPlayScreen(
@@ -62,19 +62,45 @@ fun StatefulPlayScreen(
   PlayScreen(state = state, modifier = modifier, key = { it.uid }, contentPadding = contentPadding)
 }
 
-/** An Loadable Union Type to differentiate between loaded and state */
+/**
+ * An Loadable Union Type to differentiate between loaded and state.
+ *
+ * @param T the type of the value.
+ */
 private sealed interface Loadable<out T> {
+
+  /** An implementation of [Loadable] that's empty. */
   object Loading : Loadable<Nothing>
+
+  /**
+   * An implementation of [Loadable] with a value.
+   *
+   * @param T the type of the value.
+   * @property value the loaded value.
+   */
   data class Loaded<out T>(val value: T) : Loadable<T>
 
   companion object {
+
+    /** Creates a loading [Loadable]. */
     fun loading(): Loadable<Nothing> = Loading
+
+    /**
+     * Creates a [Loadable] with the given [value].
+     *
+     * @param T the type of the [Loadable].
+     * @param value the value in the loadable.
+     * @return the newly built [Loadable].
+     */
     fun <T> loaded(value: T): Loadable<T> = Loaded(value)
   }
 }
 /**
- * A map for the Loadable type
- * @param f callback function for map
+ * A map for the Loadable type.
+ * @param A the type of the elements in the [Loadable].
+ * @param B the type o the elements produced.
+ * @param f transform function for map.
+ * @return the transformed [Loadable].
  */
 private fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
     when (this) {
@@ -83,8 +109,8 @@ private fun <A, B> Loadable<A>.map(f: (A) -> B): Loadable<B> =
     }
 
 /**
- * Extract the value out of the Loadable type
- * @param lazyBlock function which returns alternative value
+ * Extract the value out of the Loadable type.
+ * @param lazyBlock function which returns alternative value.
  */
 private fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     when (this) {
@@ -93,8 +119,9 @@ private fun <A> Loadable<A>.orElse(lazyBlock: () -> A): A =
     }
 
 /**
- * Gives higher order function to decide the [MatchResult]
- * @param userColor color of the current user
+ * Gives higher order function to decide the [MatchResult].
+ *
+ * @receiver the current [NextStep].
  */
 private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
     when (this) {
@@ -109,7 +136,17 @@ private fun NextStep.toMatchResult(): (userColor: Color) -> MatchResult =
           }
     }
 
-/** Intermediate State to simplify the data handling */
+/**
+ * Intermediate State to simplify the data handling.
+ *
+ * @property id the identifier of a match.
+ * @property movesCount the number of moves played.
+ * @property whiteId the identifier of the white player.
+ * @property blackId the identifier of th black player.
+ * @property whiteName the name of the white player.
+ * @property blackName the name of the black player.
+ * @property matchResult the result of the match, given the user color.
+ */
 data class MatchInfo(
     val id: String?,
     val movesCount: Int,
@@ -120,13 +157,17 @@ data class MatchInfo(
     val matchResult: (userColor: Color) -> MatchResult
 )
 
-/** An adapter that is of type [ChessMatch] and contains the uid. */
+/**
+ * An adapter that is of type [ChessMatch] and contains the uid.
+ *
+ * @property uid the unique identifier for this [ChessMatchAdapter].
+ */
 data class ChessMatchAdapter(
     val uid: String,
     override val adversary: String,
     override val matchResult: MatchResult,
     override val numberOfMoves: Int
-) : ChessMatch {}
+) : ChessMatch
 
 /**
  * Fetches the matches from the facade and convert it to a list of [MatchInfo]s.
@@ -142,9 +183,10 @@ fun fetchForUser(
     }
 
 /**
- * Extract the data from the subflows of black and white and combine all the information in
- * [MatchInfo]
- * @param match a [Match] to extract the informations
+ * Extract the data from the sub.flows of black and white and combine all the information in
+ * [MatchInfo].
+ *
+ * @param match a [Match] to extract the information.
  */
 private fun info(match: Match): Flow<MatchInfo> {
   val black = match.black
@@ -170,15 +212,16 @@ private fun info(match: Match): Flow<MatchInfo> {
 }
 
 /**
- * Implementation of the [PlayScreenState]
+ * Implementation of the [PlayScreenState].
+ *
  * @param onLocalGameClickAction The State for the callable lambda to navigate to a certain local
- * game screen
- * @param onOnlineGameClickAction The State for the callable lambda to navigate to
- * [PrepareGameScreen] screen
- * @param onMatchClickAction The State for the callback function to navigate to match on click
- * @param user authenticated user
- * @param chessFacade [ChessFacade] to fetch the matches
- * @param scope for coroutines
+ * game screen.
+ * @param onOnlineGameClickAction The State for the callable lambda to navigate to the
+ * `PrepareGameScreen` screen.
+ * @param onMatchClickAction The State for the callback function to navigate to match on click.
+ * @property user authenticated user.
+ * @property chessFacade [ChessFacade] to fetch the matches.
+ * @property scope for coroutines.
  */
 private class PlayScreenStateImpl(
     onLocalGameClickAction: State<(match: Match) -> Unit>,
@@ -218,6 +261,7 @@ private class PlayScreenStateImpl(
 
 /**
  * Helper function for createChessMatch.
+ *
  * @param match [MatchInfo] intermediate datatype.
  * @param user the user in question.
  */

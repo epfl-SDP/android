@@ -16,9 +16,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
@@ -36,7 +39,7 @@ import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-/** The width (and height) in number of cells of a ChessBoard */
+/** The width (and height) in number of cells of a ChessBoard. */
 const val ChessBoardCells = 8
 
 /**
@@ -60,6 +63,8 @@ fun <Piece : ChessBoardState.Piece> ClassicChessBoard(
           targetValue = if (state.rotatedBoard) 180f else 0f,
           animationSpec = spring(stiffness = StiffnessVeryLow),
       )
+
+  HapticFeedback(state.pieces)
 
   BoxWithConstraints(
       modifier
@@ -273,7 +278,7 @@ fun ChessBoardState.Rank.icon(color: ChessBoardState.Color): Painter =
           }
     }
 
-/** Return the associated content description [String] for [ChessBoardState.Color] */
+/** Return the associated content description [String] for [ChessBoardState.Color]. */
 fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String {
   return when (this) {
     Black -> strings.boardColorBlack
@@ -281,7 +286,7 @@ fun ChessBoardState.Color.contentDescription(strings: LocalizedStrings): String 
   }
 }
 
-/** Return the associated content description [String] for [ChessBoardState.Rank] */
+/** Return the associated content description [String] for [ChessBoardState.Rank]. */
 fun ChessBoardState.Rank.contentDescription(strings: LocalizedStrings): String {
   return when (this) {
     King -> strings.boardPieceKing
@@ -302,3 +307,14 @@ private val Piece.contentDescription: String
     val rank = rank.contentDescription(strings)
     return strings.boardPieceContentDescription(color, rank)
   }
+
+/**
+ * Performs Haptic Feedback (Phone vibration) when the given [key] changes.
+ *
+ * @param key the changeable key upon which the haptic feedback is performed.
+ */
+@Composable
+private fun HapticFeedback(key: Any) {
+  val feedback = LocalHapticFeedback.current
+  LaunchedEffect(key, feedback) { feedback.performHapticFeedback(HapticFeedbackType.LongPress) }
+}

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -19,7 +20,7 @@ import ch.epfl.sdp.mobile.ui.PawniesColors.Green800
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
 
 /**
- * Component for display a Dialog to edit the profile image
+ * Component for display a Dialog to edit the profile image.
  *
  * @param state the [EditProfileImageDialogState] as an argument.
  * @param modifier the [Modifier] for this composable.
@@ -56,6 +57,8 @@ fun EditProfileImageDialog(
         Text(
             strings.settingProfileImageLabel,
             style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         LazyRow(
@@ -83,9 +86,10 @@ fun EditProfileImageDialog(
 }
 
 /**
- * Composes the edit settings picture which shows the edit changes
- * @param backgroundColor background color for setting image
- * @param emoji the emoji string
+ * Composes the edit settings picture which shows the edit changes.
+ *
+ * @param backgroundColor background color for setting image.
+ * @param emoji the emoji string.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -104,10 +108,11 @@ private fun EditSettingPicture(
 }
 
 /**
- * Select Emoji Item
- * @param selected boolean which check if current element is selected
- * @param onCLick function to execute if current element is clicked
- * @param emoji String which to be changed
+ * Select Emoji Item.
+ *
+ * @param selected boolean which check if current element is selected.
+ * @param onClick function to execute if current element is clicked.
+ * @param emoji String which to be changed.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable
@@ -126,10 +131,11 @@ private fun SelectEmojiItem(
 }
 
 /**
- * Select Background color of profile Image
- * @param selected boolean if current element is equal current item
- * @param onClick function to execute if element is clicked
- * @param backgroundColor the current color in item
+ * Select Background color of profile Image.
+ *
+ * @param selected boolean if current element is equal current item.
+ * @param onClick function to execute if element is clicked.
+ * @param backgroundColor the current color in item.
  * @param modifier the [Modifier] for this composable.
  */
 @Composable

@@ -15,19 +15,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.social.Person
 
 /**
- * Composable that represents a list of potential opponents, with one potentially selected
- * @param P the type of the [Person]
- * @param opponents The list of [Person]s to display as opponents
+ * Composable that represents a list of potential opponents, with one potentially selected.
+ *
+ * @param P the type of the [Person].
+ * @param opponents The list of [Person]s to display as opponents.
  * @param selectedOpponent A potentially selected opponent to display differently in the opponent
- * list
- * @param onOpponentClick The action to take when clicking on an opponent in the opponent's list
- * @param modifier [Modifier] for this composable
- * @param lazyListState the state of the lazyList displaying opponents
- * @param key a function which uniquely identifies the list items
+ * list.
+ * @param onOpponentClick The action to take when clicking on an opponent in the opponent's list.
+ * @param modifier [Modifier] for this composable.
+ * @param lazyListState the state of the lazyList displaying opponents.
+ * @param key a function which uniquely identifies the list items.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,14 +64,14 @@ fun <P : Person> OpponentList(
 }
 
 /**
- * Composable that represents an opponent in [OpponentList]
- * @param P the type of the [Person]
- * @param person Person representing the opponent
- * @param onClick button action
- * @param modifier [Modifier] for this composable
- * @param selected indicates if the opponent is selected
+ * Composable that represents an opponent in [OpponentList].
+ *
+ * @param P the type of the [Person].
+ * @param person Person representing the opponent.
+ * @param onClick button action.
+ * @param modifier [Modifier] for this composable.
+ * @param selected indicates if the opponent is selected.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun <P : Person> Opponent(
     person: P,
@@ -89,18 +91,21 @@ private fun <P : Person> Opponent(
     Text(
         person.name,
         color = MaterialTheme.colors.primaryVariant,
-        style = MaterialTheme.typography.subtitle1)
+        style = MaterialTheme.typography.subtitle1,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
   }
 }
 
 /**
- * Composable that represents a selectable item
- * @param onClick button action
- * @param selected indicates if the opponent is selected
- * @param modifier [Modifier] for this composable
- * @param content the content to display in the item
+ * Composable that represents a selectable item.
+ *
+ * @param onClick button action.
+ * @param selected indicates if the opponent is selected.
+ * @param modifier [Modifier] for this composable.
+ * @param content the content to display in the item.
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SelectableItem(
     onClick: () -> Unit,
@@ -126,8 +131,9 @@ fun SelectableItem(
 }
 
 /**
- * Returns color of the button given its selection state
- * @param selected True if the button is selected False otherwise
+ * Returns color of the button given its selection state.
+ *
+ * @param selected True if the button is selected False otherwise.
  */
 @Composable
 private fun opponentColor(

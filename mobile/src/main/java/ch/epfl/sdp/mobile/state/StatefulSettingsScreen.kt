@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
  * user's profile.
  *
  * @param actions the [ProfileActions] which are available on the screen.
- * @param user the current logged-in [AuthenticatedUser].
+ * @property user the current logged-in [AuthenticatedUser].
  * @param chessFacade the [ChessFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property scope the [CoroutineScope] on which requests are performed.
  * @param onEditProfileNameClickAction Callable lambda to navigate to the profile edit popup.
  * @param onEditProfileImageClickAction Callable lambda to navigate to the profile image edit popup.
  */
@@ -30,6 +30,7 @@ class AuthenticatedUserProfileScreenState(
     private val scope: CoroutineScope,
     onEditProfileNameClickAction: State<() -> Unit>,
     onEditProfileImageClickAction: State<() -> Unit>,
+    onEditLanguageClickAction: State<() -> Unit>
 ) :
     SettingScreenState<ChessMatchAdapter, PuzzleInfoAdapter>,
     ProfileScreenState<ChessMatchAdapter, PuzzleInfoAdapter> by StatefulProfileScreen(
@@ -38,6 +39,7 @@ class AuthenticatedUserProfileScreenState(
 
   private val onEditProfileNameClickAction by onEditProfileNameClickAction
   private val onEditProfileImageClickAction by onEditProfileImageClickAction
+  private val onEditLanguageClickAction by onEditLanguageClickAction
 
   override fun onEditProfileNameClick() {
     onEditProfileNameClickAction()
@@ -45,6 +47,11 @@ class AuthenticatedUserProfileScreenState(
   override fun onEditProfileImageClick() {
     onEditProfileImageClickAction()
   }
+
+  override fun onEditLanguageClick() {
+    onEditLanguageClickAction()
+  }
+
   override fun onLogout() {
     scope.launch { user.signOut() }
   }
@@ -67,12 +74,13 @@ fun StatefulSettingsScreen(
     onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
     onEditProfileNameClick: () -> Unit,
     onEditProfileImageClick: () -> Unit,
+    onEditLanguageClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
 ) {
   val actions =
       rememberUpdatedState(
-          ProfileActions(
+          SettingsActions(
               onMatchClick = onMatchClick,
               onPuzzleClick = onPuzzleClick,
           ))
@@ -80,6 +88,7 @@ fun StatefulSettingsScreen(
   val scope = rememberCoroutineScope()
   val currentOnEditProfileNameClick = rememberUpdatedState(onEditProfileNameClick)
   val currentOnEditProfileImageClick = rememberUpdatedState(onEditProfileImageClick)
+  val currentonEditLanguageClick = rememberUpdatedState(onEditLanguageClick)
 
   val state =
       remember(
@@ -96,7 +105,14 @@ fun StatefulSettingsScreen(
             scope,
             currentOnEditProfileNameClick,
             currentOnEditProfileImageClick,
+            currentonEditLanguageClick,
         )
       }
   SettingsScreen(state, modifier, contentPadding)
 }
+
+/** Class of available callback actions in the settings screen. */
+data class SettingsActions(
+    override val onMatchClick: (ChessMatchAdapter) -> Unit,
+    override val onPuzzleClick: (PuzzleInfoAdapter) -> Unit,
+) : ProfileActions

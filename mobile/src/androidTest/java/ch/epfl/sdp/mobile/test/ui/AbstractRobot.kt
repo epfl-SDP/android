@@ -3,6 +3,8 @@ package ch.epfl.sdp.mobile.test.ui
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * An [AbstractRobot] provides a basic layer of abstraction around user interface tests. Rather than
@@ -18,6 +20,46 @@ abstract class AbstractRobot(
     val rule: ComposeTestRule,
     val strings: LocalizedStrings,
 ) : ComposeTestRule by rule {
+
+  /**
+   * Awaits that the provided block does not throw an assertion error.
+   *
+   * @return R the type of the return value.
+   * @param timeout the timeout after which a timeout exception will be thrown.
+   * @param block the block of code to execute, which may throw assertion errors and must be
+   * idempotent.
+   * @return the value which was found.
+   */
+  fun <R> waitUntilSuccess(timeout: Duration = 1.seconds, block: () -> R): R {
+    waitUntil(timeout.inWholeMilliseconds) {
+      try {
+        block()
+        true
+      } catch (_: Throwable) {
+        false
+      }
+    }
+    return block()
+  }
+
+  /**
+   * Returns a [SemanticsMatcher] which filters our nodes which contain the provided localized
+   * string.
+   *
+   * @param substring whether to match nodes by substring.
+   * @param ignoreCase whether to ignore case in text matching.
+   * @param text a lambda which provides the [LocalizedStrings] to use to match the node.
+   */
+  fun hasLocalizedText(
+      substring: Boolean = false,
+      ignoreCase: Boolean = false,
+      text: LocalizedStrings.() -> String,
+  ): SemanticsMatcher =
+      hasText(
+          substring = substring,
+          ignoreCase = ignoreCase,
+          text = text(strings),
+      )
 
   /**
    * Finds the [SemanticsNodeInteraction] with a node with the given text.
