@@ -35,6 +35,8 @@ import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactor
 import ch.epfl.sdp.mobile.ui.PawniesTheme
 import ch.epfl.sdp.mobile.ui.i18n.English
 import ch.epfl.sdp.mobile.ui.i18n.LocalizedStrings
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.flow.filterIsInstance
 
 /**
@@ -319,12 +321,15 @@ private fun <E : TestEnvironment> ComposeContentTestRule.setContentWithEnvironme
 }
 
 /**
- * Wait until a certain text is visible before clicking on it
+ * Wait until a certain text is visible before clicking on it.
  *
- * @param text the expected text
+ * @param text the expected text.
+ * @param timeout the [Duration] for the timeout.
  */
-fun ComposeTestRule.performClickOnceVisible(text: String) {
-  this.waitUntil { onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
+fun ComposeTestRule.performClickOnceVisible(text: String, timeout: Duration = 60.seconds) {
+  this.waitUntil(timeoutMillis = timeout.inWholeMilliseconds) {
+    onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty()
+  }
   onNodeWithText(text).performClick()
 }
 
