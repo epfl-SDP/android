@@ -1,13 +1,14 @@
 package ch.epfl.sdp.mobile.ui.profile
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,17 +27,22 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] to apply to this screen.
+ * @param matchKey the key for each match item.
+ * @param puzzleKey the key for each puzzle item.
  */
 @Composable
 fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
     state: VisitedProfileScreenState<C, P>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    matchKey: ((C) -> Any)? = null,
+    puzzleKey: ((P) -> Any)? = null,
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
-  val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
-  val elevation by animateDpAsState(targetElevation)
+  val targetElevation by remember {
+    derivedStateOf { if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp }
+  }
 
   UserScreen(
       header = { ProfileHeader(state, Modifier.padding(vertical = 16.dp).fillMaxWidth()) },
@@ -44,7 +50,7 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
         ProfileTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
-            elevation = elevation,
+            elevation = targetElevation,
         )
       },
       tabBarState = tabBarState,
@@ -54,7 +60,10 @@ fun <C : ChessMatch, P : PuzzleInfo> ProfileScreen(
       onPuzzleClick = state::onPuzzleClick,
       lazyColumnState = lazyColumnState,
       contentPadding = contentPadding,
-      modifier = modifier)
+      modifier = modifier,
+      matchKey = matchKey,
+      puzzleKey = puzzleKey,
+  )
 }
 
 /**
