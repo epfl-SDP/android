@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.social
 
-import SwipeToUnfollow
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,7 +27,6 @@ private enum class SwipeToDeleteState {
  * This list item is used to display player information in the Social screen.
  *
  * @param person The [Person] contains the information that need to be displayed
- * @param swipeable toggle to swipe
  * @param trailingAction Define the trailing action in the card
  * @param modifier the [Modifier] for the composable
  */
@@ -37,30 +35,25 @@ private enum class SwipeToDeleteState {
 fun PersonItem(
     person: Person,
     onShowProfileCLick: () -> Unit,
-    onUnfollow: () -> Unit = {},
     modifier: Modifier = Modifier,
     trailingAction: @Composable () -> Unit = {}
 ) {
-  SwipeToUnfollow(onUnfollowClick = onUnfollow, modifier = modifier) {
-    ListItem(
-        modifier = Modifier.background(Beige050).clickable { onShowProfileCLick() },
-        icon = {
-          Box(
-              modifier =
-                  Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor)) {
-            Text(person.emoji, modifier = Modifier.align(Alignment.Center))
-          }
-        },
-        text = {
-          Text(
-              text = person.name,
-              color = MaterialTheme.colors.primaryVariant,
-              style = MaterialTheme.typography.subtitle1,
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-          )
-        },
-        trailing = trailingAction,
-    )
-  }
+  ListItem(
+      modifier = Modifier.background(Beige050).clickable { onShowProfileCLick() },
+      icon = {
+        Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor)) {
+          Text(person.emoji, modifier = Modifier.align(Alignment.Center))
+        }
+      },
+      text = {
+        Text(
+            text = person.name,
+            color = MaterialTheme.colors.primaryVariant,
+            style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+      },
+      trailing = trailingAction,
+  )
 }

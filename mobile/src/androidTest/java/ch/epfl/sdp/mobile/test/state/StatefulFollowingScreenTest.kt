@@ -194,7 +194,7 @@ class StatefulFollowingScreenTest {
       }
     }
 
-    val (_, infra, strings, user) =
+    val (_, _, strings, user) =
         rule.setContentWithAuthenticatedTestEnvironment(store = store) {
           StatefulFollowingScreen(user, onShowProfileClick = {}, {})
         }
