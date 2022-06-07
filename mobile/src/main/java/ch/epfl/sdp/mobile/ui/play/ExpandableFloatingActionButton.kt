@@ -79,7 +79,6 @@ interface ExpandableFloatingActionButtonColors {
  */
 @OptIn(
     ExperimentalAnimationApi::class,
-    ExperimentalMaterialApi::class,
 )
 @Composable
 fun ExpandableFloatingActionButton(

@@ -12,13 +12,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -26,6 +29,7 @@ import ch.epfl.sdp.mobile.state.PuzzleInfoAdapter
 
 /**
  * Composable that composes the PlayScreen expanded to include history of matches.
+ *
  * @param state the [PuzzleSelectionScreenState] to manage composable content.
  * @param modifier the [Modifier] for this composable.
  * @param key the key to uniquely identify a [PuzzleInfo] list item.
@@ -41,11 +45,14 @@ fun PuzzleSelectionScreen(
 
   val strings = LocalLocalizedStrings.current
   val lazyListState = rememberLazyListState()
-  val targetShadow =
+  val targetShadow by remember {
+    derivedStateOf {
       if (lazyListState.firstVisibleItemIndex >= 1 ||
           lazyListState.firstVisibleItemScrollOffset > 0)
           4.dp
       else 0.dp
+    }
+  }
   val shadow by animateDpAsState(targetShadow)
 
   Scaffold(
@@ -111,8 +118,14 @@ fun PuzzleListInfo(
                     append("(${puzzleInfo.elo})")
                   }
                 },
-        )
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
       },
-      secondaryText = { Text(text = strings.puzzlePlayingAs(puzzleInfo.playerColor.toString())) },
+      secondaryText = {
+        Text(
+            text = strings.puzzlePlayingAs(puzzleInfo.playerColor.toString()),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
+      },
   )
 }

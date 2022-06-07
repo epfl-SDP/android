@@ -22,11 +22,11 @@ import kotlinx.coroutines.launch
  * An implementation of [SpeechRecognizerState] which will display the results in a
  * [SnackbarHostState], and delegates game management to [MutableGameDelegate].
  *
- * @param delegate the underlying [MutableGameDelegate].
- * @param permission the [PermissionState] for the microphone permission.
- * @param facade the [SpeechFacade] which is used.
- * @param snackbarHostState the [SnackbarHostState] used to display some results.
- * @param scope the [CoroutineScope] in which the actions are performed.
+ * @property delegate the underlying [MutableGameDelegate].
+ * @property permission the [PermissionState] for the microphone permission.
+ * @property facade the [SpeechFacade] which is used.
+ * @property snackbarHostState the [SnackbarHostState] used to display some results.
+ * @property scope the [CoroutineScope] in which the actions are performed.
  */
 class DelegatingSpeechRecognizerState
 constructor(

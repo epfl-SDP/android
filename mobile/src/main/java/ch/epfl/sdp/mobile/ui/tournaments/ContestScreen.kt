@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Add
@@ -24,10 +25,7 @@ import ch.epfl.sdp.mobile.ui.PawniesIcons
  * @param contentPadding the [PaddingValues] for this screen.
  * @param C the type of the [ContestInfo].
  */
-@OptIn(
-    ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class,
-)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <C : ContestInfo> ContestScreen(
     state: ContestScreenState<C>,
@@ -104,7 +102,13 @@ private fun NewContestButton(
     modifier: Modifier = Modifier,
 ) {
   ExtendedFloatingActionButton(
-      text = { Text(LocalLocalizedStrings.current.newContest) },
+      text = {
+        Text(
+            LocalLocalizedStrings.current.newContest,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+      },
       icon = { Icon(PawniesIcons.Add, null) },
       backgroundColor = MaterialTheme.colors.primary,
       onClick = onClick,

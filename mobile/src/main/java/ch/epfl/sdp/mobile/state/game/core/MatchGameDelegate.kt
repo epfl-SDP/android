@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 /**
  * An implementation of [MutableGameDelegate] which writes its updates to a [Match].
  *
- * @param match the underlying [Match].
- * @param scope the [CoroutineScope] used to read and write the match updates.
+ * @property match the underlying [Match].
+ * @property scope the [CoroutineScope] used to read and write the match updates.
  */
 class MatchGameDelegate(
     private val match: Match,

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.application.Profile.Color
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
@@ -56,6 +57,8 @@ fun EditProfileImageDialog(
         Text(
             strings.settingProfileImageLabel,
             style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         LazyRow(
@@ -84,6 +87,7 @@ fun EditProfileImageDialog(
 
 /**
  * Composes the edit settings picture which shows the edit changes.
+ *
  * @param backgroundColor background color for setting image.
  * @param emoji the emoji string.
  * @param modifier the [Modifier] for this composable.
@@ -128,6 +132,7 @@ private fun SelectEmojiItem(
 
 /**
  * Select Background color of profile Image.
+ *
  * @param selected boolean if current element is equal current item.
  * @param onClick function to execute if element is clicked.
  * @param backgroundColor the current color in item.

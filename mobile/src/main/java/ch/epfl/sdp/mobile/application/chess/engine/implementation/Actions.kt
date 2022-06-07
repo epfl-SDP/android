@@ -23,6 +23,7 @@ fun MutableBoard.inCheck(player: Color): Boolean {
  * @receiver the current [MutableBoard] instance.
  * @param player thee [Color] of the current player.
  * @param history the history of the previous board sequences.
+ * @return true iff the player may perform any move.
  */
 fun MutableBoard.hasAnyMoveAvailable(
     player: Color,

@@ -7,6 +7,7 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.prepare_game.Dialog
@@ -40,7 +41,11 @@ fun EditProfileNameDialog(
         onCancelClick = state::onCancelClick,
         onConfirmClick = state::onSaveClick) {
       Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(strings.settingProfileNameLabel, style = MaterialTheme.typography.subtitle1)
+        Text(
+            strings.settingProfileNameLabel,
+            style = MaterialTheme.typography.subtitle1,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis)
 
         TextField(
             value = state.userName,

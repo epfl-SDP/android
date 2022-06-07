@@ -17,7 +17,8 @@ object ChessSpeechFilterRules {
       setOf(
           ChessSpeechRule("pawn", this::tryConvertPawn),
           ChessSpeechRule("king", this::tryConvertKing),
-          ChessSpeechRule("rook", this::tryConvertRook))
+          ChessSpeechRule("rook", this::tryConvertRook),
+      )
 
   /**
    * Convert rule for Pawn.

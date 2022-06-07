@@ -8,9 +8,9 @@ package ch.epfl.sdp.mobile.application.chess.engine
  * [id] but different colors and ranks, but each triplet ([Color], [Rank], [id]) will be unique.
  *
  * @param Color type of the color of a [Piece].
- * @param color the [Color] of the player who owns the piece.
- * @param rank the rank indicating the abilities of the [Piece].
- * @param id the unique identifier for this piece, used for disambiguation.
+ * @property color the [Color] of the player who owns the piece.
+ * @property rank the rank indicating the abilities of the [Piece].
+ * @property id the unique identifier for this piece, used for disambiguation.
  */
 data class Piece<Color>(
     val color: Color,

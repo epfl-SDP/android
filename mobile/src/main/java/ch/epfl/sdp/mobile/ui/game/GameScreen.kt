@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.center
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.BlackKing
@@ -109,7 +110,11 @@ private fun Player(
     ProvideTextStyle(MaterialTheme.typography.subtitle1) {
       CompositionLocalProvider(LocalContentColor provides green) {
         Icon(icon, null, Modifier.size(24.dp))
-        Text(name ?: "")
+        Text(
+            name ?: "",
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
       }
       Spacer(Modifier.weight(1f, fill = true))
       CompositionLocalProvider(LocalContentColor provides Orange200) { Text(message.text) }
@@ -117,7 +122,7 @@ private fun Player(
   }
 }
 
-/** Retrieves the text associated with a [GameScreenState.Message]. */
+/** Retrieves the text associated with a [Message]. */
 private val Message.text: String
   @Composable
   get() =
@@ -165,6 +170,7 @@ fun Moves(
           Text(
               text = "${index + 1}. ${move.text}",
               color = if (index % 2 == 0) firstTextColor else secondTextColor,
+              maxLines = 1,
           )
         }
       }

@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
  * user's profile.
  *
  * @param actions the [ProfileActions] which are available on the screen.
- * @param user the current logged-in [AuthenticatedUser].
+ * @property user the current logged-in [AuthenticatedUser].
  * @param chessFacade the [ChessFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property scope the [CoroutineScope] on which requests are performed.
  * @param onEditProfileNameClickAction Callable lambda to navigate to the profile edit popup.
  * @param onEditProfileImageClickAction Callable lambda to navigate to the profile image edit popup.
  */

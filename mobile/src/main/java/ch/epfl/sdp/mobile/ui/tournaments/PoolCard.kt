@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
@@ -83,7 +84,13 @@ fun <P : PoolMember> PoolCard(
             onClick = info::onStartNextRound,
             modifier = Modifier.padding(top = 16.dp),
             shape = CircleShape,
-        ) { Text(LocalLocalizedStrings.current.tournamentsPoolStartNextRound) }
+        ) {
+          Text(
+              LocalLocalizedStrings.current.tournamentsPoolStartNextRound,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
+          )
+        }
       }
       DashedDivider(Modifier.padding(top = 16.dp))
       PoolTable(info, Modifier.padding(top = 16.dp))
@@ -107,6 +114,8 @@ private fun PoolNameText(
       modifier = modifier,
       style = MaterialTheme.typography.subtitle1,
       color = PawniesColors.Green200,
+      maxLines = 1,
+      overflow = TextOverflow.Ellipsis,
   )
 }
 
@@ -132,5 +141,7 @@ private fun PoolStatusText(
       modifier = modifier,
       style = MaterialTheme.typography.subtitle1,
       color = PawniesColors.Orange200,
+      maxLines = 1,
+      overflow = TextOverflow.Ellipsis,
   )
 }

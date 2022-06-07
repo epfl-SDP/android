@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.game
 
 import androidx.compose.runtime.Stable
+import ch.epfl.sdp.mobile.ui.game.classic.ClassicChessBoard
 
 /**
  * An interface that extends the interface [ChessBoardState] and offers some ways for the

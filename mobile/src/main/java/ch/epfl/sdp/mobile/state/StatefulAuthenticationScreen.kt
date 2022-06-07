@@ -36,9 +36,9 @@ fun StatefulAuthenticationScreen(
  * An implementation of the [AuthenticationScreenState] which uses an [AuthenticationFacade] to
  * perform authentication requests.
  *
- * @param facade the [AuthenticationFacade] which is used to make the underlying requests.
- * @param strings the [LocalizedStrings] which provide access to error strings.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property facade the [AuthenticationFacade] which is used to make the underlying requests.
+ * @property strings the [LocalizedStrings] which provide access to error strings.
+ * @property scope the [CoroutineScope] on which requests are performed.
  */
 class AuthenticationApiAuthenticationScreenState(
     private val facade: AuthenticationFacade,

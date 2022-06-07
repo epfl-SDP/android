@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.PawniesColors
 import ch.epfl.sdp.mobile.ui.PawniesIcons
@@ -104,8 +105,20 @@ private fun NextStepBanner(
       verticalAlignment = Alignment.CenterVertically,
   ) {
     Column(Modifier.weight(1f)) {
-      Text(text = title, style = MaterialTheme.typography.subtitle1, color = titleColor)
-      Text(text = message, style = MaterialTheme.typography.body1, color = messageColor)
+      Text(
+          text = title,
+          style = MaterialTheme.typography.subtitle1,
+          color = titleColor,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+      )
+      Text(
+          text = message,
+          style = MaterialTheme.typography.body1,
+          color = messageColor,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+      )
     }
     CompositionLocalProvider(LocalContentColor provides titleColor) {
       Icon(PawniesIcons.TournamentsNextStep, null)
