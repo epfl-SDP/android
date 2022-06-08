@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.*
@@ -53,7 +54,10 @@ fun <M : ChessMatch> PlayScreen(
           text = strings.playOnlineGames,
           color = MaterialTheme.colors.primary,
           style = MaterialTheme.typography.h4,
-          modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp))
+          modifier = Modifier.padding(top = 32.dp, start = 16.dp, end = 16.dp),
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+      )
       LazyColumn(
           verticalArrangement = Arrangement.Top,
           horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,7 +93,13 @@ fun NewGameButton(
         ExpandableFloatingActionButtonItem(
             onClick = onLocalGame,
             icon = { Image(PawniesIcons.LocalPlay, null) },
-            text = { Text(strings.prepareGamePlayLocal) },
+            text = {
+              Text(
+                  strings.prepareGamePlayLocal,
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis,
+              )
+            },
             modifier = Modifier.fillMaxWidth(),
         )
 

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesColors
@@ -83,6 +84,8 @@ fun FiltersDialog(
             text = strings.tournamentsFilterTitle,
             style = MaterialTheme.typography.button,
             modifier = Modifier.padding(horizontal = 16.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
         Column {
           FilterCheckItem(
@@ -138,6 +141,11 @@ private fun FilterCheckItem(
                 uncheckedColor = PawniesColors.Green200,
             ),
     )
-    Text(text = title, style = MaterialTheme.typography.button)
+    Text(
+        text = title,
+        style = MaterialTheme.typography.button,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
   }
 }

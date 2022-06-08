@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.setting
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,10 +8,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Edit
@@ -33,17 +35,22 @@ import ch.epfl.sdp.mobile.ui.social.ChessMatch
  * @param state state of the ProfileScreen.
  * @param modifier the [Modifier] for this composable.
  * @param contentPadding the [PaddingValues] for this screen.
+ * @param matchKey the key for each match item.
+ * @param puzzleKey the key for each puzzle item.
  */
 @Composable
 fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
     state: SettingScreenState<C, P>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
+    matchKey: ((C) -> Any)? = null,
+    puzzleKey: ((P) -> Any)? = null,
 ) {
   val lazyColumnState = rememberLazyListState()
   val tabBarState = rememberProfileTabBarState(state.pastGamesCount, state.solvedPuzzlesCount)
-  val targetElevation = if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp
-  val elevation by animateDpAsState(targetElevation)
+  val targetElevation by remember {
+    derivedStateOf { if (lazyColumnState.firstVisibleItemIndex >= 1) 4.dp else 0.dp }
+  }
   UserScreen(
       header = {
         SettingHeader(
@@ -55,7 +62,7 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
         ProfileTabBar(
             state = tabBarState,
             modifier = Modifier.fillMaxWidth(),
-            elevation = elevation,
+            elevation = targetElevation,
         )
       },
       tabBarState = tabBarState,
@@ -66,6 +73,8 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingsScreen(
       lazyColumnState = lazyColumnState,
       modifier = modifier.fillMaxSize(),
       contentPadding = contentPadding,
+      matchKey = matchKey,
+      puzzleKey = puzzleKey,
   )
 }
 
@@ -103,7 +112,11 @@ fun <C : ChessMatch, P : PuzzleInfo> SettingHeader(
               modifier = Modifier.size(24.dp))
         }
       }
-      Text(state.email, style = MaterialTheme.typography.subtitle2)
+      Text(
+          state.email,
+          style = MaterialTheme.typography.subtitle2,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis)
     }
     Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
       SettingsButton(onClick = state::onEditLanguageClick)
@@ -160,7 +173,7 @@ fun SettingsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Settings, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.settingsEditLanguage)
+    Text(strings.settingsEditLanguage, maxLines = 1, overflow = TextOverflow.Ellipsis)
   }
 }
 
@@ -180,6 +193,10 @@ private fun LogoutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
       modifier = modifier) {
     Icon(PawniesIcons.Logout, null)
     Spacer(modifier = Modifier.width(8.dp))
-    Text(strings.settingLogout)
+    Text(
+        strings.settingLogout,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
   }
 }

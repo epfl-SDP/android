@@ -12,6 +12,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog as NativeDialog
 import androidx.compose.ui.window.DialogProperties
@@ -85,11 +86,22 @@ private fun PromoteDialogContent(
             onClick = onConfirm,
             enabled = confirmEnabled,
             shape = CircleShape,
-        ) { Text(strings.gamePromoteConfirm) }
+        ) {
+          Text(
+              strings.gamePromoteConfirm,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
+          )
+        }
       },
       content = {
         Column(Modifier.padding(16.dp), Arrangement.spacedBy(16.dp)) {
-          Text(strings.gamePromoteTitle, style = MaterialTheme.typography.subtitle1)
+          Text(
+              strings.gamePromoteTitle,
+              style = MaterialTheme.typography.subtitle1,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
+          )
           Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             for (rank in choices) {
               key(rank) {
