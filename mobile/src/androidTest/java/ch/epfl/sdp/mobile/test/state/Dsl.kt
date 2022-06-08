@@ -260,6 +260,7 @@ suspend fun ComposeContentTestRule.setContentWithAuthenticatedTestEnvironment(
  * @param dataStoreFactory the [DataStoreFactory] to use by default.
  * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
  * tournament.
+ * @param soundPlayer the [SoundPlayer] used to play sounds.
  * @param content the actual composable content to test.
  *
  * @return the [TestEnvironment] with all the facades, infrastructure and general testing
@@ -272,6 +273,7 @@ fun ComposeContentTestRule.setContentWithTestEnvironment(
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
     dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
     timeProvider: TimeProvider = FakeTimeProvider,
+    soundPlayer: SoundPlayer = FakeSoundPlayer,
     content: @Composable TestEnvironment.() -> Unit,
 ): TestEnvironment {
   val environment =
@@ -280,6 +282,7 @@ fun ComposeContentTestRule.setContentWithTestEnvironment(
           auth = auth,
           assets = assets,
           recognizer = recognizer,
+          soundPlayer = soundPlayer,
           dataStoreFactory = dataStoreFactory,
           timeProvider = timeProvider,
       )
