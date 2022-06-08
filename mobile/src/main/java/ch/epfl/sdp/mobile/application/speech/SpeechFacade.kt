@@ -17,9 +17,9 @@ import kotlinx.coroutines.sync.withLock
 /**
  * A facade which provides access to functions to perform some voice recognition.
  *
- * @param speechFactory the [SpeechRecognizerFactory] which is used internally by this
+ * @property speechFactory the [SpeechRecognizerFactory] which is used internally by this
  * [SpeechFacade].
- * @param textToSpeechFactory the [TextToSpeechFactory] which is used internally by this
+ * @property textToSpeechFactory the [TextToSpeechFactory] which is used internally by this
  * [SpeechFacade].
  * @param dataStoreFactory the [DataStoreFactory] which is used to persist user
  * parameters/preferences of the speech facade.
@@ -82,6 +82,7 @@ class SpeechFacade(
 
   /** Companion object that stores the data store key for text to speech parameters. */
   object DataStoreKeys {
+
     /** Key used in data store for text to speech enabling setting. */
     const val TextToSpeechEnabled = "textToSpeech_enabled"
   }

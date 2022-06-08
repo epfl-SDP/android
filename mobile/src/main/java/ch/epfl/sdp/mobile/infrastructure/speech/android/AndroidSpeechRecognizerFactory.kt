@@ -39,9 +39,9 @@ class AndroidSpeechRecognizerFactory(
 /**
  * An implementation of a [SpeechRecognizer] which is backed by a [NativeSpeechRecognizer].
  *
- * @param recognizer the underlying [NativeSpeechRecognizer].
- * @param language the language code that we use for recognition.
- * @param resultsCount the maximum count of results that we are interested in.
+ * @property recognizer the underlying [NativeSpeechRecognizer].
+ * @property language the language code that we use for recognition.
+ * @property resultsCount the maximum count of results that we are interested in.
  */
 class AndroidSpeechRecognizer(
     private val recognizer: NativeSpeechRecognizer,

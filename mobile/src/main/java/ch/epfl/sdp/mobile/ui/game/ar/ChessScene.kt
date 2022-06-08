@@ -35,8 +35,10 @@ import kotlinx.coroutines.flow.onEach
  *
  * The assets used in this scene are from : https://free3d.com/3d-model/chessboard-716865.html
  *
- * @param context The context used to load the 3d models
- * @param scope A scope that is used to launch the model loading
+ * @param Piece the type of the pieces in the scene.
+ * @property context The context used to load the 3d models
+ * @property scope A scope that is used to launch the model loading
+ * @param startingBoard the initial positions of the pieces.
  */
 class ChessScene<Piece : ChessBoardState.Piece>(
     private val context: Context,
@@ -55,7 +57,6 @@ class ChessScene<Piece : ChessBoardState.Piece>(
       Channel<Map<Position, Piece>>(capacity = CONFLATED).apply { trySend(startingBoard) }
 
   init {
-
     scope.launch {
       val boardRenderableInstance = prepareBoardRenderableInstance(boardNode) ?: return@launch
 

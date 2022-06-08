@@ -16,10 +16,10 @@ import ch.epfl.sdp.mobile.ui.game.ChessBoardState
  * to trigger the promotion dialog, and the [DelegatingPlayersInfoState] to check whose turn it is
  * to play.
  *
- * @param user the current [AuthenticatedUser].
- * @param delegate the underlying [MutableGameDelegate].
- * @param playersInfo the [DelegatingPlayersInfoState], providing access to the player info.
- * @param promotion the [DelegatingPromotionState], providing access to the promotion info.
+ * @property user the current [AuthenticatedUser].
+ * @property delegate the underlying [MutableGameDelegate].
+ * @property playersInfo the [DelegatingPlayersInfoState], providing access to the player info.
+ * @property promotion the [DelegatingPromotionState], providing access to the promotion info.
  */
 class DelegatingPromotionMovableChessBoardState(
     private val user: AuthenticatedUser,

@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseUser as ActualFirebaseUser
 /**
  * An implementation of [User] which makes use of the [ActualFirebaseUser] API and adapts it.
  *
- * @param actual the [ActualFirebaseUser].
+ * @property actual the [ActualFirebaseUser].
  */
 class FirebaseUser(private val actual: ActualFirebaseUser) : User {
 

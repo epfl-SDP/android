@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  *
  * @param match the [Match] used to fetch the player profiles.
  * @param scope the [CoroutineScope] to fetch the profiles..
- * @param delegate the underlying [GameDelegate].
+ * @property delegate the underlying [GameDelegate].
  */
 class DelegatingPlayersInfoState(
     match: Match,

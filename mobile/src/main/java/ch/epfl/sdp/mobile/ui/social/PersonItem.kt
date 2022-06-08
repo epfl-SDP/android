@@ -31,7 +31,7 @@ fun PersonItem(
     trailingAction: @Composable () -> Unit = {}
 ) {
   ListItem(
-      modifier = Modifier.background(Beige050).clickable { onShowProfileClick() },
+      modifier = modifier.background(Beige050).clickable { onShowProfileCLick() },
       icon = {
         Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor)) {
           Text(person.emoji, modifier = Modifier.align(Alignment.Center))

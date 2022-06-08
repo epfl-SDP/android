@@ -56,8 +56,8 @@ sealed interface Action {
   /**
    * An [Action] which represents the act of moving a piece on the board.
    *
-   * @param from the start position.
-   * @param delta the applied delta.
+   * @property from the start position.
+   * @property delta the applied delta.
    */
   data class Move(override val from: Position, override val delta: Delta) : Action
 

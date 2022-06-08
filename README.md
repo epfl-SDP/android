@@ -5,6 +5,8 @@
 
 🎨 [Figma mockups](https://www.figma.com/file/JGLgtpIJcPW7z4YKD4nLeH/Android) 🎨
 
+🎬 [See a demo on YouTube](https://youtu.be/PIcgDgCp8y0) 🎬
+
 ## Team
 
 | Name                 | Email |

@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.notation.FenNotation.BoardSnapshot
 
 /** Represents a complete [Puzzle]. */
 interface Puzzle {
+
   /** The uid of the [Puzzle]. */
   val uid: String
 
@@ -44,11 +45,11 @@ fun Puzzle.baseGame(): Game {
 /** Creates an empty [Puzzle]. */
 fun Puzzle(): Puzzle =
     object : Puzzle {
-      override val uid = "Error"
+      override val uid = ""
       override val boardSnapshot =
           BoardSnapshot(
               board = emptyBoard(),
-              playing = Color.White,
+              playing = Color.Black,
               castlingRights =
                   FenNotation.CastlingRights(
                       kingSideWhite = false,
@@ -57,9 +58,9 @@ fun Puzzle(): Puzzle =
                       queenSideBlack = false,
                   ),
               enPassant = null,
-              halfMoveClock = -1,
-              fullMoveClock = -1,
+              halfMoveClock = 0,
+              fullMoveClock = 0,
           )
       override val puzzleMoves = emptyList<Action>()
-      override val elo = -1
+      override val elo = 0
     }

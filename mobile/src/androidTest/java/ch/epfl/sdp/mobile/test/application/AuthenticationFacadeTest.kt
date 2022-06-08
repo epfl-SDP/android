@@ -209,7 +209,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun given_new_user_when_signUp_with_non_trimmed_email_then_register_as_trimmed() = runTest {
+  fun given_newUser_when_signUpWithNonTrimmedEmail_then_registerAsTrimmed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
@@ -219,7 +219,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun given_new_user_when_signUp_with_non_trimmed_name_then_register_as_trimmed() = runTest {
+  fun given_newUser_when_signUpWithNonTrimmedName_then_registerAsTrimmed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)
@@ -229,7 +229,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun given_new_user_when_signIn_with_non_trimmed_email_then_register_as_trimmed() = runTest {
+  fun given_newUser_when_signInWithNonTrimmedEmail_then_registerAsTrimmed() = runTest {
     val auth = buildAuth { user("sdp@email.org", "password") }
     val store = buildStore {
       collection(ProfileDocument.Collection) { document("uid", ProfileDocument()) }
@@ -241,8 +241,7 @@ class AuthenticationFacadeTest {
   }
 
   @Test
-  fun given_authenticated_user_when_update_with_non_trimmed_name_then_update_as_trimmed() =
-      runTest {
+  fun given_authenticatedUser_when_updateWithNonTrimmedName_then_updateAsTrimmed() = runTest {
     val auth = emptyAuth()
     val store = emptyStore()
     val facade = AuthenticationFacade(auth, store)

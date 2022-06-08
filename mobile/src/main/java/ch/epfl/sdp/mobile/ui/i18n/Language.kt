@@ -48,8 +48,9 @@ fun fromLanguageToISOString(value: Language): String =
 
 /** A map of Enum values and String representations. */
 val Languages =
-    mapOf<Language, String>(
+    mapOf(
         Pair(Language.English, "English"),
         Pair(Language.French, "Français"),
         Pair(Language.German, "Deutsch"),
-        Pair(Language.SwissGerman, "Schwiizerdütsch"))
+        Pair(Language.SwissGerman, "Schwiizerdütsch"),
+    )

@@ -83,7 +83,7 @@ fun ActualGameScreenState(
  * states.
  *
  * @param actions the [StatefulGameScreenActions] for this screen.
- * @param match the [Match] for this screen.
+ * @property match the [Match] for this screen.
  * @param movableChessBoard the underlying [MovableChessBoardState].
  * @param promotionState the underlying [PromotionState].
  * @param movesInfo the underlying [MovesInfoState].

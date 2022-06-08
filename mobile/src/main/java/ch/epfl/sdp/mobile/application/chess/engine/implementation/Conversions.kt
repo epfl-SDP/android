@@ -3,9 +3,10 @@ package ch.epfl.sdp.mobile.application.chess.engine.implementation
 import ch.epfl.sdp.mobile.application.chess.engine.*
 
 /**
- * Transforms this [Board] to a [CoreMutableBoard].
+ * Transforms this [Board] to a [MutableBoard].
  *
  * @receiver the [Board] with some [Piece] of [Color].
+ * @return the newly created [MutableBoard].
  */
 fun Board<Piece<Color>>.toMutableBoard(): MutableBoard {
   val board = MutableBoard()

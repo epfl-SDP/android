@@ -8,12 +8,12 @@ import com.google.firebase.firestore.DocumentId
  * A document which represents the profile of a user. All the profile documents are stored in the
  * `/users/` collection.
  *
- * @param uid the unique identifier for this profile.
- * @param name the human-readable name associated to this profile.
- * @param emoji the emoji associated with this profile.
- * @param backgroundColor the hex color code for this profile.
- * @param followers a list of unique identifiers of the users who follow this profile.
- * @param solvedPuzzles a list of unique puzzle ids representing puzzles solved by the user
+ * @property uid the unique identifier for this profile.
+ * @property name the human-readable name associated to this profile.
+ * @property emoji the emoji associated with this profile.
+ * @property backgroundColor the hex color code for this profile.
+ * @property followers a list of unique identifiers of the users who follow this profile.
+ * @property solvedPuzzles a list of unique puzzle ids representing puzzles solved by the user
  */
 data class ProfileDocument(
     @DocumentId val uid: String? = null,
@@ -141,9 +141,9 @@ data class ChessDocument(
 /**
  * Additional information to a ChessDocument. This can speed up some queries.
  *
- * @param status this is the status of the game, if its already won, undecided or stalemate
- * @param blackName name of the black player
- * @param whiteName name of the white player
+ * @property status this is the status of the game, if its already won, undecided or stalemate
+ * @property blackName name of the black player
+ * @property whiteName name of the white player
  */
 data class ChessMetadata(
     val status: String? = null,
@@ -167,18 +167,19 @@ data class ChessMetadata(
  * A document which represents a tournament of chess between many users. All the tournament
  * documents are stored in the `/tournaments/` collection.
  *
- * @param uid the unique identifier for this tournament.
- * @param adminId the unique identifier of the user administrating the tournament.
- * @param name the name of the tournament.
- * @param maxPlayers the maximum number of players than can join this tournament.
- * @param creationTimeEpochMillis the time of creation of the tournament.
- * @param bestOf the number of "best-of" rounds for the pool phase and the direct elimination phase.
- * @param poolSize the target size of each pool. The number of pools derives from this number and
+ * @property uid the unique identifier for this tournament.
+ * @property adminId the unique identifier of the user administrating the tournament.
+ * @property name the name of the tournament.
+ * @property maxPlayers the maximum number of players than can join this tournament.
+ * @property creationTimeEpochMillis the time of creation of the tournament.
+ * @property bestOf the number of "best-of" rounds for the pool phase and the direct elimination
+ * phase.
+ * @property poolSize the target size of each pool. The number of pools derives from this number and
  * the total number of players.
- * @param eliminationRounds the number of direct elimination rounds. 1 for just a final, 2 for
+ * @property eliminationRounds the number of direct elimination rounds. 1 for just a final, 2 for
  * semi-finals, 3 for quarter-finals, etc...
- * @param playerIds the [List] of unique identifier of users that have joined the tournament.
- * @param stage the current stage of the tournament.
+ * @property playerIds the [List] of unique identifier of users that have joined the tournament.
+ * @property stage the current stage of the tournament.
  */
 data class TournamentDocument(
     @DocumentId val uid: String? = null,
@@ -203,7 +204,7 @@ data class TournamentDocument(
     /** The field with the tournament participants. */
     const val Participants = "playerIds"
 
-    /** Indicates that the [TournamentDocument.stage] is pools. */
+    /** Indicates the [TournamentDocument.stage] of the pools. */
     const val StagePools = "pools"
 
     /** The creationTimeEpochMillis field of this document. */

@@ -145,6 +145,8 @@ fun <P : Person> FollowList(
       Text(
           text = strings.socialFollowingTitle,
           style = MaterialTheme.typography.h4,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
           modifier = Modifier.padding(horizontal = 16.dp),
       )
     }
@@ -193,13 +195,19 @@ fun EmptySearch(
       horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Icon(PawniesIcons.Search, null, modifier = Modifier.size(72.dp), tint = color)
-    Text(text = strings.socialSearchEmptyTitle, style = MaterialTheme.typography.h4, color = color)
+    Text(
+        text = strings.socialSearchEmptyTitle,
+        style = MaterialTheme.typography.h4,
+        color = color,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis)
     Text(
         text = strings.socialSearchEmptySubtitle,
         style = MaterialTheme.typography.body1,
         color = color,
         textAlign = TextAlign.Center,
-    )
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis)
   }
 }
 

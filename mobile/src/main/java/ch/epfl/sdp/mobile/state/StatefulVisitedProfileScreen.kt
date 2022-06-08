@@ -19,11 +19,11 @@ import kotlinx.coroutines.launch
  * An implementation of the [VisitedProfileScreenState] that performs a given profile's [ChessMatch]
  * requests.
  *
- * @param currentUser current logged in user
- * @param user the given [Profile].
+ * @property currentUser current logged in user
+ * @property user the given [Profile].
  * @param actions the [VisitedProfileActions] which are available on the screen.
  * @param chessFacade the [ChessFacade] used to perform some requests.
- * @param scope the [CoroutineScope] on which requests are performed.
+ * @property scope the [CoroutineScope] on which requests are performed.
  */
 class FetchedUserProfileScreenState(
     private val currentUser: AuthenticatedUser,

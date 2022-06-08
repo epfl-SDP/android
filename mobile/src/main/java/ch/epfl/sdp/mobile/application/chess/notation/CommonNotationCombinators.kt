@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.application.chess.parser.StringCombinators
 
 /** An object which contains some convenience parser combinators for any notation. */
 object CommonNotationCombinators {
+
   /** A [Parser] which returns the column in a position. */
   val column = StringCombinators.char().filter { it in 'a'..'h' }.map { it - 'a' }
 

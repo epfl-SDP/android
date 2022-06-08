@@ -17,10 +17,10 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * An implementation of a [Tournament] which uses a [TournamentDocument] under-the-hood.
  *
- * @param document the backing [TournamentDocument].
- * @param user the currently logged-in [AuthenticatedUser].
- * @param store the [Store] which can be used by the [StoreDocumentTournament].
- * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
+ * @property document the backing [TournamentDocument].
+ * @property user the currently logged-in [AuthenticatedUser].
+ * @property store the [Store] which can be used by the [StoreDocumentTournament].
+ * @property timeProvider the [TimeProvider] used to calculate the duration of creation of the
  * tournament.
  */
 class StoreDocumentTournament(
@@ -37,7 +37,7 @@ class StoreDocumentTournament(
 
   override val status: Tournament.Status
     get() {
-      val enoughParticipants = document.playerIds?.size ?: 0 >= (document.maxPlayers ?: 0)
+      val enoughParticipants = (document.playerIds?.size ?: 0) >= (document.maxPlayers ?: 0)
       val stageAsRound = document.stage?.toIntOrNull()
       val eliminationRounds = document.eliminationRounds ?: 1
       return when {
@@ -213,6 +213,7 @@ class StoreDocumentTournament(
       }
     }
   }
+
   /**
    * Creates the matches corresponding to the given [PoolResults].
    *

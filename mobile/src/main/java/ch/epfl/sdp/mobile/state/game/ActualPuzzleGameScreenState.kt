@@ -80,7 +80,7 @@ fun ActualPuzzleGameScreenState(
  * An implementation of [PuzzleGameScreenState] which delegates its behaviors to different
  * underlying states.
  *
- * @param currentActions the [State] of actions to perform when navigating.
+ * @property currentActions the [State] of actions to perform when navigating.
  * @param moveableChessBoard the underlying [MovableChessBoardState].
  * @param promotionState the underlying [PromotionState].
  * @param movesInfo the underlying [MovesInfoState].
