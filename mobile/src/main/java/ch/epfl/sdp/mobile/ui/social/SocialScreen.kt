@@ -247,7 +247,7 @@ fun <P : Person> SearchResultList(
     ) { player ->
       PersonItem(
           person = player,
-          modifier = modifier,
+          modifier = Modifier.animateItemPlacement(),
           trailingAction = {
             FollowButton(
                 following = player.followed,
