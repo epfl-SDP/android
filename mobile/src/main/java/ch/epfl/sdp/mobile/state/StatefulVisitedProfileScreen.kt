@@ -107,7 +107,13 @@ fun StatefulVisitedProfileScreen(
       remember(actions, profile, chessFacade, scope, socialFacade) {
         FetchedUserProfileScreenState(user, profile, actions, chessFacade, scope)
       }
-  ProfileScreen(state, modifier, contentPadding)
+  ProfileScreen(
+      state = state,
+      modifier = modifier,
+      contentPadding = contentPadding,
+      matchKey = { it.uid },
+      puzzleKey = { it.uid },
+  )
 }
 
 private object EmptyProfile : Profile {

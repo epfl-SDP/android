@@ -1,6 +1,7 @@
 package ch.epfl.sdp.mobile.ui.profile
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -149,10 +150,11 @@ fun ProfileTabBar(
     elevation: Dp = 0.dp,
 ) {
   val strings = LocalLocalizedStrings.current
+  val currentElevation by animateDpAsState(elevation)
   Surface(
       modifier = modifier,
       color = backgroundColor,
-      elevation = elevation,
+      elevation = currentElevation,
   ) {
     Row(
         horizontalArrangement = Arrangement.Center,
