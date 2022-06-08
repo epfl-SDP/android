@@ -19,7 +19,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
-import ch.epfl.sdp.mobile.test.infrastructure.sound.FakeSoundPlayer
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory

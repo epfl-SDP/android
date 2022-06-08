@@ -3,7 +3,7 @@ package ch.epfl.sdp.mobile.test.application
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.sound.FakeSoundPlayer
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
