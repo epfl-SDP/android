@@ -14,32 +14,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.ui.PawniesColors.Beige050
 
-private enum class SwipeToDeleteState {
-
-  /** The action is hidden. */
-  Closed,
-
-  /** The action is visible. */
-  Open,
-}
-
 /**
  * This list item is used to display player information in the Social screen.
  *
  * @param person The [Person] contains the information that need to be displayed
- * @param trailingAction Define the trailing action in the card
+ * @param onShowProfileClick open profile if clicked
  * @param modifier the [Modifier] for the composable
+ * @param trailingAction Define the trailing action in the card
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PersonItem(
     person: Person,
-    onShowProfileCLick: () -> Unit,
+    onShowProfileClick: () -> Unit,
     modifier: Modifier = Modifier,
     trailingAction: @Composable () -> Unit = {}
 ) {
   ListItem(
-      modifier = Modifier.background(Beige050).clickable { onShowProfileCLick() },
+      modifier = Modifier.background(Beige050).clickable { onShowProfileClick() },
       icon = {
         Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor)) {
           Text(person.emoji, modifier = Modifier.align(Alignment.Center))

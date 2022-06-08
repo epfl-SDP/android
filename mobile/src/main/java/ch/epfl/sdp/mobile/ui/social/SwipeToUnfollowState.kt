@@ -1,3 +1,5 @@
+package ch.epfl.sdp.mobile.ui.social
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation.Horizontal
@@ -18,8 +20,8 @@ import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.Delete
 import ch.epfl.sdp.mobile.ui.PawniesIcons
 
-/** The possible states for a [SwipeToUnfollow] composable. */
-private enum class SwipeToUnfollow {
+/** The possible states for a [SwipeToUnfollowState] composable. */
+private enum class SwipeToUnfollowState {
 
   /** The action is hidden. */
   Closed,
@@ -33,7 +35,6 @@ private enum class SwipeToUnfollow {
  *
  * @param onUnfollowClick the callback which is called when the unfollow action is performed.
  * @param modifier the [Modifier] for this composable.
- * @param enabled true iff the swipe-to-delete action should be enabled.
  * @param content the body to display in the composable.
  */
 @OptIn(ExperimentalMaterialApi::class)
@@ -43,12 +44,13 @@ fun SwipeToUnfollow(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-  val state = rememberSwipeableState(SwipeToUnfollow.Closed)
+  val state = rememberSwipeableState(SwipeToUnfollowState.Closed)
+  val swipeWidth = 72.dp
 
   val anchors =
       mapOf(
-          0f to SwipeToUnfollow.Closed,
-          with(LocalDensity.current) { 72.dp.toPx() } to SwipeToUnfollow.Open,
+          0f to SwipeToUnfollowState.Closed,
+          with(LocalDensity.current) { swipeWidth.toPx() } to SwipeToUnfollowState.Open,
       )
 
   Box(
@@ -63,11 +65,11 @@ fun SwipeToUnfollow(
     UnfollowBackground(
         onClick = onUnfollowClick,
         modifier =
-            Modifier.width(72.dp)
+            Modifier.width(swipeWidth)
                 .fillMaxHeight()
                 .align(Alignment.CenterStart)
                 .then(
-                    if (state.currentValue == SwipeToUnfollow.Open && !isSwipeInProgress)
+                    if (state.currentValue == SwipeToUnfollowState.Open && !isSwipeInProgress)
                         Modifier.zIndex(1f)
                     else Modifier),
     )
@@ -78,7 +80,7 @@ fun SwipeToUnfollow(
 }
 
 /**
- * The background of a [SwipeToUnfollow].
+ * The background of a [SwipeToUnfollowState].
  *
  * @param onClick the callback called when the background is clicked.
  * @param modifier the [Modifier] for this composable.

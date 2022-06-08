@@ -1,6 +1,5 @@
 package ch.epfl.sdp.mobile.ui.social
 
-import SwipeToUnfollow
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
@@ -19,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import ch.epfl.sdp.mobile.state.LocalLocalizedStrings
 import ch.epfl.sdp.mobile.ui.PawniesIcons
@@ -152,9 +152,9 @@ fun <P : Person> FollowList(
         items = players,
         key = key,
     ) { friend ->
-      SwipeToUnfollow(onUnfollowClick = { onUnfollowClick(friend) }) {
+      SwipeToUnfollow(
+          onUnfollowClick = { onUnfollowClick(friend) }, Modifier.animateItemPlacement()) {
         PersonItem(
-            modifier = Modifier.animateItemPlacement(),
             person = friend,
             trailingAction = {
               OutlinedButton(
@@ -164,10 +164,11 @@ fun <P : Person> FollowList(
                 Text(
                     modifier = Modifier.padding(horizontal = 8.dp),
                     text = strings.socialPerformPlay,
-                )
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis)
               }
             },
-            onShowProfileCLick = { onShowProfileClick(friend) })
+            onShowProfileClick = { onShowProfileClick(friend) })
       }
     }
   }
@@ -238,14 +239,14 @@ fun <P : Person> SearchResultList(
     ) { player ->
       PersonItem(
           person = player,
-          modifier = modifier.animateItemPlacement(),
+          modifier = modifier,
           trailingAction = {
             FollowButton(
                 following = player.followed,
                 onClick = { onFollowClick(player) },
             )
           },
-          onShowProfileCLick = { onShowProfileClick(player) })
+          onShowProfileClick = { onShowProfileClick(player) })
     }
   }
 }
