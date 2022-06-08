@@ -270,7 +270,6 @@ fun ComposeContentTestRule.setContentWithTestEnvironment(
     auth: Auth = emptyAuth(),
     assets: AssetManager = emptyAssets(),
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
-    synthesizer: TextToSpeechFactory = FakeTextToSpeechFactory,
     dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
     timeProvider: TimeProvider = FakeTimeProvider,
     content: @Composable TestEnvironment.() -> Unit,
