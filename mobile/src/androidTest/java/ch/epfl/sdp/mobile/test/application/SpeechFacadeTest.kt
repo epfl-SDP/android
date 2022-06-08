@@ -1,19 +1,17 @@
 package ch.epfl.sdp.mobile.test.application
 
-import android.content.Context
-import android.media.MediaPlayer
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
-import ch.epfl.sdp.mobile.infrastructure.sound.android.AndroidSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
-import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
+import ch.epfl.sdp.mobile.test.infrastructure.sound.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuccessfulSpeechRecognizer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.SuspendingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import com.google.common.truth.Truth.assertThat
-import io.mockk.mockk
+import io.mockk.every
+import io.mockk.verify
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -21,17 +19,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class SpeechFacadeTest {
-
-  /**
-   * A class mocking a [MediaPlayer] with a callback called in its start function.
-   *
-   * @param startCallback the callback called in the start function of the [MediaPlayer].
-   */
-  class FakeMediaPlayer(private val startCallback: () -> Unit) : MediaPlayer() {
-    override fun start() {
-      startCallback()
-    }
-  }
 
   @Test
   fun given_suspendingRecognizer_when_recognizesThenCancels_then_terminatesWithoutException() =
@@ -81,10 +68,8 @@ class SpeechFacadeTest {
 
   @Test
   fun given_speechFacade_when_synthesizing_then_playSoundCalled() = runTest {
-    var called = false
-    val mediaPlayer = FakeMediaPlayer(startCallback = { called = true })
-    val context = mockk<Context>()
-    val soundPlayer = AndroidSoundPlayer(context = context, mediaPlayer = mediaPlayer)
+    val soundPlayer = FakeSoundPlayer
+    every { soundPlayer.playChessSound() } returns Unit
     val facade =
         SpeechFacade(
             UnknownCommandSpeechRecognizerFactory,
@@ -92,6 +77,6 @@ class SpeechFacadeTest {
             soundPlayer,
             emptyDataStoreFactory())
     facade.synthesize("Pawnies")
-    assertThat(called).isTrue()
+    verify { soundPlayer.playChessSound() }
   }
 }
