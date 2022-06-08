@@ -22,14 +22,14 @@ class SocialCardTest {
   @Test
   fun card_displayCorrectName() {
 
-    rule.setContent { PersonItem(person = FakeFriendCard(), onShowProfileCLick = {}) }
+    rule.setContent { PersonItem(person = FakeFriendCard(), onShowProfileClick = {}) }
 
     rule.onNodeWithText("Toto").assertExists()
   }
 
   @Test
   fun card_displayCorrectEmoji() {
-    rule.setContent { PersonItem(person = FakeFriendCard(), onShowProfileCLick = {}) }
+    rule.setContent { PersonItem(person = FakeFriendCard(), onShowProfileClick = {}) }
 
     rule.onNodeWithText(":3").assertExists()
   }

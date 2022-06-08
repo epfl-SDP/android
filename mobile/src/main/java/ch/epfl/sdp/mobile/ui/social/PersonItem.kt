@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +30,7 @@ fun PersonItem(
     trailingAction: @Composable () -> Unit = {}
 ) {
   ListItem(
-      modifier = modifier.background(Beige050).clickable { onShowProfileCLick() },
+      modifier = modifier.background(Beige050).clickable { onShowProfileClick() },
       icon = {
         Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(person.backgroundColor)) {
           Text(person.emoji, modifier = Modifier.align(Alignment.Center))
