@@ -104,6 +104,7 @@ object English : LocalizedStrings {
       "Find any player using their name, follow them, or invite them to play or see their match history"
   override val socialSearchClearContentDescription = "Clear search field"
   override val socialCloseVisitedProfile = "Close"
+  override val socialUnfollowIcon = "Unfollow"
 
   override val sectionAr: String = "AR"
   override val sectionSocial = "Players"

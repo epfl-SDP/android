@@ -5,7 +5,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -83,6 +82,7 @@ fun <P : Person> SocialScreen(
                     players = state.following,
                     onShowProfileClick = state::onShowProfileClick,
                     onPlayClick = state::onPlayClick,
+                    onUnfollowClick = state::onUnfollowClick,
                     lazyListState = followingLazyListState,
                     key = key,
                     modifier = Modifier.fillMaxSize(),
@@ -116,6 +116,7 @@ fun <P : Person> SocialScreen(
  * @param P the type of the [Person].
  * @param players A list of [Person] that need to be displayed.
  * @param onShowProfileClick Callback function for click on Item.
+ * @param onUnfollowClick Callback function for unfollow item
  * @param onPlayClick Callback function for click on the play button
  * @param modifier modifier the [Modifier] for the composable.
  * @param lazyListState the [LazyListState] for the list of items.
@@ -127,6 +128,7 @@ fun <P : Person> SocialScreen(
 fun <P : Person> FollowList(
     players: List<P>,
     onShowProfileClick: (P) -> Unit,
+    onUnfollowClick: (P) -> Unit,
     onPlayClick: (P) -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
@@ -153,22 +155,24 @@ fun <P : Person> FollowList(
         items = players,
         key = key,
     ) { friend ->
-      PersonItem(
-          modifier = Modifier.clickable { onShowProfileClick(friend) }.animateItemPlacement(),
-          person = friend,
-          trailingAction = {
-            OutlinedButton(
-                onClick = { onPlayClick(friend) },
-                shape = RoundedCornerShape(24.dp),
-            ) {
-              Text(
-                  modifier = Modifier.padding(horizontal = 8.dp),
-                  text = strings.socialPerformPlay,
-                  maxLines = 1,
-                  overflow = TextOverflow.Ellipsis)
-            }
-          },
-      )
+      SwipeToUnfollow(
+          onUnfollowClick = { onUnfollowClick(friend) }, Modifier.animateItemPlacement()) {
+        PersonItem(
+            person = friend,
+            trailingAction = {
+              OutlinedButton(
+                  onClick = { onPlayClick(friend) },
+                  shape = RoundedCornerShape(24.dp),
+              ) {
+                Text(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    text = strings.socialPerformPlay,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis)
+              }
+            },
+            onShowProfileClick = { onShowProfileClick(friend) })
+      }
     }
   }
 }
@@ -244,14 +248,14 @@ fun <P : Person> SearchResultList(
     ) { player ->
       PersonItem(
           person = player,
-          modifier = modifier.clickable { onShowProfileClick(player) }.animateItemPlacement(),
+          modifier = Modifier.animateItemPlacement(),
           trailingAction = {
             FollowButton(
                 following = player.followed,
                 onClick = { onFollowClick(player) },
             )
           },
-      )
+          onShowProfileClick = { onShowProfileClick(player) })
     }
   }
 }
