@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.test.application
 
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
+import ch.epfl.sdp.mobile.infrastructure.sound.SoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
@@ -69,7 +70,7 @@ class SpeechFacadeTest {
 
   @Test
   fun given_speechFacade_when_synthesizing_then_playSoundCalled() = runTest {
-    val soundPlayer = mockk<FakeSoundPlayer>()
+    val soundPlayer = mockk<SoundPlayer>()
     every { soundPlayer.playChessSound() } returns Unit
     val facade =
         SpeechFacade(
