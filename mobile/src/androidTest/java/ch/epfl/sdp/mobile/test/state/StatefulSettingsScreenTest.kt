@@ -24,6 +24,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataSto
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.buildStore
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.document
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
@@ -62,7 +63,10 @@ class StatefulSettingsScreenTest {
       val chessFacade = ChessFacade(auth, store, assets)
       val speechFacade =
           SpeechFacade(
-              FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+              FailingSpeechRecognizerFactory,
+              FakeTextToSpeechFactory,
+              FakeSoundPlayer,
+              emptyDataStoreFactory())
       val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
       val settings = SettingsFacade(dataStoreFactory)
 
@@ -106,7 +110,10 @@ class StatefulSettingsScreenTest {
     val chessFacade = ChessFacade(auth, store, assets)
     val speechFacade =
         SpeechFacade(
-            FailingSpeechRecognizerFactory, FakeTextToSpeechFactory, emptyDataStoreFactory())
+            FailingSpeechRecognizerFactory,
+            FakeTextToSpeechFactory,
+            FakeSoundPlayer,
+            emptyDataStoreFactory())
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, FakeTimeProvider)
     val settings = SettingsFacade(dataStoreFactory)
 
