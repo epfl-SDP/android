@@ -108,7 +108,7 @@ object French : LocalizedStrings {
       "Trouve un joueur en utilisant son nom, suis le, invite-le à jouer ou consulte l'historique de ses matchs."
   override val socialSearchClearContentDescription = "Effacer le champ de recherche"
   override val socialCloseVisitedProfile = "Fermer"
-  override val socialUnfollowIcon = "Desuivi"
+  override val socialUnfollowIcon = "Supprimer"
 
   override val sectionAr: String = "RA"
   override val sectionSocial = "Joueurs"
