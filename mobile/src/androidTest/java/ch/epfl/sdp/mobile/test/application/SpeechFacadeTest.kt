@@ -11,6 +11,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.speech.UnknownCommandSpeechRecogni
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
+import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ class SpeechFacadeTest {
 
   @Test
   fun given_speechFacade_when_synthesizing_then_playSoundCalled() = runTest {
-    val soundPlayer = FakeSoundPlayer
+    val soundPlayer = mockk<FakeSoundPlayer>()
     every { soundPlayer.playChessSound() } returns Unit
     val facade =
         SpeechFacade(
