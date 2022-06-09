@@ -2,6 +2,7 @@ package ch.epfl.sdp.mobile.application.speech
 
 import ch.epfl.sdp.mobile.application.speech.SpeechFacade.RecognitionResult.*
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.*
+import ch.epfl.sdp.mobile.infrastructure.sound.SoundPlayer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeech
@@ -21,12 +22,14 @@ import kotlinx.coroutines.sync.withLock
  * [SpeechFacade].
  * @property textToSpeechFactory the [TextToSpeechFactory] which is used internally by this
  * [SpeechFacade].
+ * @param soundPlayer the [SoundPlayer] used to play chess sounds by this [SpeechFacade].
  * @param dataStoreFactory the [DataStoreFactory] which is used to persist user
  * parameters/preferences of the speech facade.
  */
 class SpeechFacade(
     private val speechFactory: SpeechRecognizerFactory,
     private val textToSpeechFactory: TextToSpeechFactory,
+    private val soundPlayer: SoundPlayer,
     dataStoreFactory: DataStoreFactory,
 ) {
 
@@ -154,6 +157,7 @@ class SpeechFacade(
 
     if (textToSpeechSettings().first().enabled) {
       tts.speak(text)
+      soundPlayer.playChessSound()
     }
   }
 }

@@ -13,6 +13,7 @@ import ch.epfl.sdp.mobile.infrastructure.assets.android.AndroidAssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.firebase.FirebaseAuth
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.androidx.AndroidXDataStoreFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.firestore.FirestoreStore
+import ch.epfl.sdp.mobile.infrastructure.sound.android.AndroidSoundPlayer
 import ch.epfl.sdp.mobile.infrastructure.speech.android.AndroidSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.infrastructure.time.system.SystemTimeProvider
 import ch.epfl.sdp.mobile.infrastructure.tts.android.AndroidTextToSpeechFactory
@@ -40,6 +41,7 @@ class HomeActivity : ComponentActivity() {
         SpeechFacade(
             speechFactory = AndroidSpeechRecognizerFactory(this),
             textToSpeechFactory = AndroidTextToSpeechFactory(this),
+            soundPlayer = AndroidSoundPlayer(this),
             dataStoreFactory = dataStoreFactory,
         )
     val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, SystemTimeProvider)

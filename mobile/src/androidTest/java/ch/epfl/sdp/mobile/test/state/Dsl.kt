@@ -19,6 +19,7 @@ import ch.epfl.sdp.mobile.infrastructure.assets.AssetManager
 import ch.epfl.sdp.mobile.infrastructure.persistence.auth.Auth
 import ch.epfl.sdp.mobile.infrastructure.persistence.datastore.DataStoreFactory
 import ch.epfl.sdp.mobile.infrastructure.persistence.store.Store
+import ch.epfl.sdp.mobile.infrastructure.sound.SoundPlayer
 import ch.epfl.sdp.mobile.infrastructure.speech.SpeechRecognizerFactory
 import ch.epfl.sdp.mobile.infrastructure.time.TimeProvider
 import ch.epfl.sdp.mobile.infrastructure.tts.TextToSpeechFactory
@@ -29,6 +30,7 @@ import ch.epfl.sdp.mobile.test.infrastructure.assets.fake.emptyAssets
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.auth.emptyAuth
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.datastore.emptyDataStoreFactory
 import ch.epfl.sdp.mobile.test.infrastructure.persistence.store.emptyStore
+import ch.epfl.sdp.mobile.test.infrastructure.sound.fake.FakeSoundPlayer
 import ch.epfl.sdp.mobile.test.infrastructure.speech.FailingSpeechRecognizerFactory
 import ch.epfl.sdp.mobile.test.infrastructure.time.fake.FakeTimeProvider
 import ch.epfl.sdp.mobile.test.infrastructure.tts.android.FakeTextToSpeechFactory
@@ -130,6 +132,8 @@ private class ActualAuthenticatedTestEnvironment(
  * @param auth the underlying [Auth].
  * @param assets the underlying [AssetManager].
  * @param recognizer the underlying [SpeechRecognizerFactory].
+ * @param synthesizer the underlying [TextToSpeechFactory].
+ * @param soundPlayer the [SoundPlayer] used to play chess sounds by this [SpeechFacade].
  * @param dataStoreFactory the underlying [DataStoreFactory].
  * @param timeProvider the underlying [TimeProvider].
  *
@@ -141,13 +145,14 @@ private fun createTestEnvironment(
     assets: AssetManager,
     recognizer: SpeechRecognizerFactory,
     synthesizer: TextToSpeechFactory = FakeTextToSpeechFactory,
+    soundPlayer: SoundPlayer = FakeSoundPlayer,
     dataStoreFactory: DataStoreFactory,
     timeProvider: TimeProvider,
 ): TestEnvironment {
   val authenticationFacade = AuthenticationFacade(auth, store)
   val socialFacade = SocialFacade(auth, store)
   val chessFacade = ChessFacade(auth, store, assets)
-  val speechFacade = SpeechFacade(recognizer, synthesizer, dataStoreFactory)
+  val speechFacade = SpeechFacade(recognizer, synthesizer, soundPlayer, dataStoreFactory)
   val tournamentFacade = TournamentFacade(auth, dataStoreFactory, store, timeProvider)
   val settingsFacade = SettingsFacade(dataStoreFactory)
   return ActualTestEnvironment(
@@ -196,6 +201,7 @@ private suspend fun TestEnvironment.authenticate(): AuthenticatedTestEnvironment
  * @param dataStoreFactory the [DataStoreFactory] to use by default.
  * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
  * tournament.
+ * @param soundPlayer the [SoundPlayer] used to play sounds.
  * @param content the actual composable content to test.
  *
  * @return the [AuthenticatedTestEnvironment] with all the facades, infrastructure and general
@@ -209,6 +215,7 @@ suspend fun ComposeContentTestRule.setContentWithAuthenticatedTestEnvironment(
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
     dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
     timeProvider: TimeProvider = FakeTimeProvider,
+    soundPlayer: SoundPlayer = FakeSoundPlayer,
     content: @Composable AuthenticatedTestEnvironment.() -> Unit,
 ): AuthenticatedTestEnvironment {
   val environment =
@@ -217,6 +224,7 @@ suspend fun ComposeContentTestRule.setContentWithAuthenticatedTestEnvironment(
               auth = auth,
               assets = assets,
               recognizer = recognizer,
+              soundPlayer = soundPlayer,
               dataStoreFactory = dataStoreFactory,
               timeProvider = timeProvider,
           )
@@ -252,6 +260,7 @@ suspend fun ComposeContentTestRule.setContentWithAuthenticatedTestEnvironment(
  * @param dataStoreFactory the [DataStoreFactory] to use by default.
  * @param timeProvider the [TimeProvider] used to calculate the duration of creation of the
  * tournament.
+ * @param soundPlayer the [SoundPlayer] used to play sounds.
  * @param content the actual composable content to test.
  *
  * @return the [TestEnvironment] with all the facades, infrastructure and general testing
@@ -264,6 +273,7 @@ fun ComposeContentTestRule.setContentWithTestEnvironment(
     recognizer: SpeechRecognizerFactory = FailingSpeechRecognizerFactory,
     dataStoreFactory: DataStoreFactory = emptyDataStoreFactory(),
     timeProvider: TimeProvider = FakeTimeProvider,
+    soundPlayer: SoundPlayer = FakeSoundPlayer,
     content: @Composable TestEnvironment.() -> Unit,
 ): TestEnvironment {
   val environment =
@@ -272,6 +282,7 @@ fun ComposeContentTestRule.setContentWithTestEnvironment(
           auth = auth,
           assets = assets,
           recognizer = recognizer,
+          soundPlayer = soundPlayer,
           dataStoreFactory = dataStoreFactory,
           timeProvider = timeProvider,
       )
