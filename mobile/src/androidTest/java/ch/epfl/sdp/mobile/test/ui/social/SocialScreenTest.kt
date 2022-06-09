@@ -52,6 +52,7 @@ class SocialScreenTest {
 
     override fun onShowProfileClick(person: Person) {}
     override fun onPlayClick(opponent: Person) = Unit
+    override fun onUnfollowClick(follower: Person) {}
   }
 
   @Test

@@ -61,4 +61,11 @@ interface SocialScreenState<P : Person> {
    * @param followed A [P] that the current user wants to follow.
    */
   fun onFollowClick(followed: P)
+
+  /**
+   * A callback invoked when the user unfollows another user.
+   *
+   * @param follower A [P] that the current user wants to unfollow.
+   */
+  fun onUnfollowClick(follower: P)
 }
